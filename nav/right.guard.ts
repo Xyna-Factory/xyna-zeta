@@ -74,7 +74,8 @@ export class RightGuardService {
                 }
             }
 
-            url += jumpTo && jumpTo.path ? jumpTo.path : '' || jumpTo && jumpTo.redirectTo ? jumpTo.redirectTo : '';
+            url += jumpTo && jumpTo.path ? jumpTo.path : (jumpTo && jumpTo.redirectTo ? jumpTo.redirectTo : '');
+
         } else {
             url = '/';
         }
