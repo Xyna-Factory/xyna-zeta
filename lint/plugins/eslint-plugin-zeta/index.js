@@ -19,9 +19,9 @@ const rules = {
     'xo': {
         meta: {
             fixable: 'code',
-            type: 'problem'
+            type: 'problem',
         },
-        create: function(context) {
+        create: function (context) {
 
             const XO_OBJECT_DECORATOR_NAME = 'XoObjectClass';
             const XO_ARRAY_DECORATOR_NAME = 'XoArrayClass';
@@ -49,13 +49,13 @@ const rules = {
                     if ((idx = node.source.value.indexOf('zeta/')) !== -1 && node.source.value[idx - 1] !== '@') {
                         context.report({
                             node,
-                            message: 'Import zeta dependencies via the \'@zeta\' alias.'
+                            message: 'Import zeta dependencies via the \'@zeta\' alias.',
                         });
                     }
                     if ((idx = node.source.value.indexOf('environment.prod')) !== -1) {
                         context.report({
                             node,
-                            message: 'Import from \'environment\' instead of from \'environment.prod\'.'
+                            message: 'Import from \'environment\' instead of from \'environment.prod\'.',
                         });
                     }
                 },
@@ -73,24 +73,23 @@ const rules = {
                             if (baseClassArgument.value === null && superClassName !== 'XoObject') {
                                 context.report({
                                     node: decorator,
-                                    message: 'A class decorated by XoObjectClass with baseClass == null must directly extend XoObject.'
+                                    message: 'A class decorated by XoObjectClass with baseClass == null must directly extend XoObject.',
                                 });
                             }
                             if (baseClassArgument.name && baseClassArgument.name !== superClassName) {
                                 context.report({
                                     node: decorator,
-                                    message: 'A class decorated by XoObjectClass with baseClass == \'' + baseClassArgument.name + '\' must directly extend ' + baseClassArgument.name + '.'
+                                    message: 'A class decorated by XoObjectClass with baseClass == \'' + baseClassArgument.name + '\' must directly extend ' + baseClassArgument.name + '.',
                                 });
                             }
                         }
                         if (node.id && !node.id.name.startsWith('Xo')) {
                             context.report({
                                 node,
-                                message: 'The name of a class decorated by XoObjectClass must start with \'Xo\'.'
+                                message: 'The name of a class decorated by XoObjectClass must start with \'Xo\'.',
                             });
                         }
-                    }
-                    else if ((decorator = getDecorator(node, XO_ARRAY_DECORATOR_NAME))) {
+                    } else if ((decorator = getDecorator(node, XO_ARRAY_DECORATOR_NAME))) {
                         decoratorClass = XO_ARRAY_DECORATOR_NAME;
                         const superTypeParameter = node.superTypeParameters
                             ? node.superTypeParameters.params[0]
@@ -98,7 +97,7 @@ const rules = {
                         if (!superTypeParameter) {
                             context.report({
                                 node,
-                                message: 'A class decorated by XoArrayClass must have a super type parameter.'
+                                message: 'A class decorated by XoArrayClass must have a super type parameter.',
                             });
                         } else if (node.id) {
                             const className = node.id.name;
@@ -113,7 +112,7 @@ const rules = {
                                 (!typeParameterConstraintName && !className.startsWith(superTypeParameterName))) {
                                 context.report({
                                     node,
-                                    message: 'The name of a class decorated by XoArrayClass must start with the name of its super type parameter.'
+                                    message: 'The name of a class decorated by XoArrayClass must start with the name of its super type parameter.',
                                 });
                             }
                         }
@@ -142,19 +141,19 @@ const rules = {
                                 if (propertyClassArgument && propertyClassArgument.name !== typeName && propertyClassArgument.name !== calleeName) {
                                     context.report({
                                         node,
-                                        message: 'An non-transient XoProperty with the decorator argument \'' + propertyClassArgument.name + '\' must be of the same type.'
+                                        message: 'An non-transient XoProperty with the decorator argument \'' + propertyClassArgument.name + '\' must be of the same type.',
                                     });
                                 } else {
                                     if (typeName && !isXoClass(typeName) && (!propertyClassArgument || typeName !== propertyClassArgument.name)) {
                                         context.report({
                                             node,
-                                            message: 'An non-transient XoProperty of type \'' + typeName + '\' must call the decorator with the same type.'
+                                            message: 'An non-transient XoProperty of type \'' + typeName + '\' must call the decorator with the same type.',
                                         });
                                     }
                                     if (calleeName && !isXoClass(calleeName) && (!propertyClassArgument || calleeName !== propertyClassArgument.name)) {
                                         context.report({
                                             node,
-                                            message: 'An non-transient XoProperty initialized with a new instance of \'' + calleeName + '\' must call the decorator with the same type.'
+                                            message: 'An non-transient XoProperty initialized with a new instance of \'' + calleeName + '\' must call the decorator with the same type.',
                                         });
                                     }
                                 }
@@ -162,7 +161,7 @@ const rules = {
                             if (node.decorators.indexOf(propertyDecorator) !== 0) {
                                 context.report({
                                     node: propertyDecorator,
-                                    message: 'The XoProperty decorator must be the first decorator in the chain.'
+                                    message: 'The XoProperty decorator must be the first decorator in the chain.',
                                 });
                             }
                         }
@@ -175,7 +174,7 @@ const rules = {
                         if (!param || !param.optional || param.name !== '_ident' || param.typeAnnotation.typeAnnotation.type !== 'TSStringKeyword') {
                             context.report({
                                 node,
-                                message: 'A constructor of a class decorated by ' + decoratorClass + ' must have \'_ident?: string\' as its first argument.'
+                                message: 'A constructor of a class decorated by ' + decoratorClass + ' must have \'_ident?: string\' as its first argument.',
                             });
                         }
                     }
@@ -191,18 +190,18 @@ const rules = {
                         if (!arg || arg.name !== '_ident') {
                             context.report({
                                 node,
-                                message: 'A constructor of a class decorated by ' + decoratorClass + ' must call super with \'_ident\' as its first argument.'
+                                message: 'A constructor of a class decorated by ' + decoratorClass + ' must call super with \'_ident\' as its first argument.',
                             });
                         }
                     }
-                }
+                },
             };
-        }
-    }
+        },
+    },
 };
 
 
-// eslint-disable-next-line no-undef
+
 module.exports = {
-    rules
+    rules,
 };

@@ -19,7 +19,7 @@ import { Type } from '@angular/core';
 
 import { Observable, of, Subject } from 'rxjs';
 import { Box2, BufferGeometry, Shape, ShapeGeometry, Vector2 } from 'three';
-import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 
 
 export enum XcWebGLFontAlignment {
