@@ -124,4 +124,9 @@ export function RedirectGuardConfigProvider(defaultRedirectUrl: string) {
 }
 
 
+@Component({
+    selector: 'redirect',
+    standalone: true,
+    template: '',
+})
 export class RedirectComponent { }
