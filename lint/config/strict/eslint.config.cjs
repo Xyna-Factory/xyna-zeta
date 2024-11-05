@@ -1,4 +1,4 @@
-const baseConfig = require('../base/eslint.config');
+const baseConfig = require('../base/eslint.config.cjs');
 
 const combinedConfig = {
   ...baseConfig,
@@ -19,7 +19,13 @@ const combinedConfig = {
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/README.md#extension-rules
     // --------------------------------------------------------------------------------------------------------------------------------
     "no-multi-spaces": "error",
-    "comma-dangle": ["warn", "always-multiline"],
+    'comma-dangle': ['warn', {
+      arrays: 'always-multiline',
+      objects: 'always-multiline',
+      imports: 'always-multiline',
+      exports: 'always-multiline',
+      functions: 'ignore',
+    }],
     "comma-spacing": ["warn", { "before": false, "after": true }],
     "indent": "off", // switch off default indent
     // Entferne die nicht vorhandene Regel und verwende die allgemeine `indent`-Regel
