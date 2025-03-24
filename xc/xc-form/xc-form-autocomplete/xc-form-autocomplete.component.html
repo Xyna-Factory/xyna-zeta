@@ -65,7 +65,6 @@
     @if (suffixVisible && !readonly) {
       <mat-icon
         matSuffix
-        *ngIf="suffixVisible && !readonly"
         (mousedown)="suffixMouseDown($event)"
         (click)="suffixClick($event)"
       >{{suffixContent}}</mat-icon>
