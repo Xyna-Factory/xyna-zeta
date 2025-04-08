@@ -37,7 +37,6 @@
     @if (suffixVisible) {
       <mat-icon
         matSuffix
-        *ngIf="suffixVisible"
         (mousedown)="suffixMouseDown($event)"
         (click)="suffixClick($event)"
         [attr.alt]="suffixContent"
