@@ -15,26 +15,29 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, HostBinding, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, HostBinding, HostListener, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatRipple } from '@angular/material/core';
 
 import { coerceBoolean } from '../../base';
-import { I18nService } from '../../i18n';
-import { ATTRIBUTE_ARIALABEL } from '../shared/xc-i18n-attributes';
+import { I18nService, LocaleService } from '../../i18n';
+import { ATTRIBUTE_ARIALABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
+import { Subscription } from 'rxjs';
 
 
 @Component({
     template: '',
     standalone: false
 })
-export class XcButtonBaseComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
+export class XcButtonBaseComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
 
-    private _ariaLabel: string;
+    protected _ariaLabel: KeyTranslationPair = {key: '', translated: ''};
     protected _tabDisabled = false;
     protected _disabled = false;
     protected _busy = false;
     protected _focusInitial = false;
+
+    protected subs: Subscription[] = [];
 
     @Input()
     type = 'button';
@@ -49,6 +52,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
     i18nContext: string;
 
+    protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
     constructor(protected elementRef: ElementRef, protected readonly i18n: I18nService) {
         super();
@@ -62,7 +66,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
 
     protected setAriaLabel(value: string) {
-        this._ariaLabel = value;
+        this._ariaLabel.key = value;
     }
 
 
@@ -72,17 +76,24 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     }
 
 
+    ngOnDestroy(): void {
+        this.subs.forEach(sub => sub.unsubscribe());
+    }
+
+
     ngAfterContentInit() {
         this.i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');
-        if (this.ariaLabel) {
-            this.translate(ATTRIBUTE_ARIALABEL);
-        }
+        this.subs.push(this.localeService.languageChange.subscribe(() => {
+            if (this._ariaLabel.key) {
+                this.translate(ATTRIBUTE_ARIALABEL);
+            }
+        }));
     }
 
 
     protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]) {
-            this[attribute] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute] : this[attribute]);
+        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
+            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
         }
     }
 
@@ -141,7 +152,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
 
     get ariaLabel(): string {
-        return this._ariaLabel;
+        return this._ariaLabel.translated;
     }
 
 

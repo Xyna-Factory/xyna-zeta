@@ -15,14 +15,15 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 
 import { coerceBoolean } from '../../../base';
 import { I18nService, LocaleService } from '../../../i18n';
-import { ATTRIBUTE_ARIALABEL, ATTRIBUTE_ICONTOOLTIP, ATTRIBUTE_LABEL, ATTRIBUTE_PLACEHOLDER } from '../../../xc/shared/xc-i18n-attributes';
+import { ATTRIBUTE_ARIALABEL, ATTRIBUTE_ICONTOOLTIP, ATTRIBUTE_LABEL, ATTRIBUTE_PLACEHOLDER, KeyTranslationPair } from '../../../xc/shared/xc-i18n-attributes';
 import { xcFormTranslations_deDE } from '../locale/xc-translations.de-DE';
 import { xcFormTranslations_enUS } from '../locale/xc-translations.en-US';
+import { Subscription } from 'rxjs';
 
 
 export enum FloatStyle {
@@ -36,13 +37,15 @@ export enum FloatStyle {
     template: '',
     standalone: false
 })
-export class XcFormComponent implements AfterContentInit {
+export class XcFormComponent implements AfterContentInit, OnDestroy {
 
     protected _compact = false;
     protected _semiCompact = false;
-    protected _label = '';
-    protected _iconTooltip = '';
-    protected _ariaLabel = '';
+    protected _label: KeyTranslationPair = {key: '', translated: ''};
+    protected _iconTooltip: KeyTranslationPair = {key: '', translated: ''};
+    protected _ariaLabel: KeyTranslationPair = {key: '', translated: ''};
+
+    protected subs: Subscription[] = [];
 
     @Input('xc-form-field-floatlabel')
     floatLabel: FloatStyle = FloatStyle.always;
@@ -52,37 +55,37 @@ export class XcFormComponent implements AfterContentInit {
 
     @Input()
     set label(value: string) {
-        this._label = value;
+        this._label.key = value;
         this.translate(ATTRIBUTE_LABEL);
     }
 
 
     get label(): string {
-        return this._label;
+        return this._label.translated;
     }
 
 
     @Input()
     set iconTooltip(value: string) {
-        this._iconTooltip = value;
+        this._iconTooltip.key = value;
         this.translate(ATTRIBUTE_ICONTOOLTIP);
     }
 
 
     get iconTooltip(): string {
-        return this._iconTooltip;
+        return this._iconTooltip.translated;
     }
 
 
     @Input('xc-form-field-aria-label')
     set ariaLabel(value: string) {
-        this._ariaLabel = value;
+        this._ariaLabel.key = value;
         this.translate(ATTRIBUTE_ARIALABEL);
     }
 
 
     get ariaLabel(): string {
-        return this._ariaLabel || this.label;
+        return this._ariaLabel.translated || this.label;
     }
 
 
@@ -103,28 +106,36 @@ export class XcFormComponent implements AfterContentInit {
         return !this.label || this.floatLabel === FloatStyle.never;
     }
 
+    protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
     constructor(protected readonly element: ElementRef<HTMLElement>, protected readonly i18n: I18nService) {
     }
 
 
+    ngOnDestroy(): void {
+        this.subs.forEach(sub => sub.unsubscribe());
+    }
+
+
     ngAfterContentInit() {
         this.i18nContext = this.element.nativeElement.getAttribute('xc-i18n');
-        if (this.label) {
-            this.translate(ATTRIBUTE_LABEL);
-        }
-        if (this.ariaLabel) {
-            this.translate(ATTRIBUTE_ARIALABEL);
-        }
-        if (this.iconTooltip) {
-            this.translate(ATTRIBUTE_ICONTOOLTIP);
-        }
+        this.subs.push(this.localeService.languageChange.subscribe(() => {
+            if (this._label.key) {
+                this.translate(ATTRIBUTE_LABEL);
+            }
+            if (this._ariaLabel.key) {
+                this.translate(ATTRIBUTE_ARIALABEL);
+            }
+            if (this._iconTooltip.key) {
+                this.translate(ATTRIBUTE_ICONTOOLTIP);
+            }
+        }));
     }
 
 
     protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]) {
-            this[attribute] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute] : this[attribute]);
+        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
+            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
         }
     }
 }
@@ -139,7 +150,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     protected _indicateChanges = false;
     protected _readonly = false;
-    protected _placeholder = '';
+    protected _placeholder: KeyTranslationPair = {key: '', translated: ''};
 
     readonly formControl = new FormControl();
 
@@ -150,11 +161,11 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     readonly valueKeydown = new EventEmitter<KeyboardEvent>();
 
     @Output()
-     
+
     readonly focus = new EventEmitter<FocusEvent>();
 
     @Output()
-     
+
     readonly blur = new EventEmitter<FocusEvent>();
 
     @Input('xc-form-field-errorfunc')
@@ -225,14 +236,14 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     @Input()
     set placeholder(value: string) {
-        this._placeholder = value;
+        this._placeholder.key = value;
         this.translate(ATTRIBUTE_PLACEHOLDER);
     }
 
 
     get placeholder(): string {
         // space needed for style "align-items: baseline;" in class ".items-row" for proper alignment when text is missing
-        return this._placeholder || ' ';
+        return this._placeholder.translated || ' ';
     }
 
 
@@ -280,9 +291,11 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     ngAfterContentInit() {
         super.ngAfterContentInit();
 
-        if (this.placeholder) {
-            this.translate(ATTRIBUTE_PLACEHOLDER);
-        }
+        this.subs.push(this.localeService.languageChange.subscribe(() => {
+            if (this._placeholder.key) {
+                this.translate(ATTRIBUTE_PLACEHOLDER);
+            }
+        }));
     }
 
 

@@ -15,15 +15,16 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 
 import { XcI18nTranslateDirective } from '@zeta/i18n/i18n.directive';
 
 import { coerceBoolean } from '../../base';
-import { I18nService } from '../../i18n';
-import { ATTRIBUTE_LABEL } from '../shared/xc-i18n-attributes';
+import { I18nService, LocaleService } from '../../i18n';
+import { ATTRIBUTE_LABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -33,7 +34,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
     providers: [XcI18nTranslateDirective],
     standalone: false
 })
-export class XcCheckboxComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
+export class XcCheckboxComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
 
     private static uniqueId = 0;
     private readonly _labelRef: string;
@@ -42,16 +43,19 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     protected _indeterminate = false;
     protected _disabled = false;
     protected _readonly = false;
-    protected _label = '';
+    protected _label: KeyTranslationPair = {key: '', translated: ''};
+
+    protected subs: Subscription[] = [];
 
     @Input()
     set label(value: string) {
-        this._label = value;
+        this._label.key = value;
         this.translate(ATTRIBUTE_LABEL);
     }
 
+
     get label(): string {
-        return this._label;
+        return this._label.translated;
     }
 
     @Output()
@@ -60,6 +64,7 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
 
     i18nContext: string;
 
+    protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
     constructor(private readonly elementRef: ElementRef, protected readonly i18n: I18nService) {
         super();
@@ -67,11 +72,18 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
 
+    ngOnDestroy(): void {
+        this.subs.forEach(sub => sub.unsubscribe());
+    }
+
+
     ngAfterContentInit(): void {
         this.i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');
-        if (this.label) {
-            this.translate(ATTRIBUTE_LABEL);
-        }
+        this.subs.push(this.localeService.languageChange.subscribe(() => {
+            if (this._label.key) {
+                this.translate(ATTRIBUTE_LABEL);
+            }
+        }));
     }
 
 
@@ -84,8 +96,8 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
 
 
     protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]) {
-            this[attribute] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute] : this[attribute]);
+        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
+            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
         }
     }
 

@@ -23,3 +23,8 @@ export const ATTRIBUTE_PLACEHOLDER = '_placeholder';
 export const ATTRIBUTE_ICONTOOLTIP = '_iconTooltip';
 export const ATTRIBUTE_TOOLTIP = '_tooltip';
 export const ATTRIBUTE_VALUE = '_value';
+
+export interface KeyTranslationPair {
+    key: string,
+    translated: string
+}
