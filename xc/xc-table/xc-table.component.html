@@ -40,7 +40,7 @@
     </td>
   </ng-container>
   <!-- Container template view of a table body row -->
-  @for (column of columns; track column; let i = $index) {
+  @for (column of columns; track i; let i = $index) {
     <ng-container [matColumnDef]="getColumnID(column)">
       <th mat-header-cell *matHeaderCellDef attr.aria-label="{{i18n.translate(column.name)}}" scope="col">
         <span mat-sort-header [disabled]="column.disableSort">{{i18n.translate(column.name) || '&nbsp;'}}</span>
