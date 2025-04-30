@@ -16,6 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { ValidatorFn } from '@angular/forms';
+
 import { combineLatest, merge, Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
@@ -23,9 +24,9 @@ import { Xo, XoArray, XoArrayClass, XoObject, XoObjectClass, XoProperty, XoTrans
 import { XoXPRCRuntimeContext } from '../../../../api/xo/runtime-context.model';
 import { XoTableColumnArray } from '../../../xc-table/xc-remote-table-data-source';
 import { XcTableDataSource } from '../../../xc-table/xc-table-data-source';
+import { XoDefinitionEvent } from '../xc-definition-event.service';
 import { XoBaseDefinition, XoBaseDefinitionArray, XoDefinition, XoDefinitionObserver } from './base-definition.model';
 import { XoTextItemDefinition } from './item-definition.model';
-import { XoDefinitionEvent } from '../xc-definition-event.service';
 
 
 /***********************************************
@@ -45,23 +46,37 @@ export class XoContainerDefinition extends XoBaseDefinition {
     protected afterDecode() {
         super.afterDecode();
 
-        if (this.children) {
-            this.children.data.forEach(child => child.setParent(this));
+        if (this.children?.data) {
+            this.children.data.forEach(child => {
+                if (child) {
+                    child.setParent(this);
+                }
+            });
         }
     }
 
     setChildren(children: XoBaseDefinitionArray) {
         this.clearChildren();
         this.children = children;
-        if (this.children) {
-            this.children.data.forEach(child => child.setParent(this));
+        if (this.children?.data) {
+            this.children.data.forEach(child => {
+                if (child) {
+                    child.setParent(this);
+                }
+            });
         }
     }
 
 
     setObserver(value: XoDefinitionObserver) {
         super.setObserver(value);
-        this.children.data.forEach(child => child.setObserver(value));
+        if (this.children?.data) {
+            this.children.data.forEach(child => {
+                if (child) {
+                    child.setObserver(value)
+                }
+            });
+        }
     }
 
 
