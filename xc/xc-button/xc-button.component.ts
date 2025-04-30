@@ -18,6 +18,7 @@
 import { AfterContentInit, Component, OnInit } from '@angular/core';
 
 import { XcButtonBaseComponent } from './xc-button-base.component';
+import { ATTRIBUTE_LABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
 
 
 @Component({
@@ -29,6 +30,7 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
 export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, AfterContentInit {
 
     private _translate: boolean;
+    private _label: KeyTranslationPair = { key: '', translated: ''};
 
     private element: HTMLElement;
 
@@ -40,11 +42,14 @@ export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, 
 
     ngAfterContentInit() {
         super.ngAfterContentInit();
-
-        if (this._translate) {
-            if (this.element && this.i18nContext != null) {
-                this.element.textContent = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this.element.textContent : this.element.textContent);
+        this.subs.push(this.localeService.languageChange.subscribe(() => {
+            if (this._translate && this.element && this.i18nContext !== undefined && this.i18nContext !== null) {
+                if (this._label.translated !== this.element.textContent) {
+                    this._label.key = this.element.textContent;
+                }
+                this.translate(ATTRIBUTE_LABEL);
+                this.element.textContent = this._label.translated;
             }
-        }
+        }));
     }
 }

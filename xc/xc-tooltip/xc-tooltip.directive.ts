@@ -15,13 +15,13 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, ElementRef, Input, NgZone, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, inject, Input, NgZone, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
 import { A11yService, ScreenreaderPriority } from '../../a11y';
 import { coerceBoolean, isArray, isObject, isString, retrieveFocusableElements } from '../../base';
-import { I18nService } from '../../i18n';
+import { I18nService, LocaleService } from '../../i18n';
 import { ATTRIBUTE_TOOLTIP } from '../shared/xc-i18n-attributes';
 
 
@@ -51,7 +51,9 @@ type XcPreviousTooltipPosition = 'left' | 'right' | 'above' | 'below' | 'before'
 })
 export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
-    protected _tooltip: string | TemplateRef<any> = '';
+    protected _tooltip: {key: string | TemplateRef<any>, translated: string} = {key: '', translated: ''};
+
+    protected subs: Subscription[] = [];
 
     private static activeTooltip: XcTooltipDirective;
 
@@ -108,12 +110,12 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     @Input('xc-tooltip')
     set tooltip(value: string | TemplateRef<any>) {
-        this._tooltip = value;
+        this._tooltip.key = value;
         this.translate(ATTRIBUTE_TOOLTIP);
     }
 
     get tooltip(): string | TemplateRef<any> {
-        return this._tooltip;
+        return isString(this._tooltip.key) ? this._tooltip.translated : this._tooltip.key;
     }
 
     @Input('xc-tooltip-islabel')
@@ -180,12 +182,12 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     set _xc_tooltipClass(value: string | string[] | Set<string> | { [key: string]: any }) {
         let classes: string[] = [];
         switch (true) {
-             
+
             case (isString(value)): classes.push(value as string); break;
             case (isArray(value)): classes = (value as string[]).map<string>(str => isString(str) ? str : ''); break;
             case (value instanceof Set): (value as Set<string>).forEach(str => classes.push(str)); break;
             case (isObject(value)): Object.keys(value).forEach(key => classes.push(value[key])); break;
-             
+
         }
 
         this._extraTooltipClasses = classes;
@@ -194,6 +196,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     private readonly viewContainerRef: ViewContainerRef;
 
     i18nContext: string;
+
+    protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
     constructor(
         private readonly elementRef: ElementRef,
@@ -229,8 +233,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
     protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]) {
-            this[attribute] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute] : this[attribute]);
+        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
+            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
         }
     }
 
@@ -243,9 +247,11 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit() {
         this.i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');
-        if (this.tooltip) {
-            this.translate(ATTRIBUTE_TOOLTIP);
-        }
+        this.subs.push(this.localeService.languageChange.subscribe(() => {
+            if (this._tooltip.key) {
+                this.translate(ATTRIBUTE_TOOLTIP);
+            }
+        }));
     }
 
 
@@ -326,6 +332,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
             this.focusableElement.removeEventListener('mouseleave', this.mouseleaveFn);
             this.hide();
         }
+
+        this.subs.forEach(sub => sub.unsubscribe());
     }
 
 

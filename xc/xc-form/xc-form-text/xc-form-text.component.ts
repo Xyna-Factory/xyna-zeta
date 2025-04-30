@@ -30,16 +30,16 @@ import { XcFormComponent } from '../xc-form-base/xc-form-base.component';
 })
 export class XcFormTextComponent extends XcFormComponent implements AfterContentInit {
 
-    protected _value;
+    protected _value: {key: any, translated: string} = {key: '', translated : ''}
 
     @Input()
     set value(value: any) {
-        this._value = value;
+        this._value.key = value;
         this.translate(ATTRIBUTE_VALUE);
     }
 
     get value(): any {
-        return this._value;
+        return this._value.translated || this._value.key;
     }
 
     constructor(el: ElementRef<HTMLElement>, i18n: I18nService) {
@@ -50,8 +50,10 @@ export class XcFormTextComponent extends XcFormComponent implements AfterContent
     ngAfterContentInit() {
         super.ngAfterContentInit();
 
-        if (this.value) {
-            this.translate(ATTRIBUTE_VALUE);
-        }
+        this.subs.push(this.localeService.languageChange.subscribe(() => {
+            if (this._value.key) {
+                this.translate(ATTRIBUTE_VALUE);
+            }
+        }));
     }
 }
