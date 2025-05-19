@@ -21,12 +21,11 @@
 </div>
 @if (expanded) {
   @for (childNode of (node.children | async); track childNode) {
-    <xc-tree-item
-      [node]="childNode"
+    <xc-tree-item [node]="childNode"
       (expand)="expand.emit($event)"
       [xc-tree-item-keep-breaks]="keepBreaks"
       [firstColumnWidth]="firstColumnWidth"
       (widthChange)="childWidthChange($event)"
-    ></xc-tree-item>
+     />
   }
 }

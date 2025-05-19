@@ -4,15 +4,15 @@
       <ng-template mat-tab-label>
         <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" xc-icon-size="small" [xc-tooltip]="getTooltip(item)" (mouseup)="mouseup($event, item)">{{item.name}}</xc-icon>
         @if (item.closable) {
-          <xc-icon-button xc-tooltip="{{item.closeTooltip || ('zeta.xc-tab-bar.close' | xcI18n:item.name)}}" xc-icon-name="close" xc-icon-size="small" xc-button-aria-label=" " (click)="close(item).subscribe()"></xc-icon-button>
+          <xc-icon-button xc-tooltip="{{item.closeTooltip || ('zeta.xc-tab-bar.close' | xcI18n:item.name)}}" xc-icon-name="close" xc-icon-size="small" xc-button-aria-label=" " (click)="close(item).subscribe()" />
         }
       </ng-template>
       @if (isComponentInitialized(item)) {
-        <ng-container [ngComponentOutlet]="getComponent(item)" [ngComponentOutletInjector]="getComponentInjector(item)"></ng-container>
+        <ng-container [ngComponentOutlet]="getComponent(item)" [ngComponentOutletInjector]="getComponentInjector(item)" />
       }
     </mat-tab>
   }
   @if (busy) {
-    <mat-tab aria-labelledby="busy" disabled><ng-template mat-tab-label><xc-spinner></xc-spinner></ng-template></mat-tab>
+    <mat-tab aria-labelledby="busy" disabled><ng-template mat-tab-label><xc-spinner /></ng-template></mat-tab>
   }
 </mat-tab-group>

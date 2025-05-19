@@ -5,7 +5,7 @@
       <!-- if menu item has children then code in <ng-container> -->
       <!-- if no children then code in <ng-template #template> -->
       @if (item.children?.length > 0) {
-        <xc-menu #childMenu [xc-menu-items]="item.children" (xc-menu-item-select)="selectItem($event)"></xc-menu>
+        <xc-menu #childMenu [xc-menu-items]="item.children" (xc-menu-item-select)="selectItem($event)" />
         <button mat-menu-item role="menuitem" [attr.aria-haspopup]="'true'" (click)="clickItem(item)" [disabled]="item.disabled" [xc-menu-trigger]="childMenu"
           [class.separator-below]="item.separator==='below'" [class.separator-above]="item.separator==='above'"
           >

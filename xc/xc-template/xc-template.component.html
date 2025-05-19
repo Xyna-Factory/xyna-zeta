@@ -10,15 +10,14 @@
     >{{instance}}</span>
   }
   @case (Type.XcFormTextTemplate.of(instance)) {
-    <xc-form-text
-      [label]="instance.label"
+    <xc-form-text [label]="instance.label"
       [class]="instance.stylename"
       [value]="instance.dataWrapper.value"
       [xc-form-field-aria-label]="ariaLabel"
       [xc-form-field-compact]="instance.compact"
       [xc-form-field-floatlabel]="instance.floatLabel"
       xc-tooltip="{{instance.tooltip}}"
-    ></xc-form-text>
+     />
   }
   <!--
   --< XcDefinitionListEntry >--
@@ -26,15 +25,13 @@
   This is why no class or tooltip is set here, because the element vanishes after unwrapping.
   -->
   @case (Type.XcDefinitionListEntryTemplate.of(instance)) {
-    <xc-definition-list-entry
-      [definitionType]="instance.label"
+    <xc-definition-list-entry [definitionType]="instance.label"
       [definitionData]="instance.data"
       xc-unwrap
-    ></xc-definition-list-entry>
+     />
   }
   @case (Type.XcFormAutocompleteTemplate.of(instance)) {
-    <xc-form-autocomplete
-      [label]="instance.label"
+    <xc-form-autocomplete [label]="instance.label"
       [placeholder]="instance.placeholder"
       [disabled]="instance.disabled || disabled"
       [class]="instance.stylename"
@@ -51,11 +48,10 @@
       [xc-form-autocomplete-asinput]="instance.asInput"
       [xc-form-autocomplete-asdropdown]="instance.asDropdown"
       xc-tooltip="{{instance.tooltip}}"
-    ></xc-form-autocomplete>
+     />
   }
   @case (Type.XcFormInputTemplate.of(instance)) {
-    <xc-form-input
-      [label]="instance.label"
+    <xc-form-input [label]="instance.label"
       [placeholder]="instance.placeholder"
       [disabled]="instance.disabled || disabled"
       [class]="instance.stylename"
@@ -71,11 +67,10 @@
       [xc-form-field-callback]="instance.callback"
       xc-tooltip="{{instance.tooltip}}"
       [iconTooltip]="toolTip"
-    ></xc-form-input>
+     />
   }
   @case (Type.XcFormTextAreaTemplate.of(instance)) {
-    <xc-form-textarea
-      [label]="instance.label"
+    <xc-form-textarea [label]="instance.label"
       [placeholder]="instance.placeholder"
       [disabled]="instance.disabled || disabled"
       [class]="instance.stylename"
@@ -89,11 +84,10 @@
       [xc-form-field-callback]="instance.callback"
       [xc-form-textarea-lines]="instance.lines"
       xc-tooltip="{{instance.tooltip}}"
-    ></xc-form-textarea>
+     />
   }
   @case (Type.XcCheckboxTemplate.of(instance)) {
-    <xc-checkbox
-      [label]="instance.label"
+    <xc-checkbox [label]="instance.label"
       [color]="instance.color"
       [disabled]="instance.disabled || disabled"
       [class]="instance.stylename"
@@ -101,7 +95,7 @@
       [indeterminate]="instance.indeterminate"
       xc-tooltip="{{instance.tooltip}}"
       [attr.aria-label]="ariaLabel"
-    ></xc-checkbox>
+     />
   }
   @case (Type.XcButtonTemplate.of(instance)) {
     <xc-button
@@ -115,8 +109,7 @@
       ><xc-icon [color]="instance.color" [xc-icon-name]="instance.iconName" [xc-icon-style]="instance.iconStyle" [xc-icon-size]="instance.iconSize">{{instance.label}}</xc-icon></xc-button>
     }
     @case (Type.XcIconButtonTemplate.of(instance)) {
-      <xc-icon-button
-        [color]="instance.color"
+      <xc-icon-button [color]="instance.color"
         [disabled]="instance.disabled || disabled || instance.busy"
         [busy]="instance.busy"
         [class]="instance.stylename"
@@ -126,12 +119,11 @@
         xc-tooltip="{{instance.tooltip}}"
         xc-button-aria-label="{{ariaLabel + (instance.label ? ' - ' + instance.label : '')}}"
         (click)="instance.action()"
-      ></xc-icon-button>
+       />
     }
     @case (Type.XcComponentTemplate.of(instance)) {
-      <ng-container
-        [ngComponentOutlet]="instance.component"
+      <ng-container [ngComponentOutlet]="instance.component"
         [ngComponentOutletInjector]="instance.getComponentInjector(injector)"
-      ></ng-container>
+       />
     }
   }
