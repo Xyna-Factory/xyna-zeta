@@ -376,8 +376,8 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
                         columns: this.lastTableInfo?.columns?.data.map(column => column.asXcTableColumn) ?? []
                     };
             })
-        ).subscribe(
-            result => {
+        ).subscribe({
+            next: result => {
                 if (result.output?.length > 1) {
                     // set table info
                     const tableInfo = result.output[0] as XoTableInfo;
@@ -415,8 +415,8 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
                     this.errorSubject.next(result);
                 }
             },
-            error => this.errorSubject.error(error)
-        );
+            error: error => this.errorSubject.error(error)
+        });
 
         // start Count-Workflow if defined
         if (this.totalCountOrderType) {

@@ -119,10 +119,10 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
             this.dataSource.countChange.subscribe(() => this.cdr.detectChanges())
         );
 
-        this.dataSource.error.subscribe(
-            result => console.error('XcRemoteTableDataSource error StartOrderResult: ', result),
-            error => console.error('XcRemoteTableDataSource error string: ', error)
-        );
+        this.dataSource.error.subscribe({
+            next: result => console.error('XcRemoteTableDataSource error StartOrderResult: ', result),
+            error: error => console.error('XcRemoteTableDataSource error string: ', error)
+        });
 
         // a table-definition has to know its data source
         this.tableDefinition.tableDataSource = this.dataSource;

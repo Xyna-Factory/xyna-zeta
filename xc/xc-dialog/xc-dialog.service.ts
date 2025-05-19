@@ -19,10 +19,14 @@ import { ComponentType } from '@angular/cdk/portal';
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 
-import { filter, mapTo } from 'rxjs/operators';
+import { Xo } from '@zeta/api';
+
+import { filter, map } from 'rxjs/operators';
 
 import { AuthEventService } from '../../auth/auth-event.service';
 import { I18nService } from '../../i18n';
+import { XcDialogDefinitionComponent } from '../xc-form/definitions/xc-dialog-definition/xc-dialog-definition.component';
+import { XoDefinition, XoDefinitionBundle } from '../xc-form/definitions/xo/base-definition.model';
 import { xcDialogTranslations_deDE } from './locale/xc-dialog-translations.de-DE';
 import { xcDialogTranslations_enUS } from './locale/xc-dialog-translations.en-US';
 import { XcAboutDialogComponent, XcAboutDialogConfig } from './xc-about-dialog.component';
@@ -31,9 +35,6 @@ import { XcDialogOptions } from './xc-dialog-wrapper.component';
 import { XcDialogComponent } from './xc-dialog.component';
 import { XcInfoDialogComponent } from './xc-info-dialog.component';
 import { XcMessageDialogComponent } from './xc-message-dialog.component';
-import { XoDefinition, XoDefinitionBundle } from '../xc-form/definitions/xo/base-definition.model';
-import { Xo } from '@zeta/api';
-import { XcDialogDefinitionComponent } from '../xc-form/definitions/xc-dialog-definition/xc-dialog-definition.component';
 
 
 @Injectable()
@@ -85,7 +86,8 @@ export class XcDialogService {
 
         // subscribe to closed event in order to remove ref
         dialogRef.afterClosed().pipe(
-            mapTo(this.dialogRefStack.indexOf(dialogRef)), filter(idx => idx !== -1)
+            map(() => this.dialogRefStack.indexOf(dialogRef)),
+            filter(idx => idx !== -1)
         ).subscribe(
             idx => this.dialogRefStack.splice(idx, 1)
         );
