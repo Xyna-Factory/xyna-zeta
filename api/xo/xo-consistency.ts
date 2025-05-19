@@ -43,8 +43,8 @@ export class XoConsistencyCheck {
                 // get structure for each class separately, because if a single datatype does not exist on the server, the whole request will fail
                 .forEach(clazz => apiService.getStructure(environment.zeta.xo.runtimeContext, [clazz])
                     .get(clazz)
-                    .subscribe(
-                        structure => {
+                    .subscribe({
+                        next: structure => {
                             const instance = new clazz();
                             Array.from(instance.properties.keys())
                                 .filter(propertyKey => !instance.transientProperties.has(propertyKey))
@@ -69,8 +69,8 @@ export class XoConsistencyCheck {
                                     }
                                 });
                         },
-                        () => XoConsistencyCheck.messageWarning(clazz, 'missing on the server!')
-                    )
+                        error: () => XoConsistencyCheck.messageWarning(clazz, 'missing on the server!')
+                    })
                 );
         }
     }

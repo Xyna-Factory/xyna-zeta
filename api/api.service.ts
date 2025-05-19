@@ -247,10 +247,10 @@ export class ApiService {
 
     constructor(private readonly http: HttpClient) {
         // create dummy instances to prevent pruning during build
-         
+
         const workspace = new XoWorkspace();
         const application = new XoApplication();
-         
+
     }
 
 
@@ -326,9 +326,9 @@ export class ApiService {
                 finalize(() => uncachedDescribers.forEach(describer =>
                     resultMapGetter(describer).complete())
                 )
-            ).subscribe(
+            ).subscribe({
                 // inform subscribers of new data (and replace subject in cache with raw data)
-                data => uncachedDescribers.forEach(describer => {
+                next: data => uncachedDescribers.forEach(describer => {
                     const fqnString = describer.fqn.encode();
                     if (cache) {
                         cache.set(rtc, describer, data[fqnString]);
@@ -336,10 +336,10 @@ export class ApiService {
                     resultMapGetter(describer).next(data[fqnString]);
                 }),
                 // inform subscribers of error
-                error => uncachedDescribers.forEach(describer => {
+                error: error => uncachedDescribers.forEach(describer => {
                     resultMapGetter(describer).error(error);
                 })
-            );
+            });
         }
         return resultMap;
     }
@@ -613,14 +613,15 @@ export class ApiService {
     upload(file?: File, host?: string): Observable<XoManagedFileID> {
         const subj = new Subject<XoManagedFileID>();
 
-        this.uploadFileToXyna(file, host).subscribe(result => {
-            if (result.status === FileUploadStatus.UploadDone) {
-                subj.next(result.fileId);
-            }
-        },
-            error => subj.error(error),
-            () => subj.complete()
-        );
+        this.uploadFileToXyna(file, host).subscribe({
+            next: result => {
+                if (result.status === FileUploadStatus.UploadDone) {
+                    subj.next(result.fileId);
+                }
+            },
+            error: error => subj.error(error),
+            complete: () => subj.complete()
+        });
 
         return subj.asObservable();
     }
@@ -630,151 +631,151 @@ export class ApiService {
      * @param file - uploads the given file to the io end point of xyna blackedition
      * @returns Observable<FileResult> - returns the FileResult with the ManagedFileId via an Observable
      */
-    private uploadFileToXyna(file?: File, host?: string): Observable<FileResult> {
+    private uploadFileToXyna(file ?: File, host ?: string): Observable < FileResult > {
 
-        const uploadUrl: string = (host ? host + '/' : environment.zeta.url) + 'upload';
+    const uploadUrl: string = (host ? host + '/' : environment.zeta.url) + 'upload';
 
-        const subject: Subject<FileResult> = new Subject();
-        let fileName = '';
-
-        /**
-         * selected file was sucessfully uploaded and we start the workflow
-         * @param {ProgressEvent} - EVENT
-         */
-        const uploadHandler = event => {
-            const result = event.currentTarget.responseText;
-            const match = result.match(new RegExp('stored with id (\\d*)'));
-            if (match && match.length > 1) {
-                const mfid = new XoManagedFileID();
-                mfid.iD = match[1];
-                subject.next(new FileResult(FileUploadStatus.UploadDone, mfid, fileName));
-                subject.complete();
-            } else {
-                const err = 'could not extract managed file id from server response, which was \'' + result + '\'';
-                subject.error(err);
-                subject.complete();
-            }
-        };
-
-        /**
-         * error with the upload
-         */
-        const uploadErrorHandler = event => {
-            subject.error('upload error');
-            subject.complete();
-        };
-
-        const startXHR = (chosenFile: File) => {
-            // Dateiname merken
-            fileName = chosenFile.name;
-
-            subject.next(new FileResult(FileUploadStatus.ChoseFile));
-
-            const fd = new FormData();
-            fd.append('hint', 'File:none:upload');
-            fd.append('file', chosenFile);
-
-            const xhr = new XMLHttpRequest();
-            xhr.onload = uploadHandler;
-            xhr.onerror = uploadErrorHandler;
-
-            // as long as the project runs locally, we need to hardcode the host name
-            // we can not use relative urls
-            xhr.open('POST', uploadUrl);
-            xhr.setRequestHeader('Access-Control-Allow-Headers', '*');
-            xhr.send(fd); // starts the "upload"
-        };
-
-        if (file) {
-            startXHR(file);
-        } else {
-            this.browse().subscribe(
-                chosenFile => {
-                    startXHR(chosenFile);
-                }
-            );
-        }
-
-        return subject.asObservable();
-    }
-
+    const subject: Subject<FileResult> = new Subject();
+    let fileName = '';
 
     /**
-     * Note: Because the cancelation of the native file selection dialog is undetectable
-     * there is no guarantee that the Observable completes
-     * @param timeout - (optional) time in milliseconds, which completes the observable
+     * selected file was sucessfully uploaded and we start the workflow
+     * @param {ProgressEvent} - EVENT
      */
-    browse(timeout?: number): Observable<File> {
-        const subject: Subject<File> = new Subject();
-        const fileInput = document.createElement('INPUT');
-
-        const changeHandler = function(event) {
-            document.body.removeChild(fileInput);
-
-            // selects the first file even if more than one file was selected
-            const file = event.currentTarget.files[0];
-            subject.next(file);
+    const uploadHandler = event => {
+        const result = event.currentTarget.responseText;
+        const match = result.match(new RegExp('stored with id (\\d*)'));
+        if (match && match.length > 1) {
+            const mfid = new XoManagedFileID();
+            mfid.iD = match[1];
+            subject.next(new FileResult(FileUploadStatus.UploadDone, mfid, fileName));
             subject.complete();
-        };
-
-        (fileInput as HTMLInputElement).type = 'file';
-        fileInput.onchange = changeHandler;
-        fileInput.style.display = 'none';
-        document.body.appendChild(fileInput);
-
-        // opens an operating system file select dialog
-        fileInput.click();
-
-        if (isNumber(timeout)) {
-            setTimeout(() => {
-                subject.error('Timeout');
-                subject.complete();
-            }, timeout);
+        } else {
+            const err = 'could not extract managed file id from server response, which was \'' + result + '\'';
+            subject.error(err);
+            subject.complete();
         }
+    };
+
+    /**
+     * error with the upload
+     */
+    const uploadErrorHandler = event => {
+        subject.error('upload error');
+        subject.complete();
+    };
+
+    const startXHR = (chosenFile: File) => {
+        // Dateiname merken
+        fileName = chosenFile.name;
+
+        subject.next(new FileResult(FileUploadStatus.ChoseFile));
+
+        const fd = new FormData();
+        fd.append('hint', 'File:none:upload');
+        fd.append('file', chosenFile);
+
+        const xhr = new XMLHttpRequest();
+        xhr.onload = uploadHandler;
+        xhr.onerror = uploadErrorHandler;
+
+        // as long as the project runs locally, we need to hardcode the host name
+        // we can not use relative urls
+        xhr.open('POST', uploadUrl);
+        xhr.setRequestHeader('Access-Control-Allow-Headers', '*');
+        xhr.send(fd); // starts the "upload"
+    };
+
+    if(file) {
+        startXHR(file);
+    } else {
+        this.browse().subscribe(
+            chosenFile => {
+                startXHR(chosenFile);
+            }
+        );
+    }
 
         return subject.asObservable();
+}
+
+
+/**
+ * Note: Because the cancelation of the native file selection dialog is undetectable
+ * there is no guarantee that the Observable completes
+ * @param timeout - (optional) time in milliseconds, which completes the observable
+ */
+browse(timeout ?: number): Observable < File > {
+    const subject: Subject<File> = new Subject();
+    const fileInput = document.createElement('INPUT');
+
+    const changeHandler = function (event) {
+        document.body.removeChild(fileInput);
+
+        // selects the first file even if more than one file was selected
+        const file = event.currentTarget.files[0];
+        subject.next(file);
+        subject.complete();
+    };
+
+        (fileInput as HTMLInputElement).type = 'file';
+fileInput.onchange = changeHandler;
+fileInput.style.display = 'none';
+document.body.appendChild(fileInput);
+
+// opens an operating system file select dialog
+fileInput.click();
+
+if (isNumber(timeout)) {
+    setTimeout(() => {
+        subject.error('Timeout');
+        subject.complete();
+    }, timeout);
+}
+
+return subject.asObservable();
     }
 
 
-    download(managedFileId: XoManagedFileID, host?: string) {
-        const subdirectory = getSubdirectory(environment.zeta.url);
-        window.location.href = (host || '') + '/' + subdirectory + 'download?p0=' + managedFileId.iD;
-    }
+download(managedFileId: XoManagedFileID, host ?: string) {
+    const subdirectory = getSubdirectory(environment.zeta.url);
+    window.location.href = (host || '') + '/' + subdirectory + 'download?p0=' + managedFileId.iD;
+}
 
 
     // =================================================================================================================
     // Encryption
     // =================================================================================================================
 
-    protected crypt(data: XoEncryptionData, endpoint: string): Observable<XoEncryptionData> {
-        return this.http.post(endpoint, data.encode()).pipe(
-            map((result: XoJson) =>
-                new XoEncryptionData().decode(result)
-            ),
-            catchError(error => {
-                console.log(`Error during /${endpoint} of "${JSON.stringify(data.encode())}": ${error}`);
-                return of(XoEncryptionData.withValues([], false));
-            })
-        );
-    }
+    protected crypt(data: XoEncryptionData, endpoint: string): Observable < XoEncryptionData > {
+    return this.http.post(endpoint, data.encode()).pipe(
+        map((result: XoJson) =>
+            new XoEncryptionData().decode(result)
+        ),
+        catchError(error => {
+            console.log(`Error during /${endpoint} of "${JSON.stringify(data.encode())}": ${error}`);
+            return of(XoEncryptionData.withValues([], false));
+        })
+    );
+}
 
 
-    /**
-     * Encode/encrypt strings
-     * @param values strings to encode
-     * @returns encoded strings
-     */
-    encode(values: string[]): Observable<string[]> {
-        return this.crypt(XoEncryptionData.withValues(values, false), 'encode').pipe(map(encryptionData => encryptionData.values));
-    }
+/**
+ * Encode/encrypt strings
+ * @param values strings to encode
+ * @returns encoded strings
+ */
+encode(values: string[]): Observable < string[] > {
+    return this.crypt(XoEncryptionData.withValues(values, false), 'encode').pipe(map(encryptionData => encryptionData.values));
+}
 
 
-    /**
-     * Decode/decrypt strings
-     * @param values strings to decode
-     * @returns decoded strings
-     */
-    decode(values: string[]): Observable<string[]> {
-        return this.crypt(XoEncryptionData.withValues(values, true), 'decode').pipe(map(encryptionData => encryptionData.values));
-    }
+/**
+ * Decode/decrypt strings
+ * @param values strings to decode
+ * @returns decoded strings
+ */
+decode(values: string[]): Observable < string[] > {
+    return this.crypt(XoEncryptionData.withValues(values, true), 'decode').pipe(map(encryptionData => encryptionData.values));
+}
 }
