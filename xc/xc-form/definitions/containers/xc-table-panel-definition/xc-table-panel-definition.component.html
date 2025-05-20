@@ -8,13 +8,12 @@
       <xc-button
         (click)="clearFilters()"
       >{{'clear-filters' | xcI18n}}</xc-button>
-      <xc-icon-button
-        xc-icon-name="reload"
+      <xc-icon-button xc-icon-name="reload"
         xc-icon-size="small"
         (click)="refresh()"
         xc-tooltip="{{'refresh' | xcI18n}}"
         xc-button-aria-label="{{'refresh' | xcI18n}}"
-      ></xc-icon-button>
+       />
     </ng-container>
     <section additionalContentItems class="stretch-full-height scroll">
       <xc-table

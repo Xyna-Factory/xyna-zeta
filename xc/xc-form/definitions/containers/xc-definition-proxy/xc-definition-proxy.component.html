@@ -1,64 +1,57 @@
 @if (!hidden) {
   @switch (true) {
     @case (isType(PredefinedTablePanelDefinition)) {
-      <xc-predefined-table-panel-definition
-        [xc-table-definition]="baseDefinition"
+      <xc-predefined-table-panel-definition [xc-table-definition]="baseDefinition"
         [xc-base-definition-data]="definitionData"
         (xc-definition-closed)="closed.emit()"
         [class]="baseDefinition.style"
         class="container"
-      ></xc-predefined-table-panel-definition>
+       />
     }
     @case (isType(TablePanelDefinition)) {
-      <xc-table-panel-definition
-        [xc-table-definition]="baseDefinition"
+      <xc-table-panel-definition [xc-table-definition]="baseDefinition"
         [xc-base-definition-data]="definitionData"
         (xc-definition-closed)="closed.emit()"
         [class]="baseDefinition.style"
         class="container"
-      ></xc-table-panel-definition>
+       />
     }
     @case (isType(TreePanelDefinition)) {
-      <xc-tree-panel-definition
-        [xc-tree-definition]="baseDefinition"
+      <xc-tree-panel-definition [xc-tree-definition]="baseDefinition"
         [xc-base-definition-data]="definitionData"
         (xc-definition-closed)="closed.emit()"
         [class]="baseDefinition.style"
         class="container"
-      ></xc-tree-panel-definition>
+       />
     }
     @case (isType(PanelDefinition)) {
-      <xc-form-panel-definition
-        [xc-panel-definition]="baseDefinition"
+      <xc-form-panel-definition [xc-panel-definition]="baseDefinition"
         [xc-base-definition-data]="definitionData"
         (xc-definition-closed)="closed.emit()"
         [class]="baseDefinition.style"
         class="container"
-      ></xc-form-panel-definition>
+       />
     }
     @case (isType(DefinitionListDefinition)) {
-      <xc-definition-list-definition
-        [xc-definition-list-definition]="baseDefinition"
+      <xc-definition-list-definition [xc-definition-list-definition]="baseDefinition"
         [xc-base-definition-data]="definitionData"
         (xc-definition-closed)="closed.emit()"
         [class]="baseDefinition.style"
         class="container"
-      ></xc-definition-list-definition>
+       />
     }
     @case (isType(FormDefinition)) {
-      <xc-form-definition
-        [xc-form-definition]="baseDefinition"
+      <xc-form-definition [xc-form-definition]="baseDefinition"
         [xc-base-definition-data]="definitionData"
         (xc-definition-closed)="closed.emit()"
         [class]="baseDefinition.style"
         class="container"
-      ></xc-form-definition>
+       />
     }
     @case (isTemplate()) {
-      <xc-template
-        [xc-template-instance]="template"
+      <xc-template [xc-template-instance]="template"
         xc-unwrap
-      ></xc-template>
+       />
     }
     @default {
       <span>

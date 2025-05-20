@@ -9,11 +9,10 @@
         xc-i18n
         (click)="clearFilters()"
       >{{ 'clear-filters' | xcI18n }}</xc-button>
-      <xc-icon-button
-        xc-icon-name="reload"
+      <xc-icon-button xc-icon-name="reload"
         xc-icon-size="small"
         (click)="refresh()"
-      ></xc-icon-button>
+       />
     </ng-container>
     <section additionalContentItems class="stretch-full-height scroll">
       <xc-table
