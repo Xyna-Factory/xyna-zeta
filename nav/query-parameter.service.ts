@@ -34,7 +34,9 @@ export enum UrlQueryParamConflictResolutionMethod {
     Replace = 1, None
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class QueryParameterService {
 
     private readonly queries = new Map<string, string>();

@@ -31,7 +31,7 @@ import { CredentialsLoginComponent } from './forms/credentials-login.component';
 import { SmartCardLoginTabComponent } from './forms/smart-card-login-tab.component';
 import { SmartCardLoginComponent } from './forms/smart-card-login.component';
 import { WorkflowLoginTabComponent } from './forms/workflow-login-tab.component';
-import { WorkflowLoginComponent } from './forms/workflow-login.component copy';
+import { WorkflowLoginComponent } from './forms/workflow-login.component';
 import { AuthLoginComponent } from './login/auth-login.component';
 
 

@@ -83,7 +83,9 @@ export enum I18N_TYPES {
 }
 
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class I18nService {
 
     /** translation map: language -> (key -> value) */
