@@ -44,18 +44,14 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     protected _indeterminate = false;
     protected _disabled = false;
     protected _readonly = false;
-    protected _label: KeyTranslationPair = { key: '', translated: '' };
+    protected _label: KeyTranslationPair = {key: '', translated: ''};
 
     protected subs: Subscription[] = [];
 
     @Input()
     set label(value: string) {
         this._label.key = value;
-        this._label.translated = value;
-        // Optional: Only translate if a key is present that should be translated
-        if (this.i18nContext) {
-            this._label.translated = this.i18n.translate(this.i18nContext + '.' + value) || value;
-        }
+        this.translate(ATTRIBUTE_LABEL);
     }
 
 
@@ -103,6 +99,8 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     protected translate(attribute: string) {
         if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
             this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
+        } else {
+            this[attribute]["translated"] = this[attribute]["key"];
         }
     }
 
