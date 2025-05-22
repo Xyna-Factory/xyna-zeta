@@ -18,12 +18,13 @@
 import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 
+import { Subscription } from 'rxjs';
+
 import { coerceBoolean } from '../../../base';
 import { I18nService, LocaleService } from '../../../i18n';
 import { ATTRIBUTE_ARIALABEL, ATTRIBUTE_ICONTOOLTIP, ATTRIBUTE_LABEL, ATTRIBUTE_PLACEHOLDER, KeyTranslationPair } from '../../../xc/shared/xc-i18n-attributes';
 import { xcFormTranslations_deDE } from '../locale/xc-translations.de-DE';
 import { xcFormTranslations_enUS } from '../locale/xc-translations.en-US';
-import { Subscription } from 'rxjs';
 
 
 export enum FloatStyle {
@@ -136,6 +137,8 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
     protected translate(attribute: string) {
         if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
             this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
+        } else {
+            this[attribute]["translated"] = this[attribute]["key"];
         }
     }
 }

@@ -235,6 +235,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     protected translate(attribute: string) {
         if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
             this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
+        } else {
+            this[attribute]["translated"] = this[attribute]["key"];
         }
     }
 
