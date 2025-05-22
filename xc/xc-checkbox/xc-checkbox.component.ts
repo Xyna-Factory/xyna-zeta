@@ -20,11 +20,12 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 
 import { XcI18nTranslateDirective } from '@zeta/i18n/i18n.directive';
 
+import { Subscription } from 'rxjs';
+
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
 import { ATTRIBUTE_LABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
-import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -43,14 +44,18 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     protected _indeterminate = false;
     protected _disabled = false;
     protected _readonly = false;
-    protected _label: KeyTranslationPair = {key: '', translated: ''};
+    protected _label: KeyTranslationPair = { key: '', translated: '' };
 
     protected subs: Subscription[] = [];
 
     @Input()
     set label(value: string) {
         this._label.key = value;
-        this.translate(ATTRIBUTE_LABEL);
+        this._label.translated = value;
+        // Optional: Only translate if a key is present that should be translated
+        if (this.i18nContext) {
+            this._label.translated = this.i18n.translate(this.i18nContext + '.' + value) || value;
+        }
     }
 
 
