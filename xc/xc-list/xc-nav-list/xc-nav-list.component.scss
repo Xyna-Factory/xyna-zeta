@@ -101,6 +101,37 @@ $xc-nav-list-item-vertical-active-indicator-width: unset !default;
     }
 }
 
+:host([orientation="TOP"]),
+:host([orientation="BOTTOM"]) {
+    ul {
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    li {
+        display: flex;
+        align-items: center;
+    }
+}
+
+:host([orientation="LEFT"]),
+:host([orientation="RIGHT"]) {
+    ul {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    li {
+        display: flex;
+    }
+}
+
 ul, li {
     list-style-type: none;
     margin: 0;
