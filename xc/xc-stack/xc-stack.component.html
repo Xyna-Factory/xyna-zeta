@@ -1,5 +1,5 @@
 <div class="stack-items" >
-  @for (stackItem of dataSource.stackItems; track stackItem) {
+  @for (stackItem of dataSource.stackItems; let i = $index; track i) {
     <div class="item" #items>
       <xc-template [xc-template-instance]="stackItem.getTemplate()">
       </xc-template>
@@ -7,7 +7,7 @@
   }
 </div>
 <div class="breadcrumb-overview">
-  @for (stackItem of dataSource.stackItems; track stackItem; let i = $index) {
+  @for (stackItem of dataSource.stackItems; let i = $index; track i) {
     <xc-button
       [xc-tooltip]="breadcrumbLabels.get(stackItem)"
       [xc-button-aria-label]="ariaBreadcrumbLabel(stackItem)"

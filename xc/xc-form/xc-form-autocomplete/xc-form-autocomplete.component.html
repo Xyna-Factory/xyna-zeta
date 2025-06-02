@@ -39,7 +39,7 @@
       (opened)="openedAutocomplete()"
       (closed)="closedAutocomplete()"
       >
-      @for (option of filteredOptions | async; track i; let i = $index) {
+      @for (option of filteredOptions | async; let i = $index; track i) {
         <mat-option
           tabindex="0"
           [value]="option"

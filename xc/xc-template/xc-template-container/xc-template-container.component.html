@@ -4,7 +4,7 @@
   </header>
 
   <section>
-    @for (child of templates | async; track child) {
+    @for (child of templates | async; let i = $index; track i) {
       <xc-template
         [xc-template-instance]="child"
       ></xc-template>
