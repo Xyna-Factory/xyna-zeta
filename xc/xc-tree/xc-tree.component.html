@@ -69,7 +69,7 @@
         }
 
         <!-- templates -->
-        @for (template of node.value; track template) {
+        @for (template of node.value; let i = $index; track i) {
           <xc-template
             [xc-template-instance]="template"
             [xc-template-disabled]="isNodeDisabled(node)"

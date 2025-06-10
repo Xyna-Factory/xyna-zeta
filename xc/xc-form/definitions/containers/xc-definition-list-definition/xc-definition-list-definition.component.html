@@ -1,5 +1,5 @@
 <dl>
-  @for (child of definitionListDefinition?.children; track child) {
+  @for (child of definitionListDefinition?.children; let i = $index; track i) {
     <xc-definition-proxy
       [xc-base-definition]="child"
       [xc-base-definition-data]="definitionData"

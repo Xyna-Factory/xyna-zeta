@@ -20,7 +20,7 @@
   </div>
 </div>
 @if (expanded) {
-  @for (childNode of (node.children | async); track childNode) {
+  @for (childNode of (node.children | async); let i = $index; track i) {
     <xc-tree-item [node]="childNode"
       (expand)="expand.emit($event)"
       [xc-tree-item-keep-breaks]="keepBreaks"

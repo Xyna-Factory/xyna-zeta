@@ -1,5 +1,5 @@
 <mat-tab-group animationDuration="0" (keyup.delete)="closeFocusedTab()">
-  @for (item of items; track item) {
+  @for (item of items; let i = $index; track i) {
     <mat-tab>
       <ng-template mat-tab-label>
         <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" xc-icon-size="small" [xc-tooltip]="getTooltip(item)" (mouseup)="mouseup($event, item)">{{item.name}}</xc-icon>

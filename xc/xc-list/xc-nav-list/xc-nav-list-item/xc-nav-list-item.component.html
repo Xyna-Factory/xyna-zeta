@@ -31,7 +31,7 @@
     </a>
     @if (!shrink) {
       <div [@toggleAnimation]="toggleAnimation" [attr.id]="uniquePanelId">
-        @for (child of item.children; track child; let i = $index) {
+        @for (child of item.children; let i = $index; track i) {
           <xc-nav-list-item
             [attr.id]="'xc-nav-list-item-depth-' + (depth+1) + '-' + i"
             [item]="child"

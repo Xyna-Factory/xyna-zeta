@@ -1,6 +1,6 @@
 <mat-menu #matMenu [overlapTrigger]="!options.yNexttoTrigger" [xPosition]="options.xPosition" [yPosition]="options.yPosition" [class]="panelClass">
 
-  @for (item of items; track item) {
+  @for (item of items; let i = $index; track i) {
     @if (!item.visible || item.visible(item)) {
       <!-- if menu item has children then code in <ng-container> -->
       <!-- if no children then code in <ng-template #template> -->
