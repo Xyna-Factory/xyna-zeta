@@ -15,11 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, Output } from '@angular/core';
-
-import { I18nService, LocaleService } from '../../i18n';
+import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
+import { I18nService, LocaleService } from '../../i18n';
 import { xcPanelTranslations_deDE } from './locale/xc-panel-translations.de-DE';
 import { xcPanelTranslations_enUS } from './locale/xc-panel-translations.en-US';
 
@@ -32,16 +31,15 @@ import { xcPanelTranslations_enUS } from './locale/xc-panel-translations.en-US';
 })
 export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDestroy {
 
+    @ViewChild('toggle', { read: ElementRef }) toggleButtonRef?: ElementRef<HTMLElement>;
+
     private static readonly headerQuerySelector = 'header';
     private static readonly headerLabelQuerySelector = XcPanelComponent.headerQuerySelector + ' > label';
-    private static readonly toggleQuerySelector = 'xc-panel > .collapse-toggle';
-    private static readonly toggleButtonQuerySelector = XcPanelComponent.toggleQuerySelector + ' > button';
     private static readonly headerMouseDownEventName = 'mousedown';
     private static readonly headerMouseUpEventName = 'mouseup';
 
     private _headerElement: Element;
     private _headerLabelElement: Element;
-    private _toggleElement: Element;
     private _toggleButtonElement: Element;
     private _ariaLabel: string;
     private _collapsed = false;
@@ -85,19 +83,18 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
         this._headerLabelElement = this.elementRef.nativeElement.querySelector(XcPanelComponent.headerLabelQuerySelector);
     }
 
+
     ngAfterViewInit() {
-        this._toggleElement = this.elementRef.nativeElement.querySelector(XcPanelComponent.toggleQuerySelector);
-        this._toggleButtonElement = this._toggleElement.querySelector(XcPanelComponent.toggleButtonQuerySelector);
-        this._toggleElement?.parentElement?.removeChild(this._toggleElement);
+        this._toggleButtonElement = this.toggleButtonRef?.nativeElement;
+        if (this._toggleButtonElement) {
+            this._toggleButtonElement.parentElement?.removeChild(this._toggleButtonElement);
+        }
 
         // default: set aria-label to header label
         if (this.ariaLabel === undefined && this._headerLabelElement?.textContent) {
             this._toggleButtonElement?.setAttribute('aria-label', this._headerLabelElement.textContent);
         }
 
-        // configures header element
-        // * adds event listeners, if collapsable
-        // * sets aria-attributes
         this.collapsable = this._collapsable;
         this.collapsed = this._collapsed;
     }
@@ -138,14 +135,14 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
         this._collapsable = coerceBoolean(value);
         if (this._headerElement) {
             if (this.collapsable) {
-                this._headerElement.prepend(this._toggleElement);
+                this._headerElement.prepend(this._toggleButtonElement);
                 this._headerElement.addEventListener(XcPanelComponent.headerMouseDownEventName, this._headerMouseDownListener);
                 this._headerElement.addEventListener(XcPanelComponent.headerMouseUpEventName, this._headerMouseUpListener);
                 // aria-label is already applied to the toggle-button, header-label/header should not be selectable via keyboard
                 this._headerElement.removeAttribute('tabindex');
                 this._headerLabelElement?.removeAttribute('tabindex');
             } else {
-                this._toggleElement?.parentElement?.removeChild(this._toggleElement);
+                this._toggleButtonElement?.parentElement?.removeChild(this._toggleButtonElement);
                 this._headerElement.removeEventListener(XcPanelComponent.headerMouseDownEventName, this._headerMouseDownListener);
                 this._headerElement.removeEventListener(XcPanelComponent.headerMouseUpEventName, this._headerMouseUpListener);
                 // make header-label/header selectable via keyboard to read its textContent/aria-label

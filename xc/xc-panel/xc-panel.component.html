@@ -1,7 +1,7 @@
 <ng-content />
-<xc-icon-button xc-icon-name="accordion"
+<xc-icon-button #toggle class="collapse-toggle"
+    xc-icon-name="accordion"
     xc-icon-size="small"
-    class="collapse-toggle"
     [xc-tooltip]="tooltip"
     (click)="togglePanel()"
     [xc-button-aria-label]="ariaLabel"
