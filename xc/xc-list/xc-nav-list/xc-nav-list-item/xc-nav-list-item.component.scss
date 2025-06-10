@@ -96,7 +96,7 @@
                 border-radius: 0;
 
                 xc-icon {
-                    color: $value;
+                    color: $xc-nav-list-item-color-active;
                 }
 
                 &::ng-deep .mdc-list-item__content {
