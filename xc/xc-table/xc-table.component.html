@@ -40,7 +40,7 @@
     </td>
   </ng-container>
   <!-- Container template view of a table body row -->
-  @for (column of columns; track i; let i = $index) {
+  @for (column of columns; let i = $index; track i) {
     <ng-container [matColumnDef]="getColumnID(column)">
       <th mat-header-cell *matHeaderCellDef attr.aria-label="{{i18n.translate(column.name)}}" scope="col">
         <span mat-sort-header [disabled]="column.disableSort">{{i18n.translate(column.name) || '&nbsp;'}}</span>
@@ -67,7 +67,7 @@
           <!-- ngIf = displays cellData xc-templates if it is an Array -->
           @if (cellData?.constructor?.name === 'Array') {
             <div class="template-container">
-              @for (template of cellData; track template) {
+              @for (template of cellData; let i = $index; track i) {
                 <xc-template [xc-template-instance]="template"></xc-template>
               }
             </div>
@@ -79,7 +79,7 @@
           @if (i === columns.length - 1) {
             <!-- action buttons in last column -->
             <div class="action-elements">
-              @for (actionElement of dataSource?.actionElements; track actionElement) {
+              @for (actionElement of dataSource?.actionElements; let i = $index; track i) {
                 <div>
                   <!-- chrome bugfix: "&& !actionElement.disabled" is sometimes necessary to prevent click -->
                   @if (actionElement.onShow && actionElement.onShow(row) || !actionElement.onShow) {
