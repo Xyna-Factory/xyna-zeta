@@ -30,19 +30,21 @@
       <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" [xc-icon-size]="size">{{shrink ? '' : item.name}}</xc-icon>
     </a>
     @if (!shrink) {
-      <div [@toggleAnimation]="toggleAnimation" [attr.id]="uniquePanelId">
+      <ul [@toggleAnimation]="toggleAnimation" [attr.id]="uniquePanelId" [attr.aria-label]="ariaLabel">
         @for (child of item.children; let i = $index; track i) {
-          <xc-nav-list-item
-            [attr.id]="'xc-nav-list-item-depth-' + (depth+1) + '-' + i"
-            [item]="child"
-            [size]="size"
-            [depth]="depth+1"
-            [orientation]="orientation"
-            [color]="color"
-            (focusChange)="focusChange.emit($event)"
-          ></xc-nav-list-item>
+          <li>
+            <xc-nav-list-item
+              [attr.id]="'xc-nav-list-item-depth-' + (depth+1) + '-' + i"
+              [item]="child"
+              [size]="size"
+              [depth]="depth+1"
+              [orientation]="orientation"
+              [color]="color"
+              (focusChange)="focusChange.emit($event)"
+            ></xc-nav-list-item>
+          </li>
         }
-      </div>
+      </ul>
     }
   </div>
 } @else {

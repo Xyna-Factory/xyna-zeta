@@ -34,7 +34,7 @@
     overflow: hidden;
     background-color: $xc-nav-list-background-bar-color;
 
-    .mat-mdc-nav-list {
+    .mat-mdc-nav-list, ul {
         padding: 0;
         display: flex;
         flex: 1 1 auto;
@@ -44,8 +44,10 @@
     }
 
     &[orientation="LEFT"], &[orientation="RIGHT"] {
-        mat-nav-list {
+        mat-nav-list, ul {
             flex-direction: column;
+        }
+        mat-nav-list {
             margin-bottom: auto;
         }
         &::ng-deep a {
@@ -55,8 +57,10 @@
     }
 
     &[orientation="TOP"], &[orientation="BOTTOM"] {
-        mat-nav-list {
+        mat-nav-list, ul {
             flex-direction: row;
+        }
+        mat-nav-list {
             margin-right: auto;
         }
         &::ng-deep a {
@@ -91,5 +95,10 @@
 
     &[orientation="BOTTOM"]::ng-deep a {
         border-bottom-style: solid;
+    }
+
+    ul, li {
+        list-style-type: none;
+        margin: 0;
     }
 }
