@@ -34,7 +34,11 @@ export class CredentialsLoginTabComponent extends XcTabComponent<void, LoginComp
     data: LoginComponentData = {
         username: '',
         password: '',
-        onEnter: () => { }
+        onEnter: () => { },
+        usernameTabIndex: 1,
+        usernameSuffixTabIndex: 4,
+        passwordTabIndex: 2,
+        passwordSuffixTabIndex: 5,
     };
 
     constructor(injector: Injector, readonly i18n: I18nService) {
