@@ -15,7 +15,7 @@
         <div class="subtitle" xc-i18n>subtitle3</div>
       }
     </div>
-    <xc-language-selector class="language-selector"></xc-language-selector>
+    <xc-language-selector class="language-selector" [tabIndex]="6"></xc-language-selector>
   </header>
 
   <!-- Case 1 use a tab bar, from which the user can select the login method -->
@@ -46,7 +46,7 @@
       <xc-button class="items-left" (click)="openPrivacyLink()"
       xc-i18n>privacy-button</xc-button>
     }
-    <xc-button class="login-button items-right" color="primary" [busy]="pending" [disabled]="pending" (click)="login()"
+    <xc-button class="login-button items-right" color="primary" [busy]="pending" [disabled]="pending" (click)="login()" [xc-button-tab-index]="3"
     xc-i18n>login-button</xc-button>
   </footer>
 </xc-panel>

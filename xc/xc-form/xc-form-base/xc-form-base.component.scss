@@ -196,9 +196,10 @@ $suffix-icon-height: 24px;
                     color: $xc-form-base-input-suffix-color-hover;
                 }
 
-        .mat-form-field-underline {
-            display: none;
-        }
+                .mat-form-field-underline {
+                    display: none;
+                }
+
                 >.mat-icon {
                     padding: 0;
                     font-size: $suffix-icon-height;
@@ -254,6 +255,63 @@ $suffix-icon-height: 24px;
             height: 12px;
         }
     }
+
+    .mat-mdc-form-field {
+        .mat-mdc-text-field-wrapper {
+
+            button.mat-mdc-icon-button[matSuffix] {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                height: $xc-form-base-input-line-height;
+                width: 32px;
+                margin: 0;
+                padding: 0;
+                border: none;
+                background: none;
+                color: $xc-form-base-input-suffix-color;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                pointer-events: initial;
+                user-select: none;
+                transition: color $transition-time-fast ease;
+                z-index: 10;
+
+                .mat-icon {
+                    font-size: $suffix-icon-height;
+                    padding: 0;
+                    width: $suffix-icon-height;
+                    height: $suffix-icon-height;
+                    line-height: $suffix-icon-height;
+                }
+
+                .mat-mdc-button-touch-target {
+                    display: none;
+                }
+
+                .mat-mdc-button-persistent-ripple::before {
+                    opacity: none;
+                    background-color: transparent;
+                }
+
+                &:hover:not(:disabled) {
+                    color: $xc-form-base-input-suffix-color-hover;
+                }
+
+                &:disabled {
+                    opacity: 0.5;
+                    cursor: default;
+                }
+
+                &:focus-visible {
+                    .mat-icon {
+                        outline: transparent auto 1px;
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -264,7 +322,8 @@ $suffix-icon-height: 24px;
     }
 
     // hide the material required-asterisk for we show one ourselves
-    ::ng-deep.mat-placeholder-required, ::ng-deep.mat-mdc-form-field-required-marker {
+    ::ng-deep.mat-placeholder-required,
+    ::ng-deep.mat-mdc-form-field-required-marker {
         display: none;
     }
 }
