@@ -184,7 +184,10 @@
         }
 
         ::ng-deep > *:not(header) {
-            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            padding: 0 !important;
         }
     }
 }
