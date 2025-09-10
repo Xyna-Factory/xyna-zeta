@@ -260,10 +260,10 @@ $suffix-icon-height: 24px;
         .mat-mdc-text-field-wrapper {
 
             button.mat-mdc-icon-button[matSuffix] {
-                position: absolute;
+                position: relative;
                 right: 0;
                 bottom: 0;
-                height: $xc-form-base-input-line-height;
+                height: 100%;
                 width: 32px;
                 margin: 0;
                 padding: 0;
