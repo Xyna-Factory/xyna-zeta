@@ -19,436 +19,401 @@
 
 /* exported consts such that other components can read */
 
-$validator-message-height: 18px;
-$suffix-icon-height: 24px;
+/* -------------------------------------------------------------------------- */
+/* Variables                                                                  */
+/* -------------------------------------------------------------------------- */
 
+$validator-message-height: 18px;
+$suffix-icon-height: 22px;
 
 @use "sass:math";
-@use '../../../const' as *;
+@use "../../../const" as *;
 
+
+/* -------------------------------------------------------------------------- */
+/* Base host styles                                                           */
+/* -------------------------------------------------------------------------- */
 
 :host::ng-deep {
+  pointer-events: none;
+  width: 100%;
 
-    pointer-events: none;
-    width: 100%;
+  .mat-mdc-form-field {
+    display: unset;
+    line-height: 0;
+    letter-spacing: normal;
+    font-family: $font-family-regular;
 
-    .mat-mdc-form-field {
-        display: unset;
-        line-height: 0;
-        letter-spacing: normal;
+    .mdc-text-field--filled:not(.mdc-text-field--disabled),
+    .mdc-text-field--filled.mdc-text-field--disabled {
+      background-color: transparent;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Text field wrapper                                                     */
+    /* ---------------------------------------------------------------------- */
+
+    .mat-mdc-text-field-wrapper {
+      width: 100%;
+      padding: 0;
+      border: none;
+      border-radius: unset;
+
+      .mat-mdc-form-field-focus-overlay {
+        background-color: transparent;
+      }
+
+      button {
+        pointer-events: initial;
+      }
+
+      /* -------------------------------------------------------------------- */
+      /* Input & Textarea                                                     */
+      /* -------------------------------------------------------------------- */
+
+      input,
+      textarea {
+        pointer-events: initial;
+        margin-top: 2px;
+        padding: $xc-form-base-input-padding-top $xc-form-base-input-padding-right $xc-form-base-input-padding-bottom $xc-form-base-input-padding-left;
+
+        font-size: $xc-form-base-input-font-size;
+        font-style: $xc-form-base-input-font-style;
         font-family: $font-family-regular;
 
-        .mdc-text-field--filled:not(.mdc-text-field--disabled),
-        .mdc-text-field--filled.mdc-text-field--disabled {
-            background-color: transparent;
+        vertical-align: middle;
+        background-color: $xc-form-base-input-background-color-disabled;
+        border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color-disabled;
+        border-radius: $xc-form-base-input-border-radius;
+        color: $xc-form-base-input-color-disabled;
+
+        &:not(:disabled):not(:read-only) {
+          color: $xc-form-base-input-color;
+
+          &:not(:focus) {
+            border-color: $xc-form-base-input-border-color;
+            background-color: $xc-form-base-input-background-color;
+
+            &:hover {
+              background-color: $xc-form-base-input-background-color-hover;
+              border-color: $xc-form-base-input-border-color-hover;
+            }
+          }
         }
 
-        .mat-mdc-text-field-wrapper {
-            width: 100%;
-            padding: 0;
-            border: none;
-            border-radius: unset;
-
-            .mat-mdc-form-field-focus-overlay {
-                background-color: transparent;
-            }
-
-            button {
-                pointer-events: initial;
-            }
-
-            input,
-            textarea {
-                pointer-events: initial;
-                margin: 0;
-                padding-top: $xc-form-base-input-padding-top;
-                padding-right: $xc-form-base-input-padding-right;
-                padding-bottom: $xc-form-base-input-padding-bottom;
-                padding-left: $xc-form-base-input-padding-left;
-                font-size: $xc-form-base-input-font-size;
-                font-style: $xc-form-base-input-font-style;
-                vertical-align: middle;
-                background-color: $xc-form-base-input-background-color-disabled;
-                border-style: solid;
-                border-width: $xc-form-base-input-border-width;
-                border-color: $xc-form-base-input-border-color-disabled;
-                border-radius: $xc-form-base-input-border-radius;
-                color: $xc-form-base-input-color-disabled;
-                font-family: $font-family-regular;
-
-
-                &:not(:disabled):not(:read-only) {
-                    color: $xc-form-base-input-color;
-
-                    &:not(:focus) {
-                        border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color;
-                        background-color: $xc-form-base-input-background-color;
-
-                        &:hover {
-                            background-color: $xc-form-base-input-background-color-hover;
-                            border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color-hover;
-                        }
-                    }
-                }
-
-                &:focus {
-                    background-color: $xc-form-base-input-background-color-focus;
-                    border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color-focus;
-                    // box-shadow: inset 0 0 2px $color-focus-outline;
-                }
-
-                &:invalid {
-                    border: $xc-form-base-input-border-width solid $xc-form-base-input-error-color;
-                }
-
-                &::placeholder {
-                    user-select: none;
-                    color: $xc-form-base-input-placeholder-color;
-                    opacity: 1;
-                }
-            }
-
-            input {
-                line-height: $xc-form-base-input-line-height;
-                text-overflow: ellipsis;
-                font-family: inherit;
-
-                &.mat-mdc-input-element {
-                    box-sizing: border-box;
-                    caret-color: $xc-form-base-input-color;
-                }
-            }
-
-            // non-editable-input, see: ZETA-7
-            // input:first-child {
-
-            //     &:read-only,
-            //     &:disabled {
-            //         display: none;
-
-            //         &+.non-editable-input {
-            //             display: block;
-            //             width: 100%;
-            //             text-overflow: ellipsis;
-            //             overflow: hidden;
-            //             word-break: break-all;
-            //             white-space: nowrap;
-            //         }
-            //     }
-
-            // }
-
-            textarea {
-                line-height: $xc-form-base-textarea-line-height;
-                margin-top: 16px;
-                padding: $xc-form-base-textarea-padding;
-                // width: unset;
-
-                &.mat-mdc-input-element {
-                    box-sizing: border-box;
-                    caret-color: $xc-form-base-input-color;
-                }
-            }
-
-            // non-editable-input, see: ZETA-7
-            // textarea:first-child {
-
-            //     &:read-only, &:disabled {
-            //         display: none;
-
-            //         & + .non-editable-input {
-            //             resize: none;
-            //             display: flex;
-            //             flex: 1 1 auto;
-            //         }
-            //     }
-
-            // }
-
-            .mat-mdc-form-field-infix {
-                display: flex;
-                width: unset;
-                border: none;
-                justify-content: space-between;
-                flex-direction: column-reverse;
-                padding: 0;
-                min-height: 48px;
-            }
-
-            .mat-mdc-form-field-icon-suffix {
-                position: absolute;
-                right: 0;
-                bottom: 0;
-                height: calc(100% - 16px);
-                width: 32px;
-                padding: 0;
-                // padding: math.div($xc-form-base-input-line-height + $xc-form-base-input-padding-top + $xc-form-base-input-padding-bottom + $xc-form-base-input-border-width*2 - $suffix-icon-height, 2) 4px;
-                pointer-events: initial;
-                user-select: none;
-                color: $xc-form-base-input-suffix-color;
-                transition: all $transition-time-fast ease;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                box-sizing: unset;
-
-                &:hover {
-                    color: $xc-form-base-input-suffix-color-hover;
-                }
-
-                .mat-form-field-underline {
-                    display: none;
-                }
-
-                >.mat-icon {
-                    padding: 0;
-                    font-size: $suffix-icon-height;
-                }
-            }
-
-            .mat-mdc-floating-label.mdc-floating-label {
-                color: $xc-form-base-input-label-color;
-                padding: 0;
-                top: 20px;
-                font-family: $font-family-regular;
-                // font-size: $xc-form-base-input-font-size;
-                font-style: $xc-form-base-input-font-style;
-                text-transform: $xc-form-base-input-label-text-transform;
-                line-height: normal;
-                font-weight: unset;
-                letter-spacing: normal;
-
-                &:not(.mdc-floating-label--float-above) {
-                    top: 32px;
-                    font-size: $xc-form-base-input-font-size;
-                    font-style: $xc-form-base-input-font-style;
-                    padding: 0 8px;
-                    line-height: $xc-form-base-input-line-height
-                }
-            }
-
-            .mdc-line-ripple {
-                display: none;
-            }
+        &:focus {
+          background-color: $xc-form-base-input-background-color-focus;
+          border-color: $xc-form-base-input-border-color-focus;
         }
 
-        .mat-mdc-form-field-subscript-wrapper {
-            line-height: initial;
-
-            .mat-mdc-form-field-error-wrapper {
-                text-transform: uppercase;
-                font-size: 11px;
-                padding: 0;
-
-                .mat-mdc-form-field-error {
-                    color: $xc-form-base-input-error-color;
-                    text-transform: none; // DM - Error messages should be able to display small letters
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    letter-spacing: normal;
-                }
-            }
+        &:invalid {
+          border-color: $xc-form-base-input-error-color;
         }
 
-        .mat-mdc-form-field-bottom-align::before {
-            height: 12px;
+        &::placeholder {
+          user-select: none;
+          color: $xc-form-base-input-placeholder-color;
+          opacity: 1;
         }
+      }
+
+      input {
+        height: $xc-form-base-input-height;
+        text-overflow: ellipsis;
+        font-family: inherit;
+
+        &.mat-mdc-input-element {
+          box-sizing: border-box;
+          caret-color: $xc-form-base-input-color;
+        }
+      }
+
+      textarea {
+        line-height: $xc-form-base-textarea-line-height;
+        margin-top: 16px;
+        padding: $xc-form-base-textarea-padding;
+
+        &.mat-mdc-input-element {
+          box-sizing: border-box;
+          caret-color: $xc-form-base-input-color;
+        }
+      }
+
+      /* -------------------------------------------------------------------- */
+      /* Field infix & suffix                                                 */
+      /* -------------------------------------------------------------------- */
+
+      .mat-mdc-form-field-infix {
+        display: block;
+        width: unset;
+        min-height: unset;
+        padding: 0;
+        border: none;
+      }
+
+      .mat-mdc-form-field-icon-suffix {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        margin: 0 2px 0 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: $xc-form-base-input-height;
+        height: $xc-form-base-input-height;
+        padding: 0;
+        color: $xc-form-base-input-suffix-color;
+
+        pointer-events: initial;
+        user-select: none;
+        transition: all $transition-time-fast ease;
+
+        &:hover {
+          color: $xc-form-base-input-suffix-color-hover;
+        }
+
+        >.mat-icon {
+          font-size: $suffix-icon-height;
+          padding: 0;
+        }
+      }
+
+      .mat-mdc-floating-label.mdc-floating-label {
+        position: static;
+        color: $xc-form-base-input-label-color;
+        font-family: $font-family-regular;
+        font-style: $xc-form-base-input-font-style;
+        font-weight: unset;
+        letter-spacing: normal;
+        text-transform: $xc-form-base-input-label-text-transform;
+        line-height: normal;
+        padding: 0;
+        font-size: $xc-form-base-input-label-font-size;
+        display: inline;
+
+        &:not(.mdc-floating-label--float-above) {
+          top: 32px;
+          padding: 0 6px;
+          font-size: $xc-form-base-input-font-size;
+        }
+      }
+
+      .mdc-line-ripple {
+        display: none;
+      }
     }
 
-    .mat-mdc-form-field {
-        .mat-mdc-text-field-wrapper {
+    /* ---------------------------------------------------------------------- */
+    /* Error message styles                                                   */
+    /* ---------------------------------------------------------------------- */
 
-            button.mat-mdc-icon-button[matSuffix] {
-                position: relative;
-                right: 0;
-                bottom: 0;
-                height: 100%;
-                width: 32px;
-                margin: 0;
-                padding: 0;
-                border: none;
-                background: none;
-                color: $xc-form-base-input-suffix-color;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                pointer-events: initial;
-                user-select: none;
-                transition: color $transition-time-fast ease;
-                z-index: 10;
+    .mat-mdc-form-field-subscript-wrapper {
+      line-height: initial;
 
-                .mat-icon {
-                    font-size: $suffix-icon-height;
-                    padding: 0;
-                    width: $suffix-icon-height;
-                    height: $suffix-icon-height;
-                    line-height: $suffix-icon-height;
-                }
+      .mat-mdc-form-field-error-wrapper {
+        padding: 0;
+        font-size: 11px;
+        text-transform: uppercase;
 
-                .mat-mdc-button-touch-target {
-                    display: none;
-                }
-
-                .mat-mdc-button-persistent-ripple::before {
-                    opacity: none;
-                    background-color: transparent;
-                }
-
-                &:hover:not(:disabled) {
-                    color: $xc-form-base-input-suffix-color-hover;
-                }
-
-                &:disabled {
-                    opacity: 0.5;
-                    cursor: default;
-                }
-
-                &:focus-visible {
-                    .mat-icon {
-                        outline: transparent auto 1px;
-                    }
-                }
-            }
+        .mat-mdc-form-field-error {
+          color: $xc-form-base-input-error-color;
+          text-transform: none; // allow lowercase
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          letter-spacing: normal;
         }
+      }
     }
+
+    .mat-mdc-form-field-bottom-align::before {
+      height: 12px;
+    }
+  }
+
+  /* ------------------------------------------------------------------------ */
+  /* Suffix button                                                            */
+  /* ------------------------------------------------------------------------ */
+
+  .mat-mdc-form-field .mat-mdc-text-field-wrapper {
+    button.mat-mdc-icon-button[matSuffix] {
+      position: relative;
+      right: 0;
+      bottom: 0;
+      border: 1.5px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      height: $xc-form-base-input-height;
+      width: $xc-form-base-input-height;
+
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: none;
+
+      color: $xc-form-base-input-suffix-color;
+      pointer-events: initial;
+      user-select: none;
+      transition: color $transition-time-fast ease;
+      z-index: 10;
+
+      .mat-icon {
+        font-size: $suffix-icon-height;
+        width: $suffix-icon-height;
+        height: $suffix-icon-height;
+        line-height: $suffix-icon-height;
+        padding: 0;
+      }
+
+      .mat-mdc-button-touch-target {
+        display: none;
+      }
+
+      .mat-mdc-button-persistent-ripple::before {
+        opacity: unset;
+        background-color: transparent;
+      }
+
+      &:hover:not(:disabled) {
+        color: $xc-form-base-input-suffix-color-hover;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+
+      &:focus-visible .mat-icon {
+        outline: transparent auto 1px;
+      }
+
+      &:focus-visible,
+      &:active,
+      &:focus {
+        border: 1.5px solid $xc-form-base-input-suffix-border-color;
+      }
+    }
+  }
 }
 
 
-:host[xc-form-validator-required="true"] {
-    mat-label::after {
-        content: '\a0*';
-        font-weight: bold;
-    }
+/* -------------------------------------------------------------------------- */
+/* Host modifiers                                                             */
+/* -------------------------------------------------------------------------- */
 
-    // hide the material required-asterisk for we show one ourselves
-    ::ng-deep.mat-placeholder-required,
-    ::ng-deep.mat-mdc-form-field-required-marker {
-        display: none;
-    }
+:host[xc-form-validator-required="true"] {
+  mat-label::after {
+    content: '\a0*';
+    font-weight: bold;
+  }
+
+  // hide material asterisk
+  ::ng-deep.mat-placeholder-required,
+  ::ng-deep.mat-mdc-form-field-required-marker {
+    display: none;
+  }
 }
 
 :host[suffix]:not([suffix=""])::ng-deep {
-    input {
-        padding-right: 32px;
-    }
+  input {
+    padding-right: $xc-form-base-input-height + 6px;
+  }
 }
 
 :host.nolabel::ng-deep {
-    .mat-mdc-form-field {
-        .mat-mdc-form-field-infix {
-            border-top: none;
-            min-height: unset;
+  .mat-mdc-form-field {
+    .mat-mdc-form-field-infix {
+      border-top: none;
+      min-height: unset;
 
-            input,
-            textarea {
-                margin-top: 0;
-            }
+      input,
+      textarea {
+        margin-top: 0;
+      }
 
-            // label is used as a placeholder, so set placeholder color for it
-
-            .mat-mdc-floating-label {
-                color: $xc-form-base-input-placeholder-color;
-            }
-        }
-
-        .mat-mdc-form-field-icon-suffix {
-            height: 100%;
-        }
+      .mat-mdc-floating-label {
+        color: $xc-form-base-input-placeholder-color;
+      }
     }
+  }
 
-    .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple {
-        &::before {
-            top: 0;
-            box-sizing: border-box;
-            border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color;
-            border-radius: $xc-form-base-input-border-radius;
-            transition: none;
-        }
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple {
 
-        &::after {
-            top: 0;
-            box-sizing: border-box;
-            border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color;
-            border-radius: $xc-form-base-input-border-radius;
-            transition: none;
-        }
+    &::before,
+    &::after {
+      top: 0;
+      box-sizing: border-box;
+      border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color;
+      border-radius: $xc-form-base-input-border-radius;
+      transition: none;
     }
+  }
 
-    .mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-line-ripple::before,
-    .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-line-ripple::before {
-        box-sizing: border-box;
-        border: $xc-form-base-input-border-width solid $color-focus-outline;
-        border-radius: $xc-form-base-input-border-radius;
-        transition: none;
-    }
+  .mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-line-ripple::before,
+  .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-line-ripple::before {
+    border-color: $color-focus-outline;
+  }
 }
 
-
-// A single form item can be set compact which only sets a bottom margin on error
 :host.compact.noerror::ng-deep {
-    .mat-mdc-text-field-wrapper {
-        margin-bottom: 0;
-    }
+  .mat-mdc-text-field-wrapper {
+    margin-bottom: 0;
+  }
 
-    .mat-mdc-form-field-subscript-wrapper {
-        display: none;
-    }
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
 }
 
-
-// Form item inside a compact panel
 xc-panel.compact :host {
-    ::ng-deep .mat-mdc-form-field {
-        input {
-            line-height: $xc-form-base-input-line-height-compact;
-        }
-
-        // .mat-mdc-form-field-suffix {
-        //     padding: math.div($xc-form-base-input-line-height-compact + $xc-form-base-input-padding-top + $xc-form-base-input-padding-bottom + $xc-form-base-input-border-width*2 - $suffix-icon-height, 2) 4px;
-        // }
+  ::ng-deep .mat-mdc-form-field {
+    input {
+      height: $xc-form-base-input-height-compact;
     }
 
-    &.noerror {
-        ::ng-deep .mat-mdc-text-field-wrapper {
-            margin-bottom: 0;
-        }
+    .mat-mdc-form-field-icon-suffix {
+      height: $xc-form-base-input-height-compact;
     }
+  }
+
+  &.noerror {
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      margin-bottom: 0;
+    }
+  }
 }
 
 :host.indicatechanges::ng-deep {
-    .ng-dirty~.mdc-floating-label::after {
-        position: absolute;
-        width: 0;
-        height: 0;
+  .ng-dirty~.mdc-floating-label::after {
+    position: absolute;
+    top: 21px;
+    right: 1px;
 
-        // content: "*";
-        // top: 20px;
-        // right: 14px;
-        // font-size: 20px;
-        // color: #fabb00;
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 8px solid $xc-form-base-input-changeindicator-color;
+    border-left: 8px solid transparent;
+  }
 
-        content: "";
-        top: 21px;
-        right: 1px;
-        border-top: 8px solid $xc-form-base-input-changeindicator-color;
-        border-left: 8px solid transparent;
-    }
-
-    .ng-dirty:hover~.mdc-floating-label::after,
-    .ng-dirty:focus~.mdc-floating-label::after {
-        border-width: 0px;
-        transition: all $transition-time-fast ease;
-    }
+  .ng-dirty:hover~.mdc-floating-label::after,
+  .ng-dirty:focus~.mdc-floating-label::after {
+    border-width: 0;
+    transition: all $transition-time-fast ease;
+  }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Floating label states                                                      */
+/* -------------------------------------------------------------------------- */
 
 ::ng-deep .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label,
 ::ng-deep .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label--float-above,
 ::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label,
 ::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label--float-above,
-::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label,
-.mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label--float-above,
 ::ng-deep .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label,
 .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label--float-above {
-    color: $xc-form-base-input-label-color;
+  color: $xc-form-base-input-label-color;
 }
