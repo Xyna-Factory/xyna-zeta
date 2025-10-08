@@ -126,6 +126,9 @@
                     selected-icon-color: $color-background-default,
                     selected-pressed-icon-color: $color-background-default
                 ));
+                ::ng-deep .mdc-checkbox > .mdc-checkbox__background {
+                    border-color: $color-normal !important;
+                }
             }
         }
     }
@@ -151,6 +154,10 @@
         disabled-unselected-icon-color: $xc-checkbox-color-disabled-invert,
         disabled-label-color: $xc-checkbox-color-disabled-invert
     ));
+
+    ::ng-deep .mdc-checkbox > .mdc-checkbox__background {
+        border-color: $color-invert !important;
+    }
 
     &.disabled::ng-deep .mdc-checkbox > .mdc-checkbox__background {
         border-color: $xc-checkbox-color-disabled-invert;
