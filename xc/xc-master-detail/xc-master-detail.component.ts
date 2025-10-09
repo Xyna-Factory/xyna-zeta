@@ -15,16 +15,16 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, ContentChildren, HostBinding, HostListener, Input, QueryList, ViewChild } from '@angular/core';
-import { MatDrawerContainer } from '@angular/material/sidenav';
+import { Component, ContentChildren, ElementRef, HostBinding, HostListener, Input, QueryList, ViewChild } from '@angular/core';
+import { MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 
 import { coerceBoolean } from '../../base';
 import { XcMasterDetailFocusCandidateDirective } from './xc-master-detail-focuscandidate.directive';
 
 
 type XcMasterDetailSideAreaSize = 'small' | 'golden' | 'half' | 'large' | 'full';
-type XcMasterDetailMode         = 'side'  | 'over';
-type XcMasterDetailPosition     = 'start' | 'end';
+type XcMasterDetailMode = 'side' | 'over';
+type XcMasterDetailPosition = 'start' | 'end';
 
 
 @Component({
@@ -35,8 +35,11 @@ type XcMasterDetailPosition     = 'start' | 'end';
 })
 export class XcMasterDetailComponent {
 
-    @ViewChild(MatDrawerContainer, {static: false})
+    @ViewChild(MatDrawerContainer, { static: false })
     private readonly _drawerContainer: MatDrawerContainer;
+
+    @ViewChild(MatDrawerContent, { read: ElementRef, static: false })
+    private readonly _drawerContentEl: ElementRef<HTMLElement>;
 
     private _opened = false;
     private _escapable = false;
@@ -94,6 +97,14 @@ export class XcMasterDetailComponent {
 
 
     openedChange(event: boolean) {
+
+        if (this._drawerContentEl) {
+            if (event && this.sideAreaSize === 'full') {
+                this._drawerContentEl.nativeElement.setAttribute('inert', '');
+            } else {
+                this._drawerContentEl.nativeElement.removeAttribute('inert');
+            }
+        }
 
         if (event) {
             const open = this.focusCandidates.find(can => can.moment === 'open');
