@@ -77,3 +77,61 @@
         visibility: hidden;
     }
 }
+
+.multiselect-actions {
+    background: $xc-dialog-footer-background-color !important; // Use footer background color from xc-tabl
+    padding: .5em .5em .5em 0em;
+    border-top: 1px solid #e0e0e0;
+    position: sticky;
+    bottom: 0;
+}
+
+.multiselect-input {
+    width: fit-content !important;
+    white-space: nowrap;
+    overflow-x: auto;
+    background-color: white !important;
+    border-color: #babac0 !important;
+}
+
+.multiselect-input:focus-visible {
+       outline: 2px solid #1976d2;
+       outline-offset: 2px; border-color: #1976d2 !important;
+}
+
+.multiselect-input:hover {
+      background-color: $xc-form-dropdown-background-color-hover !important;
+      border-color:  black !important;
+      border-width: $xc-form-dropdown-border-width !important;
+}
+
+::ng-deep mat-option {
+  .option-row {
+    display: flex;
+    align-items: center;
+  }
+
+  .option-reset xc-icon-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1px;
+    transform: translateY(1px);
+
+    ::ng-deep .mat-mdc-icon-button {
+      position: static !important;
+      pointer-events: none !important;
+
+      .mat-mdc-button-touch-target {
+        position: static !important;
+        display: inline-flex !important;
+      }
+    }
+  }
+
+  .option-text {
+    display: inline-block;
+    line-height: 1.2;
+  }
+}
+

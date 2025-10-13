@@ -18,6 +18,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, HostBinding, Input, NgZone, OnDestroy, Output, ViewChild } from '@angular/core';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatOption } from '@angular/material/core';
+import { MatSelect } from "@angular/material/select";
 
 import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
 import { debounceTime, map, tap } from 'rxjs/operators';
@@ -31,7 +32,8 @@ import { XcOptionItem, XcOptionItemString, XcOptionItemValueType } from '../../s
 import { XcSortDirection, XcSortDirectionFromString, XcSortPredicate } from '../../shared/xc-sort';
 import { XcFormBaseComponent } from '../xc-form-base/xc-form-base.component';
 import { XcFormBaseInputComponent } from '../xc-form-base/xc-form-baseinput.component';
-
+import { ActiveDescendantKeyManager } from "@angular/cdk/a11y";
+import { FormControl } from "@angular/forms";
 
 interface FromXoEnumeratedPropertyCallbacks {
     setter?: (value: Native) => Native | void;
@@ -59,7 +61,7 @@ export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxa
             if (observable) {
                 return observable.pipe(
                     XcAutocompleteDataWrapper.getXoEnumeratedValuesMapper(),
-                    tap((items: XcOptionItem[]) => items.unshift(XcOptionItemString()))
+                    // tap((items: XcOptionItem[]) => items.unshift(XcOptionItemString()))
                 );
             }
         }
@@ -213,6 +215,28 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     filteredOptions: Observable<XcOptionInternalAutocompleteItem[]>;
     selectedOption: XcOptionInternalAutocompleteItem;
 
+    private hasUserInteracted = false;
+    private blockFirstOpen = true;
+    private deferOpenUntilNextTick = false;
+    private hasSelectUserInteracted = false;
+    private blockFirstOpenSelect = true;
+    private deferOpenSelectUntilNextTick = false;
+    private enteredFromOutsideCooldown = true;
+    private multiKeyManager: ActiveDescendantKeyManager<MatOption>;
+    private static readonly closeAllDropdowns$ = new Subject<XcFormAutocompleteComponent>();
+    private closeAllSub: Subscription;
+    private panelFocusInListener?: (ev: FocusEvent) => void;
+
+    private static readonly ALL_VALUE = null;
+    private static readonly ALL_LABEL = '<alle>';
+    private msSwallowNextNav = false;
+
+
+    @ViewChild("applyBtn", { static: false })
+    applyBtnRef: ElementRef<HTMLButtonElement>;
+
+    @ViewChild("cancelBtn", { static: false })
+    cancelBtnRef: ElementRef<HTMLButtonElement>;
 
     @ViewChild(MatAutocompleteTrigger, { static: false })
     trigger: MatAutocompleteTrigger;
@@ -254,28 +278,232 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     }
 
 
-    ngAfterViewInit() {
-        const element = (this.elementRef.nativeElement as HTMLElement);
+      ngAfterViewInit() {
+        const element = this.elementRef.nativeElement as HTMLElement;
+
         this.ngZone.runOutsideAngular(() => {
             element.addEventListener('keydown', this.onkeydown);
             element.addEventListener('keyup', this.keyup);
         });
 
-        // set subscription
-        this._subscription = this.trigger.panelClosingActions.subscribe(() => {
-            this.checkValue();
-            this.cdRef.detectChanges();
-        });
-        // prevent resetting of the active item by internal code
-        (this.trigger as any)._resetActiveItem = () => {
-            if (this.selectedIdxResettable && !this.asInput) {
-                this.setActiveItem(this.enabledIdx);
+        document.addEventListener('focusin', this.onDocumentFocusIn, true);
+        document.addEventListener('mousedown', this.onDocumentMouseDown, true);
+
+        // ---------- Disable default highlight for autocomplete dropdown ----------
+        if (this.trigger && this.trigger.autocomplete && this.trigger.autocomplete._keyManager && this.multiSelect) {
+            try {
+                this.trigger.autocomplete._keyManager.setActiveItem(-1);
+            } catch {
+                (this.trigger.autocomplete._keyManager as any)._activeItemIndex = -1;
             }
-            this.selectedIdxResettable = true;
+        }
+
+        const clearActiveVisuals = (panel: HTMLElement | undefined) => {
+            if (!panel) return;
+            panel.querySelectorAll('.mat-option.mat-active:not(.mat-selected)')?.forEach(el => el.classList.remove('mat-active'));
+            panel.querySelectorAll('.mat-mdc-option.mdc-list-item--activated:not(.mdc-list-item--selected)')?.forEach(el => el.classList.remove('mdc-list-item--activated'));
+            panel.querySelectorAll('.mat-mdc-option.mat-mdc-option-active:not(.mdc-list-item--selected)')?.forEach(el => el.classList.remove('mat-mdc-option-active'));
+            const listbox = panel.querySelector('[role="listbox"]') as HTMLElement | null;
+            listbox?.removeAttribute('aria-activedescendant');
         };
-        // provoke update of filtered options
+
+        if (this.trigger && this.multiSelect) {
+            const triggerAny: any = this.trigger;
+            const openFn = triggerAny.openPanel?.bind(triggerAny) || triggerAny.open?.bind(triggerAny);
+            if (openFn) {
+                triggerAny.openPanel = (...args: any[]) => {
+                    // Always clear active item before opening
+                    try {
+                        if (triggerAny.autocomplete && triggerAny.autocomplete._keyManager) {
+                            triggerAny.autocomplete._keyManager.setActiveItem(-1);
+                        }
+                    } catch {
+                        (triggerAny.autocomplete._keyManager as any)._activeItemIndex = -1;
+                    }
+
+                    const postAttachCleanup = () => {
+                        const panel = triggerAny.autocomplete?.panel?.nativeElement as HTMLElement | undefined;
+                        clearActiveVisuals(panel);
+                    };
+                    queueMicrotask(postAttachCleanup);
+                    requestAnimationFrame(postAttachCleanup);
+                    setTimeout(postAttachCleanup, 0);
+
+                    return openFn(...args);
+                };
+            }
+        }
+
+        if (this.trigger) {
+            (this.trigger).autocompleteDisabled = true;
+
+            requestAnimationFrame(() => {
+                this.trigger.closePanel();
+                requestAnimationFrame(() =>
+                    Promise.resolve().then(() => this.trigger.closePanel()),
+                );
+            });
+
+            this._subscription = this.trigger.panelClosingActions.subscribe(() => {
+                this.checkValue();
+                this.cdRef.detectChanges();
+            });
+
+            (this.trigger as any)._resetActiveItem = () => {
+                if (this.selectedIdxResettable && !this.asInput) {
+                    this.setActiveItem(this.enabledIdx);
+                }
+                this.selectedIdxResettable = true;
+            };
+
+            if (this.trigger.autocomplete?.options) {
+                this.trigger.autocomplete._keyManager =
+                    new ActiveDescendantKeyManager(this.trigger.autocomplete.options).withWrap();
+            }
+        }
+
+        if (this.multiSelectDropdown) {
+            requestAnimationFrame(() => {
+                this.multiSelectDropdown.close();
+                requestAnimationFrame(() =>
+                    Promise.resolve().then(() => this.multiSelectDropdown.close()),
+                );
+            });
+
+            const originalSelectOpen = this.multiSelectDropdown.open.bind(this.multiSelectDropdown);
+            (this.multiSelectDropdown).open = () => {
+                if (
+                    this.blockFirstOpenSelect ||
+                    this.deferOpenSelectUntilNextTick ||
+                    this.enteredFromOutsideCooldown
+                ) {
+                    return;
+                }
+
+                const kmAny: any = (this.multiSelectDropdown)._keyManager || this.multiKeyManager;
+                if (kmAny) {
+                    try { kmAny.setActiveItem(-1); } catch { kmAny._activeItemIndex = -1; }
+                }
+
+                const postAttachCleanup = () => {
+                    const panel = this.multiSelectDropdown.panel?.nativeElement as HTMLElement | undefined;
+                    clearActiveVisuals(panel);
+                };
+                queueMicrotask(postAttachCleanup);
+                requestAnimationFrame(postAttachCleanup);
+                setTimeout(postAttachCleanup, 0);
+
+                originalSelectOpen();
+            };
+
+            this.closeAllSub = XcFormAutocompleteComponent.closeAllDropdowns$.subscribe((origin) => {
+                if (origin !== this && this.multiSelectDropdown?.panelOpen) {
+                    this.multiSelectDropdown.close();
+                }
+            });
+
+            this.multiSelectDropdown.openedChange.subscribe((opened) => {
+                const panel = this.multiSelectDropdown.panel?.nativeElement as HTMLElement | undefined;
+
+                if (
+                    opened &&
+                    (this.blockFirstOpenSelect ||
+                        this.deferOpenSelectUntilNextTick ||
+                        this.enteredFromOutsideCooldown)
+                ) {
+                    this.multiSelectDropdown.close();
+                    return;
+                }
+
+                if (opened) {
+                    XcFormAutocompleteComponent.closeAllDropdowns$.next(this);
+
+                    if (this.multiSelectDropdown.options) {
+                        const km = new ActiveDescendantKeyManager(this.multiSelectDropdown.options).withWrap();
+                        (this.multiSelectDropdown)._keyManager = km;
+                        this.multiKeyManager = km;
+                        try { km.setActiveItem(-1); } catch { (km as any)._activeItemIndex = -1; }
+                        this.cdRef.detectChanges();
+                    } else {
+                        this.multiKeyManager = undefined;
+                    }
+
+                    if (panel) {
+                        panel.addEventListener('keydown', this.boundPanelKeydown, { capture: true });
+
+                        const panelEl = panel;
+
+                        // Remove active highlight on any pointer/mouse event
+                        const clearActiveOnPointer = () => {
+                            const kmAny: any = (this.multiSelectDropdown)._keyManager || this.multiKeyManager;
+                            if (kmAny) {
+                                try { kmAny.setActiveItem(-1); } catch { kmAny._activeItemIndex = -1; }
+                            }
+                            clearActiveVisuals(panelEl);
+                            this.cdRef.detectChanges();
+                        };
+
+                        panelEl.addEventListener('click', () => queueMicrotask(clearActiveOnPointer), true);
+                        panelEl.addEventListener('pointerdown', () => queueMicrotask(clearActiveOnPointer), true);
+
+                        const selectionSub = this.multiSelectDropdown.optionSelectionChanges.subscribe(() => {
+                            queueMicrotask(() => clearActiveOnPointer());
+                        });
+
+                        const docCaptureKeydown = (ev: KeyboardEvent) => {
+                            if (ev.key === 'Tab') {
+                                const target = ev.target as Node | null;
+                                if (target && panel.contains(target)) {
+                                    XcFormAutocompleteComponent.closeAllDropdowns$.next(this);
+                                    this.multiSelectDropdown.close();
+                                }
+                            }
+                        };
+                        document.addEventListener('keydown', docCaptureKeydown, true);
+
+                        const sub = this.multiSelectDropdown.openedChange.subscribe((o) => {
+                            if (!o) {
+                                panel.removeEventListener('keydown', this.boundPanelKeydown, { capture: true });
+                                panelEl.removeEventListener('click', () => queueMicrotask(clearActiveOnPointer), true);
+                                panelEl.removeEventListener('pointerdown', () => queueMicrotask(clearActiveOnPointer), true);
+                                document.removeEventListener('keydown', docCaptureKeydown, true);
+                                selectionSub?.unsubscribe();
+                                sub.unsubscribe();
+                            }
+                        });
+
+                        queueMicrotask(() => clearActiveVisuals(panelEl));
+                        requestAnimationFrame(() => clearActiveVisuals(panelEl));
+                        setTimeout(() => clearActiveVisuals(panelEl), 0);
+                    }
+
+                    this.panelFocusInListener = (ev: FocusEvent) => {
+                        const target = ev.target as Node | null;
+                        if (!panel) return;
+                        if (
+                            target &&
+                            !panel.contains(target) &&
+                            !this.elementRef.nativeElement.contains(target)
+                        ) {
+                            if (this.multiSelectDropdown.panelOpen) {
+                                XcFormAutocompleteComponent.closeAllDropdowns$.next(this);
+                                this.multiSelectDropdown.close();
+                            }
+                        }
+                    };
+                    document.addEventListener('focusin', this.panelFocusInListener);
+                } else {
+                    if (panel) {
+                        panel.removeEventListener('keydown', this.boundPanelKeydown);
+                    }
+                    if (this.panelFocusInListener) {
+                        document.removeEventListener('focusin', this.panelFocusInListener);
+                        this.panelFocusInListener = undefined;
+                    }
+                }
+            });
+        }
         this.updateFilteredOptions.next(this.selectedOption);
-        // important to avoid change detection error
         this.cdRef.detectChanges();
     }
 
@@ -285,12 +513,27 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         if (this._subscription) {
             this._subscription.unsubscribe();
         }
+        if (this.closeAllSub) {
+            this.closeAllSub.unsubscribe();
+        }
 
-        const element = (this.elementRef.nativeElement as HTMLElement);
+        const element = this.elementRef.nativeElement as HTMLElement;
         this.ngZone.runOutsideAngular(() => {
-            element.removeEventListener('keydown', this.onkeydown);
-            element.removeEventListener('keyup', this.keyup);
+            element.removeEventListener("keydown", this.onkeydown);
+            element.removeEventListener("keyup", this.keyup);
         });
+        const panel = this.multiSelectDropdown?.panel?.nativeElement as HTMLElement | undefined;
+            if (panel) {
+                panel.removeEventListener("keydown", this.boundPanelKeydown);
+            }
+            if (this.panelFocusInListener) {
+                document.removeEventListener(
+                    "focusin",
+                    this.panelFocusInListener,
+                );
+            }
+        document.removeEventListener("focusin", this.onDocumentFocusIn, true);
+        document.removeEventListener("mousedown", this.onDocumentMouseDown,true);
     }
 
 
@@ -304,6 +547,35 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         }
     };
 
+
+    private boundPanelKeydown = (ev: KeyboardEvent) => {
+        if (!this.multiSelect) return;
+
+        // Swallow the first ArrowDown/Up after a keyboard-initiated open
+        if (this.msSwallowNextNav && (ev.key === 'ArrowDown' || ev.key === 'ArrowUp')) {
+            ev.preventDefault();
+            ev.stopImmediatePropagation();
+            this.msSwallowNextNav = false;
+
+            const kmAny: any = (this.multiSelectDropdown)._keyManager || this.multiKeyManager;
+            if (kmAny) {
+                try { kmAny.setActiveItem(-1); } catch { kmAny._activeItemIndex = -1; }
+            }
+
+            // Clear any residual active visuals and aria
+            const panel = this.multiSelectDropdown.panel?.nativeElement as HTMLElement | undefined;
+            panel?.querySelectorAll('.mat-option.mat-active,.mat-mdc-option.mdc-list-item--activated,.mat-mdc-option.mat-mdc-option-active')
+                ?.forEach(el => el.classList.remove('mat-active', 'mdc-list-item--activated', 'mat-mdc-option-active'));
+            const listbox = panel?.querySelector('[role="listbox"]') as HTMLElement | null;
+            listbox?.removeAttribute('aria-activedescendant');
+            return;
+        }
+
+        // Reset guards on close/navigation away
+        if (ev.key === 'Escape' || ev.key === 'Tab') {
+            this.msSwallowNextNav = false;
+        }
+    };
 
     protected suffixClickChangedValue(unfocusedInput: boolean) {
         this.suppressNextFocusEmit = unfocusedInput;
@@ -388,15 +660,54 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     mousedown(event: MouseEvent) {
         if (!this.readonly && !this.disabled) {
-            if (this.asDropdown) {
-                event.preventDefault();
-                if (this.trigger.panelOpen) {
+            event.preventDefault();
+
+            if (this.trigger)
+                (this.trigger).autocompleteDisabled = false;
+
+            if (this.enteredFromOutsideCooldown) {
+                this.clearEnteredCooldownAndBlocks();
+            }
+
+            if (!this.hasUserInteracted) {
+                this.hasUserInteracted = true;
+                this.allowOpenAfterTick();
+            }
+            if (this.multiSelect && !this.hasSelectUserInteracted) {
+                this.hasSelectUserInteracted = true;
+                this.allowSelectOpenAfterTick();
+            }
+
+            if (
+                this.blockFirstOpen ||
+                this.deferOpenUntilNextTick ||
+                (this.multiSelect &&
+                    (this.blockFirstOpenSelect ||
+                        this.deferOpenSelectUntilNextTick))
+            ) {
+                this.cdRef.detectChanges();
+                return;
+            }
+
+            if (this.multiSelect) {
+                if (this.multiSelectDropdown) {
+                    if (this.multiSelectDropdown.panelOpen) {
+                        this.multiSelectDropdown.close();
+                    } else {
+                        XcFormAutocompleteComponent.closeAllDropdowns$.next(
+                            this,
+                        );
+                        (this.multiSelectDropdown).open();
+                    }
+                }
+            } else if (this.asDropdown) {
+                if (this.trigger?.panelOpen) {
                     this.trigger.closePanel();
                 } else {
-                    this.trigger.openPanel();
+                    (this.trigger).openPanel();
                 }
             } else {
-                this.trigger.openPanel();
+                (this.trigger).openPanel();
             }
             this.cdRef.detectChanges();
         }
@@ -410,29 +721,199 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     onkeydown = (event: KeyboardEvent) => {
 
-        // trigger's panel is closed beforehand if user presses Enter
-        // - therefore this.trigger.panelOpen is an insufficent indicator for checking if the panel was open
-        const panelWasOpen = this.openPanelWasJustClosed || this.trigger.panelOpen;
-
-        // prevent firefox from typing text into input field
-        // is ctrl or alt true then this keydown event may be a short cut and default must not prevented
-        if (!event.ctrlKey && !event.altKey && this.asDropdown && event.key !== 'Tab') {
-            event.preventDefault();
-        }
-
-        if (event.key === 'Escape' || event.key === 'Enter') {
-            this.trigger.closePanel();
-            this.checkValue();
-            if (panelWasOpen) {
-                event.stopPropagation();
+        if (event.key === "Tab") {
+            // If multiselect is open, close it before tabbing away.
+            if (this.multiSelect && this.multiSelectDropdown?.panelOpen) {
+                XcFormAutocompleteComponent.closeAllDropdowns$.next(this);
+                this.multiSelectDropdown.close();
             }
-            this.cdRef.detectChanges();
+            return;
         }
 
-        // should run in Angular's zone to avoid compatible problems
-        this.ngZone.run(() => {
-            super.onkeydown(event);
-        });
+        if (this.trigger) (this.trigger).autocompleteDisabled = false;
+
+        if (!this.hasUserInteracted) {
+            this.hasUserInteracted = true;
+            this.allowOpenAfterTick();
+        }
+
+        if (this.multiSelect && !this.hasSelectUserInteracted) {
+            this.hasSelectUserInteracted = true;
+            this.allowSelectOpenAfterTick();
+        }
+
+        if (!this.multiSelect || !this.multiSelectDropdown) {
+            if (event.key === "ArrowDown") {
+                if (this.trigger && !this.trigger.panelOpen) {
+                    if (this.enteredFromOutsideCooldown) {
+                        this.clearEnteredCooldownAndBlocks();
+                    }
+
+                    this.trigger.openPanel();
+                    event.preventDefault();
+                    return;
+                }
+            }
+            this.ngZone.run(() => super.onkeydown(event));
+            return;
+        }
+
+        switch (event.key) {
+            case 'ArrowDown': {
+                if (this.enteredFromOutsideCooldown) {
+                    this.clearEnteredCooldownAndBlocks();
+                }
+
+                // Open panel without activating any option; swallow first nav after keyboard-open
+                if (
+                    !this.multiSelectDropdown.panelOpen &&
+                    !this.blockFirstOpenSelect &&
+                    !this.deferOpenSelectUntilNextTick
+                ) {
+                    XcFormAutocompleteComponent.closeAllDropdowns$.next(this);
+                    this.msSwallowNextNav = true;
+                    (this.multiSelectDropdown).open();
+
+                    // Keep active index at -1 (no active row)
+                    const kmAny: any = (this.multiSelectDropdown)._keyManager || this.multiKeyManager;
+                    if (kmAny) {
+                        try { kmAny.setActiveItem(-1); } catch { kmAny._activeItemIndex = -1; }
+                    }
+
+                    // Extra visual cleanup passes (legacy + MDC + aria)
+                    const panel = this.multiSelectDropdown.panel?.nativeElement as HTMLElement | undefined;
+                    const clear = () => {
+                        panel?.querySelectorAll('.mat-option.mat-active,.mat-mdc-option.mdc-list-item--activated,.mat-mdc-option.mat-mdc-option-active')
+                            ?.forEach(el => el.classList.remove('mat-active', 'mdc-list-item--activated', 'mat-mdc-option-active'));
+                        const listbox = panel?.querySelector('[role="listbox"]') as HTMLElement | null;
+                        listbox?.removeAttribute('aria-activedescendant');
+                    };
+                    queueMicrotask(clear);
+                    requestAnimationFrame(clear);
+                    setTimeout(clear, 0);
+
+                    // Consume the key so it doesn't also navigate
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    return;
+                }
+
+                // Panel already open: normal navigation
+                const km = (this.multiSelectDropdown)._keyManager || this.multiKeyManager;
+                if (km) {
+                    km.setNextItemActive();
+                    this.cdRef.detectChanges();
+
+                    const activeOption = km.activeItem as MatOption | undefined;
+                    const hostEl = activeOption?._getHostElement?.();
+                    if (hostEl) {
+                        requestAnimationFrame(() => {
+                            const panel = this.multiSelectDropdown.panel?.nativeElement as HTMLElement;
+                            if (panel) {
+                                const panelRect = panel.getBoundingClientRect();
+                                const optionRect = hostEl.getBoundingClientRect();
+                                const buffer = hostEl.offsetHeight * 2;
+
+                                if (optionRect.bottom > panelRect.bottom - buffer) {
+                                    panel.scrollTop += optionRect.bottom - panelRect.bottom + buffer;
+                                } else if (optionRect.top < panelRect.top + buffer) {
+                                    panel.scrollTop -= panelRect.top - optionRect.top + buffer;
+                                }
+                            } else {
+                                hostEl.scrollIntoView({ block: 'nearest' });
+                            }
+                        });
+                    }
+                }
+
+                event.preventDefault();
+                break;
+            }
+
+            case "ArrowUp": {
+                if (this.multiSelectDropdown.panelOpen) {
+                    const km =
+                        (this.multiSelectDropdown)._keyManager ||
+                        this.multiKeyManager;
+                    if (km) {
+                        km.setPreviousItemActive();
+                        this.cdRef.detectChanges();
+
+                        const activeOption = km.activeItem as
+                            | MatOption
+                            | undefined;
+                        const hostEl = activeOption?._getHostElement?.();
+                        if (hostEl) {
+                            requestAnimationFrame(() => {
+                                const panel = this.multiSelectDropdown.panel
+                                    ?.nativeElement as HTMLElement;
+                                if (panel) {
+                                    const panelRect =
+                                        panel.getBoundingClientRect();
+                                    const optionRect =
+                                        hostEl.getBoundingClientRect();
+                                    const buffer = hostEl.offsetHeight * 2;
+
+                                    if (
+                                        optionRect.bottom >
+                                        panelRect.bottom - buffer
+                                    ) {
+                                        panel.scrollTop +=
+                                            optionRect.bottom -
+                                            panelRect.bottom +
+                                            buffer;
+                                    } else if (
+                                        optionRect.top <
+                                        panelRect.top + buffer
+                                    ) {
+                                        panel.scrollTop -=
+                                            panelRect.top -
+                                            optionRect.top +
+                                            buffer;
+                                    }
+                                } else {
+                                    hostEl.scrollIntoView({ block: "nearest" });
+                                }
+                            });
+                        }
+                    }
+                    event.preventDefault();
+                }
+                break;
+            }
+
+            case " ":
+            case "Spacebar":
+                if (
+                    this.multiSelectDropdown.panelOpen &&
+                    this.multiKeyManager
+                ) {
+                    const activeOption = this.multiKeyManager.activeItem;
+                    activeOption?._selectViaInteraction?.();
+                    event.preventDefault();
+                }
+                break;
+
+            case "Enter":
+                if (this.multiSelectDropdown.panelOpen) {
+                    this.applyMultiSelect();
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                break;
+
+            case "Escape":
+                if (this.multiSelectDropdown.panelOpen) {
+                    this.cancelMultiSelect();
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                break;
+
+            default:
+                // should run in Angular's zone to avoid compatible problems
+                this.ngZone.run(() => super.onkeydown(event));
+        }
     };
 
 
@@ -450,11 +931,11 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         // fixes bug which sometimes caused the panel to be closed after clearing the input all at once
         // (via CTRL+BACKSPACE / CTRL+DELETE or, with the input's text being selected, via CTRL+X / BACKSPACE / DELETE)
         // not opening if tabbed to, while pressing "Tab" or "Tab + Shift"
-        const notAllowed = ['Enter', 'Escape', 'Tab', 'Shift'];
-        if (!this.trigger.panelOpen && !this.input.value && !notAllowed.includes(event.key)) {
-            this.value = undefined;
-            this.trigger.openPanel();
-        }
+        // const notAllowed = ['Enter', 'Escape', 'Tab', 'Shift'];
+        // if (!this.trigger.panelOpen && !this.input.value && !notAllowed.includes(event.key)) {
+        //     this.value = undefined;
+        //     this.trigger.openPanel();
+        // }
         this.cdRef.detectChanges();
     };
 
@@ -566,6 +1047,8 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     @Input('xc-form-autocomplete-options')
     set options(value: XcOptionItem[]) {
         this._options = value as XcOptionInternalAutocompleteItem[];
+        this.syncAllOption();
+        this.applyDefaultAllIfNeeded();
         this.updateFilteredOptions.next(this.selectedOption ?? this.value);
     }
 
@@ -684,4 +1167,264 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     optionName(option: XcOptionItem): string {
         return option ? option.name : '';
     }
+
+
+    selectedOptionsMulti: XcOptionItem[] = [];
+    private _filterMultiSelect = false;
+    filteredMultiSelectOptions: XcOptionItem[] = [];
+
+    @ViewChild("multiSelectDropdown", { static: false })
+    multiSelectDropdown: MatSelect;
+    multiSelectControl = new FormControl<string[]>([]);
+    multiSelectInputControl = new FormControl("");
+    private tempMultiSelect: string[] = [];
+    private lastAppliedMultiSelect: string[] = [];
+
+    @Input("xc-form-autocomplete-asmultiselect")
+    set multiSelect(value: boolean) {
+        this._filterMultiSelect = coerceBoolean(value);
+        this.syncAllOption();
+    }
+
+    @Input("xc-form-autocomplete-reset")
+    set reset(value: boolean) {
+        if (coerceBoolean(value)) {
+            this.value = false;
+            setTimeout(() => {
+                this.resetMultiselectCheckboxes();
+                this.cdRef.detectChanges();
+            });
+        }
+    }
+
+
+    get multiSelect(): boolean {
+        return this._filterMultiSelect;
+    }
+
+
+    removeSelectedItem(item: XcOptionItem) {
+        this.selectedOptionsMulti = this.selectedOptionsMulti.filter((i) => i.value !== item.value);
+        const joinedName = this.selectedOptionsMulti.map((opt) => opt.name).join(" | ");
+        const joinedValue = this.selectedOptionsMulti.map((opt) => opt.value).join(" | ");
+        const combinedOption: XcOptionItem = {
+            name: joinedName,
+            value: joinedValue,
+        };
+        this.selectedOption = combinedOption;
+        this.value = combinedOption;
+        this.optionChange.emit(combinedOption);
+
+        this.cdRef.detectChanges();
+    }
+
+    isOptionSelected(option: XcOptionItem): boolean {
+        return this.selectedOptionsMulti?.some((o) => o.value === option.value);
+    }
+
+
+    ngOnInit() {
+        if (this.multiSelect) {
+            this.filteredMultiSelectOptions = (this.options || []).filter(
+                (opt) => opt.value !== XcFormAutocompleteComponent.ALL_VALUE
+            );
+
+            this.multiSelectInputControl.valueChanges.subscribe((val) => {
+                const filterValue = val ? val.toLowerCase() : "";
+                this.filteredMultiSelectOptions = (this.options || []).filter(
+                    (opt) =>
+                        opt.name.toLowerCase().includes(filterValue) &&
+                        opt.value !== XcFormAutocompleteComponent.ALL_VALUE
+                );
+            });
+
+            // Store initial applied values
+            this.lastAppliedMultiSelect = this.multiSelectControl.value
+                ? [...this.multiSelectControl.value]
+                : [];
+        }
+    }
+
+
+    getMultiSelectedNames(): string {
+        const values = Array.isArray(this.multiSelectControl.value)
+            ? this.multiSelectControl.value
+            : [];
+        return values
+            .map((val) => {
+                const found = this.options.find((opt) => opt.value === val);
+                return found ? found.name : "";
+            })
+            .filter(Boolean)
+            .join(" | ");
+    }
+
+
+    openMultiSelectDropdown() {
+        if (this.multiSelectDropdown && !this.multiSelectDropdown.disabled) {
+            this.multiSelectDropdown.open();
+        }
+    }
+
+    onMultiSelectOpened(opened: boolean) {
+        if (opened) {
+            this.tempMultiSelect = [...(this.multiSelectControl.value || [])];
+        } else {
+            // If closed without clicking Apply, restore last applied values
+            this.multiSelectControl.setValue([...this.lastAppliedMultiSelect]);
+            this.multiSelectInputControl.setValue("");
+            this.filteredMultiSelectOptions = this.options || [];
+        }
+    }
+
+    applyMultiSelect() {
+        const selectedValues: string[] = Array.isArray(this.multiSelectControl.value)? this.multiSelectControl.value : [];
+        const joinedNames = selectedValues
+            .map((val) => {
+                const found = this.options.find((opt) => opt.value === val);
+                return found ? found.name : "";
+            }).filter(Boolean).join(" | ");
+        const joinedValue = selectedValues.join("|");
+        this.optionChange.emit({ name: joinedNames, value: joinedValue });
+        // Store applied values
+        this.lastAppliedMultiSelect = [...selectedValues];
+        if (this.multiSelectDropdown) {
+            this.multiSelectDropdown.close();
+        }
+    }
+
+    cancelMultiSelect() {
+        // Restore previous selection
+        this.multiSelectControl.setValue([...this.lastAppliedMultiSelect]);
+        this.multiSelectInputControl.setValue("");
+        this.filteredMultiSelectOptions = this.options || [];
+        if (this.multiSelectDropdown) {
+            this.multiSelectDropdown.close();
+        }
+    }
+
+    resetMultiselectCheckboxes(): void {
+        this.multiSelectControl?.setValue([]);
+        this.multiSelectInputControl.setValue("");
+        this.filteredMultiSelectOptions = this.options || [];
+        this.lastAppliedMultiSelect = [];
+        this.multiSelectDropdown?.options.forEach((option) =>
+            option.deselect(),
+        );
+    }
+
+
+    private allowOpenAfterTick() {
+        this.deferOpenUntilNextTick = true;
+        Promise.resolve().then(() => {
+            this.deferOpenUntilNextTick = false;
+            this.blockFirstOpen = false;
+            if (this.trigger)
+                (this.trigger).autocompleteDisabled = false;
+        });
+    }
+
+
+    private allowSelectOpenAfterTick() {
+        this.deferOpenSelectUntilNextTick = true;
+        Promise.resolve().then(() => {
+            this.deferOpenSelectUntilNextTick = false;
+            this.blockFirstOpenSelect = false;
+        });
+    }
+
+    //Keep All only for single select; remove from multiselect
+    private syncAllOption(): void {
+        const opts = this._options ?? [];
+        const hasAll = opts.some(o => o?.value === XcFormAutocompleteComponent.ALL_VALUE);
+
+        if (this._filterMultiSelect) {
+            // Ensure All is not present in multiselect
+            this._options = hasAll ? opts.filter(o => o?.value !== XcFormAutocompleteComponent.ALL_VALUE) : opts;
+        } else {
+            // Ensure localized All exists at the top for single select
+            this._options = hasAll
+                ? opts
+                : ([{ name: XcFormAutocompleteComponent.ALL_LABEL, value: XcFormAutocompleteComponent.ALL_VALUE }, ...opts]);
+        }
+
+        this.updateFilteredOptions.next(this.selectedOption ?? (this.value));
+    }
+
+    //Default-select All when single select has no value/selection
+    private applyDefaultAllIfNeeded(): void {
+        if (this._filterMultiSelect) return;
+        if (this.selectedOption || this.value) return;
+        const allOpt =
+            (this._options || []).find(o => o?.value === XcFormAutocompleteComponent.ALL_VALUE) ||
+            (this._options || []).find(o => o?.name === XcFormAutocompleteComponent.ALL_LABEL);
+        if (!allOpt) return;
+        queueMicrotask(() => {
+            this.ngZone.run(() => {
+                this.selectedOption = allOpt;
+                this.value = allOpt;
+                this.optionChange.emit(allOpt);
+                this.cdRef.markForCheck();
+            });
+        });
+    }
+
+
+    private isEventInsideAutocompletePanel(target: Node | null): boolean {
+        const panelEl = this.trigger?.autocomplete?.panel?.nativeElement as
+            | HTMLElement
+            | undefined;
+        return !!(panelEl && target && panelEl.contains(target));
+    }
+
+    private clearEnteredCooldownAndBlocks() {
+        this.enteredFromOutsideCooldown = false;
+        this.blockFirstOpen = false;
+        this.blockFirstOpenSelect = false;
+        this.deferOpenUntilNextTick = false;
+        this.deferOpenSelectUntilNextTick = false;
+    }
+
+    onFieldClick(ev: MouseEvent) {
+        if (this.readonly || this.disabled) return;
+        const inFooter = (ev.target as HTMLElement).closest(".multiselect-actions",);
+        if (inFooter) return;
+        this.clearEnteredCooldownAndBlocks();
+        XcFormAutocompleteComponent.closeAllDropdowns$.next(this);
+        if ((this.multiSelectDropdown).toggle) {
+            (this.multiSelectDropdown).toggle();
+        } else {
+            (this.multiSelectDropdown).open();
+        }
+    }
+
+    private onDocumentFocusIn = (ev: FocusEvent) => {
+        const root = this.elementRef.nativeElement as HTMLElement;
+        const target = ev.target as Node | null;
+        if (this.isEventInsideAutocompletePanel(target)) {
+            return; // allow mat-option clicks to proceed
+        }
+        if (target && !root.contains(target)) {
+            if (this.trigger?.panelOpen) this.trigger.closePanel();
+            // Do NOT set autocompleteDisabled/block flags for autocomplete here
+            this.blockFirstOpen = true;
+            this.blockFirstOpenSelect = true;
+            this.enteredFromOutsideCooldown = true;
+        }
+    };
+
+    private onDocumentMouseDown = (ev: MouseEvent) => {
+        const root = this.elementRef.nativeElement as HTMLElement;
+        const target = ev.target as Node | null;
+        if (this.isEventInsideAutocompletePanel(target)) {
+            return; // allow mat-option clicks to select
+        }
+        if (target && !root.contains(target)) {
+            if (this.trigger?.panelOpen) this.trigger.closePanel();
+            // Do NOT set autocompleteDisabled/block flags for autocomplete here
+            this.blockFirstOpen = true;
+            this.blockFirstOpenSelect = true;
+            this.enteredFromOutsideCooldown = true;
+        }
+    };
 }

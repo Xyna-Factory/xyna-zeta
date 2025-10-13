@@ -288,7 +288,14 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
             // we need no auto delegation if element has a tab index of 0 or higher because it means
             // that the user of this directive made it accessable by pressing tab
             if (this.controller && this.controller.autoDelegate && el.tabIndex < 0) {
+                if (el.tagName.toLowerCase() === "xc-form-autocomplete") {
+                    const inputEl = el.querySelector("input");
+                    if (inputEl) {
+                        autoDelegateResult = inputEl;
+                    }
+                }
                 // make sure that no result has an tabIndex of -1
+                if(!autoDelegateResult){
                 const result = Array.from(retrieveFocusableElements(el)).filter(elem => elem.tabIndex >= 0);
                 if (result.length > 1) {
                     console.warn('Auto delegation of the following element let to an inconclusive result.', el);
@@ -297,6 +304,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
                     autoDelegateResult = result[0];
                 }
             }
+        }
 
             specifiedDelegateResult = this.controller.delegateFunction ? this.controller.delegateFunction(el) : null;
         }
