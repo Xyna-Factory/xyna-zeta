@@ -1,26 +1,26 @@
 <mat-form-field [floatLabel]="floatLabel" hideRequiredMarker>
   <mat-label>{{label}}</mat-label>
-  <ng-container *ngIf="multiSelect; else singleSelect">
-    <!-- This input displays selected values and opens the mat-select -->
-    <input matInput [placeholder]="placeholder" [value]="getMultiSelectedNames()" readonly
-      (focus)="multiSelectDropdown.open()" (click)="onFieldClick($event)" [attr.aria-label]="ariaLabel"
-      [tabIndex]="(readonly || disabled) ? -1 : 0" class="multiselect-input" />
-    <!-- Hidden actual select, still functional -->
-    <mat-select #multiSelectDropdown [formControl]="multiSelectControl" multiple
-      (openedChange)="onMultiSelectOpened($event)" [panelClass]="'multiselect-panel'" class="hidden-field">
-      <mat-option *ngFor="let option of filteredMultiSelectOptions" [value]="option.value" [xc-tooltip]=option.name
-        [xc-tooltip-position]="['bottom-right', 'bottom-left', 'top-right', 'top-left']">
-        {{ option.name }}
-      </mat-option>
+    <ng-container *ngIf="multiSelect; else singleSelect">
+      <!-- This input displays selected values and opens the mat-select -->
+      <input matInput [placeholder]="placeholder" [value]="getMultiSelectedNames()" readonly
+        (focus)="multiSelectDropdown.open()" (click)="onFieldClick($event)" [attr.aria-label]="ariaLabel"
+        [tabIndex]="(readonly || disabled) ? -1 : 0" class="multiselect-input" />
+      <!-- Hidden actual select, still functional -->
+      <mat-select #multiSelectDropdown [formControl]="multiSelectControl" multiple
+        (openedChange)="onMultiSelectOpened($event)" [panelClass]="'multiselect-panel'" class="hidden-field">
+        <mat-option *ngFor="let option of filteredMultiSelectOptions" [value]="option.value" [xc-tooltip]=option.name
+          [xc-tooltip-position]="['bottom-right', 'bottom-left', 'top-right', 'top-left']">
+          {{ option.name }}
+        </mat-option>
 
-      <div mat-select-footer class="multiselect-actions fbany fbrow justify-end gap">
-        <xc-button (click)="cancelMultiSelect()">Cancel</xc-button>
-        <xc-button (click)="applyMultiSelect()">Apply</xc-button>
-      </div>
-    </mat-select>
-  </ng-container>
+        <div mat-select-footer class="multiselect-actions fbany fbrow justify-end gap">
+          <xc-button (click)="cancelMultiSelect()">Cancel</xc-button>
+          <xc-button (click)="applyMultiSelect()">Apply</xc-button>
+        </div>
+      </mat-select>
+    </ng-container>
   <ng-template #singleSelect>
-    <input matInput autocomplete="off" [type]="type" [placeholder]="placeholder" [formControl]="formControl"
+  <input matInput autocomplete="off" [type]="type" [placeholder]="placeholder" [formControl]="formControl"
     [matAutocomplete]="auto" (mousedown)="mousedown($event)" (focus)="onfocus($event)" (blur)="onblur($event)"
     [readonly]="readonly" [attr.aria-label]="ariaLabel" [tabIndex]="(readonly || disabled) ? -1 : tabIndex"
     [required]="required">
@@ -46,21 +46,11 @@
     <mat-option tabindex="0" [value]="option" [disabled]="option.disabled || readonly"
       [xc-tooltip]="option.showTooltip ? option.name : ''"
       [xc-tooltip-position]="['bottom-right', 'bottom-left', 'top-right', 'top-left']">
-      <div class="option-row" [class.option-reset]="option?.value === null">
-          <!-- Reset icon only for 'All' (null) option -->
-          <ng-container *ngIf="option?.value === null">
-            <xc-icon-button xc-icon-size="small" xc-icon-name="filterclear"></xc-icon-button>
-          </ng-container>
-
-          <!-- If option has icon, show it; else show text -->
-          <xc-icon *ngIf="option.icon && option.icon !== 'filterclear'; else textTemplate" [xc-icon-name]="option.icon" xc-icon-size="small">
-            {{ option.name }}
-          </xc-icon>
-
-          <ng-template #textTemplate>
-            <span class="option-text">{{ option.name }}</span>
-          </ng-template>
-      </div>
+      @if (option.icon) {
+      <xc-icon [xc-icon-name]="option.icon" xc-icon-size="small">{{option.name}}</xc-icon>
+      } @else {
+      {{option.name}}
+      }
     </mat-option>
     }
   </mat-autocomplete>
