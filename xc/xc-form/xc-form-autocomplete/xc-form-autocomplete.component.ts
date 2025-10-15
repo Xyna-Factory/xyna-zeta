@@ -343,11 +343,13 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                 );
             });
 
+            // set subscription
             this._subscription = this.trigger.panelClosingActions.subscribe(() => {
                 this.checkValue();
                 this.cdRef.detectChanges();
             });
 
+             // prevent resetting of the active item by internal code
             (this.trigger as any)._resetActiveItem = () => {
                 if (this.selectedIdxResettable && !this.asInput) {
                     this.setActiveItem(this.enabledIdx);
@@ -502,7 +504,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                 }
             });
         }
+        // provoke update of filtered options
         this.updateFilteredOptions.next(this.selectedOption);
+        // important to avoid change detection error
         this.cdRef.detectChanges();
     }
 
