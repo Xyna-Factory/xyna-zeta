@@ -61,7 +61,7 @@ export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxa
             if (observable) {
                 return observable.pipe(
                     XcAutocompleteDataWrapper.getXoEnumeratedValuesMapper(),
-                    // tap((items: XcOptionItem[]) => items.unshift(XcOptionItemString()))
+                    tap((items: XcOptionItem[]) => items.unshift(XcOptionItemString()))
                 );
             }
         }
@@ -228,7 +228,6 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     private panelFocusInListener?: (ev: FocusEvent) => void;
 
     private static readonly ALL_VALUE = null;
-    private static readonly ALL_LABEL = '<alle>';
     private msSwallowNextNav = false;
 
 
@@ -1047,8 +1046,6 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     @Input('xc-form-autocomplete-options')
     set options(value: XcOptionItem[]) {
         this._options = value as XcOptionInternalAutocompleteItem[];
-        this.syncAllOption();
-        this.applyDefaultAllIfNeeded();
         this.updateFilteredOptions.next(this.selectedOption ?? this.value);
     }
 
@@ -1183,7 +1180,6 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     @Input("xc-form-autocomplete-asmultiselect")
     set multiSelect(value: boolean) {
         this._filterMultiSelect = coerceBoolean(value);
-        this.syncAllOption();
     }
 
     @Input("xc-form-autocomplete-reset")
@@ -1225,23 +1221,14 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     ngOnInit() {
         if (this.multiSelect) {
-            this.filteredMultiSelectOptions = (this.options || []).filter(
-                (opt) => opt.value !== XcFormAutocompleteComponent.ALL_VALUE
-            );
-
-            this.multiSelectInputControl.valueChanges.subscribe((val) => {
-                const filterValue = val ? val.toLowerCase() : "";
-                this.filteredMultiSelectOptions = (this.options || []).filter(
-                    (opt) =>
-                        opt.name.toLowerCase().includes(filterValue) &&
-                        opt.value !== XcFormAutocompleteComponent.ALL_VALUE
-                );
+            this.filteredMultiSelectOptions = (this.options || []).filter(o => !this.isAll(o));
+            this.multiSelectInputControl.valueChanges.subscribe(val => {
+                const q = (val || '').toLowerCase();
+                this.filteredMultiSelectOptions = (this.options || [])
+                    .filter(o => !this.isAll(o))
+                    .filter(o => o.name.toLowerCase().includes(q));
             });
-
-            // Store initial applied values
-            this.lastAppliedMultiSelect = this.multiSelectControl.value
-                ? [...this.multiSelectControl.value]
-                : [];
+            this.lastAppliedMultiSelect = this.multiSelectControl.value ? [...this.multiSelectControl.value] : [];
         }
     }
 
@@ -1273,8 +1260,19 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
             // If closed without clicking Apply, restore last applied values
             this.multiSelectControl.setValue([...this.lastAppliedMultiSelect]);
             this.multiSelectInputControl.setValue("");
-            this.filteredMultiSelectOptions = this.options || [];
+            this.filteredMultiSelectOptions = (this.options || []).filter(o => !this.isAll(o));
         }
+    }
+
+    private isAll(opt?: XcOptionItem): boolean {
+        const ALL = XcFormAutocompleteComponent.ALL_VALUE;
+        const val = (opt?.value ?? '');
+
+        // Treat as "All" if:
+        // - special ALL value (null), or
+        // - label equals localized "alle" (with/without <>), or
+        // - injected blank option (empty name or empty value)
+        return val === ALL || val === '';
     }
 
     applyMultiSelect() {
@@ -1297,7 +1295,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         // Restore previous selection
         this.multiSelectControl.setValue([...this.lastAppliedMultiSelect]);
         this.multiSelectInputControl.setValue("");
-        this.filteredMultiSelectOptions = this.options || [];
+        this.filteredMultiSelectOptions = (this.options || []).filter(o => !this.isAll(o));
         if (this.multiSelectDropdown) {
             this.multiSelectDropdown.close();
         }
@@ -1306,7 +1304,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     resetMultiselectCheckboxes(): void {
         this.multiSelectControl?.setValue([]);
         this.multiSelectInputControl.setValue("");
-        this.filteredMultiSelectOptions = this.options || [];
+        this.filteredMultiSelectOptions = (this.options || []).filter(o => !this.isAll(o));
         this.lastAppliedMultiSelect = [];
         this.multiSelectDropdown?.options.forEach((option) =>
             option.deselect(),
@@ -1330,42 +1328,6 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         Promise.resolve().then(() => {
             this.deferOpenSelectUntilNextTick = false;
             this.blockFirstOpenSelect = false;
-        });
-    }
-
-    //Keep All only for single select; remove from multiselect
-    private syncAllOption(): void {
-        const opts = this._options ?? [];
-        const hasAll = opts.some(o => o?.value === XcFormAutocompleteComponent.ALL_VALUE);
-
-        if (this._filterMultiSelect) {
-            // Ensure All is not present in multiselect
-            this._options = hasAll ? opts.filter(o => o?.value !== XcFormAutocompleteComponent.ALL_VALUE) : opts;
-        } else {
-            // Ensure localized All exists at the top for single select
-            this._options = hasAll
-                ? opts
-                : ([{ name: XcFormAutocompleteComponent.ALL_LABEL, value: XcFormAutocompleteComponent.ALL_VALUE }, ...opts]);
-        }
-
-        this.updateFilteredOptions.next(this.selectedOption ?? (this.value));
-    }
-
-    //Default-select All when single select has no value/selection
-    private applyDefaultAllIfNeeded(): void {
-        if (this._filterMultiSelect) return;
-        if (this.selectedOption || this.value) return;
-        const allOpt =
-            (this._options || []).find(o => o?.value === XcFormAutocompleteComponent.ALL_VALUE) ||
-            (this._options || []).find(o => o?.name === XcFormAutocompleteComponent.ALL_LABEL);
-        if (!allOpt) return;
-        queueMicrotask(() => {
-            this.ngZone.run(() => {
-                this.selectedOption = allOpt;
-                this.value = allOpt;
-                this.optionChange.emit(allOpt);
-                this.cdRef.markForCheck();
-            });
         });
     }
 

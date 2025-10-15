@@ -105,33 +105,4 @@
       border-width: $xc-form-dropdown-border-width !important;
 }
 
-::ng-deep mat-option {
-  .option-row {
-    display: flex;
-    align-items: center;
-  }
-
-  .option-reset xc-icon-button {
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1px;
-    transform: translateY(1px);
-
-    ::ng-deep .mat-mdc-icon-button {
-      position: static !important;
-      pointer-events: none !important;
-
-      .mat-mdc-button-touch-target {
-        position: static !important;
-        display: inline-flex !important;
-      }
-    }
-  }
-
-  .option-text {
-    display: inline-block;
-    line-height: 1.2;
-  }
-}
 
