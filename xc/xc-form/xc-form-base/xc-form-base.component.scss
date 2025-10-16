@@ -71,11 +71,30 @@ $suffix-icon-height: 22px;
       /* Input & Textarea                                                     */
       /* -------------------------------------------------------------------- */
 
+      input, .textarea-wrapper {
+        border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color;
+        border-radius: $xc-form-base-input-border-radius;
+      }
+      input:not(:focus):hover,
+      .textarea-wrapper:has(textarea:not(:focus):hover) {
+        border-color: $xc-form-base-input-border-color-hover;
+      }
+      input:disabled, input:read-only,
+      .textarea-wrapper:has(textarea:disabled), .textarea-wrapper:has(textarea:read-only) {
+        border-color: $xc-form-base-input-border-color-disabled;
+      }
+      input:focus,
+      .textarea-wrapper:has(textarea:focus) {
+        border-color: $xc-form-base-input-border-color-focus;
+      }
+      input:invalid,
+      .textarea-wrapper:has(textarea:invalid) {
+        border-color: $xc-form-base-input-error-color;
+      }
+
       input,
       textarea {
         pointer-events: initial;
-        margin-top: 2px;
-        padding: $xc-form-base-input-padding-top $xc-form-base-input-padding-right $xc-form-base-input-padding-bottom $xc-form-base-input-padding-left;
 
         font-size: $xc-form-base-input-font-size;
         font-style: $xc-form-base-input-font-style;
@@ -83,32 +102,24 @@ $suffix-icon-height: 22px;
 
         vertical-align: middle;
         background-color: $xc-form-base-input-background-color-disabled;
-        border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color-disabled;
-        border-radius: $xc-form-base-input-border-radius;
         color: $xc-form-base-input-color-disabled;
 
         &:not(:disabled):not(:read-only) {
           color: $xc-form-base-input-color;
 
           &:not(:focus) {
-            border-color: $xc-form-base-input-border-color;
             background-color: $xc-form-base-input-background-color;
 
             &:hover {
               background-color: $xc-form-base-input-background-color-hover;
-              border-color: $xc-form-base-input-border-color-hover;
             }
           }
         }
 
         &:focus {
           background-color: $xc-form-base-input-background-color-focus;
-          border-color: $xc-form-base-input-border-color-focus;
         }
 
-        &:invalid {
-          border-color: $xc-form-base-input-error-color;
-        }
 
         &::placeholder {
           user-select: none;
@@ -118,6 +129,8 @@ $suffix-icon-height: 22px;
       }
 
       input {
+        margin-top: 2px;
+        padding: $xc-form-base-input-padding-top $xc-form-base-input-padding-right $xc-form-base-input-padding-bottom $xc-form-base-input-padding-left;
         height: $xc-form-base-input-height;
         text-overflow: ellipsis;
         font-family: inherit;
@@ -128,11 +141,13 @@ $suffix-icon-height: 22px;
         }
       }
 
-      textarea {
-        line-height: $xc-form-base-textarea-line-height;
+      .textarea-wrapper {
         margin-top: 16px;
         padding: $xc-form-base-textarea-padding;
+      }
 
+      textarea {
+        line-height: $xc-form-base-textarea-line-height;
         &.mat-mdc-input-element {
           box-sizing: border-box;
           caret-color: $xc-form-base-input-color;
