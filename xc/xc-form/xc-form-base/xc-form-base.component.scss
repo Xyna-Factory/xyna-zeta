@@ -74,6 +74,7 @@ $suffix-icon-height: 22px;
       input, .textarea-wrapper {
         border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color;
         border-radius: $xc-form-base-input-border-radius;
+        background-color: $xc-form-base-input-background-color;
       }
       input:not(:focus):hover,
       .textarea-wrapper:has(textarea:not(:focus):hover) {
@@ -82,6 +83,7 @@ $suffix-icon-height: 22px;
       input:disabled, input:read-only,
       .textarea-wrapper:has(textarea:disabled), .textarea-wrapper:has(textarea:read-only) {
         border-color: $xc-form-base-input-border-color-disabled;
+        background-color: $xc-form-base-input-background-color-disabled;
       }
       input:focus,
       .textarea-wrapper:has(textarea:focus) {
@@ -142,7 +144,7 @@ $suffix-icon-height: 22px;
       }
 
       .textarea-wrapper {
-        margin-top: 16px;
+        margin-top: 4px;
         padding: $xc-form-base-textarea-padding;
       }
 

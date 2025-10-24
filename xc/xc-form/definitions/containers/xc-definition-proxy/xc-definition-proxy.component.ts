@@ -42,6 +42,10 @@ export class XcDefinitionProxyComponent extends XcBaseDefinitionComponent {
     readonly DefinitionListDefinition: typeof XoDefinitionListDefinition = XoDefinitionListDefinition;
     readonly FormDefinition: typeof XoFormDefinition = XoFormDefinition;
 
+    constructor(){
+        super();
+    }
+
     // REMARK: More specific types first (order is crucial)
     private readonly classes = [
         this.PredefinedTablePanelDefinition,
