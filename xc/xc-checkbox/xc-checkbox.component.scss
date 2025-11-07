@@ -58,8 +58,8 @@
 
                  .mat-mdc-checkbox-touch-target,
                  input {
-                     height: 16px;
-                     width: 16px;
+                     height: $xc-checkbox-height;
+                     width: $xc-checkbox-height;
                      top: 50%;
                      left: 50%;
                      transform: translate(-50%, -50%);
@@ -76,8 +76,8 @@
          .mat-mdc-checkbox .mdc-checkbox__ripple {
              left: calc(50% - 14px);
              top: calc(50% - 14px);
-             height: 28px;
-             width: 28px;
+             height: calc($xc-checkbox-height - 4px);;
+             width: calc($xc-checkbox-height - 4px);;
          }
 
          .mdc-checkbox:hover .mdc-checkbox__ripple,
