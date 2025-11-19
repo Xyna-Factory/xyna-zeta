@@ -4,6 +4,8 @@
     [readonly]="data.disabled"
     iconTooltip="clear-tooltip"
     xc-i18n
+    [xc-form-field-tab-index]="data.usernameTabIndex"
+    [xc-form-field-tab-index-suffix]="data.usernameSuffixTabIndex"
  />
 <xc-form-input label="password-input"
     [(value)]="data.password"
@@ -13,4 +15,6 @@
     (keydown.enter)="data.onEnter()"
     iconTooltip="show-password-tooltip"
     xc-i18n
+    [xc-form-field-tab-index]="data.passwordTabIndex"
+    [xc-form-field-tab-index-suffix]="data.usernameSuffixTabIndex"
  />

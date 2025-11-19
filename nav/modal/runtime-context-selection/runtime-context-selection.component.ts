@@ -18,8 +18,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnDestroy, ViewChild } from '@angular/core';
 
 import { RuntimeContext } from '@zeta/api';
-import { Subscription } from 'rxjs';
 
+import { Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { ApiService, RuntimeContextSelectionSettings } from '../../../api/api.service';
@@ -72,7 +72,7 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
         const wa = new XoWorkspaceArray();
          
 
-        this.refresh(true);
+        this.refresh(true, true);
     }
 
 
@@ -87,8 +87,8 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
     }
 
 
-    refresh(restorePreselection = false) {
-        this.apiService.getRuntimeContexts().pipe(
+    refresh(restorePreselection = false, useCache = false) {
+        this.apiService.getRuntimeContexts(useCache).pipe(
             // convert to ordinary runtime context
             map(rtcs => rtcs.map(rtc => rtc.toRuntimeContext())),
             // filter out workspaces or applications

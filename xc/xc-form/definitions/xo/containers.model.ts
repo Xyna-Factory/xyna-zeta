@@ -61,6 +61,7 @@ export class XoContainerDefinition extends XoBaseDefinition {
         if (this.children?.data) {
             this.children.data.forEach(child => {
                 if (child) {
+                    child.setObserver(this.observer)
                     child.setParent(this);
                 }
             });

@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { environment } from '@environments/environment';
 
@@ -55,6 +55,8 @@ class ComparableLanguage extends Comparable implements SelectableLanguage {
     standalone: false
 })
 export class XcLanguageSelectorComponent {
+
+    @Input() tabIndex?: number = 0;
 
     selectLanguageDataWrapper: XcAutocompleteDataWrapper;
     hasLanguages: boolean;

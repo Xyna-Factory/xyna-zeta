@@ -18,11 +18,12 @@
 import { AfterContentInit, Component, ElementRef, HostBinding, HostListener, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatRipple } from '@angular/material/core';
 
+import { Subscription } from 'rxjs';
+
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
 import { ATTRIBUTE_ARIALABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
-import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -31,7 +32,7 @@ import { Subscription } from 'rxjs';
 })
 export class XcButtonBaseComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
 
-    protected _ariaLabel: KeyTranslationPair = {key: '', translated: ''};
+    protected _ariaLabel: KeyTranslationPair = { key: '', translated: '' };
     protected _tabDisabled = false;
     protected _disabled = false;
     protected _busy = false;
@@ -94,6 +95,8 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     protected translate(attribute: string) {
         if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
             this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
+        } else {
+            this[attribute]["translated"] = this[attribute]["key"];
         }
     }
 
@@ -154,6 +157,9 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     get ariaLabel(): string {
         return this._ariaLabel.translated;
     }
+
+    @Input('xc-button-tab-index')
+    tabIndex?: number = 0;
 
 
     @HostListener('keydown.enter')

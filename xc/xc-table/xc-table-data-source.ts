@@ -183,7 +183,7 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
             const resolved = row.resolveHead(path);
             const value = resolved.value;
             if (value instanceof XoObject && value.i18nProperties.has(resolved.tail)) {
-                return [this.i18n.translate(value.resolve(resolved.tail))];
+                return this.i18n.translate(value.resolve(resolved.tail));
             }
         }
         // resolve raw value

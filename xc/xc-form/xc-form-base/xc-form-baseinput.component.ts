@@ -37,7 +37,7 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
     @Input('xc-form-field-suffix')
     suffix?: 'clear' | 'nullify' | 'password' | 'dropdown';
 
-    @ViewChild(MatInput, {static: false})
+    @ViewChild(MatInput, { static: false })
     input: MatInput;
 
     @Input()
@@ -45,6 +45,8 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
     required = false;
 
+    @Input('xc-form-field-tab-index-suffix')
+    tabIndexSuffix?: number = -1;
 
     constructor(element: ElementRef<HTMLElement>, i18n: I18nService) {
         super(element, i18n);

@@ -36,6 +36,10 @@ export interface LoginComponentData {
     password?: string;
     disabled?: boolean;
     onEnter: () => void;
+    usernameTabIndex: number;
+    usernameSuffixTabIndex: number;
+    passwordTabIndex?: number;
+    passwordSuffixTabIndex?: number;
 }
 
 
@@ -61,7 +65,9 @@ export class AuthLoginComponent {
         name: 'SmartCard',
         data: <LoginComponentData>{
             username: '',
-            onEnter: this.login.bind(this)
+            onEnter: this.login.bind(this),
+            usernameTabIndex: 1,
+            usernameSuffixTabIndex: 4,
         }
     };
 
@@ -72,7 +78,11 @@ export class AuthLoginComponent {
         data: <LoginComponentData>{
             username: '',
             password: '',
-            onEnter: this.login.bind(this)
+            onEnter: this.login.bind(this),
+            usernameTabIndex: 1,
+            usernameSuffixTabIndex: 4,
+            passwordTabIndex: 2,
+            passwordSuffixTabIndex: 5,
         }
     };
 
@@ -83,7 +93,11 @@ export class AuthLoginComponent {
         data: <LoginComponentData>{
             username: '',
             password: '',
-            onEnter: this.login.bind(this)
+            onEnter: this.login.bind(this),
+            usernameTabIndex: 1,
+            usernameSuffixTabIndex: 4,
+            passwordTabIndex: 2,
+            passwordSuffixTabIndex: 5,
         }
     };
 

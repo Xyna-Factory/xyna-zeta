@@ -127,8 +127,8 @@ $xc-form-base-input-padding-top: 0;
 $xc-form-base-input-padding-right: 8px;
 $xc-form-base-input-padding-bottom: 0;
 $xc-form-base-input-padding-left: 8px;
-$xc-form-base-input-line-height: 32px;
-$xc-form-base-input-line-height-compact: 24px;
+$xc-form-base-input-height: 32px;
+$xc-form-base-input-height-compact: 24px;
 
 $xc-form-base-input-font-size: $font-size-medium;
 $xc-form-base-input-font-style: normal;
@@ -142,6 +142,7 @@ $xc-form-base-input-border-color-hover: $color-gray-5;
 
 $xc-form-base-input-suffix-color: $color-gray-2;
 $xc-form-base-input-suffix-color-hover: $color-normal;
+$xc-form-base-input-suffix-border-color: $color-accent;
 $xc-form-base-input-label-color: $color-gray-5;
 $xc-form-base-input-error-color: $color-warn;
 $xc-form-base-input-placeholder-color: $color-gray-3;

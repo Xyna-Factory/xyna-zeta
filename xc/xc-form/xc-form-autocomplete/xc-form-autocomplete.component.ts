@@ -323,11 +323,12 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
             const options = this.asInput
                 ? (this.options ?? []).concat(XcOptionItemString(this.value))
                 : (this.options ?? []);
-            // find option with matching name with consideration of case sensitivity
-            option = options.find(o => !o.disabled && (
-                (this.caseSensitive && o.name === this.value) ||
-                (!this.caseSensitive && o.name.toLowerCase() === this.value.toLowerCase())
-            ));
+            // try to find an option with the given value
+            option = options.find(o => !o.disabled && o.name === this.value);
+            // if no option was found, try to find one without case sensitivity
+            if (option === undefined && !this.caseSensitive) {
+                option = options.find(o => !o.disabled && o.name.toLowerCase() === this.value.toLowerCase());
+            }
         } else {
             // use value, if it's an option
             option = isObject(this.value) ? this.value : undefined;

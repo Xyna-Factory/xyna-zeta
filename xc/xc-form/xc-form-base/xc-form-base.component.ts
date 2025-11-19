@@ -18,12 +18,13 @@
 import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 
+import { Subscription } from 'rxjs';
+
 import { coerceBoolean } from '../../../base';
 import { I18nService, LocaleService } from '../../../i18n';
 import { ATTRIBUTE_ARIALABEL, ATTRIBUTE_ICONTOOLTIP, ATTRIBUTE_LABEL, ATTRIBUTE_PLACEHOLDER, KeyTranslationPair } from '../../../xc/shared/xc-i18n-attributes';
 import { xcFormTranslations_deDE } from '../locale/xc-translations.de-DE';
 import { xcFormTranslations_enUS } from '../locale/xc-translations.en-US';
-import { Subscription } from 'rxjs';
 
 
 export enum FloatStyle {
@@ -41,9 +42,9 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 
     protected _compact = false;
     protected _semiCompact = false;
-    protected _label: KeyTranslationPair = {key: '', translated: ''};
-    protected _iconTooltip: KeyTranslationPair = {key: '', translated: ''};
-    protected _ariaLabel: KeyTranslationPair = {key: '', translated: ''};
+    protected _label: KeyTranslationPair = { key: '', translated: '' };
+    protected _iconTooltip: KeyTranslationPair = { key: '', translated: '' };
+    protected _ariaLabel: KeyTranslationPair = { key: '', translated: '' };
 
     protected subs: Subscription[] = [];
 
@@ -136,6 +137,8 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
     protected translate(attribute: string) {
         if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
             this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
+        } else {
+            this[attribute]["translated"] = this[attribute]["key"];
         }
     }
 }
@@ -150,7 +153,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     protected _indicateChanges = false;
     protected _readonly = false;
-    protected _placeholder: KeyTranslationPair = {key: '', translated: ''};
+    protected _placeholder: KeyTranslationPair = { key: '', translated: '' };
 
     readonly formControl = new FormControl();
 
@@ -279,6 +282,8 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         ).join(', ');
     }
 
+    @Input('xc-form-field-tab-index')
+    tabIndex?: number = 0;
 
     constructor(element: ElementRef<HTMLElement>, i18n: I18nService) {
         super(element, i18n);

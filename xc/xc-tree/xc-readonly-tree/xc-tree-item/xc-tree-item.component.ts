@@ -92,6 +92,13 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
         }
     }
 
+    expandItem() {
+        this.expanded = true;
+        if (!this.node.complete) {
+            this.expand.emit(this.node);
+        }
+    }
+
 
     expandRecursively() {
         this.expanded = true;

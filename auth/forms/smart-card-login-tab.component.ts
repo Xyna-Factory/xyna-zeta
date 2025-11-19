@@ -31,7 +31,9 @@ export class SmartCardLoginTabComponent extends XcTabComponent<void, LoginCompon
 
     data: LoginComponentData = {
         username: '',
-        onEnter: () => {}
+        onEnter: () => { },
+        usernameTabIndex: 1,
+        usernameSuffixTabIndex: 4,
     };
 
     constructor(injector: Injector) {

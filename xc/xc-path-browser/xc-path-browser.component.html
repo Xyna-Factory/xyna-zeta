@@ -8,13 +8,13 @@
       <label class="label">{{currentItem.name}}</label>
     </div>
     <div class="path-options">
-      @for (parent of parentsFromPath(); track parent) {
+      @for (parent of parentsFromPath(); let i = $index; track i) {
         <span
           (dblclick)="select(parent)"
           class="option parent-option"
         >.. ({{parent.name}})</span>
       }
-      @for (child of currentItem.children; track child) {
+      @for (child of currentItem.children; let i = $index; track i) {
         <span
           (dblclick)="select(child)"
           class="option child-option"

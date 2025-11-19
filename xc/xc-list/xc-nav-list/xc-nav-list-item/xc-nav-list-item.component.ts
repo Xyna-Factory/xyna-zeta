@@ -16,13 +16,16 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, inject, Input, OnInit, Output } from '@angular/core';
 
 import { coerceBoolean, isBoolean } from '../../../../base';
 import { XcItem } from '../../../shared/xc-item';
 import { XcThemeableComponent } from '../../../shared/xc-themeable.component';
 import { XcTooltipPosition } from '../../../xc-tooltip/xc-tooltip.directive';
 import { XcNavListOrientation } from '../xc-nav-list.component';
+import { xcNavListTranslations_enUS } from '../locale/xc-nav-list-translations.en-US';
+import { xcNavListTranslations_deDE } from '../locale/xc-nav-list-translations.de-DE';
+import { I18nService, LocaleService } from '@zeta/i18n';
 
 
 export interface XcNavListItem extends XcItem {
@@ -82,9 +85,18 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     readonly focusChange = new EventEmitter<XcNavListItem>();
 
 
+    private readonly i18n = inject<I18nService>(I18nService);
+
     constructor() {
         super();
         this.color = 'primary';
+        this.i18n.setTranslations(LocaleService.EN_US, xcNavListTranslations_enUS);
+        this.i18n.setTranslations(LocaleService.DE_DE, xcNavListTranslations_deDE);
+    }
+
+
+    get ariaLabel(): string {
+        return this.i18n.translate('menu_with_elements', { key: '$0', value: this.item.children.length.toString() });
     }
 
 
