@@ -51,7 +51,9 @@ type XcPreviousTooltipPosition = 'left' | 'right' | 'above' | 'below' | 'before'
 })
 export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
-    protected _tooltip: {key: string | TemplateRef<any>, translated: string} = {key: '', translated: ''};
+    private observer: MutationObserver;
+
+    protected _tooltip: { key: string | TemplateRef<any>, translated: string } = { key: '', translated: '' };
 
     protected subs: Subscription[] = [];
 
@@ -248,12 +250,35 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
     ngOnInit() {
-        this.i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');
+        const el = this.elementRef.nativeElement;
+
+        this.i18nContext = el.getAttribute('xc-i18n');
+
+        // Übersetzung, falls Tooltip bereits gesetzt ist
+        if (this._tooltip.key) {
+            this.translate(ATTRIBUTE_TOOLTIP);
+        }
+
+        // Subscription für Sprachwechsel
         this.subs.push(this.localeService.languageChange.subscribe(() => {
             if (this._tooltip.key) {
                 this.translate(ATTRIBUTE_TOOLTIP);
             }
         }));
+
+        // MutationObserver erstellen
+        this.observer = new MutationObserver(() => {
+            const newContext = el.getAttribute('xc-i18n');
+            if (newContext !== this.i18nContext) {
+                this.i18nContext = newContext;
+                if (this._tooltip.key) {
+                    this.translate(ATTRIBUTE_TOOLTIP);
+                }
+            }
+        });
+
+        // Beobachte nur Änderungen am Attribut 'xc-i18n'
+        this.observer.observe(el, { attributes: true, attributeFilter: ['xc-i18n'] });
     }
 
 

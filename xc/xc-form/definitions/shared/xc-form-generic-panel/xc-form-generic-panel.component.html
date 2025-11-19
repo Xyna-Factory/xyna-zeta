@@ -40,13 +40,13 @@
 
     }
     <div class="items-left">
-      @for (child of definition?.header?.leftArea?.children; track child.stringify()) {
+      @for (child of definition?.header?.leftArea?.children; track child ? child.stringify() : '') {
       <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
         [xc-definition-observer]="definition.observer"></xc-definition-proxy>
       }
     </div>
     <div class="items-right">
-      @for (child of definition?.header?.rightArea?.children; track child.stringify()) {
+      @for (child of definition?.header?.rightArea?.children; track child ? child.stringify() : '') {
       <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
         [xc-definition-observer]="definition.observer"></xc-definition-proxy>
       }
@@ -64,7 +64,7 @@
   </header>
   @if (definition?.children?.length > 0) {
   <section class="stretch scroll">
-    @for (child of definition?.children; track child.stringify()) {
+    @for (child of definition?.children; track child ? child.stringify() : '') {
     <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
       [xc-definition-observer]="definition.observer"></xc-definition-proxy>
     }
@@ -74,7 +74,7 @@
   <footer>
     @if (definition?.footer?.leftArea?.children) {
     <div class="items-left">
-      @for (child of definition?.footer?.leftArea?.children; track child.stringify()) {
+      @for (child of definition?.footer?.leftArea?.children; track child ? child.stringify() : '') {
       <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
         [xc-definition-observer]="definition.observer"></xc-definition-proxy>
       }
@@ -83,7 +83,7 @@
     <ng-content select="[additionalFooterItems]"></ng-content>
     @if (definition?.footer?.rightArea?.children) {
     <div class="items-right">
-      @for (child of definition?.footer?.rightArea?.children; track child.stringify()) {
+      @for (child of definition?.footer?.rightArea?.children; track child ? child.stringify() : '') {
       <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
         [xc-definition-observer]="definition.observer"></xc-definition-proxy>
       }

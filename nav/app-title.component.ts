@@ -15,13 +15,11 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterState } from '@angular/router';
 
 import { filter, map } from 'rxjs/operators';
-
-import { XcMenuService } from '../xc';
 
 
 @Component({
@@ -30,15 +28,10 @@ import { XcMenuService } from '../xc';
 })
 export class AppTitleComponent implements OnInit {
 
+    protected readonly router = inject(Router);
+    protected readonly titleService = inject(Title);
+
     private readonly projectTitle = window.document.title ?? 'Xyna';
-
-
-    constructor(
-        private readonly router: Router,
-        private readonly titleService: Title,
-        readonly menuService: XcMenuService
-    ) {
-    }
 
 
     ngOnInit() {
