@@ -22,6 +22,7 @@ import { XcModule } from '@zeta/xc';
 
 import { BrokenComponent } from './broken.component';
 import { RuntimeContextSelectionComponent } from './modal/runtime-context-selection/runtime-context-selection.component';
+import { QueryParameterService } from './query-parameter.service';
 import { RedirectGuardService } from './redirect.guard';
 import { RightGuardService } from './right.guard';
 
@@ -37,7 +38,8 @@ import { RightGuardService } from './right.guard';
     ],
     providers: [
         RightGuardService,
-        RedirectGuardService
+        RedirectGuardService,
+        QueryParameterService
     ]
 })
 export class NavModule {
