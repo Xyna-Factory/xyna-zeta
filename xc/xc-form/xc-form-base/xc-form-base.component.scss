@@ -49,10 +49,6 @@ $suffix-icon-height: 22px;
       background-color: transparent;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* Text field wrapper                                                     */
-    /* ---------------------------------------------------------------------- */
-
     .mat-mdc-text-field-wrapper {
       width: 100%;
       padding: 0;
@@ -66,10 +62,6 @@ $suffix-icon-height: 22px;
       button {
         pointer-events: initial;
       }
-
-      /* -------------------------------------------------------------------- */
-      /* Input & Textarea                                                     */
-      /* -------------------------------------------------------------------- */
 
       input, .textarea-wrapper {
         border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color;
@@ -89,7 +81,7 @@ $suffix-icon-height: 22px;
       .textarea-wrapper:has(textarea:focus) {
         border-color: $xc-form-base-input-border-color-focus;
       }
-      input:invalid,
+      input.ng-invalid.ng-touched,
       .textarea-wrapper:has(textarea:invalid) {
         border-color: $xc-form-base-input-error-color;
       }
@@ -121,7 +113,6 @@ $suffix-icon-height: 22px;
         &:focus {
           background-color: $xc-form-base-input-background-color-focus;
         }
-
 
         &::placeholder {
           user-select: none;
@@ -155,10 +146,6 @@ $suffix-icon-height: 22px;
           caret-color: $xc-form-base-input-color;
         }
       }
-
-      /* -------------------------------------------------------------------- */
-      /* Field infix & suffix                                                 */
-      /* -------------------------------------------------------------------- */
 
       .mat-mdc-form-field-infix {
         display: block;
@@ -220,10 +207,6 @@ $suffix-icon-height: 22px;
       }
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* Error message styles                                                   */
-    /* ---------------------------------------------------------------------- */
-
     .mat-mdc-form-field-subscript-wrapper {
       line-height: initial;
 
@@ -247,10 +230,6 @@ $suffix-icon-height: 22px;
       height: 12px;
     }
   }
-
-  /* ------------------------------------------------------------------------ */
-  /* Suffix button                                                            */
-  /* ------------------------------------------------------------------------ */
 
   .mat-mdc-form-field .mat-mdc-text-field-wrapper {
     button.mat-mdc-icon-button[matSuffix] {
@@ -315,7 +294,6 @@ $suffix-icon-height: 22px;
   }
 }
 
-
 /* -------------------------------------------------------------------------- */
 /* Host modifiers                                                             */
 /* -------------------------------------------------------------------------- */
@@ -326,7 +304,6 @@ $suffix-icon-height: 22px;
     font-weight: bold;
   }
 
-  // hide material asterisk
   ::ng-deep.mat-placeholder-required,
   ::ng-deep.mat-mdc-form-field-required-marker {
     display: none;
@@ -357,7 +334,6 @@ $suffix-icon-height: 22px;
   }
 
   .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple {
-
     &::before,
     &::after {
       top: 0;
@@ -367,70 +343,17 @@ $suffix-icon-height: 22px;
       transition: none;
     }
   }
-
-  .mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-line-ripple::before,
-  .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-line-ripple::before {
-    border-color: $color-focus-outline;
-  }
-}
-
-:host.compact.noerror::ng-deep {
-  .mat-mdc-text-field-wrapper {
-    margin-bottom: 0;
-  }
-
-  .mat-mdc-form-field-subscript-wrapper {
-    display: none;
-  }
-}
-
-xc-panel.compact :host {
-  ::ng-deep .mat-mdc-form-field {
-    input {
-      height: $xc-form-base-input-height-compact;
-    }
-
-    .mat-mdc-form-field-icon-suffix {
-      height: $xc-form-base-input-height-compact;
-    }
-  }
-
-  &.noerror {
-    ::ng-deep .mat-mdc-text-field-wrapper {
-      margin-bottom: 0;
-    }
-  }
-}
-
-:host.indicatechanges::ng-deep {
-  .ng-dirty~.mdc-floating-label::after {
-    position: absolute;
-    top: 21px;
-    right: 1px;
-
-    content: "";
-    width: 0;
-    height: 0;
-    border-top: 8px solid $xc-form-base-input-changeindicator-color;
-    border-left: 8px solid transparent;
-  }
-
-  .ng-dirty:hover~.mdc-floating-label::after,
-  .ng-dirty:focus~.mdc-floating-label::after {
-    border-width: 0;
-    transition: all $transition-time-fast ease;
-  }
 }
 
 /* -------------------------------------------------------------------------- */
-/* Floating label states                                                      */
+/* Label color fix: always standard color, keine roten Labels                 */
 /* -------------------------------------------------------------------------- */
 
-::ng-deep .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label,
-::ng-deep .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled).mdc-text-field--focused .mdc-floating-label--float-above,
-::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label,
-::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label--float-above,
-::ng-deep .mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label,
-.mdc-text-field--filled.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover .mdc-floating-label--float-above {
-  color: $xc-form-base-input-label-color;
+:host::ng-deep
+.mdc-floating-label,
+.mdc-floating-label--float-above,
+.mdc-text-field--filled:hover .mdc-floating-label,
+.mdc-text-field--filled.ng-invalid .mdc-floating-label,
+.mdc-text-field--filled.ng-invalid:hover .mdc-floating-label {
+  color: $xc-form-base-input-label-color !important;
 }
