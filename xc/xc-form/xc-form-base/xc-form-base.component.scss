@@ -63,24 +63,31 @@ $suffix-icon-height: 22px;
         pointer-events: initial;
       }
 
-      input, .textarea-wrapper {
+      input,
+      .textarea-wrapper {
         border: $xc-form-base-input-border-width solid $xc-form-base-input-border-color;
         border-radius: $xc-form-base-input-border-radius;
         background-color: $xc-form-base-input-background-color;
       }
+
       input:not(:focus):hover,
       .textarea-wrapper:has(textarea:not(:focus):hover) {
         border-color: $xc-form-base-input-border-color-hover;
       }
-      input:disabled, input:read-only,
-      .textarea-wrapper:has(textarea:disabled), .textarea-wrapper:has(textarea:read-only) {
+
+      input:disabled,
+      input:read-only,
+      .textarea-wrapper:has(textarea:disabled),
+      .textarea-wrapper:has(textarea:read-only) {
         border-color: $xc-form-base-input-border-color-disabled;
         background-color: $xc-form-base-input-background-color-disabled;
       }
+
       input:focus,
       .textarea-wrapper:has(textarea:focus) {
         border-color: $xc-form-base-input-border-color-focus;
       }
+
       input.ng-invalid.ng-touched,
       .textarea-wrapper:has(textarea:invalid) {
         border-color: $xc-form-base-input-error-color;
@@ -141,6 +148,7 @@ $suffix-icon-height: 22px;
 
       textarea {
         line-height: $xc-form-base-textarea-line-height;
+
         &.mat-mdc-input-element {
           box-sizing: border-box;
           caret-color: $xc-form-base-input-color;
@@ -334,6 +342,7 @@ $suffix-icon-height: 22px;
   }
 
   .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple {
+
     &::before,
     &::after {
       top: 0;
@@ -346,14 +355,30 @@ $suffix-icon-height: 22px;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Label color fix: always standard color, keine roten Labels                 */
+/* Label color fix + dynamische Farbvarianten über color="…"                 */
 /* -------------------------------------------------------------------------- */
 
-:host::ng-deep
-.mdc-floating-label,
-.mdc-floating-label--float-above,
-.mdc-text-field--filled:hover .mdc-floating-label,
-.mdc-text-field--filled.ng-invalid .mdc-floating-label,
-.mdc-text-field--filled.ng-invalid:hover .mdc-floating-label {
-  color: $xc-form-base-input-label-color !important;
+@each $key, $value in $color-map {
+  :host[color="#{$key}"]::ng-deep {
+
+    .mdc-floating-label,
+    .mdc-floating-label--float-above,
+    .mdc-text-field--filled:hover .mdc-floating-label,
+    .mdc-text-field--filled.ng-invalid .mdc-floating-label,
+    .mdc-text-field--filled.ng-invalid:hover .mdc-floating-label {
+      color: $value !important;
+    }
+  }
+}
+
+/* Default-Farbe falls kein color="…" angegeben ist */
+:host:not([color])::ng-deep {
+
+  .mdc-floating-label,
+  .mdc-floating-label--float-above,
+  .mdc-text-field--filled:hover .mdc-floating-label,
+  .mdc-text-field--filled.ng-invalid .mdc-floating-label,
+  .mdc-text-field--filled.ng-invalid:hover .mdc-floating-label {
+    color: $xc-form-base-input-label-color !important;
+  }
 }
