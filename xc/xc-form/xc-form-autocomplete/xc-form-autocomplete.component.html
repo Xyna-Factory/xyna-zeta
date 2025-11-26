@@ -14,8 +14,8 @@
       </mat-option>
 
       <div mat-select-footer class="multiselect-actions fbany fbrow justify-end gap">
-        <xc-button (click)="cancelMultiSelect()">Cancel</xc-button>
-        <xc-button (click)="applyMultiSelect()">Apply</xc-button>
+        <xc-button (click)="cancelMultiSelect()" xc-i18n [attr.aria-label]="'cancel' | xcI18n">cancel</xc-button>
+        <xc-button (click)="applyMultiSelect()" xc-i18n [attr.aria-label]="'apply' | xcI18n">apply</xc-button>
       </div>
     </mat-select>
   </ng-container>

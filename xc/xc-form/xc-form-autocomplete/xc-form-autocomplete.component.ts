@@ -229,6 +229,8 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     private static readonly ALL_VALUE = null;
     private msSwallowNextNav = false;
+    // Prevent duplicate announcements when selecting via Space key
+    private suppressSelectionAnnounce = false;
 
 
     @ViewChild("applyBtn", { static: false })
@@ -445,8 +447,29 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                         panelEl.addEventListener('click', () => queueMicrotask(clearActiveOnPointer), true);
                         panelEl.addEventListener('pointerdown', () => queueMicrotask(clearActiveOnPointer), true);
 
-                        const selectionSub = this.multiSelectDropdown.optionSelectionChanges.subscribe(() => {
+                        const selectionSub = this.multiSelectDropdown.optionSelectionChanges.subscribe((selectionEvent: any) => {
                             queueMicrotask(() => clearActiveOnPointer());
+
+                            // Skip announcement if selection was triggered by Space key (handled elsewhere)
+                            if (this.suppressSelectionAnnounce) {
+                                return;
+                            }
+
+                            // Wait for MatSelect to update its state
+                            setTimeout(() => {
+                                try {
+                                    const matOption = selectionEvent?.source as MatOption | undefined;
+                                    const opt = matOption?.value as XcOptionItem | undefined;
+                                    if (opt) {
+                                        const values = Array.isArray(this.multiSelectControl.value) ? this.multiSelectControl.value : [];
+                                        // Get accessible label for selected option.
+                                        const announcement = this.getMultiOptionAriaLabel(matOption?.value ?? selectionEvent?.value ?? opt);
+                                        if (announcement) this.a11yService.screenreaderSpeak(announcement);
+                                    }
+                                } catch {
+                                    // resilient
+                                }
+                            }, 0);
                         });
 
                         const docCaptureKeydown = (ev: KeyboardEvent) => {
@@ -818,8 +841,21 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                                 } else if (optionRect.top < panelRect.top + buffer) {
                                     panel.scrollTop -= panelRect.top - optionRect.top + buffer;
                                 }
+                                // Announce focused option for accessibility (voice/screen reader)
+                                try {
+                                    const activeVal = activeOption?.value;
+                                    const announcement = this.getMultiOptionAriaLabel(activeVal);
+                                    if (announcement) this.a11yService.screenreaderSpeak(announcement);
+                                } catch {
+                                }
                             } else {
                                 hostEl.scrollIntoView({ block: 'nearest' });
+                                try {
+                                    const activeVal = activeOption?.value;
+                                    const announcement = this.getMultiOptionAriaLabel(activeVal);
+                                    if (announcement) this.a11yService.screenreaderSpeak(announcement);
+                                } catch {
+                                }
                             }
                         });
                     }
@@ -873,6 +909,13 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                                 } else {
                                     hostEl.scrollIntoView({ block: "nearest" });
                                 }
+                                // Announce focused option for accessibility (voice/screen reader)
+                                try {
+                                    const activeVal = activeOption?.value;
+                                    const announcement = this.getMultiOptionAriaLabel(activeVal);
+                                    if (announcement) this.a11yService.screenreaderSpeak(announcement);
+                                } catch {
+                                }
                             });
                         }
                     }
@@ -888,7 +931,23 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                     this.multiKeyManager
                 ) {
                     const activeOption = this.multiKeyManager.activeItem;
-                    activeOption?._selectViaInteraction?.();
+                    if (activeOption) {
+                        // Announce selection after MatSelect updates.
+                        this.suppressSelectionAnnounce = true;
+                        activeOption?._selectViaInteraction?.();
+
+                        // announce after the selection has been applied
+                        setTimeout(() => {
+                                try {
+                                    const announcement = this.getMultiOptionAriaLabel(activeOption?.value);
+                                    if (announcement) this.a11yService.screenreaderSpeak(announcement);
+                                } catch {
+                                // resilient
+                            } finally {
+                                this.suppressSelectionAnnounce = false;
+                            }
+                        }, 0);
+                    }
                     event.preventDefault();
                 }
                 break;
@@ -1165,6 +1224,49 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         return option ? option.name : '';
     }
 
+    /**
+     * Returns an accessible label for a multi-select option, including its name and selection state.
+     */getMultiOptionAriaLabel(optionOrValue: XcOptionItem | any): string {
+        if (optionOrValue == null) return '';
+
+        // resolve primitive value -> option object when needed
+        let resolved: XcOptionItem | undefined;
+        if (typeof optionOrValue === 'object' && optionOrValue.name) {
+            resolved = optionOrValue as XcOptionItem;
+        } else {
+            // try to find matching option by value or name
+            resolved = (this.options || []).find(o => o.value === optionOrValue || o.name === optionOrValue);
+        }
+
+        const name = resolved?.name ?? String(optionOrValue ?? '');
+
+        const values = Array.isArray(this.multiSelectControl.value) ? this.multiSelectControl.value : [];
+        const selected = !!resolved ? (this.isOptionSelected(resolved) || values.includes(resolved.value)) : values.includes(optionOrValue);
+
+        const selectedText = selected
+            ? this.i18nService.translate('zeta.xc-form.option.selected') || 'selected'
+            : this.i18nService.translate('zeta.xc-form.option.not-selected') || 'not selected';
+
+        // Announce position in filtered options for accessibility.
+        try {
+            const list = (this.filteredMultiSelectOptions && this.filteredMultiSelectOptions.length)
+                ? this.filteredMultiSelectOptions
+                : ((this.options || []).filter(o => !this.isAll(o)));
+            const total = list ? list.length : 0;
+            const idx = list ? list.findIndex(o => (o.value === (resolved?.value ?? optionOrValue) || o.name === name)) : -1;
+
+            if (total > 0 && idx >= 0) {
+                const menuLabel = this.i18nService.translate('zeta.xc-form.option.menu-item') || 'menu item';
+                const ofLabel = this.i18nService.translate('zeta.xc-form.option.of') || 'of';
+                const position = `${menuLabel} ${idx + 1} ${ofLabel} ${total}`;
+                return `${name}, ${position}, ${selectedText}`;
+            }
+        } catch {
+        }
+        // Simple fallback announcement: "OptionName, selected" or "OptionName, not selected"
+        return `${name}, ${selectedText}`;
+    }
+
 
     selectedOptionsMulti: XcOptionItem[] = [];
     private _filterMultiSelect = false;
@@ -1231,7 +1333,6 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
             this.lastAppliedMultiSelect = this.multiSelectControl.value ? [...this.multiSelectControl.value] : [];
         }
     }
-
 
     getMultiSelectedNames(): string {
         const values = Array.isArray(this.multiSelectControl.value)
