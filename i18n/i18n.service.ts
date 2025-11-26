@@ -18,11 +18,11 @@
 import { HttpBackend, HttpClient } from '@angular/common/http';
 import { Injectable, Injector, Type } from '@angular/core';
 
-import { isString } from '../base';
 import escapeStringRegexp from 'escape-string-regexp';
-
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+
+import { isString } from '../base';
 import { LocaleService } from './locale.service';
 
 
@@ -101,13 +101,13 @@ export class I18nService {
     contextDismantlingSearch = true;
 
 
-    BUTTON       = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.button       + ':' + key, ...params) };
-    INPUT        = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.input        + ':' + key, ...params) };
-    CHECKBOX     = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.checkbox     + ':' + key, ...params) };
+    BUTTON = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.button + ':' + key, ...params) };
+    INPUT = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.input + ':' + key, ...params) };
+    CHECKBOX = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.checkbox + ':' + key, ...params) };
     AUTOCOMPLETE = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.autocomplete + ':' + key, ...params) };
-    TABLE        = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.table        + ':' + key, ...params) };
+    TABLE = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.table + ':' + key, ...params) };
     // xc-form-label
-    LABEL        = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.label        + ':' + key, ...params) };
+    LABEL = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.label + ':' + key, ...params) };
 
 
     static i18nTypeForTagName = (tagName: string): string => {
@@ -147,7 +147,7 @@ export class I18nService {
             const args = argString.split(customArgumentPrefix || '#');
             args.splice(0, 1); // String.split() will create a the first array element empty
             const params: I18nParam[] =
-                args.map((key: string, index: number) => ({key: '{' + index + '}', value: this.translate(key)}));
+                args.map((key: string, index: number) => ({ key: '{' + index + '}', value: this.translate(key) }));
             return this.translate(errorCode, ...params);
         }
         console.warn('cannot find error code in \'' + msg + '\'');
@@ -182,7 +182,7 @@ export class I18nService {
 
         const translationMap = this._translations.get(this.language);
 
-         
+
         if (translationMap && key != undefined) {
 
             if (this.contextDismantlingSearch) {
@@ -214,11 +214,11 @@ export class I18nService {
 
             // only cache it if a valid value for given key was found
             if (this.cacheBehavior !== I18nCacheBehavior.NoCaching && isString(translation?.value)) {
-                cache.set(key, {lastAccess: Date.now(), translation});
+                cache.set(key, { lastAccess: Date.now(), translation });
             }
         }
 
-         
+
         return (translation != undefined) ? translation : this.fulfillNoTranslationFoundBehavior(key, cache);
     }
 
@@ -242,7 +242,7 @@ export class I18nService {
 
         // cache the not found key because user wants to cache all keys
         if (this.cacheBehavior === I18nCacheBehavior.CacheAllKeys) {
-            cache.set(key, {lastAccess: Date.now(), translation});
+            cache.set(key, { lastAccess: Date.now(), translation });
         }
 
         return translation;
@@ -296,14 +296,19 @@ export class I18nService {
      * Check and modify the "angular.json" accordingly
      */
     readTranslations(language: string, file: string): Observable<I18nTranslation[]> {
+        if (!file) {
+            console.error('Translation file is empty or undefined for language:', language);
+            return EMPTY;
+        }
+        const httpBackend = this.injector.get(HttpBackend);
+        const nonInterceptedJSONHTTPClient = new HttpClient(httpBackend);
 
-        const httpBackend = this.injector.get<HttpBackend>(HttpBackend as Type<HttpBackend>);
-        const nonInterceptedJSONHTTPClient: HttpClient = new HttpClient(httpBackend);
-
-        return nonInterceptedJSONHTTPClient.get<I18nJsonSchemaTranslation>('./assets/locale/' + file).pipe(
-            tap(translation => this.setTranslations(language, translation.translations)),
-            map<I18nJsonSchemaTranslation, I18nTranslation[]>(translation => translation.translations)
-        );
+        return nonInterceptedJSONHTTPClient
+            .get<I18nJsonSchemaTranslation>('./assets/locale/' + encodeURIComponent(file))
+            .pipe(
+                tap(translation => this.setTranslations(language, translation.translations)),
+                map(translation => translation.translations)
+            );
     }
 
 

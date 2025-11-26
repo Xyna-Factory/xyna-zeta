@@ -20,12 +20,11 @@ import { NgComponentOutlet } from '@angular/common';
 import { AfterViewInit, Component, ComponentRef, EventEmitter, Injector, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatTabGroup } from '@angular/material/tabs';
 
-import { coerceBoolean } from '../../base';
-import { I18nService, LocaleService } from '../../i18n';
-
 import { Observable, of, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 
+import { coerceBoolean } from '../../base';
+import { I18nService, LocaleService } from '../../i18n';
 import { XcThemeableComponent } from '../../xc/shared/xc-themeable.component';
 import { xcTabBarTranslations_deDE } from './locale/xc-tab-bar-translations.de-DE';
 import { xcTabBarTranslations_enUS } from './locale/xc-tab-bar-translations.en-US';
@@ -75,7 +74,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
     private _getComponentInstance(item: XcTabBarItem): XcTabComponent | null {
         return this.componentOutlets.map(outlet =>
-             
+
             (outlet['_componentRef'] as ComponentRef<XcTabComponent>).instance
         ).find(instance =>
             instance.tabBarItem === item
@@ -101,8 +100,9 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     private resetSelectionIndex() {
-         
-        this.tabGroup['_selectedIndex'] = undefined;
+        queueMicrotask(() => {
+            this.tabGroup['_selectedIndex'] = undefined;
+        });
     }
 
 
@@ -191,7 +191,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
     private selectedIndexChange(index: number) {
         // prevent selecting the busy tab and omit events not changing the index
-        if (!this.selectedBusyTab && this._focusedIndex !== index) {
+        const newItem = this.items[index];
+        if (!this.selectedBusyTab && newItem) {
             // call after-deactivate handler
             this.deactivate(this.focusedItem, this._focusedIndex);
             // change focused index
