@@ -279,7 +279,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     }
 
 
-      ngAfterViewInit() {
+    ngAfterViewInit() {
         const element = this.elementRef.nativeElement as HTMLElement;
 
         this.ngZone.runOutsideAngular(() => {
@@ -545,17 +545,17 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
             element.removeEventListener("keyup", this.keyup);
         });
         const panel = this.multiSelectDropdown?.panel?.nativeElement as HTMLElement | undefined;
-            if (panel) {
-                panel.removeEventListener("keydown", this.boundPanelKeydown);
-            }
-            if (this.panelFocusInListener) {
-                document.removeEventListener(
-                    "focusin",
-                    this.panelFocusInListener,
-                );
-            }
+        if (panel) {
+            panel.removeEventListener("keydown", this.boundPanelKeydown);
+        }
+        if (this.panelFocusInListener) {
+            document.removeEventListener(
+                "focusin",
+                this.panelFocusInListener,
+            );
+        }
         document.removeEventListener("focusin", this.onDocumentFocusIn, true);
-        document.removeEventListener("mousedown", this.onDocumentMouseDown,true);
+        document.removeEventListener("mousedown", this.onDocumentMouseDown, true);
     }
 
 
@@ -938,10 +938,10 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
                         // announce after the selection has been applied
                         setTimeout(() => {
-                                try {
-                                    const announcement = this.getMultiOptionAriaLabel(activeOption?.value);
-                                    if (announcement) this.a11yService.screenreaderSpeak(announcement);
-                                } catch {
+                            try {
+                                const announcement = this.getMultiOptionAriaLabel(activeOption?.value);
+                                if (announcement) this.a11yService.screenreaderSpeak(announcement);
+                            } catch {
                                 // resilient
                             } finally {
                                 this.suppressSelectionAnnounce = false;
@@ -1377,7 +1377,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     }
 
     applyMultiSelect() {
-        const selectedValues: string[] = Array.isArray(this.multiSelectControl.value)? this.multiSelectControl.value : [];
+        const selectedValues: string[] = Array.isArray(this.multiSelectControl.value) ? this.multiSelectControl.value : [];
         const joinedNames = selectedValues
             .map((val) => {
                 const found = this.options.find((opt) => opt.value === val);

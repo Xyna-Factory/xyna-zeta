@@ -95,14 +95,13 @@
 }
 
 .multiselect-input:focus-visible {
-       outline: 2px solid #1976d2;
-       outline-offset: 2px; border-color: #1976d2 !important;
+    outline: 2px solid #1976d2;
+    outline-offset: 2px;
+    border-color: #1976d2 !important;
 }
 
 .multiselect-input:hover {
-      background-color: $xc-form-dropdown-background-color-hover !important;
-      border-color:  black !important;
-      border-width: $xc-form-dropdown-border-width !important;
+    background-color: $xc-form-dropdown-background-color-hover !important;
+    border-color: black !important;
+    border-width: $xc-form-dropdown-border-width !important;
 }
-
-
