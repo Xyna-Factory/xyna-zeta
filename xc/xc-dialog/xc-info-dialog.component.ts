@@ -18,12 +18,16 @@
 import { Component } from '@angular/core';
 
 import { XcMessageDialogComponent } from './xc-message-dialog.component';
+import { XcDialogWrapperComponent } from './xc-dialog-wrapper.component';
+import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
+import { XcButtonComponent } from '../xc-button/xc-button.component';
+import { XcI18nPipe } from '../../i18n/i18n.pipe';
 
 
 @Component({
     templateUrl: './xc-info-dialog.component.html',
     styleUrls: ['./xc-info-dialog.component.scss'],
-    standalone: false
+    imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcButtonComponent, XcI18nTranslateDirective, XcI18nPipe]
 })
 export class XcInfoDialogComponent extends XcMessageDialogComponent<void, void> {
 }

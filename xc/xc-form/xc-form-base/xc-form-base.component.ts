@@ -34,10 +34,7 @@ export enum FloatStyle {
 }
 
 
-@Component({
-    template: '',
-    standalone: false
-})
+@Component({ template: '' })
 export class XcFormComponent implements AfterContentInit, OnDestroy {
 
     protected _compact = false;
@@ -145,10 +142,7 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 
 
 
-@Component({
-    template: '',
-    standalone: false
-})
+@Component({ template: '' })
 export class XcFormBaseComponent extends XcFormComponent implements AfterContentInit {
 
     protected _indicateChanges = false;

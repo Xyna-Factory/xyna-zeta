@@ -23,13 +23,22 @@ import { XcTemplate } from '../../../../xc-template/xc-template';
 import { XcBaseDefinitionComponent } from '../../shared/xc-base-definition/xc-base-definition.component';
 import { XoBaseDefinition } from '../../xo/base-definition.model';
 import { XoDefinitionListDefinition, XoFormDefinition, XoFormPanelDefinition, XoPredefinedTablePanelDefinition, XoTablePanelDefinition, XoTreePanelDefinition } from '../../xo/containers.model';
+import { XcPredefinedTablePanelDefinitionComponent } from '../xc-predefined-table-panel-definition/xc-predefined-table-panel-definition.component';
+import { XcTablePanelDefinitionComponent } from '../xc-table-panel-definition/xc-table-panel-definition.component';
+import { XcTreePanelDefinitionComponent } from '../xc-tree-panel-definition/xc-tree-panel-definition.component';
+import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-form-panel-definition.component';
+import { XcDefinitionListDefinitionComponent } from '../xc-definition-list-definition/xc-definition-list-definition.component';
+import { XcFormDefinitionComponent } from '../xc-form-definition/xc-form-definition.component';
+import { XcTemplateComponent } from '../../../../xc-template/xc-template.component';
+import { XcUnwrapDirective } from '../../../../shared/xc-unwrap.directive';
+import { AsyncPipe } from '@angular/common';
 
 
 @Component({
     selector: 'xc-definition-proxy',
     templateUrl: './xc-definition-proxy.component.html',
     styleUrls: ['./xc-definition-proxy.component.scss'],
-    standalone: false
+    imports: [XcPredefinedTablePanelDefinitionComponent, XcTablePanelDefinitionComponent, XcTreePanelDefinitionComponent, XcFormPanelDefinitionComponent, XcDefinitionListDefinitionComponent, XcFormDefinitionComponent, XcTemplateComponent, XcUnwrapDirective, AsyncPipe]
 })
 export class XcDefinitionProxyComponent extends XcBaseDefinitionComponent {
 

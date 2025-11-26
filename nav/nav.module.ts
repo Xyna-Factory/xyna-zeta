@@ -30,9 +30,7 @@ import { RightGuardService } from './right.guard';
 @NgModule({
     imports: [
         XcModule,
-        I18nModule
-    ],
-    declarations: [
+        I18nModule,
         BrokenComponent,
         RuntimeContextSelectionComponent
     ],

@@ -16,10 +16,15 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { MatMenu, MenuPositionX, MenuPositionY } from '@angular/material/menu';
+import { MatMenu, MenuPositionX, MenuPositionY, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
 import { XcItem } from '../shared/xc-item';
+import { XcModule } from '../xc.module';
+import { XcMenuTriggerDirective } from './xc-menu-trigger.directive';
+import { NgTemplateOutlet } from '@angular/common';
+import { XcIconComponent } from '../xc-icon/xc-icon.component';
+import { XcI18nPipe } from '../../i18n/i18n.pipe';
 
 
 export interface XcMenuItem extends XcItem {
@@ -75,7 +80,7 @@ export interface XcMenu extends MatMenu, XcMenuOptions {
     selector: 'xc-menu',
     templateUrl: './xc-menu.component.html',
     styleUrls: ['./xc-menu.component.scss'],
-    standalone: false
+    imports: [MatMenu, XcModule, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, XcI18nPipe]
 })
 export class XcMenuComponent {
 

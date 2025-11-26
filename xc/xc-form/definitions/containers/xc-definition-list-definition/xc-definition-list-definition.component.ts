@@ -19,13 +19,15 @@ import { Component, Input } from '@angular/core';
 
 import { XoDefinitionListDefinition } from '../../xo/containers.model';
 import { XcFormDefinitionComponent } from '../xc-form-definition/xc-form-definition.component';
+import { XcDefinitionProxyComponent } from '../xc-definition-proxy/xc-definition-proxy.component';
+import { XcDefinitionListUnwrapDirective } from './xc-dl-unwrap.directive';
 
 
 @Component({
     selector: 'xc-definition-list-definition',
     templateUrl: './xc-definition-list-definition.component.html',
     styleUrls: ['./xc-definition-list-definition.component.scss'],
-    standalone: false
+    imports: [XcDefinitionProxyComponent, XcDefinitionListUnwrapDirective]
 })
 export class XcDefinitionListDefinitionComponent extends XcFormDefinitionComponent {
 

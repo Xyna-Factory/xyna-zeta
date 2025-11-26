@@ -32,10 +32,7 @@ export interface XcMasterDetailFocusCandidateObserver {
 }
 
 
-@Directive({
-    selector: '[xc-master-detail-focus-candidate]',
-    standalone: false
-})
+@Directive({ selector: '[xc-master-detail-focus-candidate]' })
 export class XcMasterDetailFocusCandidateDirective implements OnInit {
 
     // the preexisting value of the referee should not cause the directive to focus on the element

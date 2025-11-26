@@ -23,10 +23,7 @@ import { Directive, Input, OnDestroy, TemplateRef, ViewContainerRef } from '@ang
  *   {{resultOfComplexOperation}}
  * </ng-container>
  */
-@Directive({
-    selector: '[xc-var]',
-    standalone: false
-})
+@Directive({ selector: '[xc-var]' })
 export class XcVarDirective implements OnDestroy {
 
     context: any = {};

@@ -25,13 +25,19 @@ import { TableCounts, XcTableColumn } from '../../../../xc-table/xc-table-data-s
 import { XoBaseDefinition, XoDefinition } from '../../xo/base-definition.model';
 import { XoPredefinedTablePanelDefinition } from '../../xo/containers.model';
 import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-form-panel-definition.component';
+import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
+import { XcButtonComponent } from '../../../../xc-button/xc-button.component';
+import { XcI18nTranslateDirective } from '../../../../../i18n/i18n.directive';
+import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
+import { XcTableComponent } from '../../../../xc-table/xc-table.component';
+import { XcI18nPipe } from '../../../../../i18n/i18n.pipe';
 
 
 @Component({
     selector: 'xc-predefined-table-panel-definition',
     templateUrl: './xc-predefined-table-panel-definition.component.html',
     styleUrls: ['./xc-predefined-table-panel-definition.component.scss'],
-    standalone: false
+    imports: [XcFormGenericPanelComponent, XcButtonComponent, XcI18nTranslateDirective, XcIconButtonComponent, XcTableComponent, XcI18nPipe]
 })
 export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefinitionComponent {
 

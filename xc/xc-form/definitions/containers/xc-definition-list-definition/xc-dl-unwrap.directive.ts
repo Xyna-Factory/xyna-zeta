@@ -23,10 +23,7 @@ import { XcUnwrapDirective } from '../../../../shared/xc-unwrap.directive';
  * Unwraps that DOM element with this directive attached to it.
  * Additionally wraps children into dt/dd, if they aren't such
  */
-@Directive({
-    selector: '[xc-dl-unwrap]',
-    standalone: false
-})
+@Directive({ selector: '[xc-dl-unwrap]' })
 export class XcDefinitionListUnwrapDirective extends XcUnwrapDirective {
 
     constructor(readonly element: ElementRef) {

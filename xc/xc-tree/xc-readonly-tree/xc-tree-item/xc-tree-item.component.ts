@@ -24,6 +24,10 @@ import { coerceBoolean } from '../../../../base';
 import { I18nService } from '../../../../i18n';
 import { XcStructureTreeNode } from '../../xc-readonly-structure-tree-data-source';
 import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.component';
+import { NgStyle, AsyncPipe } from '@angular/common';
+import { XcIconButtonComponent } from '../../../xc-button/xc-icon-button.component';
+import { XcTooltipDirective } from '../../../xc-tooltip/xc-tooltip.directive';
+import { XcModule } from '../../../xc.module';
 
 
 @Component({
@@ -31,7 +35,7 @@ import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.compone
     templateUrl: './xc-tree-item.component.html',
     styleUrls: ['./xc-tree-item.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [NgStyle, XcIconButtonComponent, XcTooltipDirective, XcModule, AsyncPipe]
 })
 export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterViewInit, OnDestroy {
 

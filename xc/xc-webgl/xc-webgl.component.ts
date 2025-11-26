@@ -44,8 +44,7 @@ export interface XcWebGLInteraction {
     selector: 'xc-webgl',
     templateUrl: './xc-webgl.component.html',
     styleUrls: ['./xc-webgl.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class XcWebGLComponent implements AfterViewInit, OnDestroy {
 

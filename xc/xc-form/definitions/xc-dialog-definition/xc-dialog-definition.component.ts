@@ -25,11 +25,16 @@ import { environment } from '@environments/environment';
 import { XoStartOrderButtonDefinition } from '../xo/item-definition.model';
 import { XcDialogService } from '@zeta/xc/xc-dialog/xc-dialog.service';
 import { pack } from '@zeta/base';
+import { XcDialogWrapperComponent } from '../../../xc-dialog/xc-dialog-wrapper.component';
+import { XcFormDirective } from '../../xc-form-base/xc-form.directive';
+import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../../../i18n/i18n.directive';
+import { XcDefinitionProxyComponent } from '../containers/xc-definition-proxy/xc-definition-proxy.component';
+import { XcButtonComponent } from '../../../xc-button/xc-button.component';
 
 @Component({
     templateUrl: './xc-dialog-definition.component.html',
     styleUrls: ['./xc-dialog-definition.component.scss'],
-    standalone: false
+    imports: [XcDialogWrapperComponent, XcFormDirective, XcI18nContextDirective, XcI18nTranslateDirective, XcDefinitionProxyComponent, XcButtonComponent]
 })
 export class XcDialogDefinitionComponent extends XcDialogComponent<Xo[], XoDefinitionBundle> implements XoDefinitionObserver {
 

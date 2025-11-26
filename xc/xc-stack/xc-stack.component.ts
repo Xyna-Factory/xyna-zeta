@@ -25,6 +25,9 @@ import { filter, map, switchMapTo } from 'rxjs/operators';
 
 import { XcStackDataSource } from './xc-stack-data-source';
 import { XcStackItemInterface, XcStackObserver } from './xc-stack-item/xc-stack-item';
+import { XcTemplateComponent } from '../xc-template/xc-template.component';
+import { XcButtonComponent } from '../xc-button/xc-button.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 
 
 export interface XcStackInterface {
@@ -39,7 +42,7 @@ export interface XcStackInterface {
     selector: 'xc-stack',
     templateUrl: './xc-stack.component.html',
     styleUrls: ['./xc-stack.component.scss'],
-    standalone: false
+    imports: [XcTemplateComponent, XcButtonComponent, XcTooltipDirective]
 })
 export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDestroy {
 

@@ -51,10 +51,7 @@ export interface ResizableEvent {
 }
 
 
-@Directive({
-    selector: '[xc-resize]',
-    standalone: false
-})
+@Directive({ selector: '[xc-resize]' })
 export class XcResizeDirective implements AfterViewInit, OnDestroy {
 
     @Input('xc-resize')

@@ -20,8 +20,7 @@ import { Component } from '@angular/core';
 
 @Component({
     templateUrl: './broken.component.html',
-    styleUrls: ['./broken.component.scss'],
-    standalone: false
+    styleUrls: ['./broken.component.scss']
 })
 export class BrokenComponent {
 }

@@ -16,9 +16,13 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component, ElementRef, HostBinding, Input } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatRipple } from '@angular/material/core';
 
 import { coerceBoolean } from '../../base';
 import { I18nService } from '../../i18n/i18n.service';
+import { XcIconComponent } from '../xc-icon/xc-icon.component';
+import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
 import { XcButtonBaseComponent } from './xc-button-base.component';
 
 
@@ -26,7 +30,7 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
     selector: 'xc-icon-button',
     templateUrl: './xc-icon-button.component.html',
     styleUrls: ['./xc-button-base.component.scss', './xc-icon-button.component.scss'],
-    standalone: false
+    imports: [MatIconButton, MatRipple, XcIconComponent, XcProgressBarComponent]
 })
 export class XcIconButtonComponent extends XcButtonBaseComponent {
 

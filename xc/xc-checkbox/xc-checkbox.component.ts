@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatCheckboxChange, MatCheckbox } from '@angular/material/checkbox';
 
 import { XcI18nTranslateDirective } from '@zeta/i18n/i18n.directive';
 
@@ -26,6 +26,7 @@ import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
 import { ATTRIBUTE_LABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
+import { MatLabel } from '@angular/material/form-field';
 
 
 @Component({
@@ -33,7 +34,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
     templateUrl: './xc-checkbox.component.html',
     styleUrls: ['./xc-checkbox.component.scss'],
     providers: [XcI18nTranslateDirective],
-    standalone: false
+    imports: [MatCheckbox, MatLabel]
 })
 export class XcCheckboxComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
 

@@ -19,13 +19,16 @@ import { AfterContentInit, Component, OnInit } from '@angular/core';
 
 import { XcButtonBaseComponent } from './xc-button-base.component';
 import { ATTRIBUTE_LABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
+import { MatButton } from '@angular/material/button';
+import { MatRipple } from '@angular/material/core';
+import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
 
 
 @Component({
     selector: 'xc-button',
     templateUrl: './xc-button.component.html',
     styleUrls: ['./xc-button-base.component.scss', './xc-button.component.scss'],
-    standalone: false
+    imports: [MatButton, MatRipple, XcProgressBarComponent]
 })
 export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, AfterContentInit {
 

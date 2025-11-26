@@ -16,6 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AfterContentInit, Component, ElementRef, HostBinding, Input, OnInit } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 
 import { I18nService } from '@zeta/i18n';
 
@@ -27,7 +28,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
     selector: 'xc-icon',
     templateUrl: './xc-icon.component.html',
     styleUrls: ['./xc-icon.component.scss'],
-    standalone: false
+    imports: [MatIcon]
 })
 export class XcIconComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
 

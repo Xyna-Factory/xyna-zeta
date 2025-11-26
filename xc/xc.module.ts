@@ -123,9 +123,7 @@ import { XcWebGLComponent } from './xc-webgl/xc-webgl.component';
         ReactiveFormsModule,
         RouterModule,
         DragDropModule,
-        FormsModule
-    ],
-    declarations: [
+        FormsModule,
         XcAboutDialogComponent,
         XcButtonBaseComponent,
         XcButtonComponent,
@@ -196,7 +194,6 @@ import { XcWebGLComponent } from './xc-webgl/xc-webgl.component';
         XcUnwrapDirective,
         XcVarDirective,
         XcWebGLComponent,
-
         // Workflow-defined UI
         XcBaseDefinitionComponent,
         XcDefinitionListDefinitionComponent,
@@ -276,7 +273,6 @@ import { XcWebGLComponent } from './xc-webgl/xc-webgl.component';
         XcUnwrapDirective,
         XcVarDirective,
         XcWebGLComponent,
-
         // Workflow-defined UI
         XcBaseDefinitionComponent,
         XcDefinitionListDefinitionComponent,

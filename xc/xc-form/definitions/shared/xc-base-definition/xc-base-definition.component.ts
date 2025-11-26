@@ -29,8 +29,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     template: '',
-    styleUrls: ['./xc-base-definition.component.scss'],
-    standalone: false
+    styleUrls: ['./xc-base-definition.component.scss']
 })
 export class XcBaseDefinitionComponent {
 

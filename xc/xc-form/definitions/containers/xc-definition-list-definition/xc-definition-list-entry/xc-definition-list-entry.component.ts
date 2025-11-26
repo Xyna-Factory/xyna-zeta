@@ -17,12 +17,14 @@
  */
 import { Component, Input } from '@angular/core';
 import { XcTemplate } from '../../../../../xc-template/xc-template';
+import { XcTemplateComponent } from '../../../../../xc-template/xc-template.component';
+import { XcUnwrapDirective } from '../../../../../shared/xc-unwrap.directive';
 
 
 @Component({
     selector: 'xc-definition-list-entry',
     templateUrl: './xc-definition-list-entry.component.html',
-    standalone: false
+    imports: [XcTemplateComponent, XcUnwrapDirective]
 })
 export class XcDefinitionListEntryComponent {
 

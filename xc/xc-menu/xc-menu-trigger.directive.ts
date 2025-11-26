@@ -22,10 +22,7 @@ import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { XcMenu, XcMenuComponent } from './xc-menu.component';
 
 
-@Directive({
-    selector: '[xc-menu-trigger]',
-    standalone: false
-})
+@Directive({ selector: '[xc-menu-trigger]' })
 export class XcMenuTriggerDirective extends MatMenuTrigger {
 
     @HostBinding('attr.aria-haspopup')

@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, Input, OnDestroy, ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
 
 import { Subscription } from 'rxjs';
 
@@ -33,6 +33,13 @@ import { XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTemplate, XcTemp
 import { xcTableTranslations_deDE } from './locale/xc-translations.de-DE';
 import { xcTableTranslations_enUS } from './locale/xc-translations.en-US';
 import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatFooterCellDef, MatFooterCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatFooterRowDef, MatFooterRow, MatRowDef, MatRow } from '@angular/material/table';
+import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
+import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
+import { XcTemplateComponent } from '../xc-template/xc-template.component';
+import { NgClass } from '@angular/common';
+import { XcVarDirective } from '../shared/xc-var.directive';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 
 
 @Component({
@@ -40,7 +47,7 @@ import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
     templateUrl: './xc-table.component.html',
     styleUrls: ['./xc-table.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, XcProgressBarComponent, MatFooterCellDef, MatFooterCell, XcIconButtonComponent, MatSortHeader, XcTemplateComponent, MatCellDef, MatCell, NgClass, XcVarDirective, XcTooltipDirective, MatHeaderRowDef, MatHeaderRow, MatFooterRowDef, MatFooterRow, MatRowDef, MatRow]
 })
 export class XcTableComponent implements AfterViewInit, OnDestroy {
 

@@ -20,6 +20,10 @@ import { Component, forwardRef, Input } from '@angular/core';
 import { coerceBoolean } from '@zeta/base';
 
 import { XcFormBaseComponent } from '../xc-form-base/xc-form-base.component';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 
 
 @Component({
@@ -27,7 +31,7 @@ import { XcFormBaseComponent } from '../xc-form-base/xc-form-base.component';
     templateUrl: './xc-form-textarea.component.html',
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-textarea.component.scss'],
     providers: [{ provide: XcFormBaseComponent, useExisting: forwardRef(() => XcFormTextareaComponent) }],
-    standalone: false
+    imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, CdkTextareaAutosize, MatError]
 })
 export class XcFormTextareaComponent extends XcFormBaseComponent {
 

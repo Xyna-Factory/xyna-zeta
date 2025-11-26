@@ -16,17 +16,18 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatNavList } from '@angular/material/list';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
 
 import { coerceBoolean } from '@zeta/base';
+import { I18nService, LocaleService } from '@zeta/i18n';
 
 import { Subscription } from 'rxjs';
 
 import { XcThemeableComponent } from '../../shared/xc-themeable.component';
-import { XcNavListItem } from './xc-nav-list-item/xc-nav-list-item.component';
-import { I18nService, LocaleService } from '@zeta/i18n';
-import { xcNavListTranslations_enUS } from './locale/xc-nav-list-translations.en-US';
 import { xcNavListTranslations_deDE } from './locale/xc-nav-list-translations.de-DE';
+import { xcNavListTranslations_enUS } from './locale/xc-nav-list-translations.en-US';
+import { XcNavListItem, XcNavListItemComponent } from './xc-nav-list-item/xc-nav-list-item.component';
 
 
 export enum XcNavListOrientation {
@@ -47,7 +48,7 @@ interface TwoWayNavListItem {
     selector: 'xc-nav-list',
     templateUrl: './xc-nav-list.component.html',
     styleUrls: ['./xc-nav-list.component.scss'],
-    standalone: false
+    imports: [MatNavList, XcNavListItemComponent]
 })
 export class XcNavListComponent extends XcThemeableComponent implements OnInit, OnDestroy {
 

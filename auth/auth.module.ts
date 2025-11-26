@@ -39,9 +39,7 @@ import { AuthLoginComponent } from './login/auth-login.component';
     imports: [
         CommonModule,
         XcModule,
-        I18nModule
-    ],
-    declarations: [
+        I18nModule,
         AuthComponent,
         AuthBackgroundComponent,
         AuthLoginComponent,

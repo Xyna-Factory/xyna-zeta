@@ -32,8 +32,7 @@ function isEmptyInputValue(value: any): boolean {
 
 @Directive({
     selector: '[xc-form-validators]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorsDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorsDirective) }]
 })
 export class XcFormValidatorsDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -50,8 +49,7 @@ export const XcFormValidatorEmail = (): ValidatorFn => Validators.email;
 
 @Directive({
     selector: '[xc-form-validator-email]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorEmailDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorEmailDirective) }]
 })
 export class XcFormValidatorEmailDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -65,8 +63,7 @@ export const XcFormValidatorMaxValue = (maxValue: number): ValidatorFn => Valida
 
 @Directive({
     selector: '[xc-form-validator-maxvalue]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorMaxValueDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorMaxValueDirective) }]
 })
 export class XcFormValidatorMaxValueDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -83,8 +80,7 @@ export const XcFormValidatorMinValue = (minValue: number): ValidatorFn => Valida
 
 @Directive({
     selector: '[xc-form-validator-minvalue]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorMinValueDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorMinValueDirective) }]
 })
 export class XcFormValidatorMinValueDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -101,8 +97,7 @@ export const XcFormValidatorMaxLength = (maxLength: number): ValidatorFn => Vali
 
 @Directive({
     selector: '[xc-form-validator-maxlength]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorMaxLengthDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorMaxLengthDirective) }]
 })
 export class XcFormValidatorMaxLengthDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -119,8 +114,7 @@ export const XcFormValidatorMinLength = (minLength: number): ValidatorFn => Vali
 
 @Directive({
     selector: '[xc-form-validator-minlength]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorMinLengthDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorMinLengthDirective) }]
 })
 export class XcFormValidatorMinLengthDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -152,8 +146,7 @@ export const XcFormValidatorNumber = (format = 'decimal'): ValidatorFn => {
 
 @Directive({
     selector: '[xc-form-validator-number]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorNumberDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorNumberDirective) }]
 })
 export class XcFormValidatorNumberDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -170,8 +163,7 @@ export const XcFormValidatorRequired = (): ValidatorFn => Validators.required;
 
 @Directive({
     selector: '[xc-form-validator-required]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorRequiredDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorRequiredDirective) }]
 })
 export class XcFormValidatorRequiredDirective extends XcFormValidatorBaseDirective {
     private _required: boolean;
@@ -197,8 +189,7 @@ export const XcFormValidatorPattern = (pattern: string | RegExp): ValidatorFn =>
 
 @Directive({
     selector: '[xc-form-validator-pattern]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorPatternDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorPatternDirective) }]
 })
 export class XcFormValidatorPatternDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -218,8 +209,7 @@ export const XcFormValidatorIPv4 = (): ValidatorFn => {
 
 @Directive({
     selector: '[xc-form-validator-ipv4]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorIpv4Directive) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorIpv4Directive) }]
 })
 export class XcFormValidatorIpv4Directive extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -239,8 +229,7 @@ export const XcFormValidatorIPv6 = (): ValidatorFn => {
 
 @Directive({
     selector: '[xc-form-validator-ipv6]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorIpv6Directive) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorIpv6Directive) }]
 })
 export class XcFormValidatorIpv6Directive extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -253,8 +242,7 @@ export class XcFormValidatorIpv6Directive extends XcFormValidatorBaseDirective {
 
 @Directive({
     selector: '[xc-form-validator-ip]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorIpDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorIpDirective) }]
 })
 export class XcFormValidatorIpDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
@@ -284,8 +272,7 @@ export const XcFormValidatorCustom = (valFunction: XcCustomValidatorFunction, ar
 
 @Directive({
     selector: '[xc-form-validator-custom]',
-    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorCustomDirective) }],
-    standalone: false
+    providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorCustomDirective) }]
 })
 export class XcFormValidatorCustomDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {

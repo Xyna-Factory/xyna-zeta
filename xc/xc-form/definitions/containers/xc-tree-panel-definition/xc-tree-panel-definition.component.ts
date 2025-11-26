@@ -24,13 +24,15 @@ import { I18nService } from '../../../../../i18n';
 import { XcStructureTreeDataSource } from '../../../../xc-tree/xc-structure-tree-data-source';
 import { XoTreePanelDefinition } from '../../xo/containers.model';
 import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-form-panel-definition.component';
+import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
+import { XcTreeComponent } from '../../../../xc-tree/xc-tree.component';
 
 
 @Component({
     selector: 'xc-tree-panel-definition',
     templateUrl: './xc-tree-panel-definition.component.html',
     styleUrls: ['./xc-tree-panel-definition.component.scss'],
-    standalone: false
+    imports: [XcFormGenericPanelComponent, XcTreeComponent]
 })
 export class XcTreePanelDefinitionComponent extends XcFormPanelDefinitionComponent implements OnDestroy {
 

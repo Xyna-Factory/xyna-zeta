@@ -24,12 +24,10 @@ import { LocaleService } from './locale.service';
 
 
 @NgModule({
-    declarations: [
-        I18nPipe,
+    imports: [I18nPipe,
         XcI18nPipe,
         XcI18nContextDirective,
-        XcI18nTranslateDirective
-    ],
+        XcI18nTranslateDirective],
     providers: [
         I18nService,
         LocaleService

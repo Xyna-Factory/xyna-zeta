@@ -19,13 +19,19 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { Xo } from '../../../../../api';
 import { XoFormPanelDefinition } from '../../xo/containers.model';
+import { XcPanelComponent } from '../../../../xc-panel/xc-panel.component';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { XcDefinitionProxyComponent } from '../../containers/xc-definition-proxy/xc-definition-proxy.component';
+import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
+import { XcTooltipDirective } from '../../../../xc-tooltip/xc-tooltip.directive';
+import { XcI18nPipe } from '../../../../../i18n/i18n.pipe';
 
 
 @Component({
     selector: 'xc-form-generic-panel',
     templateUrl: './xc-form-generic-panel.component.html',
     styleUrls: ['./xc-form-generic-panel.component.scss'],
-    standalone: false
+    imports: [XcPanelComponent, NgClass, XcDefinitionProxyComponent, XcIconButtonComponent, XcTooltipDirective, AsyncPipe, XcI18nPipe]
 })
 export class XcFormGenericPanelComponent {
 

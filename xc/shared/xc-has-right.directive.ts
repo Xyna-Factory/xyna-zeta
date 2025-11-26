@@ -21,10 +21,7 @@ import { AuthService } from '../../auth/auth.service';
 import { isString } from '../../base';
 
 
-@Directive({
-    selector: '[xc-has-right]',
-    standalone: false
-})
+@Directive({ selector: '[xc-has-right]' })
 export class XcHasRightDirective {
 
     constructor(

@@ -29,6 +29,15 @@ import { AuthService } from '../auth.service';
 import { CredentialsLoginTabComponent } from '../forms/credentials-login-tab.component';
 import { SmartCardLoginTabComponent } from '../forms/smart-card-login-tab.component';
 import { WorkflowLoginTabComponent } from '../forms/workflow-login-tab.component';
+import { XcPanelComponent } from '../../xc/xc-panel/xc-panel.component';
+import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
+import { XcIconComponent } from '../../xc/xc-icon/xc-icon.component';
+import { XcLanguageSelectorComponent } from '../../xc/xc-language-selector/xc-language-selector.component';
+import { XcTabBarComponent as XcTabBarComponent_1 } from '../../xc/xc-tab-bar/xc-tab-bar.component';
+import { SmartCardLoginComponent } from '../forms/smart-card-login.component';
+import { CredentialsLoginComponent } from '../forms/credentials-login.component';
+import { WorkflowLoginComponent } from '../forms/workflow-login.component';
+import { XcButtonComponent } from '../../xc/xc-button/xc-button.component';
 
 
 export interface LoginComponentData {
@@ -55,7 +64,7 @@ interface LoginTabItem {
     selector: 'auth-login',
     templateUrl: './auth-login.component.html',
     styleUrls: ['./auth-login.component.scss'],
-    standalone: false
+    imports: [XcPanelComponent, XcI18nContextDirective, XcIconComponent, XcI18nTranslateDirective, XcLanguageSelectorComponent, XcTabBarComponent_1, SmartCardLoginComponent, CredentialsLoginComponent, WorkflowLoginComponent, XcButtonComponent]
 })
 export class AuthLoginComponent {
 

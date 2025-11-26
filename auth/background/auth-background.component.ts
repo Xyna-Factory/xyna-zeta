@@ -16,12 +16,13 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component } from '@angular/core';
+import { AuthLoginComponent } from '../login/auth-login.component';
 
 
 @Component({
     templateUrl: './auth-background.component.html',
     styleUrls: ['./auth-background.component.scss'],
-    standalone: false
+    imports: [AuthLoginComponent]
 })
 export class AuthBackgroundComponent {
 

@@ -117,8 +117,7 @@ export interface XcCanvasObserver {
     selector: 'xc-canvas',
     templateUrl: './xc-canvas.component.html',
     styleUrls: ['./xc-canvas.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class XcCanvasComponent implements OnInit, OnDestroy {
 
