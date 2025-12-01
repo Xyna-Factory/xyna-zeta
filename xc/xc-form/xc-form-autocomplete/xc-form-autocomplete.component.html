@@ -13,18 +13,18 @@
           {{ option.name }}
         </mat-option>
 
-        <div mat-select-footer class="multiselect-actions fbany fbrow justify-end gap">
-          <xc-button (click)="cancelMultiSelect()">Cancel</xc-button>
-          <xc-button (click)="applyMultiSelect()">Apply</xc-button>
-        </div>
-      </mat-select>
-    </ng-container>
+      <div mat-select-footer class="multiselect-actions fbany fbrow justify-end gap">
+        <xc-button (click)="cancelMultiSelect()" xc-i18n [attr.aria-label]="'cancel' | xcI18n">cancel</xc-button>
+        <xc-button (click)="applyMultiSelect()" xc-i18n [attr.aria-label]="'apply' | xcI18n">apply</xc-button>
+      </div>
+    </mat-select>
+  </ng-container>
   <ng-template #singleSelect>
-  <input matInput autocomplete="off" [type]="type" [placeholder]="placeholder" [formControl]="formControl"
-    [matAutocomplete]="auto" (mousedown)="mousedown($event)" (focus)="onfocus($event)" (blur)="onblur($event)"
-    [readonly]="readonly" [attr.aria-label]="ariaLabel" [tabIndex]="(readonly || disabled) ? -1 : tabIndex"
-    [required]="required">
-  <!-- <ng-container *ngIf="readonly || disabled">
+    <input matInput autocomplete="off" [type]="type" [placeholder]="placeholder" [formControl]="formControl"
+      [matAutocomplete]="auto" (mousedown)="mousedown($event)" (focus)="onfocus($event)" (blur)="onblur($event)"
+      [readonly]="readonly" [attr.aria-label]="ariaLabel" [tabIndex]="(readonly || disabled) ? -1 : tabIndex"
+      [required]="required">
+    <!-- <ng-container *ngIf="readonly || disabled">
     <input
       [type]="type"
       [value]="stringValue"
