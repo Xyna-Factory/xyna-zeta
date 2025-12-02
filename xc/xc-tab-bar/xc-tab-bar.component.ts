@@ -20,12 +20,11 @@ import { NgComponentOutlet } from '@angular/common';
 import { AfterViewInit, Component, ComponentRef, EventEmitter, Injector, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatTabGroup } from '@angular/material/tabs';
 
-import { coerceBoolean } from '../../base';
-import { I18nService, LocaleService } from '../../i18n';
-
 import { Observable, of, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 
+import { coerceBoolean } from '../../base';
+import { I18nService, LocaleService } from '../../i18n';
 import { XcThemeableComponent } from '../../xc/shared/xc-themeable.component';
 import { xcTabBarTranslations_deDE } from './locale/xc-tab-bar-translations.de-DE';
 import { xcTabBarTranslations_enUS } from './locale/xc-tab-bar-translations.en-US';
