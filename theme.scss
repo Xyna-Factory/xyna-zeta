@@ -106,8 +106,8 @@ $xc-checkbox-color-disabled-invert: $color-disabled-invert;
 $xc-checkbox-checkmark-color: $color-black;
 $xc-checkbox-checkmark-color-invert: $color-white;
 
-$xc-checkbox-checkmark-color-disabled: $color-disabled;
-$xc-checkbox-checkmark-color-disabled-invert: $color-disabled-invert;
+$xc-checkbox-checkmark-color-disabled: $color-disabled-invert;
+$xc-checkbox-checkmark-color-disabled-invert: $color-disabled;
 
 $xc-checkbox-height: 32px;
 
@@ -306,6 +306,7 @@ $xc-tab-bar-font-size: inherit;
 $xc-tab-bar-tab-color: $color-invert;
 $xc-tab-bar-tab-background-color: $color-gray-4;
 $xc-tab-bar-tab-background-color-active: $color-gray-5;
+$xc-tab-bar-tab-background-color-disabled: $color-gray-3;
 
 $xc-tab-bar-button-color: $color-gray-0;
 $xc-tab-bar-button-color-active: $color-gray-0;
