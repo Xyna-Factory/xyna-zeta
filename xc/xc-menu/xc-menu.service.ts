@@ -22,7 +22,7 @@ import { Subject, Subscription } from 'rxjs';
 import { XcMenuComponent, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault } from './xc-menu.component';
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class XcMenuService {
 
     private _component: XcMenuComponent;

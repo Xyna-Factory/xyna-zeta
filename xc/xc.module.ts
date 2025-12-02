@@ -292,9 +292,7 @@ import { XcWebGLComponent } from './xc-webgl/xc-webgl.component';
     providers: [
         XcDefinitionEventService,
         XcDialogService,
-        XcIconService,
-        XcMenuService,
-        XcStatusBarService
+        XcIconService
     ]
 })
 export class XcModule {
