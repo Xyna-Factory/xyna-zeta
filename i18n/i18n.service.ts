@@ -192,6 +192,7 @@ export class I18nService {
                 const type = typeparts.length >= 2 ? typeparts[0] : '';
                 const path = typeparts.length >= 2 ? typeparts.slice(1).join(':') : typeparts[0];
                 const parts: string[] = path.split('.');
+                parts[parts.length - 1] = parts[parts.length -1].trim(); // trim key before translating
                 let withType = !!type;
                 let looping = true;
                 while (!translation && looping) {
@@ -209,7 +210,11 @@ export class I18nService {
                     }
                 }
             } else {
-                translation = translationMap.get(key);
+                translation = translationMap.get(key.trim());
+            }
+
+            if (translation?.value) {
+                translation.value = translation.value.trim();
             }
 
             // only cache it if a valid value for given key was found
