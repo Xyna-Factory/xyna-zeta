@@ -108,7 +108,7 @@ export class XcI18nTranslateDirective extends XcI18nBase implements OnInit, OnDe
 
         const isXc = this.element.tagName.startsWith('XC-');
 
-        const cont = trim(this.element.textContent);
+        const cont = this.element.textContent?.trim();
 
         if (cont && !isXc) {
             this.subs.push(this.localService.languageChange.subscribe(() => {
@@ -116,7 +116,7 @@ export class XcI18nTranslateDirective extends XcI18nBase implements OnInit, OnDe
                     this.content.key = cont;
                 }
                 const translation = this.i18n.getTranslation(this._context ? this._context + '.' + this.content.key : this.content.key);
-                this.element.textContent = trim(translation?.value);
+                this.element.textContent = translation?.value;
 
                 if (translation?.pronunciationLanguage) {
                     this.element.setAttribute('lang', translation.pronunciationLanguage);
