@@ -41,12 +41,8 @@
             background-color: $color-background-area;
         }
 
-        mat-drawer-content {
-            border-left: $xc-master-detail-master-border-left;
-        }
-
         mat-drawer {
-            border-left: $xc-master-detail-master-border-left;
+            border-left: $xc-master-detail-detail-border-left
         }
     }
 
