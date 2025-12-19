@@ -197,6 +197,17 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             this._dataSourceSubscriptions.push(
                 this.dataSource.markForChange.subscribe(() => this.cdRef.markForCheck())
             );
+
+            this._dataSourceSubscriptions.push(
+                this.dataSource.markForReset.subscribe(() => {
+                    this.filterTemplates.forEach((filterTemplate) => {
+                        if (filterTemplate.template && 'reset' in filterTemplate.template) {
+                            (filterTemplate.template as any).reset = true;
+                        }
+                    });
+                    this.cdRef.markForCheck();
+                })
+            );
             // subscribe to data changes
             this._dataSourceSubscriptions.push(
                 this.dataSource.dataChange.subscribe(() => {
@@ -338,7 +349,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getColumnID(column: XcTableColumn): string {
-        return [column.path, column.name, column.disableSort ?? false, column.disableFilter ?? false, column.filterTooltip ?? ''].join('\0');
+        return [column.path, column.name, column.disableSort ?? false, column.disableFilter ?? false, column.filterTooltip ?? '',column.filterMultiselect ?? false].join('\0');
     }
 
 
@@ -359,8 +370,10 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             const path = column.path;
             let filter = this.filterTemplates.get(path);
             // create new template
+            let isMultiSelect = false;
             if (!filter) {
                 filter = { template: undefined };
+                 isMultiSelect = column.filterMultiselect === true;
                 const filterEnum = this.dataSource.filterEnums.get(path);
                 if (filterEnum) {
                     // autocomplete template
@@ -375,6 +388,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                             filter.template.suffix = 'clear';
                         } else {
                             filter.template.asDropdown = true;
+                            if (isMultiSelect) {
+                                filter.template.asMultiselect = true;
+                            }
                         }
                     }
                 } else {

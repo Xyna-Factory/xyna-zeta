@@ -50,6 +50,13 @@ export const xcFormTranslations_deDE: I18nTranslation[] = [
     { key: 'zeta.xc-form-base.ip', value: 'WERT IST KEINE IP-ADRESSE' },
     { key: 'zeta.xc-form-base.message', value: 'KEINE NACHRICHT DEFINIERT' },
 
+    { key: 'cancel', value: 'Abbrechen' },
+    { key: 'apply', value: 'Anwenden' },
+    { key: 'zeta.xc-form.option.selected', value: 'Ausgewählt' },
+    { key: 'zeta.xc-form.option.not-selected', value: 'Nicht ausgewählt' },
+    { key: 'zeta.xc-form.option.menu-item', value: 'Menüeintrag' },
+    { key: 'zeta.xc-form.option.of', value: 'von' },
+    
     // Workflow defined UI Dialog
     { key: 'definedUi.dialog.close', value: 'Schließen' }
 ];
