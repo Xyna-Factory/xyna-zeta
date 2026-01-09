@@ -50,11 +50,6 @@ export const xcFormTranslations_deDE: I18nTranslation[] = [
     { key: 'zeta.xc-form-base.ip', value: 'WERT IST KEINE IP-ADRESSE' },
     { key: 'zeta.xc-form-base.message', value: 'KEINE NACHRICHT DEFINIERT' },
 
-    // Panel
-    { key: 'Close', value: 'Schließen' },
-    { key: 'Maximize', value: 'Maximieren' },
-    { key: 'Standard', value: 'Zurück auf Standardgröße' },
-
     // Workflow defined UI Dialog
     { key: 'definedUi.dialog.close', value: 'Schließen' }
 ];

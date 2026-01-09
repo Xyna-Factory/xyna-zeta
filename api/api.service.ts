@@ -22,7 +22,7 @@ import { environment } from '@environments/environment';
 import { XoEncryptionData } from '@zeta/api/xo/encryption-data.model';
 
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { catchError, filter, finalize, map, tap } from 'rxjs/operators';
+import { catchError, filter, finalize, map, shareReplay, tap } from 'rxjs/operators';
 
 import { getSubdirectory, isNumber, pack, stringToUnboxedInteger } from '../base';
 import { XoKillOrdersResponse } from './xo/kill-orders-response.model';
@@ -402,19 +402,25 @@ export class ApiService {
     // Runtime Contexts
     // =================================================================================================================
 
-
-    private runtimeContextCache: XoRuntimeContext[] = [];
+    private runtimeContexts$?: Observable<XoRuntimeContext[]>;
 
 
     getRuntimeContexts(useCache = false): Observable<XoRuntimeContext[]> {
         const rtc = RuntimeContext.guiHttpApplication;
         const orderType = 'xmcp.factorymanager.shared.GetRuntimeContexts';
 
-        return useCache && this.runtimeContextCache.length > 0
-            ? of(this.runtimeContextCache)
-            : this.startOrderAssertFlat<XoRuntimeContext>(rtc, orderType, undefined, XoRuntimeContextArray).pipe(
-                tap(rtcs => this.runtimeContextCache = rtcs)
+        if (!this.runtimeContexts$ || !useCache) {
+            this.runtimeContexts$ = this.startOrderAssertFlat<XoRuntimeContext>(
+                rtc,
+                orderType,
+                undefined,
+                XoRuntimeContextArray
+            ).pipe(
+                shareReplay(1) 
             );
+        }
+
+        return this.runtimeContexts$;
     }
 
 
@@ -631,151 +637,151 @@ export class ApiService {
      * @param file - uploads the given file to the io end point of xyna blackedition
      * @returns Observable<FileResult> - returns the FileResult with the ManagedFileId via an Observable
      */
-    private uploadFileToXyna(file ?: File, host ?: string): Observable < FileResult > {
+    private uploadFileToXyna(file?: File, host?: string): Observable<FileResult> {
 
-    const uploadUrl: string = (host ? host + '/' : environment.zeta.url) + 'upload';
+        const uploadUrl: string = (host ? host + '/' : environment.zeta.url) + 'upload';
 
-    const subject: Subject<FileResult> = new Subject();
-    let fileName = '';
+        const subject: Subject<FileResult> = new Subject();
+        let fileName = '';
 
-    /**
-     * selected file was sucessfully uploaded and we start the workflow
-     * @param {ProgressEvent} - EVENT
-     */
-    const uploadHandler = event => {
-        const result = event.currentTarget.responseText;
-        const match = result.match(new RegExp('stored with id (\\d*)'));
-        if (match && match.length > 1) {
-            const mfid = new XoManagedFileID();
-            mfid.iD = match[1];
-            subject.next(new FileResult(FileUploadStatus.UploadDone, mfid, fileName));
-            subject.complete();
-        } else {
-            const err = 'could not extract managed file id from server response, which was \'' + result + '\'';
-            subject.error(err);
-            subject.complete();
-        }
-    };
-
-    /**
-     * error with the upload
-     */
-    const uploadErrorHandler = event => {
-        subject.error('upload error');
-        subject.complete();
-    };
-
-    const startXHR = (chosenFile: File) => {
-        // Dateiname merken
-        fileName = chosenFile.name;
-
-        subject.next(new FileResult(FileUploadStatus.ChoseFile));
-
-        const fd = new FormData();
-        fd.append('hint', 'File:none:upload');
-        fd.append('file', chosenFile);
-
-        const xhr = new XMLHttpRequest();
-        xhr.onload = uploadHandler;
-        xhr.onerror = uploadErrorHandler;
-
-        // as long as the project runs locally, we need to hardcode the host name
-        // we can not use relative urls
-        xhr.open('POST', uploadUrl);
-        xhr.setRequestHeader('Access-Control-Allow-Headers', '*');
-        xhr.send(fd); // starts the "upload"
-    };
-
-    if(file) {
-        startXHR(file);
-    } else {
-        this.browse().subscribe(
-            chosenFile => {
-                startXHR(chosenFile);
+        /**
+         * selected file was sucessfully uploaded and we start the workflow
+         * @param {ProgressEvent} - EVENT
+         */
+        const uploadHandler = event => {
+            const result = event.currentTarget.responseText;
+            const match = result.match(new RegExp('stored with id (\\d*)'));
+            if (match && match.length > 1) {
+                const mfid = new XoManagedFileID();
+                mfid.iD = match[1];
+                subject.next(new FileResult(FileUploadStatus.UploadDone, mfid, fileName));
+                subject.complete();
+            } else {
+                const err = 'could not extract managed file id from server response, which was \'' + result + '\'';
+                subject.error(err);
+                subject.complete();
             }
-        );
-    }
+        };
+
+        /**
+         * error with the upload
+         */
+        const uploadErrorHandler = event => {
+            subject.error('upload error');
+            subject.complete();
+        };
+
+        const startXHR = (chosenFile: File) => {
+            // Dateiname merken
+            fileName = chosenFile.name;
+
+            subject.next(new FileResult(FileUploadStatus.ChoseFile));
+
+            const fd = new FormData();
+            fd.append('hint', 'File:none:upload');
+            fd.append('file', chosenFile);
+
+            const xhr = new XMLHttpRequest();
+            xhr.onload = uploadHandler;
+            xhr.onerror = uploadErrorHandler;
+
+            // as long as the project runs locally, we need to hardcode the host name
+            // we can not use relative urls
+            xhr.open('POST', uploadUrl);
+            xhr.setRequestHeader('Access-Control-Allow-Headers', '*');
+            xhr.send(fd); // starts the "upload"
+        };
+
+        if (file) {
+            startXHR(file);
+        } else {
+            this.browse().subscribe(
+                chosenFile => {
+                    startXHR(chosenFile);
+                }
+            );
+        }
 
         return subject.asObservable();
-}
-
-
-/**
- * Note: Because the cancelation of the native file selection dialog is undetectable
- * there is no guarantee that the Observable completes
- * @param timeout - (optional) time in milliseconds, which completes the observable
- */
-browse(timeout ?: number): Observable < File > {
-    const subject: Subject<File> = new Subject();
-    const fileInput = document.createElement('INPUT');
-
-    const changeHandler = function (event) {
-        document.body.removeChild(fileInput);
-
-        // selects the first file even if more than one file was selected
-        const file = event.currentTarget.files[0];
-        subject.next(file);
-        subject.complete();
-    };
-
-        (fileInput as HTMLInputElement).type = 'file';
-fileInput.onchange = changeHandler;
-fileInput.style.display = 'none';
-document.body.appendChild(fileInput);
-
-// opens an operating system file select dialog
-fileInput.click();
-
-if (isNumber(timeout)) {
-    setTimeout(() => {
-        subject.error('Timeout');
-        subject.complete();
-    }, timeout);
-}
-
-return subject.asObservable();
     }
 
 
-download(managedFileId: XoManagedFileID, host ?: string) {
-    const subdirectory = getSubdirectory(environment.zeta.url);
-    window.location.href = (host || '') + '/' + subdirectory + 'download?p0=' + managedFileId.iD;
-}
+    /**
+     * Note: Because the cancelation of the native file selection dialog is undetectable
+     * there is no guarantee that the Observable completes
+     * @param timeout - (optional) time in milliseconds, which completes the observable
+     */
+    browse(timeout?: number): Observable<File> {
+        const subject: Subject<File> = new Subject();
+        const fileInput = document.createElement('INPUT');
+
+        const changeHandler = function (event) {
+            document.body.removeChild(fileInput);
+
+            // selects the first file even if more than one file was selected
+            const file = event.currentTarget.files[0];
+            subject.next(file);
+            subject.complete();
+        };
+
+        (fileInput as HTMLInputElement).type = 'file';
+        fileInput.onchange = changeHandler;
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+
+        // opens an operating system file select dialog
+        fileInput.click();
+
+        if (isNumber(timeout)) {
+            setTimeout(() => {
+                subject.error('Timeout');
+                subject.complete();
+            }, timeout);
+        }
+
+        return subject.asObservable();
+    }
+
+
+    download(managedFileId: XoManagedFileID, host?: string) {
+        const subdirectory = getSubdirectory(environment.zeta.url);
+        window.location.href = (host || '') + '/' + subdirectory + 'download?p0=' + managedFileId.iD;
+    }
 
 
     // =================================================================================================================
     // Encryption
     // =================================================================================================================
 
-    protected crypt(data: XoEncryptionData, endpoint: string): Observable < XoEncryptionData > {
-    return this.http.post(endpoint, data.encode()).pipe(
-        map((result: XoJson) =>
-            new XoEncryptionData().decode(result)
-        ),
-        catchError(error => {
-            console.log(`Error during /${endpoint} of "${JSON.stringify(data.encode())}": ${error}`);
-            return of(XoEncryptionData.withValues([], false));
-        })
-    );
-}
+    protected crypt(data: XoEncryptionData, endpoint: string): Observable<XoEncryptionData> {
+        return this.http.post(endpoint, data.encode()).pipe(
+            map((result: XoJson) =>
+                new XoEncryptionData().decode(result)
+            ),
+            catchError(error => {
+                console.log(`Error during /${endpoint} of "${JSON.stringify(data.encode())}": ${error}`);
+                return of(XoEncryptionData.withValues([], false));
+            })
+        );
+    }
 
 
-/**
- * Encode/encrypt strings
- * @param values strings to encode
- * @returns encoded strings
- */
-encode(values: string[]): Observable < string[] > {
-    return this.crypt(XoEncryptionData.withValues(values, false), 'encode').pipe(map(encryptionData => encryptionData.values));
-}
+    /**
+     * Encode/encrypt strings
+     * @param values strings to encode
+     * @returns encoded strings
+     */
+    encode(values: string[]): Observable<string[]> {
+        return this.crypt(XoEncryptionData.withValues(values, false), 'encode').pipe(map(encryptionData => encryptionData.values));
+    }
 
 
-/**
- * Decode/decrypt strings
- * @param values strings to decode
- * @returns decoded strings
- */
-decode(values: string[]): Observable < string[] > {
-    return this.crypt(XoEncryptionData.withValues(values, true), 'decode').pipe(map(encryptionData => encryptionData.values));
-}
+    /**
+     * Decode/decrypt strings
+     * @param values strings to decode
+     * @returns decoded strings
+     */
+    decode(values: string[]): Observable<string[]> {
+        return this.crypt(XoEncryptionData.withValues(values, true), 'decode').pipe(map(encryptionData => encryptionData.values));
+    }
 }

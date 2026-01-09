@@ -42,9 +42,9 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 
     protected _compact = false;
     protected _semiCompact = false;
-    protected _label: KeyTranslationPair = {key: '', translated: ''};
-    protected _iconTooltip: KeyTranslationPair = {key: '', translated: ''};
-    protected _ariaLabel: KeyTranslationPair = {key: '', translated: ''};
+    protected _label: KeyTranslationPair = { key: '', translated: '' };
+    protected _iconTooltip: KeyTranslationPair = { key: '', translated: '' };
+    protected _ariaLabel: KeyTranslationPair = { key: '', translated: '' };
 
     protected subs: Subscription[] = [];
 
@@ -153,7 +153,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     protected _indicateChanges = false;
     protected _readonly = false;
-    protected _placeholder: KeyTranslationPair = {key: '', translated: ''};
+    protected _placeholder: KeyTranslationPair = { key: '', translated: '' };
 
     readonly formControl = new FormControl();
 
@@ -282,6 +282,8 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         ).join(', ');
     }
 
+    @Input('xc-form-field-tab-index')
+    tabIndex?: number = 0;
 
     constructor(element: ElementRef<HTMLElement>, i18n: I18nService) {
         super(element, i18n);

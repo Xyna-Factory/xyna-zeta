@@ -32,7 +32,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
 })
 export class XcButtonBaseComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
 
-    protected _ariaLabel: KeyTranslationPair = {key: '', translated: ''};
+    protected _ariaLabel: KeyTranslationPair = { key: '', translated: '' };
     protected _tabDisabled = false;
     protected _disabled = false;
     protected _busy = false;
@@ -157,6 +157,9 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     get ariaLabel(): string {
         return this._ariaLabel.translated;
     }
+
+    @Input('xc-button-tab-index')
+    tabIndex?: number = 0;
 
 
     @HostListener('keydown.enter')

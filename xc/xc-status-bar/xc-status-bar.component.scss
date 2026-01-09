@@ -22,10 +22,11 @@
     flex-direction: row;
     align-items: baseline;
     border-radius: 4px;
-    background-color: $color-gray-0;
+    background: $xc-button-background-color;
+    border: $xc-button-border-width solid $xc-button-border-color;
 
-    > .message {
-        color: $color-gray-4;
+    >.message {
+        color: $color-normal;
         max-width: 400px;
         text-overflow: ellipsis;
         white-space: pre;
@@ -55,17 +56,32 @@
     }
 
     @keyframes flash-info {
-        0%   { background-color: $color-gray-4; }
-        100% { background-color: $color-gray-0; }
+        0% {
+            background-color: $color-gray-4;
+        }
+
+        100% {
+            background-color: $xc-button-background-color;
+        }
     }
 
     @keyframes flash-success {
-        0%   { background-color: $color-primary; }
-        100% { background-color: $color-gray-0; }
+        0% {
+            background-color: $color-primary;
+        }
+
+        100% {
+            background-color: $xc-button-background-color;
+        }
     }
 
     @keyframes flash-failure {
-        0%   { background-color: $color-warn; }
-        100% { background-color: $color-gray-0; }
+        0% {
+            background-color: $color-warn;
+        }
+
+        100% {
+            background-color: $xc-button-background-color;
+        }
     }
 }

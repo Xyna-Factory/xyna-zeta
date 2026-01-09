@@ -1,6 +1,8 @@
-@for (child of formDefinition?.children; let i = $index; track i) {
-  <xc-definition-proxy [xc-base-definition]="child"
+
+@for (child of formDefinition?.children; track child.stringify()) {
+  <xc-definition-proxy
+    [xc-base-definition]="child"
     [xc-base-definition-data]="definitionData"
     (xc-definition-closed)="closed.emit($event)"
-   />
+  />
 }

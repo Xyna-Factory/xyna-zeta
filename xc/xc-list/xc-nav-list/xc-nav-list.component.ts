@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
 
 import { coerceBoolean } from '@zeta/base';
@@ -24,6 +24,9 @@ import { Subscription } from 'rxjs';
 
 import { XcThemeableComponent } from '../../shared/xc-themeable.component';
 import { XcNavListItem } from './xc-nav-list-item/xc-nav-list-item.component';
+import { I18nService, LocaleService } from '@zeta/i18n';
+import { xcNavListTranslations_enUS } from './locale/xc-nav-list-translations.en-US';
+import { xcNavListTranslations_deDE } from './locale/xc-nav-list-translations.de-DE';
 
 
 export enum XcNavListOrientation {
@@ -88,9 +91,18 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
     private _shrink = false;
 
 
+    private readonly i18n = inject<I18nService>(I18nService);
+
     constructor(private readonly router: Router, private readonly route: ActivatedRoute) {
         super();
         this.color = 'primary';
+        this.i18n.setTranslations(LocaleService.EN_US, xcNavListTranslations_enUS);
+        this.i18n.setTranslations(LocaleService.DE_DE, xcNavListTranslations_deDE);
+    }
+
+
+    get ariaLabel(): string {
+        return this.i18n.translate('menu_with_elements', { key: '$0', value: this.items.length.toString() });
     }
 
 

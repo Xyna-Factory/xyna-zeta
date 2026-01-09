@@ -26,6 +26,10 @@
 
 
 .zeta-scrollbar {
+    // firefox
+    scrollbar-color: $xc-scrollbar-color $xc-scrollbar-background-color;
+    scrollbar-width: thin;
+
     &::-webkit-scrollbar {
         width: 10px;
         height: 10px;
@@ -39,10 +43,6 @@
     &::-webkit-scrollbar-thumb {
         background-color: $xc-scrollbar-color;
     }
-
-    // firefox
-    scrollbar-color: $xc-scrollbar-color $xc-scrollbar-background-color;
-    scrollbar-width: thin;
 }
 
 

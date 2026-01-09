@@ -1,6 +1,6 @@
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- * Copyright 2023 Xyna GmbH, Germany
+ * Copyright 2025 Xyna GmbH, Germany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-@use '../../../const' as *;
+import { I18nTranslation } from '@zeta/i18n';
 
-:host {
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
 
-    color: $xc-tree-label-color;
-    background-color: $xc-tree-background-color;
-}
+export const xcNavListTranslations_deDE: I18nTranslation[] = [
+    { key: 'menu_with_elements', value: 'Menü mit $0 Elementen' }
+];

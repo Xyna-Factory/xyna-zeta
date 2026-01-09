@@ -50,7 +50,7 @@ export class XcStatusBarEntry extends Comparable {
 }
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class XcStatusBarService {
 
     private readonly statusBarEntrySubject = new Subject<XcStatusBarEntry>();

@@ -1,13 +1,17 @@
 <mat-nav-list>
+  <ul [attr.aria-label]="ariaLabel">
   @for (item of items; let i = $index; track i) {
-    <xc-nav-list-item
-      [item]="item"
-      [size]="size"
-      [depth]="0"
-      [color]="color"
-      [shrink]="shrink"
-      [orientation]="orientation"
-      (focusChange)="focusChange($event)"
-    >{{item.name}}</xc-nav-list-item>
+    <li>
+      <xc-nav-list-item
+        [item]="item"
+        [size]="size"
+        [depth]="0"
+        [color]="color"
+        [shrink]="shrink"
+        [orientation]="orientation"
+        (focusChange)="focusChange($event)"
+      >{{item.name}}</xc-nav-list-item>
+    </li>
   }
+  </ul>
 </mat-nav-list>
