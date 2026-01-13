@@ -21,6 +21,7 @@
 @each $key, $value in $color-map {
     :host[color="#{$key}"] a.active {
         border-color: $value;
+
         xc-icon {
             color: $value;
         }
@@ -34,7 +35,8 @@
     overflow: hidden;
     background-color: $xc-nav-list-background-bar-color;
 
-    .mat-mdc-nav-list, ul {
+    .mat-mdc-nav-list,
+    ul {
         padding: 0;
         display: flex;
         flex: 1 1 auto;
@@ -43,63 +45,83 @@
         background-color: $xc-nav-list-item-separation-color;
     }
 
-    &[orientation="LEFT"], &[orientation="RIGHT"] {
-        mat-nav-list, ul {
+    &[orientation="LEFT"],
+    &[orientation="RIGHT"] {
+
+        mat-nav-list,
+        ul {
             flex-direction: column;
         }
+
         mat-nav-list {
             margin-bottom: auto;
         }
+
         &::ng-deep a {
             border-width: $xc-nav-list-item-vertical-active-indicator-width;
             margin-bottom: $xc-nav-list-item-separation-space;
         }
     }
 
-    &[orientation="TOP"], &[orientation="BOTTOM"] {
-        mat-nav-list, ul {
+    &[orientation="TOP"],
+    &[orientation="BOTTOM"] {
+
+        mat-nav-list,
+        ul {
             flex-direction: row;
         }
+
         mat-nav-list {
             margin-right: auto;
         }
+
         &::ng-deep a {
             border-width: $xc-nav-list-item-horizontal-active-indicator-width;
             margin-right: $xc-nav-list-item-separation-space;
         }
     }
 
-    &[orientation="LEFT"]::ng-deep a {
-        border-left-style: solid;
+    &[orientation="LEFT"] {
+        border-right: $xc-nav-list-border;
+
+        ::ng-deep a {
+            border-left-style: solid;
+        }
     }
 
     // the div-block next to the a-element
     // -> the sub navigation
-    &[orientation="LEFT"]::ng-deep a + ul {
+    &[orientation="LEFT"]::ng-deep a+ul {
         padding: 0;
         margin-left: $xc-nav-list-item-indentation;
     }
 
-    &[orientation="RIGHT"]::ng-deep a {
-        border-right-style: solid;
+    &[orientation="RIGHT"] {
+        border-right: $xc-nav-list-border;
+
+        ::ng-deep a {
+            border-right-style: solid;
+        }
     }
 
     // the div-block next to the a-element
     // -> the sub navigation
-    &[orientation="RIGHT"]::ng-deep a + ul {
+    &[orientation="RIGHT"]::ng-deep a+ul {
         padding: 0;
         margin-right: $xc-nav-list-item-indentation;
     }
 
-    &[orientation="TOP"]::ng-deep a {
+    &[orientation="TOP"] ::ng-deep a {
         border-top-style: solid;
     }
 
-    &[orientation="BOTTOM"]::ng-deep a {
+
+    &[orientation="BOTTOM"] ::ng-deep a {
         border-bottom-style: solid;
     }
 
-    ul, li {
+    ul,
+    li {
         list-style-type: none;
         margin: 0;
     }

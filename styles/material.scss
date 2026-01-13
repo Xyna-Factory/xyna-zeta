@@ -151,8 +151,9 @@ html.cdk-global-scrollblock {
 .mat-mdc-menu-panel {
     min-height: unset !important;
     overflow: inherit !important;
-    background-color: #1A1A1B;
-    box-shadow: 0 0 16px #1A1A1B;
+    background-color: #1A1A1B !important;
+    box-shadow: 0 0 16px #1A1A1B !important;
+    max-width: fit-content !important;
 
     &.with-arrow-x,
     &.with-arrow-y {
@@ -283,7 +284,6 @@ html.cdk-global-scrollblock {
             background-color: $xc-menu-item-background-color;
             color: #fff;
             border-radius: 0;
-            min-height: 32px;
 
             &[disabled] {
                 color: $color-disabled;
@@ -297,6 +297,7 @@ html.cdk-global-scrollblock {
                 display: flex;
                 font-size: $font-size-medium;
                 width: 100%;
+                gap: 16px;
 
                 &>xc-icon {
                     flex: 1 1 auto;
