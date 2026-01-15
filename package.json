@@ -35,8 +35,6 @@
     "@angular-eslint/eslint-plugin": "^20.6.0",
     "@angular/cli": "20.3.14",
     "@angular/compiler-cli": "20.3.16",
-    "@nx/angular": "22.1.3",
-    "@nx/workspace": "22.1.3",
     "@schematics/angular": "20.3.10",
     "@stylistic/eslint-plugin": "^5.5.0",
     "@types/node": "^24.10.0",
@@ -51,7 +49,6 @@
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-zeta": "file:lint/plugins/eslint-plugin-zeta",
     "globals": "^16.5.0",
-    "nx": "22.1.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.4"
