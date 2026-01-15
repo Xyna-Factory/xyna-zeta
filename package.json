@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20.20.0 <21 || >=22.22.0 <23 || >=24.13.0 <25"
+    "node": "20.20.0"
   },
   "scripts": {
     "lint": "eslint --color -c eslint.config.js --max-warnings 0 .",
