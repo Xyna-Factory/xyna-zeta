@@ -18,8 +18,8 @@
 import { AriaLivePoliteness, LiveAnnouncer } from '@angular/cdk/a11y';
 import { Injectable, NgZone } from '@angular/core';
 
-import { BehaviorSubject, Observable, Subject, Subscriber } from 'rxjs';
-import { filter, finalize } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 
 class A11yFocusState {
@@ -38,7 +38,7 @@ export enum ScreenreaderPriority {
 }
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class A11yService {
 
     private readonly focusStateSubject = new Subject<A11yFocusState>();

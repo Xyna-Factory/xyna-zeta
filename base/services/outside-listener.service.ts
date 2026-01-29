@@ -29,7 +29,7 @@ interface OutsideListenerTriple {
 }
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class OutsideListenerService {
     private static id = 0;
 

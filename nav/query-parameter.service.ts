@@ -16,8 +16,8 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Injectable } from '@angular/core';
-import { encodeURIComponentRFC1738 } from '../base';
 
+import { encodeURIComponentRFC1738 } from '../base';
 
 
 export interface UrlQueryParam {
@@ -34,7 +34,7 @@ export enum UrlQueryParamConflictResolutionMethod {
     Replace = 1, None
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class QueryParameterService {
 
     private readonly queries = new Map<string, string>();

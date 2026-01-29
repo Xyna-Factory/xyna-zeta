@@ -17,12 +17,12 @@
  */
 import { Directive, ElementRef, inject, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { trim } from '@zeta/base';
+import { KeyTranslationPair } from '@zeta/xc/shared/xc-i18n-attributes';
+
+import { Subscription } from 'rxjs';
 
 import { I18nService } from './i18n.service';
-import { KeyTranslationPair } from '@zeta/xc/shared/xc-i18n-attributes';
 import { LocaleService } from './locale.service';
-import { Subscription } from 'rxjs';
 
 
 export abstract class XcI18nBase {
@@ -48,10 +48,7 @@ export abstract class XcI18nBase {
 
 
 
-@Directive({
-    selector: '[xc-i18n-context]',
-    standalone: false
-})
+@Directive({ selector: '[xc-i18n-context]' })
 export class XcI18nContextDirective extends XcI18nBase implements OnInit {
 
     private context: string;
@@ -78,10 +75,7 @@ export class XcI18nContextDirective extends XcI18nBase implements OnInit {
 
 
 
-@Directive({
-    selector: '[xc-i18n]',
-    standalone: false
-})
+@Directive({ selector: '[xc-i18n]' })
 export class XcI18nTranslateDirective extends XcI18nBase implements OnInit, OnDestroy {
 
     private _context: string;

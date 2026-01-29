@@ -19,25 +19,23 @@ import { Directive, Injectable, Input, OnDestroy, TemplateRef, ViewContainerRef 
 
 import { Subject, Subscription } from 'rxjs';
 
-import { XcMenuComponent, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault } from './xc-menu.component';
+import { XcMenuComponentInterface, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault } from './xc-menu.types';
 
 
 @Injectable({ providedIn: 'root' })
 export class XcMenuService {
 
-    private _component: XcMenuComponent;
+    private _component: XcMenuComponentInterface;
     private _items: XcMenuItem[];
     private _options: XcMenuOptions;
     private readonly subscriptions = new Array<Subscription>();
     private readonly selectItem = new Subject<XcMenuItem>();
 
-
     constructor() {
         this.set();
     }
 
-
-    set component(value: XcMenuComponent) {
+    set component(value: XcMenuComponentInterface) {
         this.subscriptions.forEach(subscription => subscription.unsubscribe());
         this.subscriptions.splice(0);
         this._component = value;
@@ -49,21 +47,17 @@ export class XcMenuService {
         }
     }
 
-
-    get component(): XcMenuComponent {
+    get component(): XcMenuComponentInterface {
         return this._component;
     }
-
 
     get items(): XcMenuItem[] {
         return this._items;
     }
 
-
     get options(): XcMenuOptions {
         return this._options;
     }
-
 
     set(items: XcMenuItem[] = [], options: XcMenuOptions = {}) {
         this._items = items;
@@ -79,12 +73,7 @@ export class XcMenuService {
     }
 }
 
-
-
-@Directive({
-    selector: '[xc-menu-service]',
-    standalone: false
-})
+@Directive({ selector: '[xc-menu-service]' })
 export class XcMenuServiceDirective implements OnDestroy {
 
     constructor(
@@ -94,11 +83,9 @@ export class XcMenuServiceDirective implements OnDestroy {
     ) {
     }
 
-
     ngOnDestroy() {
         this.viewContainerRef.clear();
     }
-
 
     @Input('xc-menu-service')
     set value(visible: boolean) {

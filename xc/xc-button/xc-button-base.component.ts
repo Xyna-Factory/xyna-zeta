@@ -26,9 +26,8 @@ import { ATTRIBUTE_ARIALABEL, KeyTranslationPair } from '../shared/xc-i18n-attri
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
 
 
-@Component({
-    template: '',
-    standalone: false
+@Component({ 
+    template: ''
 })
 export class XcButtonBaseComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
 

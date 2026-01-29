@@ -22,7 +22,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { SessionInfo } from './auth-session';
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthEventService {
 
     readonly sessionInfoSubject = new BehaviorSubject<SessionInfo>(undefined);

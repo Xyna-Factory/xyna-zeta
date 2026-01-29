@@ -37,7 +37,7 @@ import { XcInfoDialogComponent } from './xc-info-dialog.component';
 import { XcMessageDialogComponent } from './xc-message-dialog.component';
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class XcDialogService {
     static defaultErrorTitle = 'zeta.xc-dialog.info-dialog.error-header';
 

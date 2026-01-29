@@ -21,13 +21,14 @@ import { I18nService } from '@zeta/i18n';
 
 import { coerceBoolean } from '../../base';
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
+import { MatIcon } from '@angular/material/icon';
 
 
 @Component({
     selector: 'xc-icon',
     templateUrl: './xc-icon.component.html',
     styleUrls: ['./xc-icon.component.scss'],
-    standalone: false
+    imports: [MatIcon]
 })
 export class XcIconComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
 

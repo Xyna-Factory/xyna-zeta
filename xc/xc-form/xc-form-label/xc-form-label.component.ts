@@ -23,8 +23,7 @@ import { I18nService } from '../../../i18n';
 @Component({
     selector: 'xc-form-label',
     templateUrl: './xc-form-label.component.html',
-    styleUrls: ['./xc-form-label.component.scss'] /** @todo reuse xc-form-field.component.scss somehow */,
-    standalone: false
+    styleUrls: ['./xc-form-label.component.scss'] /** @todo reuse xc-form-field.component.scss somehow */
 })
 export class XcFormLabelComponent implements AfterContentInit {
 

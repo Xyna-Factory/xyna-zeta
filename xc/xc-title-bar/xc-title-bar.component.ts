@@ -22,13 +22,14 @@ import { getBaseHref, isArray } from '@zeta/base';
 import { XcDialogService } from '../xc-dialog/xc-dialog.service';
 
 import packageInfo from '../../package.json';
+import { XcIconComponent } from '../xc-icon/xc-icon.component';
 
 
 @Component({
     selector: 'xc-title-bar',
     templateUrl: './xc-title-bar.component.html',
     styleUrls: ['./xc-title-bar.component.scss'],
-    standalone: false
+    imports: [XcIconComponent]
 })
 export class XcTitleBarComponent {
 

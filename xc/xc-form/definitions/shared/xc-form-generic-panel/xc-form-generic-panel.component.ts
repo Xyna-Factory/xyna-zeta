@@ -1,3 +1,4 @@
+import { AsyncPipe, NgClass } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,17 +16,21 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 
 import { Xo } from '../../../../../api';
+import { I18nModule } from '../../../../../i18n/i18n.module';
+import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
+import { XcPanelComponent } from '../../../../xc-panel/xc-panel.component';
+import { XcTooltipDirective } from '../../../../xc-tooltip/xc-tooltip.directive';
+import { XcDefinitionProxyComponent } from '../../containers/xc-definition-proxy/xc-definition-proxy.component';
 import { XoFormPanelDefinition } from '../../xo/containers.model';
-
 
 @Component({
     selector: 'xc-form-generic-panel',
     templateUrl: './xc-form-generic-panel.component.html',
     styleUrls: ['./xc-form-generic-panel.component.scss'],
-    standalone: false
+    imports: [XcPanelComponent, NgClass, forwardRef(() => XcDefinitionProxyComponent), XcIconButtonComponent, XcTooltipDirective, AsyncPipe, I18nModule]
 })
 export class XcFormGenericPanelComponent {
 

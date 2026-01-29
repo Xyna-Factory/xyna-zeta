@@ -21,11 +21,12 @@ import { I18nService } from '../i18n';
 import { AuthBackgroundComponent } from './background/auth-background.component';
 import { authTranslations_deDE } from './locale/auth-translations.de-DE';
 import { authTranslations_enUS } from './locale/auth-translations.en-US';
+import { NgComponentOutlet } from '@angular/common';
 
 
 @Component({
     templateUrl: './auth.component.html',
-    standalone: false
+    imports: [NgComponentOutlet]
 })
 export class AuthComponent {
 

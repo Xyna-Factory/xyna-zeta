@@ -24,7 +24,7 @@ import { XynaRoute } from './';
 export const RedirectGuardConfigToken = new InjectionToken<string>('RedirectGuardConfigToken');
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RedirectGuardService {
 
     /**

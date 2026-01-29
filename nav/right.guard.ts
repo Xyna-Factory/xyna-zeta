@@ -23,7 +23,7 @@ import { AuthService } from '../auth';
 import { XynaRoute } from './xyna-routes';
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RightGuardService {
 
     constructor(private readonly authService: AuthService, private readonly router: Router) {

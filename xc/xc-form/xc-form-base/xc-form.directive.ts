@@ -26,8 +26,7 @@ import { XcFormValidatorBaseDirective } from './xc-form-validator-base.directive
 
 @Directive({
     selector: '[xc-form]',
-    exportAs: 'xc-form',
-    standalone: false
+    exportAs: 'xc-form'
 })
 export class XcFormDirective implements OnDestroy {
 

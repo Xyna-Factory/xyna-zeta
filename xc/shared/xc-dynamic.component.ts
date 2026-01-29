@@ -22,8 +22,7 @@ export type XcDynamicComponentType<D> = new (...args: any[]) => XcDynamicCompone
 
 
 @Component({
-    template: '',
-    standalone: false
+    template: ''
 })
 export abstract class XcDynamicComponent<D> {
 

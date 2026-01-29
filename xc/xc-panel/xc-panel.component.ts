@@ -19,6 +19,8 @@ import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementR
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
+import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 import { xcPanelTranslations_deDE } from './locale/xc-panel-translations.de-DE';
 import { xcPanelTranslations_enUS } from './locale/xc-panel-translations.en-US';
 
@@ -27,7 +29,7 @@ import { xcPanelTranslations_enUS } from './locale/xc-panel-translations.en-US';
     selector: 'xc-panel',
     templateUrl: './xc-panel.component.html',
     styleUrls: ['./xc-panel.component.scss'],
-    standalone: false
+    imports: [XcIconButtonComponent, XcTooltipDirective]
 })
 export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDestroy {
 

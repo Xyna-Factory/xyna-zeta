@@ -16,25 +16,20 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { NgClass } from '@angular/common';
 import { Component, EventEmitter, HostBinding, inject, Input, OnInit, Output } from '@angular/core';
+import { MatListItem } from '@angular/material/list';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
-import { coerceBoolean, isBoolean } from '../../../../base';
-import { XcItem } from '../../../shared/xc-item';
-import { XcThemeableComponent } from '../../../shared/xc-themeable.component';
-import { XcTooltipPosition } from '../../../xc-tooltip/xc-tooltip.directive';
-import { XcNavListOrientation } from '../xc-nav-list.component';
-import { xcNavListTranslations_enUS } from '../locale/xc-nav-list-translations.en-US';
-import { xcNavListTranslations_deDE } from '../locale/xc-nav-list-translations.de-DE';
 import { I18nService, LocaleService } from '@zeta/i18n';
 
-
-export interface XcNavListItem extends XcItem {
-    link?: string;
-    class?: string;
-    children?: this[];
-    collapsed?: boolean;
-    tooltip?: string;
-}
+import { coerceBoolean, isBoolean } from '../../../../base';
+import { XcThemeableComponent } from '../../../shared/xc-themeable.component';
+import { XcIconComponent } from '../../../xc-icon/xc-icon.component';
+import { XcTooltipDirective, XcTooltipPosition } from '../../../xc-tooltip/xc-tooltip.directive';
+import { xcNavListTranslations_deDE } from '../locale/xc-nav-list-translations.de-DE';
+import { xcNavListTranslations_enUS } from '../locale/xc-nav-list-translations.en-US';
+import { XcNavListItem, XcNavListOrientation } from '../xc-nav-list.types';
 
 
 @Component({
@@ -52,7 +47,7 @@ export interface XcNavListItem extends XcItem {
             transition('* => *', animate('0ms ease-in'))
         ])
     ],
-    standalone: false
+    imports: [MatListItem, NgClass, XcIconComponent, RouterLinkActive, RouterLink, XcTooltipDirective]
 })
 export class XcNavListItemComponent extends XcThemeableComponent implements OnInit {
 
