@@ -24,6 +24,7 @@ import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/f
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
+
 import { MULTISELECT_FILTER_SEPARATOR } from '@zeta/xc/xc-table/xc-table-data-source';
 
 import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
@@ -182,7 +183,7 @@ interface XcOptionInternalAutocompleteItem extends XcOptionItem {
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-autocomplete.component.scss'],
     providers: [{ provide: XcFormBaseComponent, useExisting: forwardRef(() => XcFormAutocompleteComponent) }],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, MatAutocompleteTrigger, MatAutocomplete, MatOption, XcTooltipDirective, XcIconComponent, MatError, MatIconButton, MatSuffix, MatIcon, AsyncPipe, I18nModule]
+    imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, MatAutocompleteTrigger, MatAutocomplete, MatOption, XcTooltipDirective, XcIconComponent, MatError, MatIconButton, MatSuffix, MatIcon, AsyncPipe, I18nModule, MatSelect]
 })
 export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implements AfterViewInit, OnDestroy {
 
@@ -877,9 +878,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         }
     }
 
-    /**
-     * Original _handleKeydown method backup.
-     */
+    // Original _handleKeydown method backup
     private _originalHandleKeydown: ((event: KeyboardEvent) => void) | null = null;
 
     /**

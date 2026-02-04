@@ -30,7 +30,6 @@ import { XcDefinitionStackItemComponent } from './xc-form/definitions/xc-definit
 import { XcDefinitionStackMasterComponent } from './xc-form/definitions/xc-definition-stack/xc-definition-stack-master/xc-definition-stack-master.component';
 import { XcDialogDefinitionComponent } from './xc-form/definitions/xc-dialog-definition/xc-dialog-definition.component';
 import { XcFormAutocompleteComponent } from './xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
-import { MatSelectModule } from '@angular/material/select';
 import { XcFormBaseComponent, XcFormComponent } from './xc-form/xc-form-base/xc-form-base.component';
 import { XcFormBaseInputComponent } from './xc-form/xc-form-base/xc-form-baseinput.component';
 import { XcFormValidatorCustomDirective, XcFormValidatorEmailDirective, XcFormValidatorIpDirective, XcFormValidatorIpv4Directive, XcFormValidatorIpv6Directive, XcFormValidatorMaxLengthDirective, XcFormValidatorMaxValueDirective, XcFormValidatorMinLengthDirective, XcFormValidatorMinValueDirective, XcFormValidatorNumberDirective, XcFormValidatorPatternDirective, XcFormValidatorRequiredDirective, XcFormValidatorsDirective } from './xc-form/xc-form-base/xc-form-validators.directive';
