@@ -30,13 +30,17 @@ import { XcDialogComponent } from '../../../xc/xc-dialog/xc-dialog.component';
 import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../../../xc/xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { runtimeContextSelection_translations_de_DE } from './locale/runtime-context-selection-translations.de-DE';
 import { runtimeContextSelection_translations_en_US } from './locale/runtime-context-selection-translations.en-US';
+import { XcDialogWrapperComponent } from '../../../xc/xc-dialog/xc-dialog-wrapper.component';
+import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../../i18n/i18n.directive';
+import { XcFormValidatorRequiredDirective } from '../../../xc/xc-form/xc-form-base/xc-form-validators.directive';
+import { XcButtonComponent } from '../../../xc/xc-button/xc-button.component';
 
 
 @Component({
     templateUrl: './runtime-context-selection.component.html',
     styleUrls: ['./runtime-context-selection.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcFormAutocompleteComponent, XcFormValidatorRequiredDirective, XcButtonComponent]
 })
 export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeContext, RuntimeContextSelectionSettings> implements OnDestroy {
 

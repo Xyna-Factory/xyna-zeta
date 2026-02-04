@@ -16,4 +16,3 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 export * from './a11y.service';
-export * from './a11y.module';

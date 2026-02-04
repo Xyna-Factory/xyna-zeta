@@ -18,13 +18,14 @@
 import { Component } from '@angular/core';
 
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 
 @Component({
     selector: 'xc-progress-bar',
     templateUrl: './xc-progress-bar.component.html',
     styleUrls: ['./xc-progress-bar.component.scss'],
-    standalone: false
+    imports: [MatProgressBar]
 })
 export class XcProgressBarComponent extends XcThemeableComponent {
     constructor() {

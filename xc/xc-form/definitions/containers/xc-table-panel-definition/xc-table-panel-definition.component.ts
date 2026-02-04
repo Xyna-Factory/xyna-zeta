@@ -28,13 +28,19 @@ import { XcRemoteTableDataSource } from '../../../../xc-table/xc-remote-table-da
 import { XoBaseDefinition, XoDefinition } from '../../xo/base-definition.model';
 import { XoTablePanelDefinition } from '../../xo/containers.model';
 import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-form-panel-definition.component';
+import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
+import { XcButtonComponent } from '../../../../xc-button/xc-button.component';
+import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
+import { XcTooltipDirective } from '../../../../xc-tooltip/xc-tooltip.directive';
+import { XcTableComponent } from '../../../../xc-table/xc-table.component';
+import { I18nModule } from '../../../../../i18n/i18n.module';
 
 
 @Component({
     selector: 'xc-table-panel-definition',
     templateUrl: './xc-table-panel-definition.component.html',
     styleUrls: ['./xc-table-panel-definition.component.scss'],
-    standalone: false
+    imports: [XcFormGenericPanelComponent, XcButtonComponent, XcIconButtonComponent, XcTooltipDirective, XcTableComponent, I18nModule]
 })
 export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionComponent implements OnDestroy {
 

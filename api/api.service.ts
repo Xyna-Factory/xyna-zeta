@@ -238,7 +238,7 @@ export interface RuntimeContextSelectionSettings {
 }
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ApiService {
 
     private readonly runtimeContextSubject = new BehaviorSubject<RuntimeContext>(null);

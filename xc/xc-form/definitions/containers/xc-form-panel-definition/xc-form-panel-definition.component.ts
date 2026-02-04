@@ -20,13 +20,14 @@ import { Component, Input } from '@angular/core';
 import { XoFormPanelDefinition } from '../../xo/containers.model';
 import { XcFormDefinitionComponent } from '../xc-form-definition/xc-form-definition.component';
 import { Subscription } from 'rxjs';
+import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
 
 
 @Component({
     selector: 'xc-form-panel-definition',
     templateUrl: './xc-form-panel-definition.component.html',
     styleUrls: ['./xc-form-panel-definition.component.scss'],
-    standalone: false
+    imports: [XcFormGenericPanelComponent]
 })
 export class XcFormPanelDefinitionComponent extends XcFormDefinitionComponent {
 

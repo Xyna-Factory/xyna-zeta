@@ -20,13 +20,14 @@ import { Component, HostBinding } from '@angular/core';
 import { XcDialogService } from '../xc-dialog/xc-dialog.service';
 import { XcStatusBarDialogComponent } from './xc-status-bar-dialog.component';
 import { XcStatusBarEntry, XcStatusBarEntryType, XcStatusBarService } from './xc-status-bar.service';
+import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 
 
 @Component({
     selector: 'xc-status-bar',
     templateUrl: './xc-status-bar.component.html',
     styleUrls: ['./xc-status-bar.component.scss'],
-    standalone: false
+    imports: [XcIconButtonComponent]
 })
 export class XcStatusBarComponent {
 

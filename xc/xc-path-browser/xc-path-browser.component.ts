@@ -23,6 +23,9 @@ import { XcOptionItem } from '../shared/xc-item';
 import { XC_COMPONENT_DATA } from '../xc-template/xc-template';
 import { xcPathBrowserTranslations_deDE } from './locale/xc-path-browser-translations.de-DE';
 import { xcPathBrowserTranslations_enUS } from './locale/xc-path-browser-translations.en-US';
+import { I18nModule } from '../../i18n/i18n.module';
+import { XcButtonComponent } from '../xc-button/xc-button.component';
+import { XcFormInputComponent } from '../xc-form/xc-form-input/xc-form-input.component';
 
 
 export interface XcPathOptionItem extends XcOptionItem {
@@ -53,7 +56,7 @@ export interface XcPathBrowserTemplateData {
     selector: 'xc-path-browser',
     templateUrl: './xc-path-browser.component.html',
     styleUrls: ['./xc-path-browser.component.scss'],
-    standalone: false
+    imports: [I18nModule, XcButtonComponent, XcFormInputComponent]
 })
 export class XcPathBrowserComponent extends XcDynamicComponent<XcPathBrowserTemplateData> {
 

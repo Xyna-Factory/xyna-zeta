@@ -1,8 +1,11 @@
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { NgClass } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, Input, Renderer2, ViewChild } from '@angular/core';
+import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 import { coerceBoolean } from '../../base';
-import { XcDragOptions } from '../shared/xc-drag.directive';
-import { XcResizeOptions } from '../shared/xc-resize.directive';
+import { XcDragDirective, XcDragOptions } from '../shared/xc-drag.directive';
+import { XcResizeDirective, XcResizeOptions } from '../shared/xc-resize.directive';
 
 
 export enum XcDialogPositions {
@@ -22,11 +25,12 @@ export interface XcDialogOptions {
     position?: XcDialogPositions;
 }
 
+
 @Component({
     selector: 'xc-dialog-wrapper',
     templateUrl: './xc-dialog-wrapper.component.html',
     styleUrls: ['./xc-dialog-wrapper.component.scss'],
-    standalone: false
+    imports: [NgClass, XcResizeDirective, XcDragDirective, MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions]
 })
 export class XcDialogWrapperComponent implements AfterViewInit {
 

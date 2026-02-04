@@ -33,6 +33,7 @@ import { XoBaseDefinition, XoCloseDefinitionData, XoDefinition, XoDefinitionBund
 import { XoFormDefinition } from '../../xo/containers.model';
 import { XoStartOrderButtonDefinition } from '../../xo/item-definition.model';
 import { pack } from '@zeta/base';
+import { XcDefinitionProxyComponent } from '../../containers/xc-definition-proxy/xc-definition-proxy.component';
 
 
 export interface DefinitionStackItemComponentData extends XcStackItemComponentData {
@@ -51,7 +52,7 @@ interface DefinitionStackItem {
     templateUrl: './xc-definition-stack-item.component.html',
     styleUrls: ['./xc-definition-stack-item.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [XcDefinitionProxyComponent]
 })
 export class XcDefinitionStackItemComponent extends XcStackItemComponent<DefinitionStackItemComponentData> implements XoDefinitionObserver, AfterViewInit, OnDestroy {
 

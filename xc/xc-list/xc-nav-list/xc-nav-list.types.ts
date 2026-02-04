@@ -15,17 +15,20 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { NgModule } from '@angular/core';
-
-import { ApiService } from './api.service';
+import { XcItem } from '../../../xc/shared/xc-item';
 
 
-@NgModule({
-    imports: [
-    ],
-    providers: [
-        ApiService
-    ]
-})
-export class ApiModule {
+export enum XcNavListOrientation {
+    TOP,
+    RIGHT,
+    BOTTOM,
+    LEFT
+}
+
+export interface XcNavListItem extends XcItem {
+    link?: string;
+    class?: string;
+    children?: this[];
+    collapsed?: boolean;
+    tooltip?: string;
 }

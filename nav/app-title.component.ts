@@ -23,8 +23,7 @@ import { filter, map } from 'rxjs/operators';
 
 
 @Component({
-    template: '',
-    standalone: false
+    template: ''
 })
 export class AppTitleComponent implements OnInit {
 

@@ -30,7 +30,7 @@ import { XcPlotDataSource } from './xc-plot-data-source';
     selector: 'xc-plot',
     templateUrl: './xc-plot.component.html',
     styleUrls: ['./xc-plot.component.scss'],
-    standalone: false
+    imports: [XcCanvasComponent]
 })
 export class XcPlotComponent implements OnDestroy, XcCanvasController, XcCanvasObserver {
 

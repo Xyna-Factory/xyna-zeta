@@ -18,13 +18,15 @@
 import { Component, Input } from '@angular/core';
 
 import { LoginComponentData } from '../login/auth-login.component';
+import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
+import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 
 
 @Component({
     selector: 'workflow-login',
     templateUrl: './workflow-login.component.html',
     styleUrls: ['./workflow-login.component.scss'],
-    standalone: false
+    imports: [XcFormInputComponent, XcI18nTranslateDirective]
 })
 export class WorkflowLoginComponent {
 

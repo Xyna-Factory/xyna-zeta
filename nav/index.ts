@@ -18,7 +18,6 @@
 export * from './app-title.component';
 export * from './broken.component';
 export * from './confirm.guard';
-export * from './nav.module';
 export * from './nav.routing';
 export * from './redirect.guard';
 export * from './reuse-strategy';

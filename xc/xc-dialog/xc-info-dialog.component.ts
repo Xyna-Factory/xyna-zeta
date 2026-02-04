@@ -17,13 +17,16 @@
  */
 import { Component } from '@angular/core';
 
+import { I18nModule } from '../../i18n/i18n.module';
+import { XcButtonComponent } from '../xc-button/xc-button.component';
+import { XcDialogWrapperComponent } from './xc-dialog-wrapper.component';
 import { XcMessageDialogComponent } from './xc-message-dialog.component';
 
 
 @Component({
     templateUrl: './xc-info-dialog.component.html',
     styleUrls: ['./xc-info-dialog.component.scss'],
-    standalone: false
+    imports: [XcDialogWrapperComponent, I18nModule, XcButtonComponent]
 })
 export class XcInfoDialogComponent extends XcMessageDialogComponent<void, void> {
 }

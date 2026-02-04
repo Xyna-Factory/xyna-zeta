@@ -22,13 +22,22 @@ import { environment } from '@environments/environment';
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, filter, finalize } from 'rxjs/operators';
 
+import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 import { I18nParam, I18nService } from '../../i18n/i18n.service';
-import { XcDialogService, XcTabBarComponent, XcTabBarItem } from '../../xc';
+import { XcDialogService, XcTabBarItem } from '../../xc';
+import { XcButtonComponent } from '../../xc/xc-button/xc-button.component';
+import { XcIconComponent } from '../../xc/xc-icon/xc-icon.component';
+import { XcLanguageSelectorComponent } from '../../xc/xc-language-selector/xc-language-selector.component';
+import { XcPanelComponent } from '../../xc/xc-panel/xc-panel.component';
+import { XcTabBarComponent } from '../../xc/xc-tab-bar/xc-tab-bar.component';
 import { H5FilterError, H5FilterErrorCodes } from '../auth.interfaces';
 import { AuthService } from '../auth.service';
 import { CredentialsLoginTabComponent } from '../forms/credentials-login-tab.component';
+import { CredentialsLoginComponent } from '../forms/credentials-login.component';
 import { SmartCardLoginTabComponent } from '../forms/smart-card-login-tab.component';
+import { SmartCardLoginComponent } from '../forms/smart-card-login.component';
 import { WorkflowLoginTabComponent } from '../forms/workflow-login-tab.component';
+import { WorkflowLoginComponent } from '../forms/workflow-login.component';
 
 
 export interface LoginComponentData {
@@ -55,7 +64,7 @@ interface LoginTabItem {
     selector: 'auth-login',
     templateUrl: './auth-login.component.html',
     styleUrls: ['./auth-login.component.scss'],
-    standalone: false
+    imports: [XcPanelComponent, XcI18nContextDirective, XcIconComponent, XcI18nTranslateDirective, XcLanguageSelectorComponent, XcTabBarComponent, SmartCardLoginComponent, CredentialsLoginComponent, WorkflowLoginComponent, XcButtonComponent]
 })
 export class AuthLoginComponent {
 

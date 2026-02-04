@@ -16,10 +16,8 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 export * from './api.interceptor';
-export * from './api.module';
 export * from './api.routing';
 export * from './api.service';
-export * from './api.module';
 export * from './xo/xo-hint.model';
 export * from './xo/kill-orders-response.model';
 export * from './xo/order-id.model';

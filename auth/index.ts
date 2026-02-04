@@ -20,6 +20,5 @@ export * from './auth-session';
 export * from './auth.component';
 export * from './auth.guard';
 export * from './auth.interceptor';
-export * from './auth.module';
 export * from './auth.routing';
 export * from './auth.service';

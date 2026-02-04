@@ -15,9 +15,14 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { AsyncPipe } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, HostBinding, Input, NgZone, OnDestroy, Output, ViewChild } from '@angular/core';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { MatOption } from '@angular/material/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
+import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 
 import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
 import { debounceTime, map, tap } from 'rxjs/operators';
@@ -26,9 +31,12 @@ import { A11yService } from '../../../a11y';
 import { Xo, XoObject, XoPropertyBinding } from '../../../api';
 import { coerceBoolean, Comparable, isObject, isString, isTextOverflowing, Native, NativeArray } from '../../../base';
 import { I18nService } from '../../../i18n';
+import { I18nModule } from '../../../i18n/i18n.module';
 import { XcBoxableDataWrapper } from '../../shared/xc-data-wrapper';
 import { XcOptionItem, XcOptionItemString, XcOptionItemValueType } from '../../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString, XcSortPredicate } from '../../shared/xc-sort';
+import { XcIconComponent } from '../../xc-icon/xc-icon.component';
+import { XcTooltipDirective } from '../../xc-tooltip/xc-tooltip.directive';
 import { XcFormBaseComponent } from '../xc-form-base/xc-form-base.component';
 import { XcFormBaseInputComponent } from '../xc-form-base/xc-form-baseinput.component';
 
@@ -173,7 +181,7 @@ interface XcOptionInternalAutocompleteItem extends XcOptionItem {
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-autocomplete.component.scss'],
     providers: [{ provide: XcFormBaseComponent, useExisting: forwardRef(() => XcFormAutocompleteComponent) }],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, MatAutocompleteTrigger, MatAutocomplete, MatOption, XcTooltipDirective, XcIconComponent, MatError, MatIconButton, MatSuffix, MatIcon, AsyncPipe, I18nModule]
 })
 export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implements AfterViewInit, OnDestroy {
 

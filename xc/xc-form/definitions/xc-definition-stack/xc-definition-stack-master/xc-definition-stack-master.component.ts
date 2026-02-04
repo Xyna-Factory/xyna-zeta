@@ -30,6 +30,7 @@ import { XcStackItem } from '../../../../xc-stack/xc-stack-item/xc-stack-item';
 import { XcComponentTemplate } from '../../../../xc-template/xc-template';
 import { XoFormDefinition } from '../../xo/containers.model';
 import { DefinitionStackItemComponentData, XcDefinitionStackItemComponent } from '../xc-definition-stack-item/xc-definition-stack-item.component';
+import { XcStackComponent } from '../../../../xc-stack/xc-stack.component';
 
 
 @Component({
@@ -37,7 +38,7 @@ import { DefinitionStackItemComponentData, XcDefinitionStackItemComponent } from
     templateUrl: './xc-definition-stack-master.component.html',
     styleUrls: ['./xc-definition-stack-master.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [XcStackComponent]
 })
 export class XcDefinitionStackMasterComponent extends RouteComponent implements OnDestroy {
 
