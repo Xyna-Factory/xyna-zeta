@@ -1386,7 +1386,7 @@ export class XcGraphScene {
     selector: 'xc-graph',
     templateUrl: './xc-graph.component.html',
     styleUrls: ['./xc-graph.component.scss'],
-    standalone: false
+    imports: [XcWebGLComponent]
 })
 export class XcGraphComponent {
 

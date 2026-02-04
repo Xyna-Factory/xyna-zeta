@@ -21,10 +21,7 @@ import { AfterViewInit, Directive, ElementRef } from '@angular/core';
 /**
  * Unwraps that DOM element with this directive attached to it
  */
-@Directive({
-    selector: '[xc-unwrap]',
-    standalone: false
-})
+@Directive({ selector: '[xc-unwrap]' })
 export class XcUnwrapDirective implements AfterViewInit {
 
     constructor(protected readonly element: ElementRef) {

@@ -24,6 +24,11 @@ import { XcLocalTableDataSource } from '../xc-table/xc-local-table-data-source';
 import { xcStatusBar_translations_de_DE } from './locale/xc-status-bar-translations.de-DE';
 import { xcStatusBar_translations_en_US } from './locale/xc-status-bar-translations.en-US';
 import { XcStatusBarEntry } from './xc-status-bar.service';
+import { XcDialogWrapperComponent } from '../xc-dialog/xc-dialog-wrapper.component';
+import { I18nModule } from '../../i18n/i18n.module';
+import { XcButtonComponent } from '../xc-button/xc-button.component';
+import { XcIconComponent } from '../xc-icon/xc-icon.component';
+import { XcTableComponent } from '../xc-table/xc-table.component';
 
 
 export interface XcStatusBarDialogData {
@@ -34,7 +39,7 @@ export interface XcStatusBarDialogData {
 @Component({
     templateUrl: './xc-status-bar-dialog.component.html',
     styleUrls: ['./xc-status-bar-dialog.component.scss'],
-    standalone: false
+    imports: [XcDialogWrapperComponent, I18nModule, XcButtonComponent, XcIconComponent, XcTableComponent]
 })
 export class XcStatusBarDialogComponent extends XcDialogComponent<boolean, XcStatusBarDialogData> {
 

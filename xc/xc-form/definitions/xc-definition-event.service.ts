@@ -16,9 +16,12 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Injectable } from '@angular/core';
+
 import { Xo, XoArray, XoArrayClass, XoObject, XoObjectClass, XoProperty } from '@zeta/api';
 import { pack } from '@zeta/base';
+
 import { filter, map, Observable, Subject } from 'rxjs';
+
 
 interface DefinitionEvent {
     eventId: string;
@@ -40,7 +43,7 @@ export class XoDefinitionEventArray extends XoArray<XoDefinitionEvent> {
 }
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class XcDefinitionEventService {
 
     private readonly eventSubject: Subject<DefinitionEvent> = new Subject<DefinitionEvent>();

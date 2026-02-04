@@ -24,9 +24,8 @@ import { I18nService } from '@zeta/i18n';
 import { XcFormBaseComponent } from './xc-form-base.component';
 
 
-@Component({
-    template: '',
-    standalone: false
+@Component({ 
+    template: ''
 })
 export class XcFormBaseInputComponent extends XcFormBaseComponent {
 

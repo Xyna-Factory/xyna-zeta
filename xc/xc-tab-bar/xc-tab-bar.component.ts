@@ -18,7 +18,7 @@
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
 import { AfterViewInit, Component, ComponentRef, EventEmitter, Injector, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { MatTabGroup } from '@angular/material/tabs';
+import { MatTabGroup, MatTab, MatTabLabel } from '@angular/material/tabs';
 
 import { Observable, of, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
@@ -29,13 +29,18 @@ import { XcThemeableComponent } from '../../xc/shared/xc-themeable.component';
 import { xcTabBarTranslations_deDE } from './locale/xc-tab-bar-translations.de-DE';
 import { xcTabBarTranslations_enUS } from './locale/xc-tab-bar-translations.en-US';
 import { XC_TAB_DATA, XcTabBarInterface, XcTabBarItem, XcTabComponent, XcTabRef } from './xc-tab.component';
+import { XcIconComponent } from '../xc-icon/xc-icon.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
+import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
+import { XcSpinnerComponent } from '../xc-spinner/xc-spinner.component';
+import { I18nModule } from '../../i18n/i18n.module';
 
 
 @Component({
     selector: 'xc-tab-bar',
     templateUrl: './xc-tab-bar.component.html',
     styleUrls: ['./xc-tab-bar.component.scss'],
-    standalone: false
+    imports: [MatTabGroup, MatTab, MatTabLabel, XcIconComponent, XcTooltipDirective, XcIconButtonComponent, NgComponentOutlet, XcSpinnerComponent, I18nModule]
 })
 export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarInterface, AfterViewInit {
 
