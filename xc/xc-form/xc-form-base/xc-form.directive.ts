@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectorRef, ContentChildren, Directive, EventEmitter, OnDestroy, Output, QueryList } from '@angular/core';
+import { ChangeDetectorRef, ContentChildren, Directive, EventEmitter, OnDestroy, Output, QueryList, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { merge, Observable, Subscription } from 'rxjs';
@@ -29,6 +29,8 @@ import { XcFormValidatorBaseDirective } from './xc-form-validator-base.directive
     exportAs: 'xc-form'
 })
 export class XcFormDirective implements OnDestroy {
+    private readonly cdr = inject(ChangeDetectorRef);
+
 
     private _invalid = false;
     private _validators: QueryList<XcFormValidatorBaseDirective>;
@@ -92,9 +94,6 @@ export class XcFormDirective implements OnDestroy {
             this.cdr.detectChanges();
         }
     }
-
-
-    constructor(private readonly cdr: ChangeDetectorRef) {}
 
 
     ngOnDestroy() {

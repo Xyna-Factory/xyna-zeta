@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, Input, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, inject, Input, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
 
 
 /**
@@ -25,11 +25,11 @@ import { Directive, Input, OnDestroy, TemplateRef, ViewContainerRef } from '@ang
  */
 @Directive({ selector: '[xc-var]' })
 export class XcVarDirective implements OnDestroy {
+    private readonly viewContainerRef = inject(ViewContainerRef);
+    private readonly templateRef = inject<TemplateRef<any>>(TemplateRef);
+
 
     context: any = {};
-
-    constructor(private readonly viewContainerRef: ViewContainerRef, private readonly templateRef: TemplateRef<any>) {
-    }
 
 
     ngOnDestroy() {

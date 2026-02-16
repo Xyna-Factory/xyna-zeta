@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, NgZone, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, NgZone, OnDestroy, inject } from '@angular/core';
 
 
 import { Observable, of, Subscription } from 'rxjs';
@@ -76,6 +76,10 @@ export interface XcTreeObserver {
     imports: [MatTree, I18nModule, MatTreeNodeDef, MatNestedTreeNode, XcIconButtonComponent, MatTreeNodeToggle, XcTooltipDirective, NgClass, XcTemplateComponent, MatTreeNodeOutlet]
 })
 export class XcTreeComponent implements OnDestroy {
+    private readonly cdRef = inject(ChangeDetectorRef);
+    private readonly _i18n = inject(I18nService);
+    private readonly zone = inject(NgZone);
+
 
     private _allowSelect = false;
     private _multiSelect = false;
@@ -105,11 +109,9 @@ export class XcTreeComponent implements OnDestroy {
     autoExpand: 'first' | 'all';
 
 
-    constructor(
-        private readonly cdRef: ChangeDetectorRef,
-        private readonly _i18n: I18nService,
-        private readonly zone: NgZone
-    ) {
+    constructor() {
+        const _i18n = this._i18n;
+
         _i18n.setTranslations(LocaleService.EN_US, xcTreeTranslations_enUS);
         _i18n.setTranslations(LocaleService.DE_DE, xcTreeTranslations_deDE);
 

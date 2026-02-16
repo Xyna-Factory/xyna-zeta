@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, InjectionToken, Injector, Optional } from '@angular/core';
+import { Component, InjectionToken, Injector, inject } from '@angular/core';
 
 
 export type XcDynamicComponentType<D> = new (...args: any[]) => XcDynamicComponent<D>;
@@ -29,7 +29,9 @@ export abstract class XcDynamicComponent<D> {
     readonly injectedData: D;
 
 
-    constructor(@Optional() injector: Injector) {
+    constructor() {
+        const injector = inject(Injector, { optional: true });
+
         try {
             this.injectedData = injector.get(this.getToken());
         } catch {

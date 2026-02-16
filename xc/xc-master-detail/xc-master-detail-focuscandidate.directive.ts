@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, inject, Input, OnInit } from '@angular/core';
 
 
 export interface XcMasterDetailFocusCandidateObserver {
@@ -34,6 +34,8 @@ export interface XcMasterDetailFocusCandidateObserver {
 
 @Directive({ selector: '[xc-master-detail-focus-candidate]' })
 export class XcMasterDetailFocusCandidateDirective implements OnInit {
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+
 
     // the preexisting value of the referee should not cause the directive to focus on the element
     private _beforeInit = false;
@@ -50,8 +52,6 @@ export class XcMasterDetailFocusCandidateDirective implements OnInit {
             this.focus();
         }
     }
-
-    constructor(private readonly elementRef: ElementRef) {}
 
     ngOnInit() {
         // the referee is now allowed to be active

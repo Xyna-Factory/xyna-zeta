@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
@@ -32,6 +32,10 @@ import { xcPanelTranslations_enUS } from './locale/xc-panel-translations.en-US';
     imports: [XcIconButtonComponent, XcTooltipDirective]
 })
 export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDestroy {
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+    private readonly cdr = inject(ChangeDetectorRef);
+    private readonly i18n = inject(I18nService);
+
 
     @ViewChild('toggle', { read: ElementRef }) toggleButtonRef?: ElementRef<HTMLElement>;
 
@@ -73,7 +77,7 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
     readonly collapsedChange = new EventEmitter<boolean>();
 
 
-    constructor(private readonly elementRef: ElementRef, private readonly cdr: ChangeDetectorRef, private readonly i18n: I18nService) {
+    constructor() {
         this.i18n.setTranslations(LocaleService.DE_DE, xcPanelTranslations_deDE);
         this.i18n.setTranslations(LocaleService.EN_US, xcPanelTranslations_enUS);
 

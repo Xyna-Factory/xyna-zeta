@@ -59,7 +59,7 @@ export abstract class XcRichListItemComponent<R = void, D = void> extends XcDyna
 
 
     constructor(@Optional() readonly injector: Injector) {
-        super(injector);
+        super();
         this.richListItemRef = injector.get<XcRichListItemRef>(XcRichListItemRef);
     }
 

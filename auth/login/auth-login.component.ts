@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 
 import { environment } from '@environments/environment';
 
@@ -67,6 +67,10 @@ interface LoginTabItem {
     imports: [XcPanelComponent, XcI18nContextDirective, XcIconComponent, XcI18nTranslateDirective, XcLanguageSelectorComponent, XcTabBarComponent, SmartCardLoginComponent, CredentialsLoginComponent, WorkflowLoginComponent, XcButtonComponent]
 })
 export class AuthLoginComponent {
+    protected readonly authService = inject(AuthService);
+    protected readonly dialogService = inject(XcDialogService);
+    protected readonly i18n = inject(I18nService);
+
 
     readonly smartCardTabItem: LoginTabItem = {
         closable: false,
@@ -123,11 +127,7 @@ export class AuthLoginComponent {
 
     tabBarItems: Array<XcTabBarItem> = [];
 
-    constructor(
-        protected readonly authService: AuthService,
-        protected readonly dialogService: XcDialogService,
-        protected readonly i18n: I18nService
-    ) {
+    constructor() {
         if (this.useTabBar) {
             if (this.useSmartCardLogin) {
                 this.tabBarItems.push(this.smartCardTabItem);

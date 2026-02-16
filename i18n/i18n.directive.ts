@@ -50,6 +50,8 @@ export abstract class XcI18nBase {
 
 @Directive({ selector: '[xc-i18n-context]' })
 export class XcI18nContextDirective extends XcI18nBase implements OnInit {
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+
 
     private context: string;
 
@@ -57,10 +59,6 @@ export class XcI18nContextDirective extends XcI18nBase implements OnInit {
     set i18nContext(value: string) {
         this.context = value;
         this.evaluateContext();
-    }
-
-    constructor(private readonly elementRef: ElementRef<HTMLElement>) {
-        super();
     }
 
     ngOnInit() {
@@ -77,6 +75,8 @@ export class XcI18nContextDirective extends XcI18nBase implements OnInit {
 
 @Directive({ selector: '[xc-i18n]' })
 export class XcI18nTranslateDirective extends XcI18nBase implements OnInit, OnDestroy {
+    private readonly i18n = inject(I18nService);
+
 
     private _context: string;
     private content: KeyTranslationPair = {key: '', translated: ''};
@@ -86,7 +86,9 @@ export class XcI18nTranslateDirective extends XcI18nBase implements OnInit, OnDe
 
     private readonly localService: LocaleService = inject<LocaleService>(LocaleService);
 
-    constructor(elementRef: ElementRef<HTMLElement>, private readonly i18n: I18nService) {
+    constructor() {
+        const elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+
         super();
 
         this.element = elementRef.nativeElement;

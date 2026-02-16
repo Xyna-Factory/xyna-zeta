@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, ViewChild } from '@angular/core';
 
 import { RuntimeContext } from '@zeta/api';
 
@@ -25,15 +25,15 @@ import { map, tap } from 'rxjs/operators';
 import { ApiService, RuntimeContextSelectionSettings } from '../../../api/api.service';
 import { XoApplication, XoApplicationArray, XoWorkspace, XoWorkspaceArray } from '../../../api/xo/xo-runtime-context';
 import { I18nService, LocaleService } from '../../../i18n';
+import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../../i18n/i18n.directive';
 import { XcOptionItem } from '../../../xc/shared/xc-item';
+import { XcButtonComponent } from '../../../xc/xc-button/xc-button.component';
+import { XcDialogWrapperComponent } from '../../../xc/xc-dialog/xc-dialog-wrapper.component';
 import { XcDialogComponent } from '../../../xc/xc-dialog/xc-dialog.component';
 import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../../../xc/xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
+import { XcFormValidatorRequiredDirective } from '../../../xc/xc-form/xc-form-base/xc-form-validators.directive';
 import { runtimeContextSelection_translations_de_DE } from './locale/runtime-context-selection-translations.de-DE';
 import { runtimeContextSelection_translations_en_US } from './locale/runtime-context-selection-translations.en-US';
-import { XcDialogWrapperComponent } from '../../../xc/xc-dialog/xc-dialog-wrapper.component';
-import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../../i18n/i18n.directive';
-import { XcFormValidatorRequiredDirective } from '../../../xc/xc-form/xc-form-base/xc-form-validators.directive';
-import { XcButtonComponent } from '../../../xc/xc-button/xc-button.component';
 
 
 @Component({
@@ -43,6 +43,10 @@ import { XcButtonComponent } from '../../../xc/xc-button/xc-button.component';
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcFormAutocompleteComponent, XcFormValidatorRequiredDirective, XcButtonComponent]
 })
 export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeContext, RuntimeContextSelectionSettings> implements OnDestroy {
+    private readonly apiService = inject(ApiService);
+    private readonly i18n = inject(I18nService);
+    private readonly cdr = inject(ChangeDetectorRef);
+
 
     private runtimeContext: RuntimeContext;
     private readonly settings: RuntimeContextSelectionSettings;
@@ -55,8 +59,8 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
     );
 
 
-    constructor(injector: Injector, private readonly apiService: ApiService, private readonly i18n: I18nService, private readonly cdr: ChangeDetectorRef) {
-        super(injector);
+    constructor() {
+        super();
 
         this.i18n.setTranslations(LocaleService.DE_DE, runtimeContextSelection_translations_de_DE);
         this.i18n.setTranslations(LocaleService.EN_US, runtimeContextSelection_translations_en_US);

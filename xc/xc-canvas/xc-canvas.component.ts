@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, inject } from '@angular/core';
 
 import { Observable, Subject, Subscription } from 'rxjs';
 
@@ -120,6 +120,10 @@ export interface XcCanvasObserver {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class XcCanvasComponent implements OnInit, OnDestroy {
+    protected elementRef = inject(ElementRef);
+    protected zone = inject(NgZone);
+    protected cdr = inject(ChangeDetectorRef);
+
 
     private static _num = 0;
     private readonly _uid = 'xc_canvas_with_unique_num' + ++XcCanvasComponent._num;
@@ -223,10 +227,6 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
 
     get aspect(): number {
         return this.width / this.height;
-    }
-
-
-    constructor(protected elementRef: ElementRef, protected zone: NgZone, protected cdr: ChangeDetectorRef) {
     }
 
     ngOnInit() {

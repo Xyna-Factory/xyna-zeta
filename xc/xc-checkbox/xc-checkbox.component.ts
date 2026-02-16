@@ -37,6 +37,9 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
     imports: [MatCheckbox, MatLabel]
 })
 export class XcCheckboxComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+    protected readonly i18n = inject(I18nService);
+
 
     private static uniqueId = 0;
     private readonly _labelRef: string;
@@ -68,7 +71,7 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
 
     protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
-    constructor(private readonly elementRef: ElementRef, protected readonly i18n: I18nService) {
+    constructor() {
         super();
         this._labelRef = 'xc-checkbox-unique-label-id-' + XcCheckboxComponent.uniqueId++;
     }

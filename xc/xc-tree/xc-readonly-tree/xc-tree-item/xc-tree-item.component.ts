@@ -16,7 +16,7 @@ import { AsyncPipe, NgStyle } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild, inject } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
@@ -37,6 +37,9 @@ import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.compone
     imports: [NgStyle, XcIconButtonComponent, XcTooltipDirective, AsyncPipe]
 })
 export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterViewInit, OnDestroy {
+    private readonly cdr = inject(ChangeDetectorRef);
+    readonly i18n = inject(I18nService);
+
 
     static readonly INDENTATION = 20;
     private subscription: Subscription;
@@ -58,11 +61,6 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
     @Input()
     firstColumnWidth: number;
     initialWidth: number;
-
-
-    constructor(private readonly cdr: ChangeDetectorRef, readonly i18n: I18nService) {
-        super();
-    }
 
 
     ngAfterViewInit() {

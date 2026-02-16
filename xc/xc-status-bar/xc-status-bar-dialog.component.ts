@@ -15,20 +15,20 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Injector } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { I18nService, LocaleService } from '../../i18n';
+import { I18nModule } from '../../i18n/i18n.module';
 import { XcSortDirection } from '../shared/xc-sort';
+import { XcButtonComponent } from '../xc-button/xc-button.component';
+import { XcDialogWrapperComponent } from '../xc-dialog/xc-dialog-wrapper.component';
 import { XcDialogComponent } from '../xc-dialog/xc-dialog.component';
+import { XcIconComponent } from '../xc-icon/xc-icon.component';
 import { XcLocalTableDataSource } from '../xc-table/xc-local-table-data-source';
+import { XcTableComponent } from '../xc-table/xc-table.component';
 import { xcStatusBar_translations_de_DE } from './locale/xc-status-bar-translations.de-DE';
 import { xcStatusBar_translations_en_US } from './locale/xc-status-bar-translations.en-US';
 import { XcStatusBarEntry } from './xc-status-bar.service';
-import { XcDialogWrapperComponent } from '../xc-dialog/xc-dialog-wrapper.component';
-import { I18nModule } from '../../i18n/i18n.module';
-import { XcButtonComponent } from '../xc-button/xc-button.component';
-import { XcIconComponent } from '../xc-icon/xc-icon.component';
-import { XcTableComponent } from '../xc-table/xc-table.component';
 
 
 export interface XcStatusBarDialogData {
@@ -42,22 +42,22 @@ export interface XcStatusBarDialogData {
     imports: [XcDialogWrapperComponent, I18nModule, XcButtonComponent, XcIconComponent, XcTableComponent]
 })
 export class XcStatusBarDialogComponent extends XcDialogComponent<boolean, XcStatusBarDialogData> {
-
+    readonly i18n = inject(I18nService);
     readonly dataSource: XcLocalTableDataSource;
 
 
-    constructor(injector: Injector, i18n: I18nService) {
-        super(injector);
+    constructor() {
+        super();
 
-        i18n.setTranslations(LocaleService.DE_DE, xcStatusBar_translations_de_DE);
-        i18n.setTranslations(LocaleService.EN_US, xcStatusBar_translations_en_US);
+        this.i18n.setTranslations(LocaleService.DE_DE, xcStatusBar_translations_de_DE);
+        this.i18n.setTranslations(LocaleService.EN_US, xcStatusBar_translations_en_US);
 
-        this.dataSource = new XcLocalTableDataSource(i18n);
+        this.dataSource = new XcLocalTableDataSource(this.i18n);
         this.dataSource.localTableData = {
             rows: this.injectedData.entries,
             columns: [
-                {path: 'time', name: i18n.translate('Timestamp'), disableFilter: true, shrink: true, pre: true},
-                {path: 'message', name: i18n.translate('Message')}
+                { path: 'time', name: this.i18n.translate('Timestamp'), disableFilter: true, shrink: true, pre: true },
+                { path: 'message', name: this.i18n.translate('Message') }
             ]
         };
         this.dataSource.setSortPathAndDirection('time', XcSortDirection.dsc);

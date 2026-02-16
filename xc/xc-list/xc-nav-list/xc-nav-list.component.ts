@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, forwardRef, HostBinding, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatNavList } from '@angular/material/list';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
 
@@ -45,6 +45,9 @@ interface TwoWayNavListItem {
     imports: [MatNavList, XcNavListItemComponent]
 })
 export class XcNavListComponent extends XcThemeableComponent implements OnInit, OnDestroy {
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
+
 
     private _items: XcNavListItem[];
     private _navigationSubscription: Subscription;
@@ -88,7 +91,7 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
 
     private readonly i18n = inject<I18nService>(I18nService);
 
-    constructor(private readonly router: Router, private readonly route: ActivatedRoute) {
+    constructor() {
         super();
         this.color = 'primary';
         this.i18n.setTranslations(LocaleService.EN_US, xcNavListTranslations_enUS);

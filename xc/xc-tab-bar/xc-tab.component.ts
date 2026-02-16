@@ -77,7 +77,7 @@ export abstract class XcTabComponent<R = void, D = void> extends XcDynamicDismis
 
 
     constructor(@Optional() readonly injector: Injector) {
-        super(injector);
+        super();
         this.tabRef = injector.get<XcTabRef<R>>(XcTabRef);
     }
 

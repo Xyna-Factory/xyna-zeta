@@ -15,21 +15,25 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Injector } from '@angular/core';
+import { Component, inject, Injector } from '@angular/core';
+
+import { environment } from '@environments/environment';
 import { ApiService, StartOrderOptionsBuilder, Xo, XoManagedFileID, XoXPRCRuntimeContext, XoXPRCRuntimeContextFromRuntimeContext } from '@zeta/api';
+import { pack } from '@zeta/base';
 import { I18nService } from '@zeta/i18n';
 import { XcDialogComponent } from '@zeta/xc/xc-dialog/xc-dialog.component';
-import { XoBaseDefinition, XoDefinition, XoDefinitionBundle, XoDefinitionObserver } from '../xo/base-definition.model';
-import { Observable, filter, map, of, switchMap, tap, throwError } from 'rxjs';
-import { environment } from '@environments/environment';
-import { XoStartOrderButtonDefinition } from '../xo/item-definition.model';
 import { XcDialogService } from '@zeta/xc/xc-dialog/xc-dialog.service';
-import { pack } from '@zeta/base';
+
+import { filter, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+
+import { I18nModule } from '../../../../i18n/i18n.module';
+import { XcButtonComponent } from '../../../xc-button/xc-button.component';
 import { XcDialogWrapperComponent } from '../../../xc-dialog/xc-dialog-wrapper.component';
 import { XcFormDirective } from '../../xc-form-base/xc-form.directive';
-import { I18nModule } from '../../../../i18n/i18n.module';
 import { XcDefinitionProxyComponent } from '../containers/xc-definition-proxy/xc-definition-proxy.component';
-import { XcButtonComponent } from '../../../xc-button/xc-button.component';
+import { XoBaseDefinition, XoDefinition, XoDefinitionBundle, XoDefinitionObserver } from '../xo/base-definition.model';
+import { XoStartOrderButtonDefinition } from '../xo/item-definition.model';
+
 
 @Component({
     templateUrl: './xc-dialog-definition.component.html',
@@ -37,11 +41,17 @@ import { XcButtonComponent } from '../../../xc-button/xc-button.component';
     imports: [XcDialogWrapperComponent, XcFormDirective, I18nModule, XcDefinitionProxyComponent, XcButtonComponent]
 })
 export class XcDialogDefinitionComponent extends XcDialogComponent<Xo[], XoDefinitionBundle> implements XoDefinitionObserver {
+    readonly injector: Injector;
+    private readonly api = inject(ApiService);
+    private readonly dialogs = inject(XcDialogService);
+    private readonly i18n = inject(I18nService);
+
 
     header = '';
 
-    constructor(readonly injector: Injector, private readonly api: ApiService, private readonly dialogs: XcDialogService, private readonly i18n: I18nService) {
-        super(injector);
+    constructor() {
+        super();
+
         if (this.injectedData.definition instanceof XoBaseDefinition) {
             this.header = this.injectedData.definition.label;
         }

@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 
 import { environment } from '@environments/environment';
 
@@ -56,6 +56,9 @@ class ComparableLanguage extends Comparable implements SelectableLanguage {
     imports: [XcFormAutocompleteComponent, I18nModule]
 })
 export class XcLanguageSelectorComponent {
+    private readonly i18n = inject(I18nService);
+    readonly locale = inject(LocaleService);
+
 
     @Input() tabIndex?: number = 0;
 
@@ -63,10 +66,9 @@ export class XcLanguageSelectorComponent {
     hasLanguages: boolean;
     selectedLanguage: ComparableLanguage;
 
-    constructor(
-        private readonly i18n: I18nService,
-        readonly locale: LocaleService
-    ) {
+    constructor() {
+        const locale = this.locale;
+
         this.i18n.setTranslations(LocaleService.DE_DE, xcLanguageSelectorTranslations_deDE);
         this.i18n.setTranslations(LocaleService.EN_US, xcLanguageSelectorTranslations_enUS);
 

@@ -17,7 +17,7 @@
  */
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { Component, ComponentRef, Injector, Input, QueryList, ViewChildren } from '@angular/core';
+import { Component, ComponentRef, Injector, Input, QueryList, ViewChildren, inject } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
@@ -32,17 +32,14 @@ import { XC_RICH_LIST_ITEM_DATA, XcRichListInterface, XcRichListItem, XcRichList
     imports: [NgComponentOutlet]
 })
 export class XcRichListComponent extends XcThemeableComponent implements XcRichListInterface {
+    private readonly injector = inject(Injector);
+
     private _componentOutlets: QueryList<NgComponentOutlet>;
     private readonly _componentInjectors = new Map<XcRichListItem, Injector>();
     private readonly _componentSubjects = new Map<XcRichListItem, Subject<XcRichListItemComponent>>();
 
     @Input('xc-rich-list-items')
     items = new Array<XcRichListItem>();
-
-
-    constructor(private readonly injector: Injector) {
-        super();
-    }
 
 
     private _getComponentInstance(item: XcRichListItem): XcRichListItemComponent | null {

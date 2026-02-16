@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, inject } from '@angular/core';
 
 import { I18nService } from '../../../i18n';
 
@@ -26,9 +26,9 @@ import { I18nService } from '../../../i18n';
     styleUrls: ['./xc-form-label.component.scss'] /** @todo reuse xc-form-field.component.scss somehow */
 })
 export class XcFormLabelComponent implements AfterContentInit {
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+    protected readonly i18n = inject(I18nService);
 
-    constructor(private readonly elementRef: ElementRef<HTMLElement>, protected readonly i18n: I18nService) {
-    }
 
     ngAfterContentInit() {
         const i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');

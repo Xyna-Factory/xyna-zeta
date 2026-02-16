@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 
 import { Xo, XoArray, XoObject } from '../../../../../api';
 import { pack } from '../../../../../base';
@@ -39,14 +39,12 @@ import { XcTableComponent } from '../../../../xc-table/xc-table.component';
     imports: [XcFormGenericPanelComponent, XcButtonComponent, I18nModule, XcIconButtonComponent, XcTableComponent]
 })
 export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefinitionComponent {
+    private readonly i18n = inject(I18nService);
+
 
     dataSource: XcLocalTableDataSource;
     tableCounts: TableCounts;
     private detailsDefinition: XoDefinition;
-
-    constructor(private readonly i18n: I18nService) {
-        super();
-    }
 
 
     @Input('xc-table-definition')

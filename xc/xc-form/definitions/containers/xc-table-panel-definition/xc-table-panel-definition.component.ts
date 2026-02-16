@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, inject } from '@angular/core';
 
 import { pack } from '@zeta/base';
 
@@ -43,6 +43,9 @@ import { I18nModule } from '../../../../../i18n/i18n.module';
     imports: [XcFormGenericPanelComponent, XcButtonComponent, XcIconButtonComponent, XcTooltipDirective, XcTableComponent, I18nModule]
 })
 export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionComponent implements OnDestroy {
+    private readonly api = inject(ApiService);
+    private readonly i18n = inject(I18nService);
+
 
     dataSource: XcRemoteTableDataSource;
     private detailsDefinition: XoDefinition;
@@ -51,10 +54,6 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
     private refreshEventSubscription: Subscription;
 
     tableInputFQN = '';
-
-    constructor(private readonly api: ApiService, private readonly i18n: I18nService) {
-        super();
-    }
 
 
     ngOnDestroy() {

@@ -15,12 +15,11 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, Input } from '@angular/core';
+import { AfterContentInit, Component, Input } from '@angular/core';
+import { MatLabel } from '@angular/material/form-field';
 
-import { I18nService } from '../../../i18n';
 import { ATTRIBUTE_VALUE } from '../../../xc/shared/xc-i18n-attributes';
 import { XcFormComponent } from '../xc-form-base/xc-form-base.component';
-import { MatLabel } from '@angular/material/form-field';
 
 
 @Component({
@@ -43,8 +42,8 @@ export class XcFormTextComponent extends XcFormComponent implements AfterContent
         return this._value.translated || this._value.key;
     }
 
-    constructor(el: ElementRef<HTMLElement>, i18n: I18nService) {
-        super(el, i18n);
+    constructor() {
+        super();
     }
 
 

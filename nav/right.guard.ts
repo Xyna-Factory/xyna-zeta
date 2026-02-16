@@ -25,9 +25,9 @@ import { XynaRoute } from './xyna-routes';
 
 @Injectable({ providedIn: 'root' })
 export class RightGuardService {
+    private readonly authService = inject(AuthService);
+    private readonly router = inject(Router);
 
-    constructor(private readonly authService: AuthService, private readonly router: Router) {
-    }
 
     canActivate(activatedRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         const data = (activatedRoute as XynaRoute).data;

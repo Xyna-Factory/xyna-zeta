@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { environment } from '@environments/environment';
 import { XoEncryptionData } from '@zeta/api/xo/encryption-data.model';
@@ -240,12 +240,14 @@ export interface RuntimeContextSelectionSettings {
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+    private readonly http = inject(HttpClient);
+
 
     private readonly runtimeContextSubject = new BehaviorSubject<RuntimeContext>(null);
     readonly runtimeContextSelectionSubject = new Subject<(settings: RuntimeContextSelectionSettings) => void>();
 
 
-    constructor(private readonly http: HttpClient) {
+    constructor() {
         // create dummy instances to prevent pruning during build
 
         const workspace = new XoWorkspace();

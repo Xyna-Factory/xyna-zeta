@@ -30,6 +30,9 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
     template: ''
 })
 export class XcButtonBaseComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
+    protected elementRef = inject(ElementRef);
+    protected readonly i18n = inject(I18nService);
+
 
     protected _ariaLabel: KeyTranslationPair = { key: '', translated: '' };
     protected _tabDisabled = false;
@@ -54,8 +57,10 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
     protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
-    constructor(protected elementRef: ElementRef, protected readonly i18n: I18nService) {
+    constructor() {
         super();
+        const elementRef = this.elementRef;
+
         (elementRef.nativeElement as HTMLElement).onclick = (event: MouseEvent) => {
             // prevent clicks outside of button dom element
             if (!this.buttonElementRef.nativeElement.contains(event.target)) {

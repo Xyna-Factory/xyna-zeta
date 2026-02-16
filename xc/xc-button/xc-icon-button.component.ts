@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, ElementRef, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, inject, Input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
@@ -33,6 +33,8 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
     imports: [MatIconButton, MatRipple, XcIconComponent, XcProgressBarComponent]
 })
 export class XcIconButtonComponent extends XcButtonBaseComponent {
+    private readonly i18nService = inject(I18nService);
+
 
     private _iconMaterial = false;
     private _iconSvg = false;
@@ -46,11 +48,6 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
     @HostBinding('attr.size')
     @Input('xc-icon-size')
     iconSize: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
-
-
-    constructor(elementRef: ElementRef, private readonly i18nService: I18nService) {
-        super(elementRef, i18nService);
-    }
 
 
     protected setAriaLabel(value: string) {

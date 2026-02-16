@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Box2, BufferGeometry, Color, Mesh, Object3D, OrthographicCamera, RawShaderMaterial, Scene, Shape, Vector2, Vector3, WebGLRenderer } from 'three';
@@ -1389,6 +1389,8 @@ export class XcGraphScene {
     imports: [XcWebGLComponent]
 })
 export class XcGraphComponent {
+    private readonly authService = inject(AuthService);
+
 
     static readonly ROW_GAP = 12;
     static readonly COL_GAP = 12;
@@ -1410,10 +1412,6 @@ export class XcGraphComponent {
 
     initFunction = this.init.bind(this);
     destroyFunction = this.destroy.bind(this);
-
-
-    constructor(private readonly authService: AuthService) {
-    }
 
 
     private render() {

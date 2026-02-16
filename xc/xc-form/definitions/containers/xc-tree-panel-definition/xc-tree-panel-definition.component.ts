@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, inject } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
@@ -35,14 +35,12 @@ import { XcTreeComponent } from '../../../../xc-tree/xc-tree.component';
     imports: [XcFormGenericPanelComponent, XcTreeComponent]
 })
 export class XcTreePanelDefinitionComponent extends XcFormPanelDefinitionComponent implements OnDestroy {
+    private readonly api = inject(ApiService);
+    private readonly i18n = inject(I18nService);
+
 
     dataSource: XcStructureTreeDataSource;
     private readonly contentChangeSubscription: Subscription;
-
-
-    constructor(private readonly api: ApiService, private readonly i18n: I18nService) {
-        super();
-    }
 
 
     ngOnDestroy(): void {

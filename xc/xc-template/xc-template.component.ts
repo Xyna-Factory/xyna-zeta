@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectorRef, Component, HostBinding, HostListener, Injector, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, HostListener, Injector, Input, inject } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
@@ -44,6 +44,9 @@ import { NgComponentOutlet } from '@angular/common';
     imports: [XcFormTextComponent, XcTooltipDirective, XcDefinitionListEntryComponent, XcUnwrapDirective, XcFormAutocompleteComponent, XcFormValidatorsDirective, XcFormValidatorRequiredDirective, XcFormInputComponent, XcFormTextareaComponent, XcCheckboxComponent, XcButtonComponent, XcIconComponent, XcIconButtonComponent, NgComponentOutlet]
 })
 export class XcTemplateComponent {
+    injector = inject(Injector);
+    private readonly cdRef = inject(ChangeDetectorRef);
+
 
     readonly Type = {
         XcTemplate: templateClassType(XcTemplate),
@@ -64,10 +67,6 @@ export class XcTemplateComponent {
 
     @Input('xc-template-aria-label')
     ariaLabel = '';
-
-
-    constructor(public injector: Injector, private readonly cdRef: ChangeDetectorRef) {
-    }
 
 
     @Input('xc-template-instance')

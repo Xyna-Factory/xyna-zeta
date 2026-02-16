@@ -15,11 +15,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, ElementRef, HostBinding, Input, ViewChild } from '@angular/core';
+import { Component, HostBinding, Input, ViewChild } from '@angular/core';
 import { ValidatorFn, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
-
-import { I18nService } from '@zeta/i18n';
 
 import { XcFormBaseComponent } from './xc-form-base.component';
 
@@ -47,8 +45,8 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
     @Input('xc-form-field-tab-index-suffix')
     tabIndexSuffix?: number = -1;
 
-    constructor(element: ElementRef<HTMLElement>, i18n: I18nService) {
-        super(element, i18n);
+    constructor() {
+        super();
 
         this.required = this.element.nativeElement.hasAttribute('xc-form-validator-required');
     }

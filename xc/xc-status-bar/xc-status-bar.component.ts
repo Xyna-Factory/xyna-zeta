@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding, inject } from '@angular/core';
 
 import { XcDialogService } from '../xc-dialog/xc-dialog.service';
 import { XcStatusBarDialogComponent } from './xc-status-bar-dialog.component';
@@ -30,6 +30,9 @@ import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
     imports: [XcIconButtonComponent]
 })
 export class XcStatusBarComponent {
+    private readonly dialogService = inject(XcDialogService);
+    private readonly statusBarService = inject(XcStatusBarService);
+
 
     private readonly entries = new Array<XcStatusBarEntry>();
     private timeout: any;
@@ -41,10 +44,7 @@ export class XcStatusBarComponent {
     collapsed = true;
 
 
-    constructor(
-        private readonly dialogService: XcDialogService,
-        private readonly statusBarService: XcStatusBarService
-    ) {
+    constructor() {
         this.statusBarService.displayStatusBarEntry.subscribe(
             entry => this.add(entry)
         );

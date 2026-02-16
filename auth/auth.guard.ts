@@ -27,9 +27,8 @@ import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuardService {
+    private readonly authService = inject(AuthService);
 
-    constructor(private readonly authService: AuthService) {
-    }
 
     canActivate(activatedRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
         return this.authService.queryAuthentication(state.url);

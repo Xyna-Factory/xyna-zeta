@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { I18nService } from '../i18n';
 import { AuthBackgroundComponent } from './background/auth-background.component';
@@ -29,6 +29,8 @@ import { NgComponentOutlet } from '@angular/common';
     imports: [NgComponentOutlet]
 })
 export class AuthComponent {
+    private readonly i18nService = inject(I18nService);
+
 
     static component: any;
 
@@ -37,7 +39,7 @@ export class AuthComponent {
         return AuthComponent.component || AuthBackgroundComponent;
     }
 
-    constructor(private readonly i18nService: I18nService) {
+    constructor() {
         this.i18nService.setTranslations('de-DE', authTranslations_deDE);
         this.i18nService.setTranslations('en-US', authTranslations_enUS);
     }

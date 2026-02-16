@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { InjectionToken, Injector } from '@angular/core';
+import { InjectionToken } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
 
@@ -31,8 +31,8 @@ export interface XcStackItemComponentData {
 
 export class XcStackItemComponent<D extends XcStackItemComponentData = XcStackItemComponentData> extends XcDynamicComponent<D> implements XcStackItemObserver {
 
-    constructor(injector: Injector) {
-        super(injector);
+    constructor() {
+        super();
 
         this.stackItem.addItemObserver(this);
     }

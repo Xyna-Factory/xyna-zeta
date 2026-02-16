@@ -1,6 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, Input, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, Input, Renderer2, ViewChild } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 import { coerceBoolean } from '../../base';
@@ -33,6 +33,9 @@ export interface XcDialogOptions {
     imports: [NgClass, XcResizeDirective, XcDragDirective, MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions]
 })
 export class XcDialogWrapperComponent implements AfterViewInit {
+    protected readonly renderer = inject(Renderer2);
+    private readonly element = inject(ElementRef);
+
 
     private _draggable = false;
     private _resizable = false;
@@ -96,7 +99,7 @@ export class XcDialogWrapperComponent implements AfterViewInit {
 
     dragEventTarget: MouseEvent | TouchEvent;
 
-    constructor(protected readonly renderer: Renderer2, private readonly element: ElementRef) {
+    constructor() {
         this.element.nativeElement.style.setProperty('--resizable', this.resizable);
     }
 

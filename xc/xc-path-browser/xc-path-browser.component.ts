@@ -15,17 +15,17 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, InjectionToken, Injector, Input, Optional } from '@angular/core';
+import { Component, inject, InjectionToken, Input } from '@angular/core';
 
 import { I18nService } from '../../i18n';
+import { I18nModule } from '../../i18n/i18n.module';
 import { XcDynamicComponent } from '../shared/xc-dynamic.component';
 import { XcOptionItem } from '../shared/xc-item';
+import { XcButtonComponent } from '../xc-button/xc-button.component';
+import { XcFormInputComponent } from '../xc-form/xc-form-input/xc-form-input.component';
 import { XC_COMPONENT_DATA } from '../xc-template/xc-template';
 import { xcPathBrowserTranslations_deDE } from './locale/xc-path-browser-translations.de-DE';
 import { xcPathBrowserTranslations_enUS } from './locale/xc-path-browser-translations.en-US';
-import { I18nModule } from '../../i18n/i18n.module';
-import { XcButtonComponent } from '../xc-button/xc-button.component';
-import { XcFormInputComponent } from '../xc-form/xc-form-input/xc-form-input.component';
 
 
 export interface XcPathOptionItem extends XcOptionItem {
@@ -59,6 +59,8 @@ export interface XcPathBrowserTemplateData {
     imports: [I18nModule, XcButtonComponent, XcFormInputComponent]
 })
 export class XcPathBrowserComponent extends XcDynamicComponent<XcPathBrowserTemplateData> {
+    protected readonly i18n = inject(I18nService);
+
 
     private _currentItem: XcPathOptionItem;
     private _pathSeparator = '/';
@@ -74,8 +76,8 @@ export class XcPathBrowserComponent extends XcDynamicComponent<XcPathBrowserTemp
     rootPathToken = null;
 
 
-    constructor(@Optional() injector: Injector, protected readonly i18n: I18nService) {
-        super(injector);
+    constructor() {
+        super();
 
         this.i18n.setTranslations('de-DE', xcPathBrowserTranslations_deDE);
         this.i18n.setTranslations('en-US', xcPathBrowserTranslations_enUS);

@@ -16,7 +16,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostListener, InjectionToken, Injector, Optional } from '@angular/core';
+import { Component, HostListener, inject, InjectionToken } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { Observable } from 'rxjs';
@@ -29,7 +29,7 @@ import { XcDynamicDismissableComponent } from '../shared/xc-dynamic-dismissable.
 })
 export abstract class XcDialogComponent<R = void, D = void> extends XcDynamicDismissableComponent<R, D> {
 
-    private readonly dialogRef: MatDialogRef<any>;
+    private readonly dialogRef = inject(MatDialogRef<any>);
 
     private _maximized = false;
     private _preMaximizeRootWidth: number;
@@ -37,9 +37,8 @@ export abstract class XcDialogComponent<R = void, D = void> extends XcDynamicDis
     private _preMaximizePageX: number;
     private _preMaximizePageY: number;
 
-    constructor(@Optional() injector: Injector) {
-        super(injector);
-        this.dialogRef = injector.get(MatDialogRef);
+    constructor() {
+        super();
     }
 
 
