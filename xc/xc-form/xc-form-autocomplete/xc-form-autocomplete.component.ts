@@ -652,7 +652,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                     const childNodes = Array.from((el as HTMLElement).childNodes);
                     childNodes.forEach(childNode => {
                         if (childNode.nodeType === childNode.TEXT_NODE) {
-                            const option = this.options.find(op => op.name === childNode.nodeValue) as XcOptionInternalAutocompleteItem;
+                            const option = this.options.find(op => op.name === childNode.nodeValue.trim()) as XcOptionInternalAutocompleteItem;
                             if (option) {
 
                                 const isOverflowing = isTextOverflowing(childNode.parentElement, option.name);
