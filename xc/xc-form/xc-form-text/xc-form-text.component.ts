@@ -20,7 +20,6 @@ import { MatLabel } from '@angular/material/form-field';
 
 import { ATTRIBUTE_VALUE } from '../../../xc/shared/xc-i18n-attributes';
 import { XcFormComponent } from '../xc-form-base/xc-form-base.component';
-import { MatLabel } from '@angular/material/form-field';
 
 
 @Component({

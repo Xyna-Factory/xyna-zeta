@@ -34,10 +34,6 @@ import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../../..
 import { XcFormValidatorRequiredDirective } from '../../../xc/xc-form/xc-form-base/xc-form-validators.directive';
 import { runtimeContextSelection_translations_de_DE } from './locale/runtime-context-selection-translations.de-DE';
 import { runtimeContextSelection_translations_en_US } from './locale/runtime-context-selection-translations.en-US';
-import { XcDialogWrapperComponent } from '../../../xc/xc-dialog/xc-dialog-wrapper.component';
-import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../../i18n/i18n.directive';
-import { XcFormValidatorRequiredDirective } from '../../../xc/xc-form/xc-form-base/xc-form-validators.directive';
-import { XcButtonComponent } from '../../../xc/xc-button/xc-button.component';
 
 
 @Component({

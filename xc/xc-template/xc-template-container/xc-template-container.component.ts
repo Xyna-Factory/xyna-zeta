@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,6 +15,7 @@ import { AsyncPipe } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, InjectionToken, OnDestroy } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
@@ -25,9 +25,6 @@ import { XcPanelComponent } from '../../xc-panel/xc-panel.component';
 import { XC_COMPONENT_DATA, XcTemplate } from '../xc-template';
 import { XcTemplateComponent } from '../xc-template.component';
 import { XoTemplateDefinedBase } from './template-container-base.model';
-import { XcPanelComponent } from '../../xc-panel/xc-panel.component';
-import { XcTemplateComponent } from '../xc-template.component';
-import { AsyncPipe } from '@angular/common';
 
 
 @Component({
