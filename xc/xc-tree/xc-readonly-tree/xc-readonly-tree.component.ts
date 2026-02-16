@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, QueryList, ViewChildren, inject } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
@@ -37,6 +37,9 @@ import { XcTreeItemComponent } from './xc-tree-item/xc-tree-item.component';
     imports: [XcTreeItemComponent]
 })
 export class XcReadonlyTreeComponent extends XcTreeNodeComponent implements OnDestroy {
+    private readonly _i18n = inject(I18nService);
+    private readonly cdRef = inject(ChangeDetectorRef);
+
 
     private _dataSource: XcReadonlyStructureTreeDataSource;
     private _subscription: Subscription;
@@ -49,11 +52,10 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent implements OnDe
     changeWidthTimer = undefined;
 
 
-    constructor(
-        private readonly _i18n: I18nService,
-        private readonly cdRef: ChangeDetectorRef
-    ) {
+    constructor() {
         super();
+        const _i18n = this._i18n;
+
         _i18n.setTranslations(LocaleService.EN_US, xcTreeTranslations_enUS);
         _i18n.setTranslations(LocaleService.DE_DE, xcTreeTranslations_deDE);
     }

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, QueryList, ViewChildren, inject } from '@angular/core';
 
 import { coerceBoolean, retrieveFocusableElements, scrollToElement } from '@zeta/base';
 import { I18nService } from '@zeta/i18n';
@@ -46,6 +46,8 @@ export interface XcStackInterface {
     imports: [NgFor, XcTemplateComponent, XcButtonComponent, XcTooltipDirective]
 })
 export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDestroy {
+    private readonly i18n = inject(I18nService);
+
 
     private _dataSource: XcStackDataSource;
     readonly breadcrumbLabels: Map<XcStackItemInterface, string> = new Map();
@@ -60,9 +62,6 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
     private readonly breadcrumbSubscriptons: Subscription[] = [];
 
     @ViewChildren('items') itemList: QueryList<ElementRef>;
-
-
-    constructor(private readonly i18n: I18nService) {}
 
 
     ngAfterViewInit() {

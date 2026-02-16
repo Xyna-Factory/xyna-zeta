@@ -26,6 +26,8 @@ export const RedirectGuardConfigToken = new InjectionToken<string>('RedirectGuar
 
 @Injectable({ providedIn: 'root' })
 export class RedirectGuardService {
+    private readonly router = inject(Router);
+
 
     /**
      * maps the last visited url to a unique project key
@@ -38,9 +40,6 @@ export class RedirectGuardService {
      *   queryParam => url + '?' key '=' value (of queryParam)
      */
     relativeRedirectUrlParamsMap = new Map<string, string>();
-
-    constructor(private readonly router: Router) {
-    }
 
 
     canActivate(activatedRoute: ActivatedRouteSnapshot, routerState: RouterStateSnapshot): boolean {
@@ -110,7 +109,7 @@ export const redirectGuardCanDeactivate: CanDeactivateFn<Component> = (component
 
 
 export function RedirectGuardFactory(router: Router, defaultRedirectUrl: string) {
-    return new RedirectGuardService(router /*, defaultRedirectUrl*/);
+    return new RedirectGuardService(/* router, defaultRedirectUrl*/);
 }
 
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, Output, Renderer2, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, Output, Renderer2, SimpleChanges, inject } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 
@@ -30,6 +30,10 @@ export interface XcDragOptions {
 
 @Directive({ selector: '[xc-drag]' })
 export class XcDragDirective implements OnChanges, OnDestroy {
+    private readonly element = inject(ElementRef);
+    private readonly ngZone = inject(NgZone);
+    protected readonly renderer = inject(Renderer2);
+
 
     @Input('xc-drag')
     enabled = true;
@@ -65,9 +69,6 @@ export class XcDragDirective implements OnChanges, OnDestroy {
     private elementHeight: number;
     private vw: number;
     private vh: number;
-
-    constructor(private readonly element: ElementRef, private readonly ngZone: NgZone, protected readonly renderer: Renderer2) {
-    }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.dragEventTarget && changes.dragEventTarget.currentValue && this.enabled) {

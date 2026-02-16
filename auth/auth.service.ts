@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable, of } from 'rxjs';
@@ -85,6 +85,10 @@ class StartOrderRight {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+    private readonly authEventService = inject(AuthEventService);
+    private readonly http = inject(HttpClient);
+    private readonly router = inject(Router);
+
 
     static readonly urlFragment = 'Authenticate';
     private startOrderRightFallback: boolean;
@@ -96,14 +100,11 @@ export class AuthService {
     postAuthenticationHook = (sessionInfo: SessionInfo) => of(undefined);
 
 
-    constructor(
-        private readonly authEventService: AuthEventService,
-        private readonly http: HttpClient,
-        private readonly router: Router,
-        route: ActivatedRoute,
-        apiService: ApiService,
-        a11y: A11yService
-    ) {
+    constructor() {
+        const route = inject(ActivatedRoute);
+        const apiService = inject(ApiService);
+        const a11y = inject(A11yService);
+
         // refreshes sessionInfo every time when tab is set to active
         a11y.visibilityChange.pipe(
             filter(visible => visible),

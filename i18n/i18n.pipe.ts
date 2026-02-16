@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ElementRef, Pipe, PipeTransform } from '@angular/core';
+import { ElementRef, Pipe, PipeTransform, inject } from '@angular/core';
 
 import { XcI18nBase } from './i18n.directive';
 import { I18nService } from './i18n.service';
@@ -26,9 +26,8 @@ import { I18nService } from './i18n.service';
  */
 @Pipe({ name: 'i18n' })
 export class I18nPipe implements PipeTransform {
+    private readonly i18nService = inject(I18nService);
 
-    constructor(private readonly i18nService: I18nService) {
-    }
 
 
     transform(value: string, ...params: any[]): string {
@@ -41,10 +40,9 @@ export class I18nPipe implements PipeTransform {
 
 @Pipe({ name: 'xcI18n' })
 export class XcI18nPipe extends XcI18nBase implements PipeTransform {
+    private readonly i18nService = inject(I18nService);
+    private readonly element = inject<ElementRef<HTMLElement>>(ElementRef);
 
-    constructor(private readonly i18nService: I18nService, private readonly element: ElementRef<HTMLElement>) {
-        super();
-    }
 
 
     transform(value: string, ...params: any[]): string {

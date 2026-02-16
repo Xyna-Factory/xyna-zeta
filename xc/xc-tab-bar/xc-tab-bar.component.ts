@@ -17,7 +17,7 @@
  */
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { AfterViewInit, Component, ComponentRef, EventEmitter, Injector, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, EventEmitter, Injector, Input, Output, QueryList, ViewChild, ViewChildren, inject } from '@angular/core';
 import { MatTabGroup, MatTab, MatTabLabel } from '@angular/material/tabs';
 
 import { Observable, of, Subject } from 'rxjs';
@@ -43,6 +43,9 @@ import { I18nModule } from '../../i18n/i18n.module';
     imports: [MatTabGroup, MatTab, MatTabLabel, XcIconComponent, XcTooltipDirective, XcIconButtonComponent, NgComponentOutlet, XcSpinnerComponent, I18nModule]
 })
 export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarInterface, AfterViewInit {
+    private readonly injector = inject(Injector);
+    protected readonly i18n = inject(I18nService);
+
 
     private _tabGroup: MatTabGroup;
     private _componentOutlets: QueryList<NgComponentOutlet>;
@@ -61,7 +64,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     readonly selectionChange = new EventEmitter<XcTabBarItem>();
 
 
-    constructor(private readonly injector: Injector, protected readonly i18n: I18nService) {
+    constructor() {
         super();
         this.i18n.setTranslations(LocaleService.DE_DE, xcTabBarTranslations_deDE);
         this.i18n.setTranslations(LocaleService.EN_US, xcTabBarTranslations_enUS);

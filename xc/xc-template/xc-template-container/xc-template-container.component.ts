@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,16 +16,15 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectorRef, Component, InjectionToken, Injector, OnDestroy, Optional } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, InjectionToken, OnDestroy } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
 
 import { XcDynamicComponent } from '../../shared/xc-dynamic.component';
-import { XC_COMPONENT_DATA, XcTemplate } from '../xc-template';
-import { XoTemplateDefinedBase } from './template-container-base.model';
 import { XcPanelComponent } from '../../xc-panel/xc-panel.component';
+import { XC_COMPONENT_DATA, XcTemplate } from '../xc-template';
 import { XcTemplateComponent } from '../xc-template.component';
-import { AsyncPipe } from '@angular/common';
+import { XoTemplateDefinedBase } from './template-container-base.model';
 
 
 @Component({
@@ -34,11 +34,15 @@ import { AsyncPipe } from '@angular/common';
     imports: [XcPanelComponent, XcTemplateComponent, AsyncPipe]
 })
 export class XcTemplateContainerComponent extends XcDynamicComponent<XoTemplateDefinedBase> implements OnDestroy {
+    protected readonly cdRef = inject(ChangeDetectorRef);
+
 
     private readonly subscription: Subscription;
 
-    constructor(@Optional() injector: Injector, protected readonly cdRef: ChangeDetectorRef) {
-        super(injector);
+    constructor() {
+        super();
+        const cdRef = this.cdRef;
+
 
         this.subscription = this.injectedData.getTemplate()?.childTemplatesChange().subscribe(() => {
             cdRef.markForCheck();

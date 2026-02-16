@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 
 import { getBaseHref, isArray } from '@zeta/base';
 
@@ -32,6 +32,8 @@ import { XcIconComponent } from '../xc-icon/xc-icon.component';
     imports: [XcIconComponent]
 })
 export class XcTitleBarComponent {
+    private readonly dialogService = inject(XcDialogService);
+
 
     @Input('xc-title-bar-application-name')
     applicationName: string;
@@ -50,10 +52,6 @@ export class XcTitleBarComponent {
 
     @Input('xc-title-bar-year')
     year: string;
-
-
-    constructor(private readonly dialogService: XcDialogService) {
-    }
 
 
     private get copyright(): string {

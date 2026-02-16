@@ -15,9 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnDestroy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Injector, OnDestroy } from '@angular/core';
 
 import { environment } from '@environments/environment';
+import { pack } from '@zeta/base';
 
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
@@ -28,12 +29,11 @@ import { XcDialogService } from '../../../../xc-dialog/xc-dialog.service';
 import { XcStackItem, XcStackItemInterface, XcStackItemObserver } from '../../../../xc-stack/xc-stack-item/xc-stack-item';
 import { XcStackItemComponent, XcStackItemComponentData } from '../../../../xc-stack/xc-stack-item/xc-stack-item.component';
 import { XcComponentTemplate } from '../../../../xc-template/xc-template';
+import { XcDefinitionProxyComponent } from '../../containers/xc-definition-proxy/xc-definition-proxy.component';
 import { XcDialogDefinitionComponent } from '../../xc-dialog-definition/xc-dialog-definition.component';
 import { XoBaseDefinition, XoCloseDefinitionData, XoDefinition, XoDefinitionBundle, XoDefinitionObserver } from '../../xo/base-definition.model';
 import { XoFormDefinition } from '../../xo/containers.model';
 import { XoStartOrderButtonDefinition } from '../../xo/item-definition.model';
-import { pack } from '@zeta/base';
-import { XcDefinitionProxyComponent } from '../../containers/xc-definition-proxy/xc-definition-proxy.component';
 
 
 export interface DefinitionStackItemComponentData extends XcStackItemComponentData {
@@ -55,19 +55,19 @@ interface DefinitionStackItem {
     imports: [XcDefinitionProxyComponent]
 })
 export class XcDefinitionStackItemComponent extends XcStackItemComponent<DefinitionStackItemComponentData> implements XoDefinitionObserver, AfterViewInit, OnDestroy {
+    readonly injector: Injector;
+    private readonly api = inject(ApiService);
+    private readonly dialogs = inject(XcDialogService);
+    private readonly i18n = inject(I18nService);
+    private readonly cdr = inject(ChangeDetectorRef);
+
 
     private detailsItem: DefinitionStackItem;
     private readonly subscriptions: Subscription[] = [];
 
 
-    constructor(
-        readonly injector: Injector,
-        private readonly api: ApiService,
-        private readonly dialogs: XcDialogService,
-        private readonly i18n: I18nService,
-        private readonly cdr: ChangeDetectorRef
-    ) {
-        super(injector);
+    constructor() {
+        super();
     }
 
 

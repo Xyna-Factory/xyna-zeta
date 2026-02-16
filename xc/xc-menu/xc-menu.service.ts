@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, Injectable, Input, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, Injectable, Input, OnDestroy, TemplateRef, ViewContainerRef, inject } from '@angular/core';
 
 import { Subject, Subscription } from 'rxjs';
 
@@ -75,13 +75,10 @@ export class XcMenuService {
 
 @Directive({ selector: '[xc-menu-service]' })
 export class XcMenuServiceDirective implements OnDestroy {
+    private readonly viewContainerRef = inject(ViewContainerRef);
+    private readonly templateRef = inject<TemplateRef<any>>(TemplateRef);
+    private readonly menuService = inject(XcMenuService);
 
-    constructor(
-        private readonly viewContainerRef: ViewContainerRef,
-        private readonly templateRef: TemplateRef<any>,
-        private readonly menuService: XcMenuService
-    ) {
-    }
 
     ngOnDestroy() {
         this.viewContainerRef.clear();

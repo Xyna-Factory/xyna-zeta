@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, inject } from '@angular/core';
 
 
 type EventHandler = (event: Event) => void;
@@ -31,14 +31,12 @@ interface OutsideListenerTriple {
 
 @Injectable({ providedIn: 'root' })
 export class OutsideListenerService {
+    private readonly ngZone = inject(NgZone);
+
     private static id = 0;
 
     private readonly handlerTriples = new Map<number, OutsideListenerTriple>();
     private readonly handlerIdArrays = new Map<DocumentElement, number[]>();
-
-
-    constructor(private readonly ngZone: NgZone) {
-    }
 
 
     addOutsideListener(element: DocumentElement, eventType: string, listener: EventHandler): number {

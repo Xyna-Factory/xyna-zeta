@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AriaLivePoliteness, LiveAnnouncer } from '@angular/cdk/a11y';
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, inject } from '@angular/core';
 
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -40,6 +40,9 @@ export enum ScreenreaderPriority {
 
 @Injectable({ providedIn: 'root' })
 export class A11yService {
+    private readonly liveAnnouncer = inject(LiveAnnouncer);
+    private readonly ngZone = inject(NgZone);
+
 
     private readonly focusStateSubject = new Subject<A11yFocusState>();
     readonly focusState$: Observable<A11yFocusState> = this.focusStateSubject.asObservable();
@@ -50,7 +53,7 @@ export class A11yService {
     private lastPossibleFocusChangingEventSubject = new BehaviorSubject<Event>(null);
     private lastActiveElementSubject = new BehaviorSubject<Element>(null);
 
-    constructor(private readonly liveAnnouncer: LiveAnnouncer, private readonly ngZone: NgZone) {
+    constructor() {
         this.ngZone.runOutsideAngular(() => {
             // Sichtbarkeit
             document.addEventListener('visibilitychange', () =>

@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { ComponentType } from '@angular/cdk/portal';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 
 import { Xo } from '@zeta/api';
@@ -39,16 +39,17 @@ import { XcMessageDialogComponent } from './xc-message-dialog.component';
 
 @Injectable({ providedIn: 'root' })
 export class XcDialogService {
+    private readonly dialog = inject(MatDialog);
+    protected readonly i18n = inject(I18nService);
+
     static defaultErrorTitle = 'zeta.xc-dialog.info-dialog.error-header';
 
     private readonly dialogRefStack = new Array<MatDialogRef<any>>();
 
 
-    constructor(
-        private readonly dialog: MatDialog,
-        authEventService: AuthEventService,
-        protected readonly i18n: I18nService
-    ) {
+    constructor() {
+        const authEventService = inject(AuthEventService);
+
         this.i18n.setTranslations('de-DE', xcDialogTranslations_deDE);
         this.i18n.setTranslations('en-US', xcDialogTranslations_enUS);
 
