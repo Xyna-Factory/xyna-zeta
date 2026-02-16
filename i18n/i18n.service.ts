@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpBackend, HttpClient } from '@angular/common/http';
-import { Injectable, Injector, Type, inject } from '@angular/core';
+import { inject, Injectable, Injector, Type } from '@angular/core';
 
 import escapeStringRegexp from 'escape-string-regexp';
 import { Observable } from 'rxjs';

@@ -31,6 +31,7 @@ import { XcStackComponent } from '../../../../xc-stack/xc-stack.component';
 import { XcComponentTemplate } from '../../../../xc-template/xc-template';
 import { XoFormDefinition } from '../../xo/containers.model';
 import { DefinitionStackItemComponentData, XcDefinitionStackItemComponent } from '../xc-definition-stack-item/xc-definition-stack-item.component';
+import { XcStackComponent } from '../../../../xc-stack/xc-stack.component';
 
 
 @Component({

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, Input, OnDestroy, TemplateRef, ViewContainerRef, inject } from '@angular/core';
+import { Directive, inject, Input, OnDestroy, TemplateRef, ViewContainerRef } from '@angular/core';
 
 
 /**

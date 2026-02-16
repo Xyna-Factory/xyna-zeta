@@ -17,23 +17,23 @@
  */
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { AfterViewInit, Component, ComponentRef, EventEmitter, Injector, Input, Output, QueryList, ViewChild, ViewChildren, inject } from '@angular/core';
-import { MatTabGroup, MatTab, MatTabLabel } from '@angular/material/tabs';
+import { AfterViewInit, Component, ComponentRef, EventEmitter, inject, Injector, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { Observable, of, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
+import { I18nModule } from '../../i18n/i18n.module';
 import { XcThemeableComponent } from '../../xc/shared/xc-themeable.component';
+import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
+import { XcIconComponent } from '../xc-icon/xc-icon.component';
+import { XcSpinnerComponent } from '../xc-spinner/xc-spinner.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 import { xcTabBarTranslations_deDE } from './locale/xc-tab-bar-translations.de-DE';
 import { xcTabBarTranslations_enUS } from './locale/xc-tab-bar-translations.en-US';
 import { XC_TAB_DATA, XcTabBarInterface, XcTabBarItem, XcTabComponent, XcTabRef } from './xc-tab.component';
-import { XcIconComponent } from '../xc-icon/xc-icon.component';
-import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
-import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
-import { XcSpinnerComponent } from '../xc-spinner/xc-spinner.component';
-import { I18nModule } from '../../i18n/i18n.module';
 
 
 @Component({

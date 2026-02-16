@@ -79,7 +79,6 @@ export class XcMenuServiceDirective implements OnDestroy {
     private readonly templateRef = inject<TemplateRef<any>>(TemplateRef);
     private readonly menuService = inject(XcMenuService);
 
-
     ngOnDestroy() {
         this.viewContainerRef.clear();
     }

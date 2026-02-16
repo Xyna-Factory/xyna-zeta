@@ -1,6 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, Input, Renderer2, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, Input, Renderer2, ViewChild } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 import { coerceBoolean } from '../../base';
