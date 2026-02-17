@@ -92,6 +92,8 @@ export class XcDefinitionListEntryTemplate extends XcTemplate {
 export class XcFormAutocompleteTemplate extends XcFormTemplate<XcOptionItem, XcOptionItemValueType, XcAutocompleteDataWrapper> {
     asInput = false;
     asDropdown = false;
+    asMultiselect = false;
+    multiSelectCallback?: (value: string) => void;
 
     constructor(autocompleteDataWrapper: XcAutocompleteDataWrapper, validators: ValidatorFn[] = []) {
         super(autocompleteDataWrapper, validators);

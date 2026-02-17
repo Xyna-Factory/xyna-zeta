@@ -39,6 +39,7 @@ export interface XcTableColumn {
     readonly break?: boolean;
     readonly pre?: boolean;
     readonly filterTooltip?: string;
+    readonly filterMultiselect?: boolean;
 }
 
 
@@ -84,6 +85,9 @@ export interface TableCounts {
     displayedCount: number;
     totalCount: number;
 }
+
+
+export const MULTISELECT_FILTER_SEPARATOR = '|';
 
 
 export abstract class XcTableDataSource<T extends Comparable = Comparable> extends XcSelectionDataSource<T, XcSubSelectionModel<T, string>> {
@@ -199,7 +203,7 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
         super.refresh();
         // request data update
         this.request({
-            filter: this.filters.size ? {map:  this.filters,   caseSensitive: this.filterCaseSensitive} : undefined,
+            filter: this.filters.size ? {map: this.filters, caseSensitive: this.filterCaseSensitive} : undefined,
             sort:   this._sortPath    ? {path: this._sortPath, direction:     this._sortDirection}      : undefined,
             skip:   this.skip,
             limit:  this.limit

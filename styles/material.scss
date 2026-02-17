@@ -347,3 +347,74 @@ html.cdk-global-scrollblock {
 [color="invert"] .mat-ripple .mat-ripple-element {
     background-color: rgba(0, 0, 0, 0.1);
 }
+
+.multiselect-panel {
+    min-width: 150px;
+
+    // override mat-select panel internal structure
+    &.mat-mdc-select-panel {
+        max-height: 256px;
+        padding-bottom: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .mat-mdc-option {
+        // compact option style
+        min-height: 32px;
+        padding: 0 12px;
+        font-size: $font-size-medium;
+
+        .mdc-list-item__primary-text {
+            font-size: $font-size-medium;
+        }
+
+        &.mat-mdc-option-multiple {
+            .mat-pseudo-checkbox {
+                margin-right: 8px;
+                width: 16px;
+                height: 16px;
+            }
+        }
+    }
+
+    // action buttons container - sticky at the very bottom
+    .multiselect-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        background-color: $xc-dialog-footer-background-color;
+        border-top: 1px solid $xc-form-autocomplete-panel-border-color;
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        margin-top: 0;
+        white-space: nowrap;
+
+        .multiselect-btn {
+            min-height: 24px;
+            padding: 2px 8px;
+            font-size: $font-size-small;
+            font-family: $font-family-regular;
+            border: 1px solid $xc-form-dropdown-border-color;
+            border-radius: 3px;
+            background-color: $xc-form-dropdown-background-color;
+            color: $xc-form-autocomplete-option-color;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+
+            &:hover {
+                background-color: $xc-form-dropdown-background-color-hover;
+                border-color: $xc-form-dropdown-border-color-hover;
+            }
+
+            &:active {
+                background-color: $xc-form-dropdown-background-color-active;
+            }
+        }
+    }
+}

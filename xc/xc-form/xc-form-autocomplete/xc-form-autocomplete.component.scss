@@ -71,4 +71,37 @@
         z-index: -1000;
         visibility: hidden;
     }
+
+    .multiselect-display-input {
+        cursor: pointer;
+
+        &:not(:disabled):not(:read-only) {
+            border-color: $xc-form-dropdown-border-color;
+            background-color: $xc-form-dropdown-background-color;
+
+            &:hover {
+                background-color: $xc-form-dropdown-background-color-hover;
+                border-color: $xc-form-dropdown-border-color-hover;
+            }
+
+            &:focus {
+                background-color: $xc-form-dropdown-background-color-focus;
+                border-color: $xc-form-dropdown-border-color-focus;
+            }
+        }
+    }
+
+    // mat-select is visually hidden but must remain focusable for keyboard navigation
+    .hidden-select {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        // hint: 'visibility: hidden' would not work since it prevents focus
+    }
 }

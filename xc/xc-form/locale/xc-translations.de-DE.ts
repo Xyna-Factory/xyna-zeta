@@ -50,6 +50,12 @@ export const xcFormTranslations_deDE: I18nTranslation[] = [
     { key: 'zeta.xc-form-base.ip', value: 'WERT IST KEINE IP-ADRESSE' },
     { key: 'zeta.xc-form-base.message', value: 'KEINE NACHRICHT DEFINIERT' },
 
+    // multiselect autocomplete
+    { key: 'zeta.xc-form.autocomplete.cancel', value: 'Abbrechen' },
+    { key: 'zeta.xc-form.autocomplete.apply', value: 'OK' },
+    { key: 'zeta.xc-form.autocomplete.selected', value: 'ausgewählt' },
+    { key: 'zeta.xc-form.autocomplete.not-selected', value: 'nicht ausgewählt' },
+
     // Workflow defined UI Dialog
     { key: 'definedUi.dialog.close', value: 'Schließen' }
 ];

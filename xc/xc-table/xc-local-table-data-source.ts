@@ -21,7 +21,7 @@ import { Xo } from '../../api';
 import { Comparable } from '../../base';
 import { XcSortPredicate } from '../shared/xc-sort';
 import { XcTemplate } from '../xc-template/xc-template';
-import { XcTableData, XcTableDataFilter, XcTableDataRequestOptions, XcTableDataSort, XcTableDataSource } from './xc-table-data-source';
+import { MULTISELECT_FILTER_SEPARATOR, XcTableData, XcTableDataFilter, XcTableDataRequestOptions, XcTableDataSort, XcTableDataSource } from './xc-table-data-source';
 
 
 export class XcLocalTableDataSource<T extends Comparable = Comparable> extends XcTableDataSource<T> {
@@ -76,12 +76,39 @@ export class XcLocalTableDataSource<T extends Comparable = Comparable> extends X
     protected filter(rows: T[], filter: XcTableDataFilter): T[] {
         return rows.filter(row => {
             for (const keyValue of filter.map) {
-                const resolved = this.resolve(row, keyValue[0]);
+                const path = keyValue[0];
+                const filterValue = keyValue[1];
+                const resolved = this.resolve(row, path);
+
                 if (resolved) {
-                    const valueString  = filter.caseSensitive ? resolved.toString() : resolved.toString().toLowerCase();
-                    const filterString = filter.caseSensitive ? keyValue[1]         : keyValue[1].toLowerCase();
-                    if (valueString.indexOf(filterString) < 0) {
-                        return false;
+                    const valueString = filter.caseSensitive ? resolved.toString() : resolved.toString().toLowerCase();
+
+                    // Skip empty filter values
+                    if (!filterValue || filterValue.trim() === '') {
+                        continue;
+                    }
+
+                    // Check if this is a multiselect filter (contains the separator)
+                    if (filterValue.includes(MULTISELECT_FILTER_SEPARATOR)) {
+                        // Split the filter value and apply same logic as single-select (OR logic)
+                        const filterValues = filterValue.split(MULTISELECT_FILTER_SEPARATOR);
+
+                        // Check if ANY of the filter values match (OR logic)
+                        // Using same indexOf logic as single-select for consistency
+                        const matchesAny = filterValues.some(fv => {
+                            const filterString = filter.caseSensitive ? fv : fv.toLowerCase();
+                            return valueString.indexOf(filterString) >= 0;
+                        });
+
+                        if (!matchesAny) {
+                            return false;
+                        }
+                    } else {
+                        // Original single-value filter logic (substring match)
+                        const filterString = filter.caseSensitive ? filterValue : filterValue.toLowerCase();
+                        if (valueString.indexOf(filterString) < 0) {
+                            return false;
+                        }
                     }
                 }
             }
