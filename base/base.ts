@@ -208,7 +208,7 @@ export function endsWith(string: string, substring: string): boolean {
  * @returns Number of digits
  */
 export function digits(value: number): number {
-     
+
     return (Math.log10((value ^ (value >> 31)) - (value >> 31)) | 0) + 1;
 }
 
@@ -288,14 +288,14 @@ export function factorMultiplicity(value: number, factor: number): number {
  * @returns Previous power of two or 0, if value is 0
  */
 export function prevPow2(value: number): number {
-     
+
     value |= (value >> 1);
     value |= (value >> 2);
     value |= (value >> 4);
     value |= (value >> 8);
     value |= (value >> 16);
     return value - (value >> 1);
-     
+
 }
 
 
@@ -305,7 +305,7 @@ export function prevPow2(value: number): number {
  * @returns Next power of two or 0, if value is 0
  */
 export function nextPow2(value: number): number {
-     
+
     value--;
     value |= value >> 1;
     value |= value >> 2;
@@ -313,7 +313,7 @@ export function nextPow2(value: number): number {
     value |= value >> 8;
     value |= value >> 16;
     return value + 1;
-     
+
 }
 
 
@@ -325,7 +325,7 @@ export function nextPow2(value: number): number {
  */
 export function log2(value: number): number {
     let result = 0;
-     
+
     while ((value >>= 1)) {
         result++;
     }
@@ -796,7 +796,7 @@ export function retrieveFocusableElements(root: HTMLElement): Array<HTMLElement>
     return Array.from(
         root.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
         element => element as HTMLElement
-    ).filter(element => !!element?.offsetParent);   /* filter for visible elements */
+    ).filter(element => !!element?.checkVisibility());   /* filter for visible elements */
 }
 
 
