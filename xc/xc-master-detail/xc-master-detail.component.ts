@@ -79,7 +79,7 @@ export class XcMasterDetailComponent {
 
 
     @HostListener('window:resize')
-    public _onResize() {
+    _onResize() {
         this.resize();
     }
 

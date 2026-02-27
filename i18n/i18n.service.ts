@@ -16,14 +16,15 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpBackend, HttpClient } from '@angular/common/http';
-import { Injectable, Injector, Type } from '@angular/core';
+import { inject, Injectable, Injector, PLATFORM_ID } from '@angular/core';
 
 import escapeStringRegexp from 'escape-string-regexp';
-import { EMPTY, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { isString } from '../base';
 import { LocaleService } from './locale.service';
+import { isPlatformBrowser } from '@angular/common';
 
 
 export interface I18nTranslation {
@@ -301,19 +302,26 @@ export class I18nService {
      * Check and modify the "angular.json" accordingly
      */
     readTranslations(language: string, file: string): Observable<I18nTranslation[]> {
-        if (!file) {
-            console.error('Translation file is empty or undefined for language:', language);
-            return EMPTY;
-        }
-        const httpBackend = this.injector.get(HttpBackend);
-        const nonInterceptedJSONHTTPClient = new HttpClient(httpBackend);
-
-        return nonInterceptedJSONHTTPClient
-            .get<I18nJsonSchemaTranslation>('./assets/locale/' + encodeURIComponent(file))
-            .pipe(
+        // Verwende functional injection (Angular 14+)
+        const injector = inject(Injector);
+        const platformId = inject(PLATFORM_ID);
+        
+        if (isPlatformBrowser(platformId)) {
+            // Im Browser: Verwende normalen HttpClient (mit Interceptors)
+            const http = inject(HttpClient);
+            return http.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
                 tap(translation => this.setTranslations(language, translation.translations)),
                 map(translation => translation.translations)
             );
+        } else {
+            // Server-side: Erstelle HttpClient ohne Interceptors
+            const httpBackend = injector.get(HttpBackend);
+            const nonInterceptedJSONHTTPClient = new HttpClient(httpBackend);
+            return nonInterceptedJSONHTTPClient.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
+                tap(translation => this.setTranslations(language, translation.translations)),
+                map(translation => translation.translations)
+            );
+        }
     }
 
 

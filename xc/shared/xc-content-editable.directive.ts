@@ -43,7 +43,7 @@ export class XcContentEditableDirective {
     private _multiline = false;
 
     @HostBinding('class.xc-content-editable-active')
-    public _active = false;
+    _active = false;
 
     @Output('xc-content-editable-enter')
     readonly enter = new EventEmitter<XcContentEditableDirective>();
@@ -121,7 +121,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('mousedown')
-    public mousedown() {
+    mousedown() {
         if (!this._active && this._mode === 'mousedown') {
             this.activate(false);
         }
@@ -129,7 +129,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('dblclick')
-    public dblclick() {
+    dblclick() {
         if (!this._active && this._mode === 'dblclick') {
             this.activate(true);
         }
@@ -137,7 +137,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('blur')
-    public blur() {
+    blur() {
         if (this._active) {
             this.deactivate();
         }
@@ -145,7 +145,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('keydown', ['$event'])
-    public keydown(event: KeyboardEvent) {
+    keydown(event: KeyboardEvent) {
         if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
             this.textChange.emit(this.text);
         }
@@ -153,7 +153,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('keydown.enter')
-    public enterKey() {
+    enterKey() {
         if (!this.multiline) {
             this.deactivate();
         }
@@ -161,7 +161,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('keydown.delete', ['$event'])
-    public deleteKey(event: Event) {
+    deleteKey(event: Event) {
         if (this._active) {
             event.stopPropagation();
         }
