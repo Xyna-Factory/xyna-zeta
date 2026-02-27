@@ -47,6 +47,11 @@ type XcPreviousTooltipPosition = 'left' | 'right' | 'above' | 'below' | 'before'
 
 @Directive({ selector: '[xc-tooltip]' })
 export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+    private readonly ngZone = inject(NgZone);
+    private readonly a11yService = inject(A11yService);
+    private readonly i18n = inject(I18nService);
+
 
     private observer: MutationObserver;
 
@@ -198,13 +203,9 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
-    constructor(
-        private readonly elementRef: ElementRef,
-        private readonly ngZone: NgZone,
-        viewContainerRef: ViewContainerRef,
-        private readonly a11yService: A11yService,
-        private readonly i18n: I18nService
-    ) {
+    constructor() {
+        const viewContainerRef = inject(ViewContainerRef);
+
 
         this.viewContainerRef = viewContainerRef;
 

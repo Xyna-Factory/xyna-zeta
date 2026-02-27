@@ -15,7 +15,8 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, ElementRef } from '@angular/core';
+import { Directive, ElementRef, inject } from '@angular/core';
+
 import { XcUnwrapDirective } from '../../../../shared/xc-unwrap.directive';
 
 
@@ -25,9 +26,11 @@ import { XcUnwrapDirective } from '../../../../shared/xc-unwrap.directive';
  */
 @Directive({ selector: '[xc-dl-unwrap]' })
 export class XcDefinitionListUnwrapDirective extends XcUnwrapDirective {
+    readonly element: ElementRef;
 
-    constructor(readonly element: ElementRef) {
-        super(element);
+
+    constructor() {
+        super();
     }
 
 

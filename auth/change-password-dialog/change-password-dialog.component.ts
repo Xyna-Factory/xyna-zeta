@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Injector } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { ApiService, RuntimeContext } from '@zeta/api';
 
@@ -23,7 +23,14 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { I18nService, LocaleService } from '../../i18n';
+import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
+import { XcI18nPipe } from '../../i18n/i18n.pipe';
 import { XcCustomValidatorFunction, XcDialogComponent } from '../../xc';
+import { XcButtonComponent } from '../../xc/xc-button/xc-button.component';
+import { XcDialogWrapperComponent } from '../../xc/xc-dialog/xc-dialog-wrapper.component';
+import { XcFormValidatorCustomDirective, XcFormValidatorRequiredDirective } from '../../xc/xc-form/xc-form-base/xc-form-validators.directive';
+import { XcFormDirective } from '../../xc/xc-form/xc-form-base/xc-form.directive';
+import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
 import { AuthService } from '../auth.service';
 import { XoXynaProperty, XoXynaPropertyKey } from '../xo/xyna-property.model';
 import { changePassword_translations_de_DE } from './locale/change-password-translations.de-DE';
@@ -69,12 +76,11 @@ export class ChangePasswordDialogComponent extends XcDialogComponent {
 
 
     constructor(
-        injector: Injector,
         readonly api: ApiService,
         private readonly i18n: I18nService,
         private readonly auth: AuthService
     ) {
-        super(injector);
+        super();
 
         this.i18n.setTranslations(LocaleService.DE_DE, changePassword_translations_de_DE);
         this.i18n.setTranslations(LocaleService.EN_US, changePassword_translations_en_US);

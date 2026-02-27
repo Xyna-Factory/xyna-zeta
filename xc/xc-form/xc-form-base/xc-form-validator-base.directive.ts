@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, Host, Optional } from '@angular/core';
+import { AfterViewInit, Directive, inject } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
 
 import { XcFormBaseComponent } from './xc-form-base.component';
@@ -23,9 +23,8 @@ import { XcFormBaseComponent } from './xc-form-base.component';
 
 @Directive()
 export abstract class XcFormValidatorBaseDirective implements AfterViewInit {
+    host = inject(XcFormBaseComponent, { optional: true, host: true });
 
-    constructor(@Optional() @Host() public host: XcFormBaseComponent) {
-    }
 
     ngAfterViewInit() {
         if (this.host) {

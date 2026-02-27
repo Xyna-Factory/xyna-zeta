@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, Output, Renderer2 } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, Output, Renderer2, inject } from '@angular/core';
 
 import { fromEvent, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -53,6 +53,9 @@ export interface ResizableEvent {
 
 @Directive({ selector: '[xc-resize]' })
 export class XcResizeDirective implements AfterViewInit, OnDestroy {
+    protected readonly elementRef = inject(ElementRef);
+    protected readonly renderer = inject(Renderer2);
+
 
     @Input('xc-resize')
     enabled = true;
@@ -112,7 +115,9 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     private top: number;
     private left: number;
 
-    constructor(protected readonly elementRef: ElementRef, protected readonly renderer: Renderer2) {
+    constructor() {
+        const elementRef = this.elementRef;
+
         this.element = elementRef.nativeElement;
     }
 

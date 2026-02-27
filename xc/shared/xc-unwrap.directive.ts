@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, ElementRef } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, inject } from '@angular/core';
 
 
 /**
@@ -23,9 +23,8 @@ import { AfterViewInit, Directive, ElementRef } from '@angular/core';
  */
 @Directive({ selector: '[xc-unwrap]' })
 export class XcUnwrapDirective implements AfterViewInit {
+    protected readonly element = inject(ElementRef);
 
-    constructor(protected readonly element: ElementRef) {
-    }
 
 
     ngAfterViewInit() {

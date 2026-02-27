@@ -186,6 +186,12 @@ interface XcOptionInternalAutocompleteItem extends XcOptionItem {
     imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, MatAutocompleteTrigger, MatAutocomplete, MatOption, XcTooltipDirective, XcIconComponent, MatError, MatIconButton, MatSuffix, MatIcon, AsyncPipe, I18nModule, MatSelect]
 })
 export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implements AfterViewInit, OnDestroy {
+    private readonly cdRef = inject(ChangeDetectorRef);
+    private readonly a11yService = inject(A11yService);
+    private readonly i18nService = inject(I18nService);
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+    private readonly ngZone = inject(NgZone);
+
 
     /**
      * Screen Reader will read this string (translated) if this component is an autocomplete (default or asinput)
@@ -292,14 +298,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     readonly multiSelectChange = new EventEmitter<string>();
 
 
-    constructor(
-        private readonly cdRef: ChangeDetectorRef,
-        private readonly a11yService: A11yService,
-        private readonly i18nService: I18nService,
-        private readonly elementRef: ElementRef,
-        private readonly ngZone: NgZone
-    ) {
-        super(elementRef, i18nService);
+    constructor() {
+        super();
+
         this.filteredOptions = merge(this.formControl.valueChanges.pipe(debounceTime(10)), this.updateFilteredOptions).pipe(
             // maps form option to string, if needed
             map((value: string | XcOptionItem) => isObject(value) ? this.optionName(<XcOptionItem>value) : <string>value),

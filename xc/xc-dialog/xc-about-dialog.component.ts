@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpClient } from '@angular/common/http';
-import { Component, Injector } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { I18nModule } from '../../i18n/i18n.module';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
@@ -41,15 +41,16 @@ export interface XcAboutDialogConfig {
     imports: [XcDialogWrapperComponent, I18nModule, XcButtonComponent]
 })
 export class XcAboutDialogComponent extends XcDialogComponent<void, XcAboutDialogConfig> {
+    readonly http = inject(HttpClient);
 
     license = '';
     details = false;
 
 
-    constructor(injector: Injector, http: HttpClient) {
-        super(injector);
+    constructor() {
+        super();
 
-        http.get(this.injectedData.detailsLink, {responseType: 'text'}).subscribe(
+        this.http.get(this.injectedData.detailsLink, { responseType: 'text' }).subscribe(
             result => this.license = result
         );
     }

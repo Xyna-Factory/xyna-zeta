@@ -16,7 +16,8 @@ import { NgClass } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, Input, OnDestroy, ViewChild } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, ViewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
@@ -50,6 +51,11 @@ import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
     imports: [MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, XcProgressBarComponent, MatFooterCellDef, MatFooterCell, XcIconButtonComponent, MatSortHeader, XcTemplateComponent, MatCellDef, MatCell, NgClass, XcVarDirective, XcTooltipDirective, MatHeaderRowDef, MatHeaderRow, MatFooterRowDef, MatFooterRow, MatRowDef, MatRow]
 })
 export class XcTableComponent implements AfterViewInit, OnDestroy {
+    private readonly cdRef = inject(ChangeDetectorRef);
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+    private readonly _a11y = inject(A11yService);
+    private readonly _i18n = inject(I18nService);
+
 
     private _allowSort = false;
     private _allowFilter = false;
@@ -72,12 +78,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private focusViaTabDetectionSubscription: Subscription;
 
 
-    constructor(
-        private readonly cdRef: ChangeDetectorRef,
-        private readonly elementRef: ElementRef,
-        private readonly _a11y: A11yService,
-        private readonly _i18n: I18nService
-    ) {
+    constructor() {
+        const _i18n = this._i18n;
+
         _i18n.setTranslations(LocaleService.EN_US, xcTableTranslations_enUS);
         _i18n.setTranslations(LocaleService.DE_DE, xcTableTranslations_deDE);
     }

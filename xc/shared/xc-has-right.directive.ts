@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, inject, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 
 import { AuthService } from '../../auth/auth.service';
 import { isString } from '../../base';
@@ -23,12 +23,10 @@ import { isString } from '../../base';
 
 @Directive({ selector: '[xc-has-right]' })
 export class XcHasRightDirective {
+    private readonly authService = inject(AuthService);
+    private readonly viewContainerRef = inject(ViewContainerRef);
+    private readonly templateRef = inject<TemplateRef<any>>(TemplateRef);
 
-    constructor(
-        private readonly authService: AuthService,
-        private readonly viewContainerRef: ViewContainerRef,
-        private readonly templateRef: TemplateRef<any>
-    ) {}
 
 
     @Input('xc-has-right')

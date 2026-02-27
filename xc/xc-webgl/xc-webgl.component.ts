@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, NgZone, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, inject, Input, NgZone, OnDestroy, Output } from '@angular/core';
 
 import { downloadFile, MimeTypes, NOP } from '@zeta/base';
 
@@ -47,6 +47,10 @@ export interface XcWebGLInteraction {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class XcWebGLComponent implements AfterViewInit, OnDestroy {
+    private readonly cdRef = inject(ChangeDetectorRef);
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+    private readonly zone = inject(NgZone);
+
 
     private _animationId: number;
     private _frames = 0;
@@ -68,11 +72,6 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
 
     @Output('xc-webgl-interaction')
     private readonly interactionEmitter = new EventEmitter<XcWebGLInteraction>();
-
-
-    constructor(private readonly cdRef: ChangeDetectorRef, private readonly elementRef: ElementRef<HTMLElement>, private readonly zone: NgZone) {
-        /** @todo use injection tokens to customize renderer options */
-    }
 
 
     ngAfterViewInit() {
