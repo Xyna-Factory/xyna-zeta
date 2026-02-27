@@ -41,8 +41,6 @@ export interface XcAboutDialogConfig {
     imports: [XcDialogWrapperComponent, I18nModule, XcButtonComponent]
 })
 export class XcAboutDialogComponent extends XcDialogComponent<void, XcAboutDialogConfig> {
-    readonly http = inject(HttpClient);
-
     protected readonly http = inject(HttpClient);
 
     license = '';
