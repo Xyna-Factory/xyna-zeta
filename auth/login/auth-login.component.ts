@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, ViewChild, inject } from '@angular/core';
+import { Component, effect, inject, signal, ViewChild } from '@angular/core';
 
 import { environment } from '@environments/environment';
 
@@ -122,7 +122,7 @@ export class AuthLoginComponent {
 
     workflowDomain = '';
 
-    private _pending = false;
+    private _pending = signal(false);
     privacyLinkDefined = !!environment.zeta.getPrivacyLink;
 
     tabBarItems: Array<XcTabBarItem> = [];
@@ -147,6 +147,14 @@ export class AuthLoginComponent {
         } else if (this.useWorkflowLogin) {
             this.workflowInfo();
         }
+
+        // Signal-Effekt: Synchronisiere disabled state
+        effect(() => {
+            const pending = this._pending();
+            this.smartCardTabItem.data.disabled = pending;
+            this.credentialsTabItem.data.disabled = pending;
+            this.workflowTabItem.data.disabled = pending;
+        });
     }
 
 
@@ -303,15 +311,10 @@ export class AuthLoginComponent {
 
 
     get pending(): boolean {
-        return this._pending;
+        return this._pending();
     }
 
-
     set pending(value: boolean) {
-        this._pending = value;
-
-        this.smartCardTabItem.data.disabled = this.pending;
-        this.credentialsTabItem.data.disabled = this.pending;
-        this.workflowTabItem.data.disabled = this.pending;
+        this._pending.set(value);
     }
 }

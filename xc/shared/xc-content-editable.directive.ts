@@ -119,7 +119,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('mousedown')
-    private mousedown() {
+    mousedown() {
         if (!this._active && this._mode === 'mousedown') {
             this.activate(false);
         }
@@ -127,7 +127,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('dblclick')
-    private dblclick() {
+    dblclick() {
         if (!this._active && this._mode === 'dblclick') {
             this.activate(true);
         }
@@ -135,7 +135,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('blur')
-    private blur() {
+    blur() {
         if (this._active) {
             this.deactivate();
         }
@@ -143,7 +143,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('keydown', ['$event'])
-    private keydown(event: KeyboardEvent) {
+    keydown(event: KeyboardEvent) {
         if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
             this.textChange.emit(this.text);
         }
@@ -151,7 +151,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('keydown.enter')
-    private enterKey() {
+    enterKey() {
         if (!this.multiline) {
             this.deactivate();
         }
@@ -159,7 +159,7 @@ export class XcContentEditableDirective {
 
 
     @HostListener('keydown.delete', ['$event'])
-    private deleteKey(event: Event) {
+    deleteKey(event: Event) {
         if (this._active) {
             event.stopPropagation();
         }
