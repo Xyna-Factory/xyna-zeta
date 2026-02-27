@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,8 +16,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, Input, OnDestroy, ViewChild } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, ViewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
 import { Subscription } from 'rxjs';
 
@@ -27,19 +30,17 @@ import { I18nService, LocaleService } from '../../i18n';
 import { XcIdentityDataWrapper } from '../shared/xc-data-wrapper';
 import { XcOptionItemString } from '../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString } from '../shared/xc-sort';
+import { XcVarDirective } from '../shared/xc-var.directive';
+import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { XcFormBaseComponent } from '../xc-form/xc-form-base/xc-form-base.component';
+import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
 import { XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTemplate, XcTemplate } from '../xc-template/xc-template';
+import { XcTemplateComponent } from '../xc-template/xc-template.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 import { xcTableTranslations_deDE } from './locale/xc-translations.de-DE';
 import { xcTableTranslations_enUS } from './locale/xc-translations.en-US';
 import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
-import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatFooterCellDef, MatFooterCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatFooterRowDef, MatFooterRow, MatRowDef, MatRow } from '@angular/material/table';
-import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
-import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
-import { XcTemplateComponent } from '../xc-template/xc-template.component';
-import { NgClass } from '@angular/common';
-import { XcVarDirective } from '../shared/xc-var.directive';
-import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 
 
 @Component({
@@ -50,6 +51,11 @@ import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
     imports: [MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, XcProgressBarComponent, MatFooterCellDef, MatFooterCell, XcIconButtonComponent, MatSortHeader, XcTemplateComponent, MatCellDef, MatCell, NgClass, XcVarDirective, XcTooltipDirective, MatHeaderRowDef, MatHeaderRow, MatFooterRowDef, MatFooterRow, MatRowDef, MatRow]
 })
 export class XcTableComponent implements AfterViewInit, OnDestroy {
+    private readonly cdRef = inject(ChangeDetectorRef);
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+    private readonly _a11y = inject(A11yService);
+    private readonly _i18n = inject(I18nService);
+
 
     private _allowSort = false;
     private _allowFilter = false;
@@ -72,12 +78,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private focusViaTabDetectionSubscription: Subscription;
 
 
-    constructor(
-        private readonly cdRef: ChangeDetectorRef,
-        private readonly elementRef: ElementRef,
-        private readonly _a11y: A11yService,
-        private readonly _i18n: I18nService
-    ) {
+    constructor() {
+        const _i18n = this._i18n;
+
         _i18n.setTranslations(LocaleService.EN_US, xcTableTranslations_enUS);
         _i18n.setTranslations(LocaleService.DE_DE, xcTableTranslations_deDE);
     }
@@ -345,7 +348,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getColumnID(column: XcTableColumn): string {
-        return [column.path, column.name, column.disableSort ?? false, column.disableFilter ?? false, column.filterTooltip ?? ''].join('\0');
+        return [column.path, column.name, column.disableSort ?? false, column.disableFilter ?? false, column.filterTooltip ?? '', column.filterMultiselect ?? false].join('\0');
     }
 
 
@@ -382,6 +385,13 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                             filter.template.suffix = 'clear';
                         } else {
                             filter.template.asDropdown = true;
+                            if (column.filterMultiselect) {
+                                filter.template.asMultiselect = true;
+                                filter.template.multiSelectCallback = (value: string) => {
+                                    this.dataSource.setFilter(path, value);
+                                    this.dataSource.applyFilters();
+                                };
+                            }
                         }
                     }
                 } else {

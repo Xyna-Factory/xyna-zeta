@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, HostBinding, Input, OnInit } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, HostBinding, Input, OnInit, inject } from '@angular/core';
 
 import { I18nService } from '@zeta/i18n';
 
@@ -31,6 +31,9 @@ import { MatIcon } from '@angular/material/icon';
     imports: [MatIcon]
 })
 export class XcIconComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
+    protected elementRef = inject(ElementRef);
+    protected readonly i18n = inject(I18nService);
+
 
     private _reverseDirection = false;
     private _iconMaterial = false;
@@ -106,11 +109,6 @@ export class XcIconComponent extends XcThemeableComponent implements OnInit, Aft
 
     get iconClass(): string {
         return ['icon', this.iconStyle, this.iconName].join('-');
-    }
-
-
-    constructor(protected elementRef: ElementRef, protected readonly i18n: I18nService) {
-        super();
     }
 
 

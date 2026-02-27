@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable, LOCALE_ID, Provider } from '@angular/core';
+import { Injectable, LOCALE_ID, Provider, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -32,7 +32,7 @@ export class LocaleService {
     private readonly languageSubject = new BehaviorSubject<string>(LocaleService.EN_US);
 
 
-    constructor(route: ActivatedRoute) {
+    constructor() {
 
         if (navigator.language) {
             // TODO extend for multiple languages

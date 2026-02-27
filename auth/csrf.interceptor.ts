@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { AuthEventService } from './auth-event.service';
@@ -24,9 +24,8 @@ import { AuthEventService } from './auth-event.service';
 
 @Injectable()
 export class CsrfInterceptor implements HttpInterceptor {
+    readonly auth = inject(AuthEventService);
 
-    constructor(readonly auth: AuthEventService) {
-    }
 
     /**
      * Write a CSRF token into each HTTP request header

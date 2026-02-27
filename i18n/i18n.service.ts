@@ -86,6 +86,8 @@ export enum I18N_TYPES {
 
 @Injectable({ providedIn: 'root' })
 export class I18nService {
+    private readonly injector = inject(Injector);
+
 
     /** translation map: language -> (key -> value) */
     private readonly _translations = new Map<string, Map<string, I18nTranslation>>();
@@ -124,7 +126,9 @@ export class I18nService {
     };
 
 
-    constructor(private readonly injector: Injector) {
+    constructor() {
+        const injector = this.injector;
+
         const localeService = injector.get(LocaleService);
         localeService.languageChange.subscribe(lang => this.language = lang);
     }

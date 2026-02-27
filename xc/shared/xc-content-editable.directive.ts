@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostBinding, HostListener, inject, Input, Output } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 
@@ -25,6 +25,8 @@ export type XcContentEditableMode = 'none' | 'mousedown' | 'dblclick';
 
 @Directive({ selector: '[xc-content-editable]' })
 export class XcContentEditableDirective {
+    private readonly elementRef = inject(ElementRef<HTMLElement>);
+
     private static readonly PLAINTEXT_ONLY = 'plaintext-only';
     private static contentEditableValue: string;
 
@@ -53,10 +55,6 @@ export class XcContentEditableDirective {
 
     @Output('xc-content-editable-textChange')
     readonly textChange = new EventEmitter<string>();
-
-
-    constructor(private readonly elementRef: ElementRef) {
-    }
 
 
     @Input('xc-content-editable')

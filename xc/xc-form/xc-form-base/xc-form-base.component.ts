@@ -36,6 +36,9 @@ export enum FloatStyle {
 
 @Component({ template: '' })
 export class XcFormComponent implements AfterContentInit, OnDestroy {
+    protected readonly element = inject<ElementRef<HTMLElement>>(ElementRef);
+    protected readonly i18n = inject(I18nService);
+
 
     protected _compact = false;
     protected _semiCompact = false;
@@ -105,9 +108,6 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
     }
 
     protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
-
-    constructor(protected readonly element: ElementRef<HTMLElement>, protected readonly i18n: I18nService) {
-    }
 
 
     ngOnDestroy(): void {
@@ -279,11 +279,11 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     @Input('xc-form-field-tab-index')
     tabIndex?: number = 0;
 
-    constructor(element: ElementRef<HTMLElement>, i18n: I18nService) {
-        super(element, i18n);
+    constructor() {
+        super();
 
-        i18n.setTranslations(LocaleService.EN_US, xcFormTranslations_enUS);
-        i18n.setTranslations(LocaleService.DE_DE, xcFormTranslations_deDE);
+        this.i18n.setTranslations(LocaleService.EN_US, xcFormTranslations_enUS);
+        this.i18n.setTranslations(LocaleService.DE_DE, xcFormTranslations_deDE);
     }
 
 
