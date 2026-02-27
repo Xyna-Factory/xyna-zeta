@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -347,7 +348,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getColumnID(column: XcTableColumn): string {
-        return [column.path, column.name, column.disableSort ?? false, column.disableFilter ?? false, column.filterTooltip ?? ''].join('\0');
+        return [column.path, column.name, column.disableSort ?? false, column.disableFilter ?? false, column.filterTooltip ?? '', column.filterMultiselect ?? false].join('\0');
     }
 
 
@@ -384,6 +385,13 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                             filter.template.suffix = 'clear';
                         } else {
                             filter.template.asDropdown = true;
+                            if (column.filterMultiselect) {
+                                filter.template.asMultiselect = true;
+                                filter.template.multiSelectCallback = (value: string) => {
+                                    this.dataSource.setFilter(path, value);
+                                    this.dataSource.applyFilters();
+                                };
+                            }
                         }
                     }
                 } else {

@@ -1,49 +1,107 @@
 <mat-form-field [floatLabel]="floatLabel" hideRequiredMarker>
   <mat-label>{{label}}</mat-label>
-  <input matInput autocomplete="off" [type]="type" [placeholder]="placeholder" [formControl]="formControl"
-    [matAutocomplete]="auto" (mousedown)="mousedown($event)" (focus)="onfocus($event)" (blur)="onblur($event)"
-    [readonly]="readonly" [attr.aria-label]="ariaLabel" [tabIndex]="(readonly || disabled) ? -1 : tabIndex"
-    [required]="required">
-  <!-- <ng-container *ngIf="readonly || disabled">
-    <input
-      [type]="type"
-      [value]="stringValue"
-      [attr.tabIndex]="readonly ? 0 : -1"
-      [attr.aria-label]="ariaLabel"
-      (focus)="focus.emit($event)"
-      (blur)="blur.emit($event)"
-      [readonly]="readonly"
-      [disabled]="disabled"
-      class="non-editable-input"
-      >
-    </ng-container> -->
-  <!-- screen reader (like JAWS) read fields, which are attributed with 'aria-live', aloud when their value changes -->
-  <!-- this hidden-field is a fall-back to insure that screenreader read the currently active (!= selected) field aloud -->
-  <div class="hidden-field" aria-live="polite" role="none">{{activeOption ? activeOption.name : ''}}</div>
-  <mat-autocomplete class="zeta-scrollbar" #auto="matAutocomplete" (optionSelected)="optionSelected($event.option)"
-    [displayWith]="optionName" (opened)="openedAutocomplete()" (closed)="closedAutocomplete()">
-    @for (option of filteredOptions | async; let i = $index; track i) {
-    <mat-option tabindex="0" [value]="option" [disabled]="option.disabled || readonly"
-      [xc-tooltip]="option.showTooltip ? option.name : ''"
-      [xc-tooltip-position]="['bottom-right', 'bottom-left', 'top-right', 'top-left']">
-      @if (option.icon) {
-      <xc-icon [xc-icon-name]="option.icon" xc-icon-size="small">{{option.name}}</xc-icon>
-      } @else {
-      {{option.name}}
+
+  @if (multiSelect) {
+    <!-- multiselect mode: display input + hidden mat-select -->
+    <input matInput
+      #multiSelectInput
+      [placeholder]="placeholder"
+      [value]="getMultiSelectedNames()"
+      readonly
+      (click)="openMultiSelectPanel($event)"
+      (keydown)="onMultiSelectKeydown($event)"
+      [attr.aria-label]="ariaLabel || label"
+      [attr.aria-expanded]="multiSelectDropdown?.panelOpen || false"
+      [attr.aria-haspopup]="'listbox'"
+      role="combobox"
+      [tabIndex]="(readonly || disabled) ? -1 : 0"
+      class="multiselect-display-input">
+
+    <!-- screen reader announcements -->
+    <div class="hidden-field" aria-live="polite" role="status">
+      {{multiSelectA11yAnnouncement}}
+    </div>
+
+    <mat-select #multiSelectDropdown
+      [formControl]="multiSelectControl"
+      multiple
+      [tabIndex]="-1"
+      (openedChange)="onMultiSelectOpenedChange($event)"
+      (selectionChange)="onMultiSelectSelectionChange($event)"
+      panelClass="multiselect-panel"
+      class="hidden-select">
+      @for (option of filteredMultiSelectOptions; track option.value) {
+        <mat-option [value]="option.value"
+          [attr.aria-label]="getMultiSelectOptionAriaLabel(option)">
+          {{ option.name }}
+        </mat-option>
       }
-    </mat-option>
-    }
-  </mat-autocomplete>
+      <!-- action buttons in mat-select-footer -->
+      <div mat-select-footer class="multiselect-actions">
+        <button type="button" class="multiselect-btn" tabindex="-1"
+                (click)="$event.stopPropagation(); cancelMultiSelect()">
+          {{ 'zeta.xc-form.autocomplete.cancel' | xcI18n }}
+        </button>
+        <button type="button" class="multiselect-btn" tabindex="-1"
+                (click)="$event.stopPropagation(); applyMultiSelect()">
+          {{ 'zeta.xc-form.autocomplete.apply' | xcI18n }}
+        </button>
+      </div>
+    </mat-select>
+  } @else {
+    <!-- single-select mode: standard autocomplete -->
+    <input matInput autocomplete="off"
+      [type]="type"
+      [placeholder]="placeholder"
+      [formControl]="formControl"
+      [matAutocomplete]="auto"
+      (mousedown)="mousedown($event)"
+      (focus)="onfocus($event)"
+      (blur)="onblur($event)"
+      [readonly]="readonly"
+      [attr.aria-label]="ariaLabel"
+      [tabIndex]="(readonly || disabled) ? -1 : tabIndex"
+      [required]="required">
+
+    <!-- screen reader support -->
+    <div class="hidden-field" aria-live="polite" role="none">
+      {{activeOption ? activeOption.name : ''}}
+    </div>
+
+    <mat-autocomplete class="zeta-scrollbar" #auto="matAutocomplete"
+      (optionSelected)="optionSelected($event.option)"
+      [displayWith]="optionName"
+      (opened)="openedAutocomplete()"
+      (closed)="closedAutocomplete()">
+      @for (option of filteredOptions | async; let i = $index; track i) {
+        <mat-option tabindex="0"
+          [value]="option"
+          [disabled]="option.disabled || readonly"
+          [xc-tooltip]="option.showTooltip ? option.name : ''"
+          [xc-tooltip-position]="['bottom-right', 'bottom-left', 'top-right', 'top-left']">
+          @if (option.icon) {
+            <xc-icon [xc-icon-name]="option.icon" xc-icon-size="small">{{option.name}}</xc-icon>
+          } @else {
+            {{option.name}}
+          }
+        </mat-option>
+      }
+    </mat-autocomplete>
+  }
 
   @if (errorVisible) {
-  <mat-error align="end">{{errorContent}}</mat-error>
+    <mat-error align="end">{{errorContent}}</mat-error>
   }
 
   @if (suffixVisible && !readonly) {
-  <button type="button" mat-icon-button matSuffix (mousedown)="suffixMouseDown($event)" (click)="suffixClick($event)"
-    [tabIndex]="(readonly || disabled) ? -1 : tabIndexSuffix" [attr.aria-label]="iconTooltip || suffixContent"
-    xc-tooltip="{{iconTooltip || (suffixContent | xcI18n)}}" [disabled]="readonly || disabled">
-    <mat-icon>{{suffixContent}}</mat-icon>
-  </button>
+    <button type="button" mat-icon-button matSuffix
+      (mousedown)="suffixMouseDown($event)"
+      (click)="suffixClick($event)"
+      [tabIndex]="(readonly || disabled) ? -1 : tabIndexSuffix"
+      [attr.aria-label]="iconTooltip || suffixContent"
+      xc-tooltip="{{iconTooltip || (suffixContent | xcI18n)}}"
+      [disabled]="readonly || disabled">
+      <mat-icon>{{suffixContent}}</mat-icon>
+    </button>
   }
 </mat-form-field>

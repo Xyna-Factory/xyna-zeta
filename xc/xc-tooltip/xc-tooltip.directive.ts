@@ -141,7 +141,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     @Input('xc-tooltip-controller')
     controller: XcTooltipController = {
-        autoDelegate: true
+        autoDelegate: false
     };
 
 
