@@ -1,3 +1,4 @@
+import { AsyncPipe, NgStyle } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -22,6 +23,8 @@ import { first } from 'rxjs/operators';
 
 import { coerceBoolean } from '../../../../base';
 import { I18nService } from '../../../../i18n';
+import { XcIconButtonComponent } from '../../../xc-button/xc-icon-button.component';
+import { XcTooltipDirective } from '../../../xc-tooltip/xc-tooltip.directive';
 import { XcStructureTreeNode } from '../../xc-readonly-structure-tree-data-source';
 import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.component';
 
@@ -31,7 +34,7 @@ import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.compone
     templateUrl: './xc-tree-item.component.html',
     styleUrls: ['./xc-tree-item.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [NgStyle, XcIconButtonComponent, XcTooltipDirective, AsyncPipe]
 })
 export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterViewInit, OnDestroy {
 

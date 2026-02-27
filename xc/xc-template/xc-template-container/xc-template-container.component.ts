@@ -22,13 +22,16 @@ import { Observable, Subscription } from 'rxjs';
 import { XcDynamicComponent } from '../../shared/xc-dynamic.component';
 import { XC_COMPONENT_DATA, XcTemplate } from '../xc-template';
 import { XoTemplateDefinedBase } from './template-container-base.model';
+import { XcPanelComponent } from '../../xc-panel/xc-panel.component';
+import { XcTemplateComponent } from '../xc-template.component';
+import { AsyncPipe } from '@angular/common';
 
 
 @Component({
     selector: 'xc-template-container',
     templateUrl: './xc-template-container.component.html',
     styleUrls: ['./xc-template-container.component.scss'],
-    standalone: false
+    imports: [XcPanelComponent, XcTemplateComponent, AsyncPipe]
 })
 export class XcTemplateContainerComponent extends XcDynamicComponent<XoTemplateDefinedBase> implements OnDestroy {
 

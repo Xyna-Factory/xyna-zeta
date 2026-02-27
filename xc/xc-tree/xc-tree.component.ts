@@ -27,6 +27,12 @@ import { coerceBoolean } from '../../base';
 import { xcTreeTranslations_deDE } from './locale/xc-translations.de-DE';
 import { xcTreeTranslations_enUS } from './locale/xc-translations.en-US';
 import { XcTreeDataSource, XcTreeNode } from './xc-tree-data-source';
+import { MatTree, MatTreeNodeDef, MatNestedTreeNode, MatTreeNodeToggle, MatTreeNodeOutlet } from '@angular/material/tree';
+import { I18nModule } from '../../i18n/i18n.module';
+import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
+import { NgClass } from '@angular/common';
+import { XcTemplateComponent } from '../xc-template/xc-template.component';
 
 
 export interface XcTreeObserver {
@@ -67,7 +73,7 @@ export interface XcTreeObserver {
     templateUrl: './xc-tree.component.html',
     styleUrls: ['./xc-tree.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [MatTree, I18nModule, MatTreeNodeDef, MatNestedTreeNode, XcIconButtonComponent, MatTreeNodeToggle, XcTooltipDirective, NgClass, XcTemplateComponent, MatTreeNodeOutlet]
 })
 export class XcTreeComponent implements OnDestroy {
 

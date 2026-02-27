@@ -15,20 +15,22 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectorRef, Component, inject, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, forwardRef, inject, Input } from '@angular/core';
 
-import { XcBaseDefinitionComponent } from '../../shared/xc-base-definition/xc-base-definition.component';
-import { XoFormDefinition } from '../../xo/containers.model';
-import { XoBaseDefinition, XoBaseDefinitionArray } from '../../xo/base-definition.model';
-import { filter, Subscription } from 'rxjs';
 import { XoArray } from '@zeta/api';
 
+import { filter, Subscription } from 'rxjs';
+
+import { XcBaseDefinitionComponent } from '../../shared/xc-base-definition/xc-base-definition.component';
+import { XoBaseDefinition, XoBaseDefinitionArray } from '../../xo/base-definition.model';
+import { XoFormDefinition } from '../../xo/containers.model';
+import { XcDefinitionProxyComponent } from '../xc-definition-proxy/xc-definition-proxy.component';
 
 @Component({
     selector: 'xc-form-definition',
     templateUrl: './xc-form-definition.component.html',
     styleUrls: ['./xc-form-definition.component.scss'],
-    standalone: false
+    imports: [forwardRef(() => XcDefinitionProxyComponent)]
 })
 export class XcFormDefinitionComponent extends XcBaseDefinitionComponent {
 

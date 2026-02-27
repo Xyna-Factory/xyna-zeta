@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component, ContentChildren, ElementRef, HostBinding, HostListener, Input, QueryList, ViewChild } from '@angular/core';
-import { MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
+import { MatDrawerContainer, MatDrawerContent, MatDrawer } from '@angular/material/sidenav';
 
 import { coerceBoolean } from '../../base';
 import { XcMasterDetailFocusCandidateDirective } from './xc-master-detail-focuscandidate.directive';
@@ -31,7 +31,7 @@ type XcMasterDetailPosition = 'start' | 'end';
     selector: 'xc-master-detail',
     templateUrl: './xc-master-detail.component.html',
     styleUrls: ['./xc-master-detail.component.scss'],
-    standalone: false
+    imports: [MatDrawerContainer, MatDrawerContent, MatDrawer]
 })
 export class XcMasterDetailComponent {
 

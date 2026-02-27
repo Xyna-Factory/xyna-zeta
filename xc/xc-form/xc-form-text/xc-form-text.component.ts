@@ -20,13 +20,14 @@ import { AfterContentInit, Component, ElementRef, Input } from '@angular/core';
 import { I18nService } from '../../../i18n';
 import { ATTRIBUTE_VALUE } from '../../../xc/shared/xc-i18n-attributes';
 import { XcFormComponent } from '../xc-form-base/xc-form-base.component';
+import { MatLabel } from '@angular/material/form-field';
 
 
 @Component({
     selector: 'xc-form-text',
     templateUrl: './xc-form-text.component.html',
     styleUrls: ['./xc-form-text.component.scss'],
-    standalone: false
+    imports: [MatLabel]
 })
 export class XcFormTextComponent extends XcFormComponent implements AfterContentInit {
 

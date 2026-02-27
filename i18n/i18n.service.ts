@@ -83,7 +83,7 @@ export enum I18N_TYPES {
 }
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class I18nService {
 
     /** translation map: language -> (key -> value) */
@@ -192,7 +192,7 @@ export class I18nService {
                 const type = typeparts.length >= 2 ? typeparts[0] : '';
                 const path = typeparts.length >= 2 ? typeparts.slice(1).join(':') : typeparts[0];
                 const parts: string[] = path.split('.');
-                parts[parts.length - 1] = parts[parts.length -1].trim(); // trim key before translating
+                parts[parts.length - 1] = parts[parts.length - 1].trim(); // trim key before translating
                 let withType = !!type;
                 let looping = true;
                 while (!translation && looping) {

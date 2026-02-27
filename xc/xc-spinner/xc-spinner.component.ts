@@ -18,13 +18,14 @@
 import { Component } from '@angular/core';
 
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 
 @Component({
     selector: 'xc-spinner',
     templateUrl: './xc-spinner.component.html',
     styleUrls: ['./xc-spinner.component.scss'],
-    standalone: false
+    imports: [MatProgressSpinner]
 })
 export class XcSpinnerComponent extends XcThemeableComponent {
     constructor() {

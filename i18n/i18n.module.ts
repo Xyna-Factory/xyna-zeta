@@ -19,20 +19,14 @@ import { NgModule } from '@angular/core';
 
 import { XcI18nContextDirective, XcI18nTranslateDirective } from './i18n.directive';
 import { I18nPipe, XcI18nPipe } from './i18n.pipe';
-import { I18nService } from './i18n.service';
-import { LocaleService } from './locale.service';
 
 
 @NgModule({
-    declarations: [
+    imports: [
         I18nPipe,
         XcI18nPipe,
         XcI18nContextDirective,
         XcI18nTranslateDirective
-    ],
-    providers: [
-        I18nService,
-        LocaleService
     ],
     exports: [
         I18nPipe,

@@ -83,7 +83,7 @@ class StartOrderRight {
 }
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
     static readonly urlFragment = 'Authenticate';

@@ -23,10 +23,7 @@ import { coerceBoolean } from '../../base';
 export type XcContentEditableMode = 'none' | 'mousedown' | 'dblclick';
 
 
-@Directive({
-    selector: '[xc-content-editable]',
-    standalone: false
-})
+@Directive({ selector: '[xc-content-editable]' })
 export class XcContentEditableDirective {
     private static readonly PLAINTEXT_ONLY = 'plaintext-only';
     private static contentEditableValue: string;

@@ -45,10 +45,7 @@ export enum XcTooltipPosition {
 type XcPreviousTooltipPosition = 'left' | 'right' | 'above' | 'below' | 'before' | 'after';
 
 
-@Directive({
-    selector: '[xc-tooltip]',
-    standalone: false
-})
+@Directive({ selector: '[xc-tooltip]' })
 export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     private observer: MutationObserver;
@@ -643,5 +640,4 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
             default: return null;
         }
     }
-
 }

@@ -22,8 +22,7 @@ export type XcColor = 'normal' | 'invert' | 'primary' | 'accent' | 'warn' | 'bla
 
 
 @Component({
-    template: '',
-    standalone: false
+    template: ''
 })
 export abstract class XcThemeableComponent {
 

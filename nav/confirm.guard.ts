@@ -23,7 +23,7 @@ import { Observable } from 'rxjs';
 import { RouteComponent } from './route.component';
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ConfirmGuardService  {
 
     canDeactivate(component: RouteComponent, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean> {

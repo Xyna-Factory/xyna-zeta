@@ -18,7 +18,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Injector } from '@angular/core';
 
-import { XcDialogOptions } from './xc-dialog-wrapper.component';
+import { I18nModule } from '../../i18n/i18n.module';
+import { XcButtonComponent } from '../xc-button/xc-button.component';
+import { XcDialogOptions, XcDialogWrapperComponent } from './xc-dialog-wrapper.component';
 import { XcDialogComponent } from './xc-dialog.component';
 
 
@@ -36,7 +38,7 @@ export interface XcAboutDialogConfig {
 @Component({
     templateUrl: './xc-about-dialog.component.html',
     styleUrls: ['./xc-about-dialog.component.scss'],
-    standalone: false
+    imports: [XcDialogWrapperComponent, I18nModule, XcButtonComponent]
 })
 export class XcAboutDialogComponent extends XcDialogComponent<void, XcAboutDialogConfig> {
 

@@ -15,67 +15,22 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { MatMenu, MenuPositionX, MenuPositionY } from '@angular/material/menu';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import { Component, EventEmitter, forwardRef, Input, Output, ViewChild } from '@angular/core';
+import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
-import { XcItem } from '../shared/xc-item';
-
-
-export interface XcMenuItem extends XcItem {
-    children?: this[];
-    translate?: boolean;
-    click?: (item: this) => void;
-    visible?: (item: this) => boolean;
-    aside?: string;
-    separator?: 'above' | 'below';
-}
-
-
-export type XcMenuXPosition = MenuPositionX;
-export type XcMenuYPosition = MenuPositionY;
-export type XcMenuOptions = {
-    xNexttoTrigger?: boolean;
-    yNexttoTrigger?: boolean;
-    withArrow?: boolean;
-    xOffset?: number;
-    yOffset?: number;
-    xPosition?: XcMenuXPosition;
-    yPosition?: XcMenuYPosition;
-};
-
-
-export function XcMenuOptionsDefault(): XcMenuOptions {
-    return {
-        xNexttoTrigger: false,
-        yNexttoTrigger: false,
-        withArrow: false,
-        xOffset: 0,
-        yOffset: 0,
-        xPosition: 'after',
-        yPosition: 'below'
-    };
-}
-
-
-export interface XcMenu extends MatMenu, XcMenuOptions {
-    // compensate optional property difference between interfaces
-    xPosition: XcMenuXPosition;
-    yPosition: XcMenuYPosition;
-    // accessed by trigger
-    overlapTrigger: any;
-    templateRef: any;
-    close: any;
-    focusFirstItem: any;
-    resetActiveItem: any;
-}
+import { I18nModule } from '../../i18n/i18n.module';
+import { XcIconComponent } from '../xc-icon/xc-icon.component';
+import { XcMenuTriggerDirective } from './xc-menu-trigger.directive';
+import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPosition, XcMenuYPosition } from './xc-menu.types';
 
 
 @Component({
     selector: 'xc-menu',
     templateUrl: './xc-menu.component.html',
     styleUrls: ['./xc-menu.component.scss'],
-    standalone: false
+    imports: [CommonModule, MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, I18nModule, forwardRef(() => XcMenuComponent)],
 })
 export class XcMenuComponent {
 
