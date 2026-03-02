@@ -82,7 +82,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
     private _getComponentInstance(item: XcTabBarItem): XcTabComponent | null {
         return this.componentOutlets.map(outlet =>
-             
+
             (outlet['_componentRef'] as ComponentRef<XcTabComponent>).instance
         ).find(instance =>
             instance.tabBarItem === item
@@ -108,8 +108,9 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     private resetSelectionIndex() {
-         
-        this.tabGroup['_selectedIndex'] = undefined;
+        queueMicrotask(() => {
+            this.tabGroup['_selectedIndex'] = undefined;
+        });
     }
 
 
@@ -198,7 +199,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
     private selectedIndexChange(index: number) {
         // prevent selecting the busy tab and omit events not changing the index
-        if (!this.selectedBusyTab && this._focusedIndex !== index) {
+        const newItem = this.items[index];
+        if (!this.selectedBusyTab && newItem) {
             // call after-deactivate handler
             this.deactivate(this.focusedItem, this._focusedIndex);
             // change focused index
