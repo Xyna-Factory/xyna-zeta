@@ -309,7 +309,7 @@ export class I18nService {
         // Verwende functional injection (Angular 14+)
         const injector = inject(Injector);
         const platformId = inject(PLATFORM_ID);
-        
+
         if (isPlatformBrowser(platformId)) {
             // Im Browser: Verwende normalen HttpClient (mit Interceptors)
             const http = inject(HttpClient);
