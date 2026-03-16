@@ -33,14 +33,14 @@ import { XcButtonComponent } from '../../../../xc-button/xc-button.component';
 import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
 import { XcTooltipDirective } from '../../../../xc-tooltip/xc-tooltip.directive';
 import { XcTableComponent } from '../../../../xc-table/xc-table.component';
-import { I18nModule } from '../../../../../i18n/i18n.module';
+import { XcI18nPipe } from '../../../../../i18n';
 
 
 @Component({
     selector: 'xc-table-panel-definition',
     templateUrl: './xc-table-panel-definition.component.html',
     styleUrls: ['./xc-table-panel-definition.component.scss'],
-    imports: [XcFormGenericPanelComponent, XcButtonComponent, XcIconButtonComponent, XcTooltipDirective, XcTableComponent, I18nModule]
+    imports: [XcFormGenericPanelComponent, XcButtonComponent, XcIconButtonComponent, XcTooltipDirective, XcTableComponent, XcI18nPipe]
 })
 export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionComponent implements OnDestroy {
     private readonly api = inject(ApiService);

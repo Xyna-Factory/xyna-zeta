@@ -15,8 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable, LOCALE_ID, Provider, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Injectable, LOCALE_ID, Provider } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 

@@ -22,7 +22,7 @@ import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/f
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 
-import { I18nModule } from '../../../i18n/i18n.module';
+import { XcI18nContextDirective, XcI18nPipe } from '../../../i18n';
 import { XcTooltipDirective } from '../../xc-tooltip/xc-tooltip.directive';
 import { XcFormBaseComponent } from '../xc-form-base/xc-form-base.component';
 import { XcFormBaseInputComponent } from '../xc-form-base/xc-form-baseinput.component';
@@ -33,7 +33,7 @@ import { XcFormBaseInputComponent } from '../xc-form-base/xc-form-baseinput.comp
     templateUrl: './xc-form-input.component.html',
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-input.component.scss'],
     providers: [{ provide: XcFormBaseComponent, useExisting: forwardRef(() => XcFormInputComponent) }],
-    imports: [MatFormField, I18nModule, MatLabel, MatInput, ReactiveFormsModule, MatError, MatIconButton, MatSuffix, XcTooltipDirective, MatIcon]
+    imports: [MatFormField, XcI18nContextDirective, XcI18nPipe, MatLabel, MatInput, ReactiveFormsModule, MatError, MatIconButton, MatSuffix, XcTooltipDirective, MatIcon]
 })
 export class XcFormInputComponent extends XcFormBaseInputComponent {
 }

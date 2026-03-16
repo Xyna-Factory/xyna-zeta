@@ -34,7 +34,7 @@ import { A11yService } from '../../../a11y';
 import { Xo, XoObject, XoPropertyBinding } from '../../../api';
 import { coerceBoolean, Comparable, isObject, isString, isTextOverflowing, Native, NativeArray } from '../../../base';
 import { I18nService } from '../../../i18n';
-import { I18nModule } from '../../../i18n/i18n.module';
+import { XcI18nPipe } from '../../../i18n';
 import { XcBoxableDataWrapper } from '../../shared/xc-data-wrapper';
 import { XcOptionItem, XcOptionItemString, XcOptionItemValueType } from '../../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString, XcSortPredicate } from '../../shared/xc-sort';
@@ -183,7 +183,7 @@ interface XcOptionInternalAutocompleteItem extends XcOptionItem {
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-autocomplete.component.scss'],
     providers: [{ provide: XcFormBaseComponent, useExisting: forwardRef(() => XcFormAutocompleteComponent) }],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, MatAutocompleteTrigger, MatAutocomplete, MatOption, XcTooltipDirective, XcIconComponent, MatError, MatIconButton, MatSuffix, MatIcon, AsyncPipe, I18nModule, MatSelect]
+    imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, MatAutocompleteTrigger, MatAutocomplete, MatOption, XcTooltipDirective, XcIconComponent, MatError, MatIconButton, MatSuffix, MatIcon, AsyncPipe, XcI18nPipe, MatSelect]
 })
 export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implements AfterViewInit, OnDestroy {
     private readonly cdRef = inject(ChangeDetectorRef);

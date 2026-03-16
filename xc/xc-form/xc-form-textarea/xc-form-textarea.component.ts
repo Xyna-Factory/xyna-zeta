@@ -34,6 +34,7 @@ import { CdkTextareaAutosize } from '@angular/cdk/text-field';
     imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, CdkTextareaAutosize, MatError]
 })
 export class XcFormTextareaComponent extends XcFormBaseComponent {
+    // @ViewChild(CdkTextareaAutosize) autosize: CdkTextareaAutosize;
 
     private _minLines = 5;
     private _maxLines = 5;
@@ -46,6 +47,18 @@ export class XcFormTextareaComponent extends XcFormBaseComponent {
     set lines(value: number) {
         this.minLines = value;
         this.maxLines = value;
+        // NOTE: When this textarea is inside a container controlled by *ngIf="!collapsed",
+        // the element may not exist in the DOM at the moment this setter (lines) is executed.
+        // Calling autosize.resizeToFitContent(true) at this point happens too early,
+        // because *ngIf removes the DOM node entirely while the panel is collapsed.
+        // As a result, autosize measures a 0×0 element and the textarea appears too small.
+        //
+        // The (commented out) setTimeout(...) delays the autosize call until the next
+        // JavaScript tick, after Angular has re-inserted the textarea into the DOM.
+        // Alternatives: avoid *ngIf (use [hidden] instead), or explicitly trigger
+        // resizeToFitContent() after the panel is expanded (e.g. via ngZone.onStable
+        // or collapsedChange).
+        // setTimeout(() => this.autosize.resizeToFitContent(true));
         this._textareaAutosize = true;
     }
 

@@ -17,8 +17,7 @@
  */
 import { Component, inject } from '@angular/core';
 
-import { I18nService, LocaleService } from '../../i18n';
-import { I18nModule } from '../../i18n/i18n.module';
+import { I18nService, LocaleService, XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n';
 import { XcSortDirection } from '../shared/xc-sort';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
 import { XcDialogWrapperComponent } from '../xc-dialog/xc-dialog-wrapper.component';
@@ -39,7 +38,7 @@ export interface XcStatusBarDialogData {
 @Component({
     templateUrl: './xc-status-bar-dialog.component.html',
     styleUrls: ['./xc-status-bar-dialog.component.scss'],
-    imports: [XcDialogWrapperComponent, I18nModule, XcButtonComponent, XcIconComponent, XcTableComponent]
+    imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcButtonComponent, XcIconComponent, XcTableComponent]
 })
 export class XcStatusBarDialogComponent extends XcDialogComponent<boolean, XcStatusBarDialogData> {
     readonly i18n = inject(I18nService);

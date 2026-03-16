@@ -17,7 +17,7 @@
  */
 import { Component } from '@angular/core';
 
-import { I18nModule } from '../../i18n/i18n.module';
+import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
 import { XcDialogWrapperComponent } from './xc-dialog-wrapper.component';
 import { XcMessageDialogComponent } from './xc-message-dialog.component';
@@ -26,7 +26,7 @@ import { XcMessageDialogComponent } from './xc-message-dialog.component';
 @Component({
     templateUrl: './xc-confirm-dialog.component.html',
     styleUrls: ['./xc-confirm-dialog.component.scss'],
-    imports: [XcDialogWrapperComponent, I18nModule, XcButtonComponent]
+    imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcButtonComponent]
 })
 export class XcConfirmDialogComponent extends XcMessageDialogComponent<boolean, void> {
 }
