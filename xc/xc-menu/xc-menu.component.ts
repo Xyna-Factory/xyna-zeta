@@ -20,7 +20,7 @@ import { Component, EventEmitter, forwardRef, Input, Output, ViewChild } from '@
 import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
-import { I18nModule } from '../../i18n/i18n.module';
+import { XcI18nPipe } from '../../i18n';
 import { XcIconComponent } from '../xc-icon/xc-icon.component';
 import { XcMenuTriggerDirective } from './xc-menu-trigger.directive';
 import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPosition, XcMenuYPosition } from './xc-menu.types';
@@ -30,7 +30,7 @@ import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPositio
     selector: 'xc-menu',
     templateUrl: './xc-menu.component.html',
     styleUrls: ['./xc-menu.component.scss'],
-    imports: [CommonModule, MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, I18nModule, forwardRef(() => XcMenuComponent)],
+    imports: [CommonModule, MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, XcI18nPipe, forwardRef(() => XcMenuComponent)],
 })
 export class XcMenuComponent {
 

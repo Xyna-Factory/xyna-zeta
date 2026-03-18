@@ -16,7 +16,6 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 export * from './i18n.directive';
-export * from './i18n.module';
 export * from './i18n.pipe';
 export * from './i18n.service';
 export * from './locale.service';

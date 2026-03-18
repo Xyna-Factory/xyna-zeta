@@ -23,11 +23,10 @@ import { environment } from '@environments/environment';
 import { SelectableLanguage } from '../../api';
 import { Comparable } from '../../base';
 import { I18nService } from '../../i18n/i18n.service';
-import { LocaleService } from '../../i18n/locale.service';
 import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { xcLanguageSelectorTranslations_deDE } from './locale/xc-language-selector-translations.de-DE';
 import { xcLanguageSelectorTranslations_enUS } from './locale/xc-language-selector-translations.en-US';
-import { I18nModule } from '../../i18n/i18n.module';
+import { LocaleService, XcI18nTranslateDirective } from '../../i18n';
 
 
 class ComparableLanguage extends Comparable implements SelectableLanguage {
@@ -53,7 +52,7 @@ class ComparableLanguage extends Comparable implements SelectableLanguage {
     selector: 'xc-language-selector',
     templateUrl: './xc-language-selector.component.html',
     styleUrls: ['./xc-language-selector.component.scss'],
-    imports: [XcFormAutocompleteComponent, I18nModule]
+    imports: [XcFormAutocompleteComponent, XcI18nTranslateDirective]
 })
 export class XcLanguageSelectorComponent {
     private readonly i18n = inject(I18nService);

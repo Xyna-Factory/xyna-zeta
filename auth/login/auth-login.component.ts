@@ -71,7 +71,7 @@ export class AuthLoginComponent {
     protected readonly dialogService = inject(XcDialogService);
     protected readonly i18n = inject(I18nService);
 
-
+    
     readonly smartCardTabItem: LoginTabItem = {
         closable: false,
         component: SmartCardLoginTabComponent,

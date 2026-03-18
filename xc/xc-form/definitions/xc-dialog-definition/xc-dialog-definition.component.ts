@@ -26,7 +26,7 @@ import { XcDialogService } from '@zeta/xc/xc-dialog/xc-dialog.service';
 
 import { filter, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
-import { I18nModule } from '../../../../i18n/i18n.module';
+import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../../../i18n';
 import { XcButtonComponent } from '../../../xc-button/xc-button.component';
 import { XcDialogWrapperComponent } from '../../../xc-dialog/xc-dialog-wrapper.component';
 import { XcFormDirective } from '../../xc-form-base/xc-form.directive';
@@ -38,7 +38,7 @@ import { XoStartOrderButtonDefinition } from '../xo/item-definition.model';
 @Component({
     templateUrl: './xc-dialog-definition.component.html',
     styleUrls: ['./xc-dialog-definition.component.scss'],
-    imports: [XcDialogWrapperComponent, XcFormDirective, I18nModule, XcDefinitionProxyComponent, XcButtonComponent]
+    imports: [XcDialogWrapperComponent, XcFormDirective, XcI18nContextDirective, XcI18nTranslateDirective, XcDefinitionProxyComponent, XcButtonComponent]
 })
 export class XcDialogDefinitionComponent extends XcDialogComponent<Xo[], XoDefinitionBundle> implements XoDefinitionObserver {
     readonly injector: Injector;

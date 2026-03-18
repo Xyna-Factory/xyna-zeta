@@ -24,8 +24,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 
 import { coerceBoolean } from '../../base';
-import { I18nService, LocaleService } from '../../i18n';
-import { I18nModule } from '../../i18n/i18n.module';
+import { I18nService, LocaleService, XcI18nPipe } from '../../i18n';
 import { XcThemeableComponent } from '../../xc/shared/xc-themeable.component';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcIconComponent } from '../xc-icon/xc-icon.component';
@@ -40,7 +39,7 @@ import { XC_TAB_DATA, XcTabBarInterface, XcTabBarItem, XcTabComponent, XcTabRef 
     selector: 'xc-tab-bar',
     templateUrl: './xc-tab-bar.component.html',
     styleUrls: ['./xc-tab-bar.component.scss'],
-    imports: [MatTabGroup, MatTab, MatTabLabel, XcIconComponent, XcTooltipDirective, XcIconButtonComponent, NgComponentOutlet, XcSpinnerComponent, I18nModule]
+    imports: [MatTabGroup, MatTab, MatTabLabel, XcIconComponent, XcTooltipDirective, XcIconButtonComponent, NgComponentOutlet, XcSpinnerComponent, XcI18nPipe]
 })
 export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarInterface, AfterViewInit {
     private readonly injector = inject(Injector);

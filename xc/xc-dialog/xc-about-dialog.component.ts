@@ -18,7 +18,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 
-import { I18nModule } from '../../i18n/i18n.module';
+import { XcI18nContextDirective, XcI18nPipe, XcI18nTranslateDirective } from '../../i18n';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
 import { XcDialogOptions, XcDialogWrapperComponent } from './xc-dialog-wrapper.component';
 import { XcDialogComponent } from './xc-dialog.component';
@@ -38,7 +38,7 @@ export interface XcAboutDialogConfig {
 @Component({
     templateUrl: './xc-about-dialog.component.html',
     styleUrls: ['./xc-about-dialog.component.scss'],
-    imports: [XcDialogWrapperComponent, I18nModule, XcButtonComponent]
+    imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcI18nPipe, XcButtonComponent]
 })
 export class XcAboutDialogComponent extends XcDialogComponent<void, XcAboutDialogConfig> {
     protected readonly http = inject(HttpClient);

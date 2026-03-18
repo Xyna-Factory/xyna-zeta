@@ -18,7 +18,7 @@
 import { Component, inject, InjectionToken, Input } from '@angular/core';
 
 import { I18nService } from '../../i18n';
-import { I18nModule } from '../../i18n/i18n.module';
+import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n';
 import { XcDynamicComponent } from '../shared/xc-dynamic.component';
 import { XcOptionItem } from '../shared/xc-item';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
@@ -56,7 +56,7 @@ export interface XcPathBrowserTemplateData {
     selector: 'xc-path-browser',
     templateUrl: './xc-path-browser.component.html',
     styleUrls: ['./xc-path-browser.component.scss'],
-    imports: [I18nModule, XcButtonComponent, XcFormInputComponent]
+    imports: [XcI18nContextDirective, XcI18nTranslateDirective, XcButtonComponent, XcFormInputComponent]
 })
 export class XcPathBrowserComponent extends XcDynamicComponent<XcPathBrowserTemplateData> {
     protected readonly i18n = inject(I18nService);
