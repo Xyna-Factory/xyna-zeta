@@ -21,7 +21,7 @@ import { AfterViewInit, Component, ComponentRef, EventEmitter, inject, Injector,
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService, XcI18nPipe } from '../../i18n';
@@ -278,9 +278,13 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     close(item: XcTabBarItem, result?: any, selectItem?: XcTabBarItem): Observable<boolean> {
-        const observable = this._getComponentInstance(item)?.beforeDismiss().pipe(filter(success => success));
+        const observable = this.getComponentInstance(item)?.pipe(
+            switchMap(comp => comp.beforeDismiss()),
+            filter(success => success)
+        );
         if (observable) {
-            return observable.pipe(tap(() => {
+            return observable.pipe(
+                tap(() => {
                 const tabInjector = this._componentInjectors.get(item);
 
                 // check if tab is still open
