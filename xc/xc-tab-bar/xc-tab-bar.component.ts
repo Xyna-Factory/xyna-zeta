@@ -17,11 +17,11 @@
  */
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { AfterViewInit, Component, ComponentRef, EventEmitter, inject, Injector, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, EventEmitter, inject, Injector, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
-import { Observable, of, Subject } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService, XcI18nPipe } from '../../i18n';
@@ -41,7 +41,7 @@ import { XC_TAB_DATA, XcTabBarInterface, XcTabBarItem, XcTabComponent, XcTabRef 
     styleUrls: ['./xc-tab-bar.component.scss'],
     imports: [MatTabGroup, MatTab, MatTabLabel, XcIconComponent, XcTooltipDirective, XcIconButtonComponent, NgComponentOutlet, XcSpinnerComponent, XcI18nPipe]
 })
-export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarInterface, AfterViewInit {
+export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarInterface, AfterViewInit, OnDestroy {
     private readonly injector = inject(Injector);
     protected readonly i18n = inject(I18nService);
 
@@ -53,7 +53,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     private readonly _componentInitialized = new Set<XcTabBarItem>();
     private _focusedIndex = -1;
     private _showTooltips = false;
-    private _busy = false;
+    private _busySubject = new BehaviorSubject<boolean>(false);
+    private subscription: Subscription;
 
 
     @Input('xc-tab-bar-items')
@@ -68,6 +69,12 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         this.i18n.setTranslations(LocaleService.DE_DE, xcTabBarTranslations_deDE);
         this.i18n.setTranslations(LocaleService.EN_US, xcTabBarTranslations_enUS);
         this.color = 'primary';
+    }
+
+
+    ngOnDestroy(): void {
+        this.subscription?.unsubscribe();
+        this._busySubject.complete();
     }
 
 
@@ -106,22 +113,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     }
 
 
-    private resetSelectionIndex() {
-        queueMicrotask(() => {
-            this.tabGroup['_selectedIndex'] = undefined;
-        });
-    }
-
-
     private get focusedItem(): XcTabBarItem {
         return this.items[this._focusedIndex];
-    }
-
-
-    private get selectedBusyTab(): boolean {
-        const tabs = this.tabGroup._tabs ? this.tabGroup._tabs.toArray() : [];
-        const selected = tabs[this.tabGroup.selectedIndex];
-        return !!selected && selected.ariaLabelledby === 'busy';
     }
 
 
@@ -135,22 +128,12 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     @Input('xc-tab-bar-selection')
     set selection(value: XcTabBarItem) {
         const idx = this.items.indexOf(value);
-        // reset selected index, if the busy tab got selected
-        if (this.selectedBusyTab) {
-            this.resetSelectionIndex();
-        }
         // select tab idx
         if (idx >= 0) {
             const uninitialized = !this._componentInitialized.has(value);
             this.tabGroup.selectedIndex = idx;
             if (uninitialized) {
                 this.activate(value, idx);
-            }
-            // quirk fix - selectedIndexChange doesn't trigger if the current index is undefined
-            if (this.tabGroup.selectedIndex === undefined) {
-                setTimeout(() => {
-                    this.selectedIndexChange(idx);
-                }, 0);
             }
         }
     }
@@ -174,12 +157,12 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
     @Input()
     set busy(value: boolean) {
-        this._busy = coerceBoolean(value);
+        this._busySubject.next(coerceBoolean(value));
     }
 
 
     get busy(): boolean {
-        return this._busy;
+        return this._busySubject.value;
     }
 
 
@@ -188,26 +171,30 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         return this._tabGroup;
     }
 
+    private get busyObservable(): Observable<boolean> {
+        return this._busySubject.asObservable().pipe(distinctUntilChanged());
+    }
+
 
     set tabGroup(value: MatTabGroup) {
         this._tabGroup = value;
-        this.resetSelectionIndex();
-        this.tabGroup.selectedIndexChange.subscribe((index: number) => this.selectedIndexChange(index));
+        this.subscription?.unsubscribe();
+        this.subscription = combineLatest([this.tabGroup.selectedIndexChange, this.busyObservable]).pipe(
+            filter(([index, busy]) => !busy),
+            map(([index, busy]) => index),
+            distinctUntilChanged()
+            ).subscribe(index => this.selectedIndexChange(index));
     }
 
 
     private selectedIndexChange(index: number) {
-        // prevent selecting the busy tab and omit events not changing the index
-        const newItem = this.items[index];
-        if (!this.selectedBusyTab && newItem) {
-            // call after-deactivate handler
-            this.deactivate(this.focusedItem, this._focusedIndex);
-            // change focused index
-            this._focusedIndex = index;
-            this.selectionChange.emit(this.focusedItem);
-            // call after-activate handler
-            this.activate(this.focusedItem, this._focusedIndex);
-        }
+        // call after-deactivate handler
+        this.deactivate(this.focusedItem, this._focusedIndex);
+        // change focused index
+        this._focusedIndex = index;
+        this.selectionChange.emit(this.focusedItem);
+        // call after-activate handler
+        this.activate(this.focusedItem, this._focusedIndex);
     }
 
 
@@ -291,9 +278,13 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     close(item: XcTabBarItem, result?: any, selectItem?: XcTabBarItem): Observable<boolean> {
-        const observable = this._getComponentInstance(item)?.beforeDismiss().pipe(filter(success => success));
+        const observable = this.getComponentInstance(item)?.pipe(
+            switchMap(comp => comp.beforeDismiss()),
+            filter(success => success)
+        );
         if (observable) {
-            return observable.pipe(tap(() => {
+            return observable.pipe(
+                tap(() => {
                 const tabInjector = this._componentInjectors.get(item);
 
                 // check if tab is still open
@@ -318,7 +309,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
                     if (selectIdx < 0) {
                         selectIdx = closedIdx < selectedIdx
                             ? selectedIdx - 1
-                            : selectedIdx;
+                            : Math.min(selectedIdx, this.items.length - 1);
                     }
                     this.tabGroup.selectedIndex = selectIdx;
 
@@ -328,7 +319,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
                     }
 
                     // tab index does not change (ie. closed tab got exchanged by another)
-                    if (selectedIdx === selectIdx) {
+                    if (selectedIdx === closedIdx && selectedIdx === selectIdx) {
                         // call after-deactivate handler on closed item
                         this.deactivate(item, selectedIdx);
                         // manually emit event, since the tab bar won't see any change
