@@ -29,6 +29,7 @@ export interface XcTreeNode {
     children?: BehaviorSubject<this[]>;
     value?: XcTemplate[] | any;
     readonly?: boolean;
+    disabled?: boolean;
     tooltip?: string;
     fixed?: boolean;
     limit?: number;
