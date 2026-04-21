@@ -1,7 +1,7 @@
 {
   "name": "zeta",
   "title": "Zeta",
-  "version": "21.0.5",
+  "version": "21.0.6",
   "private": true,
   "type": "module",
   "engines": {
