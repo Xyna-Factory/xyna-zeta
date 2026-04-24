@@ -61,6 +61,8 @@
         [class.shrink]="column.shrink"
         [class.break]="column.break"
         [class.pre]="column.pre"
+        [class.align-right]="column.align === 'right'"
+        [class.align-center]="column.align === 'center'"
         [attr.aria-label]="getCellData(row, column.path) ? (i18n.translate(column.name)) : null"
         >
         <ng-container *xc-var="getCellData(row, column.path); let cellData">
