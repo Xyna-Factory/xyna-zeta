@@ -61,8 +61,8 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
     private readonly _contentChangeSubject = new Subject<void>();
 
 
-    constructor(apiService: ApiService, i18n: I18nService, rtc: RuntimeContext, describers: XoDescriber[], container = new XoArray(), translateLabels: boolean = true) {
-        super(apiService, i18n, rtc, describers, container, translateLabels);
+    constructor(apiService: ApiService, i18n: I18nService, rtc: RuntimeContext, describers: XoDescriber[], container?: XoArray, translateLabels: boolean = true) {
+        super(apiService, i18n, rtc, describers, container ? container : new XoArray(), translateLabels);
     }
 
 
@@ -137,7 +137,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 : null;
         };
         const setter = (value: ComparableDescriber) => {
-            const head = this.container?.resolveHead(field.path);
+            const head = this.container.resolveHead(field.path);
             const xo = head.value as Xo;
             const id = head.tail;
             if (value) {
@@ -250,7 +250,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                     : null;
         };
         const setter = (value: ComparableDescriber) => {
-            const head = this.container?.resolveHead(field.path);
+            const head = this.container.resolveHead(field.path);
             const xo = head.value as Xo;
             const id = head.tail;
             if (value) {
@@ -384,7 +384,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
 
     protected getTemplates(field: XoStructureField, node: XcTreeNode): XcTemplate[] {
         // set node's readonly flag
-        const resolved = this.container?.resolveHead(field.path);
+        const resolved = this.container.resolveHead(field.path);
         node.readonly = resolved.value instanceof XoObject && resolved.value.readonlyProperties.has(resolved.tail);
         // set tooltip
         node.tooltip = field.docu;
