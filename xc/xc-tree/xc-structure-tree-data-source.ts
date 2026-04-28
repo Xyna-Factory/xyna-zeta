@@ -15,9 +15,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { I18nService } from '@zeta/i18n';
-
 import { Observable, Subject } from 'rxjs';
+
+import { I18nService } from '@zeta/i18n';
 
 import { ApiService, FullQualifiedName, RuntimeContext, Xo, XoArray, XoDescriber, XoDescriberCache, XoObject, XoStructureArray, XoStructureField, XoStructureObject, XoStructurePrimitive, XoStructureType } from '../../api';
 import { Comparable, defineAccessorProperty } from '../../base/base';
@@ -61,8 +61,8 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
     private readonly _contentChangeSubject = new Subject<void>();
 
 
-    constructor(apiService: ApiService, i18n: I18nService, rtc: RuntimeContext, describers: XoDescriber[], container = new XoArray()) {
-        super(apiService, i18n, rtc, describers, container);
+    constructor(apiService: ApiService, i18n: I18nService, rtc: RuntimeContext, describers: XoDescriber[], container = new XoArray(), translateLabels: boolean = true) {
+        super(apiService, i18n, rtc, describers, container, translateLabels);
     }
 
 
@@ -137,7 +137,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 : null;
         };
         const setter = (value: ComparableDescriber) => {
-            const head = this.container.resolveHead(field.path);
+            const head = this.container?.resolveHead(field.path);
             const xo = head.value as Xo;
             const id = head.tail;
             if (value) {
@@ -250,7 +250,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                     : null;
         };
         const setter = (value: ComparableDescriber) => {
-            const head = this.container.resolveHead(field.path);
+            const head = this.container?.resolveHead(field.path);
             const xo = head.value as Xo;
             const id = head.tail;
             if (value) {
@@ -384,7 +384,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
 
     protected getTemplates(field: XoStructureField, node: XcTreeNode): XcTemplate[] {
         // set node's readonly flag
-        const resolved = this.container.resolveHead(field.path);
+        const resolved = this.container?.resolveHead(field.path);
         node.readonly = resolved.value instanceof XoObject && resolved.value.readonlyProperties.has(resolved.tail);
         // set tooltip
         node.tooltip = field.docu;

@@ -15,23 +15,22 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { NestedTreeControl } from '@angular/cdk/tree';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, NgZone, OnDestroy, inject } from '@angular/core';
-
-
 import { Observable, of, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, inject, Input, NgZone, OnDestroy } from '@angular/core';
+import { MatNestedTreeNode, MatTree, MatTreeNodeDef, MatTreeNodeOutlet, MatTreeNodeToggle } from '@angular/material/tree';
+
 import { coerceBoolean } from '../../base';
+import { I18nService, LocaleService, XcI18nContextDirective, XcI18nPipe } from '../../i18n';
+import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
+import { XcTemplateComponent } from '../xc-template/xc-template.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 import { xcTreeTranslations_deDE } from './locale/xc-translations.de-DE';
 import { xcTreeTranslations_enUS } from './locale/xc-translations.en-US';
 import { XcTreeDataSource, XcTreeNode } from './xc-tree-data-source';
-import { MatTree, MatTreeNodeDef, MatNestedTreeNode, MatTreeNodeToggle, MatTreeNodeOutlet } from '@angular/material/tree';
-import { I18nService, LocaleService, XcI18nContextDirective, XcI18nPipe } from '../../i18n';
-import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
-import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
-import { NgClass } from '@angular/common';
-import { XcTemplateComponent } from '../xc-template/xc-template.component';
 
 
 export interface XcTreeObserver {
@@ -109,10 +108,8 @@ export class XcTreeComponent implements OnDestroy {
 
 
     constructor() {
-        const _i18n = this._i18n;
-
-        _i18n.setTranslations(LocaleService.EN_US, xcTreeTranslations_enUS);
-        _i18n.setTranslations(LocaleService.DE_DE, xcTreeTranslations_deDE);
+        this._i18n.setTranslations(LocaleService.EN_US, xcTreeTranslations_enUS);
+        this._i18n.setTranslations(LocaleService.DE_DE, xcTreeTranslations_deDE);
 
         this.zone.runOutsideAngular(() => {
             document.body.addEventListener('keydown', this.keyCatcherOnKeydown);
@@ -151,6 +148,10 @@ export class XcTreeComponent implements OnDestroy {
         }
         // use zeta's i18n service
         return this._i18n;
+    }
+
+    get translateLabels(): boolean {
+        return this.dataSource && this.dataSource.translateLabels;
     }
 
 
@@ -343,7 +344,7 @@ export class XcTreeComponent implements OnDestroy {
     getAriaPosinset(node: XcTreeNode): number {
         let pos = 1;
         if (node.parent) {
-             
+
             node.parent.children.subscribe(children => children.some((child, i) => {
                 if (child.name === node.name) {
                     pos = i + 1;
