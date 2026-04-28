@@ -15,9 +15,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { I18nService } from '@zeta/i18n';
-
 import { Observable, Subject } from 'rxjs';
+
+import { I18nService } from '@zeta/i18n';
 
 import { ApiService, FullQualifiedName, RuntimeContext, Xo, XoArray, XoDescriber, XoDescriberCache, XoObject, XoStructureArray, XoStructureField, XoStructureObject, XoStructurePrimitive, XoStructureType } from '../../api';
 import { Comparable, defineAccessorProperty } from '../../base/base';
@@ -61,8 +61,8 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
     private readonly _contentChangeSubject = new Subject<void>();
 
 
-    constructor(apiService: ApiService, i18n: I18nService, rtc: RuntimeContext, describers: XoDescriber[], container = new XoArray()) {
-        super(apiService, i18n, rtc, describers, container);
+    constructor(apiService: ApiService, i18n: I18nService, rtc: RuntimeContext, describers: XoDescriber[], container?: XoArray, translateLabels: boolean = true) {
+        super(apiService, i18n, rtc, describers, container ? container : new XoArray(), translateLabels);
     }
 
 
