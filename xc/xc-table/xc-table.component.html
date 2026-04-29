@@ -42,7 +42,7 @@
   <!-- Container template view of a table body row -->
   @for (column of columns; let i = $index; track i) {
     <ng-container [matColumnDef]="getColumnID(column)">
-      <th mat-header-cell *matHeaderCellDef attr.aria-label="{{i18n.translate(column.name)}}" scope="col">
+      <th mat-header-cell *matHeaderCellDef attr.aria-sort="{{getAriaSortForColumn(column)}}" attr.aria-label="{{i18n.translate(column.name)}}" scope="col">
         <span mat-sort-header [disabled]="column.disableSort">{{i18n.translate(column.name) || '&nbsp;'}}</span>
         <div class="filter-container">
           @if (allowFilter) {
