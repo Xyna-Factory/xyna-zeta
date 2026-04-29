@@ -36,6 +36,13 @@ import { XcTemplateComponent } from '../xc-template/xc-template.component';
 
 export interface XcTreeObserver {
     /**
+     * Make a specific node readonly.
+     * @param node Node to set readonly state for
+     * @param defaultReadonly Default readonly state
+     */
+    readonlyNode?(node: XcTreeNode, defaultReadonly: boolean): boolean;
+
+    /**
      * Make a specific node disabled.
      * Note: This doesn't work vice versa - a node that is created disabled might also miss accessors to modify it.
      * So a disabled node will stay disabled despite returning *false* here.
@@ -238,8 +245,13 @@ export class XcTreeComponent implements OnDestroy {
     }
 
 
+    isNodeReadonly(node: XcTreeNode): boolean {
+        const readonly = node.readonly && !this.readonlyMode;
+        return readonly || this.observer && this.observer.readonlyNode && this.observer.readonlyNode(node, readonly);
+    }
+
     isNodeDisabled(node: XcTreeNode): boolean {
-        const disabled = node.readonly && !this.readonlyMode;
+        const disabled = node.disabled && !this.readonlyMode;
         return disabled || this.observer && this.observer.disableNode && this.observer.disableNode(node, disabled);
     }
 

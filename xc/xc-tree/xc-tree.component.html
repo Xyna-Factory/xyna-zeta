@@ -44,7 +44,7 @@
       }
       <div class="child" [ngClass]="node.classes || []" [class.fixed]="node.fixed">
         <!-- label -->
-        <label [class.disabled]="isNodeDisabled(node)" [class.truncated]="!!node.value">
+        <label [class.disabled]="isNodeDisabled(node)" [class.readonly]="isNodeReadonly(node)" [class.truncated]="!!node.value">
           <span>{{i18n.translate(node.name)}}</span>
         </label>
 
@@ -72,6 +72,7 @@
         @for (template of node.value; let i = $index; track i) {
           <xc-template
             [xc-template-instance]="template"
+            [xc-template-readonly]="isNodeReadonly(node)"
             [xc-template-disabled]="isNodeDisabled(node)"
             [xc-template-aria-label]="getTemplateAriaLabelByNode(node)"
           ></xc-template>
