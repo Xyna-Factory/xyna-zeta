@@ -62,6 +62,9 @@ export class XoTableColumn extends XoObject {
     @XoProperty()
     filterMultiselect?: boolean;
 
+    @XoProperty()
+    valueLang?: string;
+
     get asXcTableColumn(): XcTableColumn {
         return {
             name: this.name,
@@ -72,7 +75,8 @@ export class XoTableColumn extends XoObject {
             break: this.break,
             pre: this.pre,
             filterTooltip: this.filterTooltip,
-            filterMultiselect: this.filterMultiselect
+            filterMultiselect: this.filterMultiselect,
+            valueLang: this.valueLang
         };
     }
 }
