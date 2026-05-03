@@ -56,6 +56,12 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private readonly _i18n = inject(I18nService);
 
 
+    private static actionsHeaderIdSeq = 0;
+
+    readonly actionsColumnId = '$actions';
+
+    readonly actionsColumnHeaderId = `xc-table-actions-col-${XcTableComponent.actionsHeaderIdSeq++}`;
+
     private _allowSort = false;
     private _allowFilter = false;
     private _allowSelect = false;
@@ -143,6 +149,11 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     private updateDataSourceSort() {
         if (this.matSort && this.dataSource) {
+            if (this.matSort.active === this.actionsColumnId) {
+                this.updateMatSort();
+                this.cdRef.markForCheck();
+                return;
+            }
             this.dataSource.setSortPathAndDirection(
                 this.getPathFromId(this.matSort.active),
                 XcSortDirectionFromString(this.matSort.direction)
@@ -331,8 +342,26 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
+    /** Built-in xc-table keys are on zeta `_i18n` only; `dataSource.i18n` may not define them. */
+    get actionsColumnHeaderLabel(): string {
+        const t = this._i18n.translate('xcTable.actionsColumnHeader');
+        return t?.trim() ? t : 'Actions';
+    }
+
+
+    private includeLeadingActionsColumn(): boolean {
+        return this.columns.length > 0;
+    }
+
+
+    get headerFullWidthColspan(): number {
+        return this.columns.length + (this.includeLeadingActionsColumn() ? 1 : 0);
+    }
+
+
     get columnIds(): string[] {
-        return this.columns.map(column => this.getColumnID(column));
+        const ids = this.columns.map(column => this.getColumnID(column));
+        return this.includeLeadingActionsColumn() ? [this.actionsColumnId, ...ids] : ids;
     }
 
 
