@@ -15,12 +15,12 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { Subscription } from 'rxjs';
+
 import { NgClass } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, ViewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
-
-import { Subscription } from 'rxjs';
 
 import { A11yService, ScreenreaderPriority } from '../../a11y';
 import { XoObject } from '../../api';
@@ -175,6 +175,10 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         }
         // use zeta's i18n service
         return this._i18n;
+    }
+
+    get translateLabels(): boolean {
+        return this.dataSource && this.dataSource.translateLabels;
     }
 
 

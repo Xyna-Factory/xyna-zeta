@@ -15,10 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { CollectionViewer } from '@angular/cdk/collections';
-
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
+
+import { CollectionViewer } from '@angular/cdk/collections';
 
 import { Xo, XoObject } from '../../api';
 import { Comparable } from '../../base';
@@ -136,7 +136,7 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
     stylesFunction: (row: T, path: string) => string[];
 
 
-    constructor(readonly i18n?: I18nService) {
+    constructor(readonly i18n?: I18nService, readonly translateLabels: boolean = true) {
         super(new XcSubSelectionModel<T, string>());
     }
 
