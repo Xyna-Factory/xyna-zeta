@@ -45,7 +45,7 @@ export abstract class XcTreeDataSource<T extends XcTreeNode> extends XcDataSourc
     readonlyHidden = false;
 
 
-    constructor(readonly i18n?: I18nService) {
+    constructor(readonly i18n?: I18nService, readonly translateLabels?: boolean) {
         super();
     }
 
