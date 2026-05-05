@@ -2,12 +2,13 @@
   <mat-label>{{label}}</mat-label>
 
   <input matInput autocomplete="off" [type]="type" [placeholder]="placeholder" [formControl]="formControl"
+    [errorStateMatcher]="errorStateMatcher"
     (focus)="focus.emit($event)" (blur)="blur.emit($event)" (keydown)="onkeydown($event)"
     [tabIndex]="disabled ? -1 : tabIndex" [attr.aria-label]="ariaLabel" [readonly]="readonly"
     [required]="required">
 
   @if (errorVisible) {
-  <mat-error align="end">{{errorContent}}</mat-error>
+  <mat-error align="end" aria-live="off">{{errorContent}}</mat-error>
   }
 
 

@@ -16,7 +16,8 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
-import { FormControl, ValidatorFn, Validators } from '@angular/forms';
+import { FormControl, FormGroupDirective, NgForm, ValidatorFn, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 import { Subscription } from 'rxjs';
 
@@ -31,6 +32,19 @@ export enum FloatStyle {
     never = 'never',
     auto = 'auto',
     always = 'always'
+}
+
+class XcFormErrorStateMatcher implements ErrorStateMatcher {
+
+    constructor(private readonly component: XcFormBaseComponent) {
+    }
+
+    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+        if (!control || this.component.readonly) {
+            return false;
+        }
+        return control.invalid && (control.dirty || control.touched || !!form?.submitted);
+    }
 }
 
 
@@ -150,6 +164,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     protected _placeholder: KeyTranslationPair = { key: '', translated: '' };
 
     readonly formControl = new FormControl();
+    readonly errorStateMatcher: ErrorStateMatcher = new XcFormErrorStateMatcher(this);
 
     @Output()
     readonly valueChange = this.formControl.valueChanges;
@@ -245,7 +260,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
 
     get errorVisible(): boolean {
-        return this.formControl.errors !== null && this.formControl.touched && !this.readonly;
+        return this.errorStateMatcher.isErrorState(this.formControl, null);
     }
 
 
