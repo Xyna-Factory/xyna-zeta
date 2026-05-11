@@ -68,7 +68,10 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private _dataSourceSubscriptions = new Array<Subscription>();
     private _matSort: MatSort;
 
-    private readonly filterTemplates = new Map<string, { template: XcFormTemplate<any, any>; component?: XcFormBaseComponent }>();
+    private readonly filterTemplates = new Map<string, {
+        template: XcFormTemplate<any, any>;
+        component?: XcFormBaseComponent
+    }>();
     private readonly filterTemplateSubscriptions: Subscription[] = [];
 
     private tbody: HTMLTableSectionElement;
@@ -100,8 +103,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         this.tbody = xcTable.querySelector('tbody');
         this.tbody.setAttribute('tabindex', '0');
         this.tbody.onkeydown = this.keyDown.bind(this);
-        const tbodyMessage = this.i18n.translate('Use the arrow keys Up and Down to switch between rows');
-        this.tbody.setAttribute('aria-label', tbodyMessage);
 
 
         this.focusViaTabDetectionSubscription = this._a11y.emitElementFocusStateChange(this.tbody).subscribe(state => {
@@ -158,8 +159,12 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                 this.matSort.active = this.getColumnID(column);
             }
             switch (this.dataSource.getSortDirection()) {
-                case XcSortDirection.asc: this.matSort.direction = 'asc'; break;
-                case XcSortDirection.dsc: this.matSort.direction = 'desc'; break;
+                case XcSortDirection.asc:
+                    this.matSort.direction = 'asc';
+                    break;
+                case XcSortDirection.dsc:
+                    this.matSort.direction = 'desc';
+                    break;
                 default:
                     this.matSort.direction = '';
                     this.matSort.active = '';
@@ -182,7 +187,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @ViewChild(MatSort, { static: false })
+    @ViewChild(MatSort, {static: false})
     set matSort(value: MatSort) {
         this._matSort = value;
         this.matSort.sortChange.subscribe(() => this.updateDataSourceSort());
@@ -356,7 +361,10 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getColumnFilterAriaLabel(name: string): string {
-        return this.i18n.translate('Input field for filtering of $0', { key: '$0', value: this.i18n.translate(name || 'this column') });
+        return this.i18n.translate('Input field for filtering of $0', {
+            key: '$0',
+            value: this.i18n.translate(name || 'this column')
+        });
     }
 
 
@@ -373,7 +381,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             let filter = this.filterTemplates.get(path);
             // create new template
             if (!filter) {
-                filter = { template: undefined };
+                filter = {template: undefined};
                 const filterEnum = this.dataSource.filterEnums.get(path);
                 if (filterEnum) {
                     // autocomplete template
