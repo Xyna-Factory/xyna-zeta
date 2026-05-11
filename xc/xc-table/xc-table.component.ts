@@ -15,60 +15,31 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import {NgClass} from '@angular/common';
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    ElementRef,
-    HostBinding,
-    inject,
-    Input,
-    OnDestroy,
-    ViewChild
-} from '@angular/core';
-import {MatSort, MatSortHeader} from '@angular/material/sort';
-import {
-    MatCell,
-    MatCellDef,
-    MatColumnDef,
-    MatFooterCell,
-    MatFooterCellDef,
-    MatFooterRow,
-    MatFooterRowDef,
-    MatHeaderCell,
-    MatHeaderCellDef,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatRow,
-    MatRowDef,
-    MatTable
-} from '@angular/material/table';
+import { Subscription } from 'rxjs';
 
-import {Subscription} from 'rxjs';
+import { NgClass } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, ViewChild } from '@angular/core';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
-import {A11yService, ScreenreaderPriority} from '../../a11y';
-import {XoObject} from '../../api';
-import {coerceBoolean} from '../../base';
-import {I18nService, LocaleService} from '../../i18n';
-import {XcIdentityDataWrapper} from '../shared/xc-data-wrapper';
-import {XcOptionItemString} from '../shared/xc-item';
-import {XcSortDirection, XcSortDirectionFromString} from '../shared/xc-sort';
-import {XcVarDirective} from '../shared/xc-var.directive';
-import {XcIconButtonComponent} from '../xc-button/xc-icon-button.component';
-import {
-    XcAutocompleteDataWrapper,
-    XcFormAutocompleteComponent
-} from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
-import {XcFormBaseComponent} from '../xc-form/xc-form-base/xc-form-base.component';
-import {XcProgressBarComponent} from '../xc-progress-bar/xc-progress-bar.component';
-import {XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTemplate, XcTemplate} from '../xc-template/xc-template';
-import {XcTemplateComponent} from '../xc-template/xc-template.component';
-import {XcTooltipDirective} from '../xc-tooltip/xc-tooltip.directive';
-import {xcTableTranslations_deDE} from './locale/xc-translations.de-DE';
-import {xcTableTranslations_enUS} from './locale/xc-translations.en-US';
-import {XcTableColumn, XcTableDataSource} from './xc-table-data-source';
+import { A11yService, ScreenreaderPriority } from '../../a11y';
+import { XoObject } from '../../api';
+import { coerceBoolean } from '../../base';
+import { I18nService, LocaleService } from '../../i18n';
+import { XcIdentityDataWrapper } from '../shared/xc-data-wrapper';
+import { XcOptionItemString } from '../shared/xc-item';
+import { XcSortDirection, XcSortDirectionFromString } from '../shared/xc-sort';
+import { XcVarDirective } from '../shared/xc-var.directive';
+import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
+import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
+import { XcFormBaseComponent } from '../xc-form/xc-form-base/xc-form-base.component';
+import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
+import { XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTemplate, XcTemplate } from '../xc-template/xc-template';
+import { XcTemplateComponent } from '../xc-template/xc-template.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
+import { xcTableTranslations_deDE } from './locale/xc-translations.de-DE';
+import { xcTableTranslations_enUS } from './locale/xc-translations.en-US';
+import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
 
 
 @Component({
@@ -209,6 +180,10 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         }
         // use zeta's i18n service
         return this._i18n;
+    }
+
+    get translateLabels(): boolean {
+        return this.dataSource && this.dataSource.translateLabels;
     }
 
 

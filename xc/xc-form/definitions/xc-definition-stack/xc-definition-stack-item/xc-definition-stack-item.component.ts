@@ -165,7 +165,8 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
             filter(result => {
                 if (result.errorMessage || result.output?.length === 0) {
                     throwError(() => new Error('no definition found'));
-                    this.dialogs.error('No definition found in resolved definition-Workflow');
+                    const errorMessage = result.errorMessage ? result.errorMessage : 'No definition found in resolved definition-Workflow';
+                    this.dialogs.error(errorMessage);
                     return false;
                 }
                 return true;
