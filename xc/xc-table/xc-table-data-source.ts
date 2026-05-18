@@ -40,7 +40,7 @@ export interface XcTableColumn {
     readonly pre?: boolean;
     readonly filterTooltip?: string;
     readonly filterMultiselect?: boolean;
-    readonly valueLang?: string;
+    readonly pronunciationLang?: string;
     readonly align?: string;
 }
 
