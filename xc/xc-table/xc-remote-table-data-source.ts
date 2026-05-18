@@ -79,7 +79,7 @@ export class XoTableColumn extends XoObject {
             pre: this.pre,
             filterTooltip: this.filterTooltip,
             filterMultiselect: this.filterMultiselect,
-            valueLang: this.valueLang
+            valueLang: this.valueLang,
             align: this.align
         };
     }
