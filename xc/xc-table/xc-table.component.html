@@ -43,8 +43,8 @@
   <!-- Container template view of a table body row -->
   @for (column of columns; let i = $index; track i) {
     <ng-container [matColumnDef]="getColumnID(column)">
-      <th mat-header-cell *matHeaderCellDef attr.aria-label="{{i18n.translate(column.name)}}" scope="col">
-        <span mat-sort-header [disabled]="column.disableSort">{{i18n.translate(column.name) || '&nbsp;'}}</span>
+      <th mat-header-cell *matHeaderCellDef attr.aria-sort="{{getAriaSortForColumn(column)}}" attr.aria-label="{{translateLabels ? i18n.translate(column.name) : column.name}}" scope="col">
+        <span mat-sort-header [disabled]="column.disableSort">{{ translateLabels ? i18n.translate(column.name) : column.name || '&nbsp;'}}</span>
         <div class="filter-container">
           @if (allowFilter) {
             <xc-template
@@ -62,7 +62,9 @@
         [class.shrink]="column.shrink"
         [class.break]="column.break"
         [class.pre]="column.pre"
-        [attr.aria-label]="getCellData(row, column.path) ? (i18n.translate(column.name)) : null"
+        [class.align-right]="column.align === 'right'"
+        [class.align-center]="column.align === 'center'"
+        [attr.aria-label]="getCellData(row, column.path) ? ( translateLabels ? i18n.translate(column.name) : column.name) : null"
         >
         <ng-container *xc-var="getCellData(row, column.path); let cellData">
           <!-- ngIf = displays cellData xc-templates if it is an Array -->
@@ -73,7 +75,7 @@
               }
             </div>
           } @else {
-            <span role="link" class="text-cell">{{cellData}}</span>
+            <span role="link" class="text-cell" [attr.lang]="column.pronunciationLang || null">{{ cellData }}</span>
           }
         </ng-container>
       </td>
