@@ -99,10 +99,11 @@
                 (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row)"
                 [class]="actionElement.class"
                 [disabled]="actionElement.disabled"
-                [xc-tooltip]="actionElement.tooltip"
                 [xc-icon-name]="actionElement.iconName"
                 [xc-icon-style]="actionElement.iconStyle"
-                [xc-button-aria-label]="actionElement.ariaLabel ? actionElement.ariaLabel : undefined"
+                [xc-button-aria-label]="actionElement.ariaLabel || actionElement.tooltip"
+                [xc-tooltip]="actionElement.tooltip"
+                [xc-tooltip-disabled]="!!(actionElement.ariaLabel || actionElement.tooltip)"
                 xc-icon-size="small"
               ></xc-icon-button>
             }
