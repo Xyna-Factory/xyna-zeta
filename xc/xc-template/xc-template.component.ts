@@ -62,6 +62,7 @@ export class XcTemplateComponent {
     };
 
     private _instance: XcTemplate | unknown;
+    private _readonly = false;
     private _disabled = false;
     private _markForCheckSubscription: Subscription;
 
@@ -87,6 +88,16 @@ export class XcTemplateComponent {
 
     get instance(): XcTemplate | unknown {
         return this._instance;
+    }
+
+
+    @Input('xc-template-readonly')
+    set readonly(value: boolean) {
+        this._readonly = coerceBoolean(value);
+    }
+
+    get readonly(): boolean {
+        return this._readonly;
     }
 
 
