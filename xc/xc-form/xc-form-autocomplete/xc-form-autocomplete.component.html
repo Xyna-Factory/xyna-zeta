@@ -14,7 +14,7 @@
       [attr.aria-expanded]="multiSelectDropdown?.panelOpen || false"
       [attr.aria-haspopup]="'listbox'"
       role="combobox"
-      [tabIndex]="(readonly || disabled) ? -1 : 0"
+      [tabIndex]="disabled ? -1 : 0"
       class="multiselect-display-input">
 
     <!-- screen reader announcements -->
@@ -60,7 +60,7 @@
       (blur)="onblur($event)"
       [readonly]="readonly"
       [attr.aria-label]="ariaLabel"
-      [tabIndex]="(readonly || disabled) ? -1 : tabIndex"
+      [tabIndex]="disabled ? -1 : tabIndex"
       [required]="required">
 
     <!-- screen reader support -->

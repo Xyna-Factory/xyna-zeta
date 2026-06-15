@@ -418,7 +418,7 @@ export class ApiService {
                 undefined,
                 XoRuntimeContextArray
             ).pipe(
-                shareReplay(1) 
+                shareReplay(1)
             );
         }
 

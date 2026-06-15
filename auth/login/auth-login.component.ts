@@ -15,12 +15,11 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, effect, inject, signal, ViewChild } from '@angular/core';
-
-import { environment } from '@environments/environment';
-
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, filter, finalize } from 'rxjs/operators';
+
+import { Component, effect, inject, signal, ViewChild } from '@angular/core';
+import { environment } from '@environments/environment';
 
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 import { I18nParam, I18nService } from '../../i18n/i18n.service';
@@ -71,7 +70,7 @@ export class AuthLoginComponent {
     protected readonly dialogService = inject(XcDialogService);
     protected readonly i18n = inject(I18nService);
 
-    
+
     readonly smartCardTabItem: LoginTabItem = {
         closable: false,
         component: SmartCardLoginTabComponent,
@@ -190,10 +189,12 @@ export class AuthLoginComponent {
 
     login() {
         if (this.smartCardMethodUsed) {
+            this.smartCardInfo();
             this.smartCardLogin();
         } else if (this.credentialsMethodUsed) {
             this.credentialsLogin();
         } else if (this.workflowMethodUsed) {
+            this.workflowInfo();
             this.workflowLogin();
         }
     }
