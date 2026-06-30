@@ -16,12 +16,13 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { Component, EventEmitter, forwardRef, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, forwardRef, inject, Input, Output, ViewChild } from '@angular/core';
 import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
 import { XcI18nPipe } from '../../i18n';
 import { XcIconComponent } from '../xc-icon/xc-icon.component';
+import { XcContextMenuService } from './xc-context-menu.service';
 import { XcMenuTriggerDirective } from './xc-menu-trigger.directive';
 import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPosition, XcMenuYPosition } from './xc-menu.types';
 
@@ -33,6 +34,7 @@ import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPositio
     imports: [CommonModule, MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, XcI18nPipe, forwardRef(() => XcMenuComponent)],
 })
 export class XcMenuComponent {
+    protected readonly contextMenuService = inject(XcContextMenuService);
 
     /*
      * Sadly, there is no support for not overlapping the trigger horizontally.
@@ -43,9 +45,14 @@ export class XcMenuComponent {
     private _menu: XcMenu;
     readonly options: XcMenuOptions = XcMenuOptionsDefault();
 
-    @ViewChild('matMenu', {static: true, read: MatMenu})
+    @ViewChild('matMenu', { static: true, read: MatMenu })
     set menu(value: XcMenu) {
         this._menu = value;
+
+        if (!this.contextMenuService.menu) {
+            this.contextMenuService.menu = this;
+        }
+
         // set custom settings to menu
         this.menu.xNexttoTrigger = this.options.xNexttoTrigger;
         this.menu.yNexttoTrigger = this.options.yNexttoTrigger;

@@ -46,6 +46,7 @@ import { XcNavListComponent } from './xc-list/xc-nav-list/xc-nav-list.component'
 import { XcRichListComponent } from './xc-list/xc-rich-list/xc-rich-list.component';
 import { XcMasterDetailFocusCandidateDirective } from './xc-master-detail/xc-master-detail-focuscandidate.directive';
 import { XcMasterDetailComponent } from './xc-master-detail/xc-master-detail.component';
+import { XcContextMenuTriggerDirective } from './xc-menu/xc-context-menu-trigger.directive';
 import { XcMenuTriggerDirective } from './xc-menu/xc-menu-trigger.directive';
 import { XcMenuComponent } from './xc-menu/xc-menu.component';
 import { XcMenuServiceDirective } from './xc-menu/xc-menu.service';
@@ -117,6 +118,7 @@ import { XcWebGLComponent } from './xc-webgl/xc-webgl.component';
         XcMenuComponent,
         XcMenuServiceDirective,
         XcMenuTriggerDirective,
+        XcContextMenuTriggerDirective,
         XcNavListComponent,
         XcNavListItemComponent,
         XcPanelComponent,
@@ -197,6 +199,7 @@ import { XcWebGLComponent } from './xc-webgl/xc-webgl.component';
         XcMenuComponent,
         XcMenuServiceDirective,
         XcMenuTriggerDirective,
+        XcContextMenuTriggerDirective,
         XcNavListComponent,
         XcNavListItemComponent,
         XcPanelComponent,
