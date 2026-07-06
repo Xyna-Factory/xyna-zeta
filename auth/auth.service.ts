@@ -37,6 +37,7 @@ export interface SmartCardInfo {
     username: string;
     externaldomains: string[]; // TODO: rename to "externalDomains"
     userdisplayname: string;   // TODO: rename to "userDisplayname"
+    availableRoles?: string[];
 }
 
 
@@ -256,9 +257,9 @@ export class AuthService {
      * @param domain Domain
      * @param force Enforce login
      */
-    smartCardLogin(domain: string, force = false): Observable<SessionInfo> {
+    smartCardLogin(domain: string, force = false, selectedRole?: string): Observable<SessionInfo> {
         // TODO: url should be 'auth/externallogin'
-        return this.customLogin('auth/externalUserLogin', XoExternalUserLoginRequest.withDomain(domain, force));
+        return this.customLogin('auth/externalUserLogin', XoExternalUserLoginRequest.withDomain(domain, force, selectedRole));
     }
 
 

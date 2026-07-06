@@ -24,6 +24,8 @@ import { environment } from '@environments/environment';
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 import { I18nParam, I18nService } from '../../i18n/i18n.service';
 import { XcDialogService, XcTabBarItem } from '../../xc';
+import { XcAutocompleteDataWrapper } from '../../xc/xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
+import { XcOptionItemString } from '../../xc/shared/xc-item';
 import { XcButtonComponent } from '../../xc/xc-button/xc-button.component';
 import { XcIconComponent } from '../../xc/xc-icon/xc-icon.component';
 import { XcLanguageSelectorComponent } from '../../xc/xc-language-selector/xc-language-selector.component';
@@ -42,10 +44,15 @@ import { WorkflowLoginComponent } from '../forms/workflow-login.component';
 export interface LoginComponentData {
     username: string;
     password?: string;
+    selectedRole?: string;
+    availableRoles?: string[];
+    roleSelectionDataWrapper?: XcAutocompleteDataWrapper<string>;
     disabled?: boolean;
     onEnter: () => void;
     usernameTabIndex: number;
     usernameSuffixTabIndex: number;
+    roleTabIndex?: number;
+    roleSuffixTabIndex?: number;
     passwordTabIndex?: number;
     passwordSuffixTabIndex?: number;
 }
@@ -71,15 +78,25 @@ export class AuthLoginComponent {
     protected readonly i18n = inject(I18nService);
 
 
+    private readonly smartCardRoleDataWrapper = new XcAutocompleteDataWrapper<string>(
+        () => this.smartCardTabItem.data.selectedRole,
+        (role: string) => this.smartCardTabItem.data.selectedRole = role
+    );
+
     readonly smartCardTabItem: LoginTabItem = {
         closable: false,
         component: SmartCardLoginTabComponent,
         name: 'SmartCard',
         data: <LoginComponentData>{
             username: '',
+            selectedRole: undefined,
+            availableRoles: [],
+            roleSelectionDataWrapper: this.smartCardRoleDataWrapper,
             onEnter: this.login.bind(this),
             usernameTabIndex: 1,
             usernameSuffixTabIndex: 4,
+            roleTabIndex: 2,
+            roleSuffixTabIndex: 5,
         }
     };
 
@@ -215,6 +232,14 @@ export class AuthLoginComponent {
         ).subscribe(info => {
             this.smartCardTabItem.data.username = info.username || '';
             this.smartCardDomain = (info.externaldomains || [])[0] || '';
+            const availableRoles = (info.availableRoles || []).filter(role => !!role);
+            this.smartCardTabItem.data.availableRoles = availableRoles;
+            if (availableRoles.length === 0) {
+                this.smartCardTabItem.data.selectedRole = undefined;
+            } else if (!this.smartCardTabItem.data.selectedRole || !availableRoles.includes(this.smartCardTabItem.data.selectedRole)) {
+                this.smartCardTabItem.data.selectedRole = availableRoles[0];
+            }
+            this.smartCardRoleDataWrapper.values = availableRoles.map(role => XcOptionItemString(role));
         });
     }
 
@@ -231,7 +256,7 @@ export class AuthLoginComponent {
     smartCardLogin(force = false) {
         this.pending = true;
         const forcedLogin = force || !!(environment.zeta.auth && environment.zeta.auth.useTheForcedLogin);
-        this.authService.smartCardLogin(this.smartCardDomain, forcedLogin).pipe(
+        this.authService.smartCardLogin(this.smartCardDomain, forcedLogin, this.smartCardTabItem.data.selectedRole).pipe(
             catchError(error => {
                 /**
                  * TODO
