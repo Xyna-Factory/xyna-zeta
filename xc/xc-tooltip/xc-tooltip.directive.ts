@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,8 +18,6 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AfterViewInit, Directive, ElementRef, inject, Input, NgZone, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
-
-import { Subscription } from 'rxjs';
 
 import { A11yService, ScreenreaderPriority } from '../../a11y';
 import { coerceBoolean, isArray, isObject, isString, retrieveFocusableElements } from '../../base';
@@ -389,7 +389,12 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
             // adding it to the dom so that its bounding rect can be calculated
-            document.body.appendChild(localCurrentTemplateElement);
+            const overlayWrapper =
+                document.querySelector('.cdk-global-overlay-wrapper')
+                || document.querySelector('.cdk-overlay-container')
+                || document.body;
+
+            overlayWrapper.appendChild(localCurrentTemplateElement);
             this.stack.push(localCurrentTemplateElement);
 
             const origin = this.focusableElement.getBoundingClientRect();

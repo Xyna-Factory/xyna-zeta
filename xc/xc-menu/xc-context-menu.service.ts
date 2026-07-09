@@ -15,17 +15,18 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { XcDialogOptions } from './xc-dialog-wrapper.component';
-import { XcDialogComponent } from './xc-dialog.component';
+import { Injectable } from '@angular/core';
+
+import { XcMenuTriggerDirective } from './xc-menu-trigger.directive';
+import { XcMenuComponentInterface } from './xc-menu.types';
 
 
-export abstract class XcMessageDialogComponent<R, D> extends XcDialogComponent<R, D> {
-    title = '';
-    message = '';
-    details = '';
-    draggable = true;
-    resizable = true;
-    maximizable = true;
-    maximized = false;
-    dialogOptions: XcDialogOptions = {};
+@Injectable({
+    providedIn: 'root'
+})
+export class XcContextMenuService {
+
+    trigger: XcMenuTriggerDirective;
+
+    menu: XcMenuComponentInterface;
 }
