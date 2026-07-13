@@ -45,7 +45,6 @@ export interface LoginComponentData {
     username: string;
     password?: string;
     selectedRole?: string;
-    availableRoles?: string[];
     roleSelectionDataWrapper?: XcAutocompleteDataWrapper<string>;
     disabled?: boolean;
     onEnter: () => void;
@@ -90,7 +89,6 @@ export class AuthLoginComponent {
         data: <LoginComponentData>{
             username: '',
             selectedRole: undefined,
-            availableRoles: [],
             roleSelectionDataWrapper: this.smartCardRoleDataWrapper,
             onEnter: this.login.bind(this),
             usernameTabIndex: 1,
@@ -231,15 +229,24 @@ export class AuthLoginComponent {
             filter(info => !!info)
         ).subscribe(info => {
             this.smartCardTabItem.data.username = info.username || '';
-            this.smartCardDomain = (info.externaldomains || [])[0] || '';
-            const availableRoles = (info.availableRoles || []).filter(role => !!role);
-            this.smartCardTabItem.data.availableRoles = availableRoles;
-            if (availableRoles.length === 0) {
+            const externalDomains = (info.externaldomains || []).filter(domain => !!domain);
+            const domainNames = externalDomains.length > 0
+                ? externalDomains
+                : (info.domains || []).map(domain => domain.name).filter(name => !!name);
+
+            this.smartCardDomain = domainNames[0] || '';
+
+            const domainFromResponse = (info.domains || []).find(domain => domain.name === this.smartCardDomain)
+                || (info.domains || [])[0];
+
+            const roles = (domainFromResponse?.roles || []).filter(role => !!role);
+
+            if (roles.length === 0) {
                 this.smartCardTabItem.data.selectedRole = undefined;
-            } else if (!this.smartCardTabItem.data.selectedRole || !availableRoles.includes(this.smartCardTabItem.data.selectedRole)) {
-                this.smartCardTabItem.data.selectedRole = availableRoles[0];
+            } else if (!this.smartCardTabItem.data.selectedRole || !roles.includes(this.smartCardTabItem.data.selectedRole)) {
+                this.smartCardTabItem.data.selectedRole = roles[0];
             }
-            this.smartCardRoleDataWrapper.values = availableRoles.map(role => XcOptionItemString(role));
+            this.smartCardRoleDataWrapper.values = roles.map(role => XcOptionItemString(role));
         });
     }
 
