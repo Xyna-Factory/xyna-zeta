@@ -514,33 +514,27 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     getPrevRow(row: any): any {
         if (this.dataSource) {
-            let idx = this.getRowIndex(row) - 1;
-            if (idx < 0) {
-                idx += this.dataSource.rows.length;
-            }
-            return this.dataSource.rows[idx];
+            const idx = this.getRowIndex(row) - 1;
+            return idx >= 0 ? this.dataSource.rows[idx] : row;
         }
     }
 
 
     getPrevRowElement(row: HTMLTableRowElement): HTMLTableRowElement {
-        return row ? (row.previousElementSibling || row.parentElement.children[row.parentElement.children.length - 1]) as HTMLTableRowElement : null;
+        return row ? (row.previousElementSibling as HTMLTableRowElement) || row : null;
     }
 
 
     getNextRow(row: any): any {
         if (this.dataSource) {
-            let idx = this.getRowIndex(row) + 1;
-            if (idx > this.dataSource.rows.length - 1) {
-                idx -= this.dataSource.rows.length;
-            }
-            return this.dataSource.rows[idx];
+            const idx = this.getRowIndex(row) + 1;
+            return idx < this.dataSource.rows.length ? this.dataSource.rows[idx] : row;
         }
     }
 
 
     getNextRowElement(row: HTMLTableRowElement): HTMLTableRowElement {
-        return row ? (row.nextElementSibling || row.parentElement.children[0]) as HTMLTableRowElement : null;
+        return row ? (row.nextElementSibling as HTMLTableRowElement) || row : null;
     }
 
 
@@ -588,6 +582,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     focusRowElement(element: HTMLTableRowElement) {
+        if (!element || !this.thead) {
+            return;
+        }
         const parent = this.elementRef.nativeElement;
         const topOffset = this.thead.getBoundingClientRect().height;
         const e = element.getBoundingClientRect();
