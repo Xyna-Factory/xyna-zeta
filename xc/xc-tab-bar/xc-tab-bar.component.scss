@@ -203,6 +203,7 @@
                     overflow: unset;
                     display: flex;
                     border-top: $xc-tab-bar-content-top-border-width solid $xc-tab-bar-content-top-border-color;
+                    border-left: none;
                     background: $xc-tab-bar-content-background-color;
                 }
             }
@@ -257,7 +258,8 @@
 ::ng-deep .cdk-drag-preview,
 ::ng-deep .cdk-drag-preview .mat-mdc-tab,
 ::ng-deep .cdk-drag-preview .mdc-tab__content {
-    background-color: $xc-tab-bar-tab-background-color-active;
+    background-color: $xc-tab-bar-tab-background-color-active !important;
+    ;
 }
 
 ::ng-deep .cdk-drag-placeholder .mdc-tab-indicator,
