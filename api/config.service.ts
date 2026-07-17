@@ -42,6 +42,9 @@ class ZetaProjectOptions {
     static toZetaProjectOptions(input: ZetaProjectOptions): EnviromentZetaProjectOptions {
         const proj = input as unknown as EnviromentZetaProjectOptions;
         proj.xo = XynaOptions.toXynaOptions(input.xo);
+        if (proj.url.includes('location.origin')) {
+            proj.url = proj.url.replace('location.origin', location.origin);
+        }
         return proj;
     }
     url: string;
