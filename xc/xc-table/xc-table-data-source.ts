@@ -110,6 +110,7 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
     protected readonly filters = new Map<string, string>();
     readonly filterEnums = new Map<string, Observable<XcOptionItem[]>>();
     readonly filterEnumsAsInput = new Set<string>();
+    readonly filterEnumsAsMultiselect = new Set<string>();
     readonly moreData = new Subject<void>();
 
     /** skip the first number of entries */
