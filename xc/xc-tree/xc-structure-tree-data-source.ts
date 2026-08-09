@@ -58,6 +58,12 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
      */
     complexTypesReadonly = false;
 
+    /**
+     * When true, boolean primitives are rendered as a dropdown instead of
+     * checkbox + autocomplete overlay. Default false preserves legacy behavior.
+     */
+    booleanAsDropdown = false;
+
     private readonly _contentChangeSubject = new Subject<void>();
 
 
@@ -100,13 +106,19 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
 
 
     protected getPrimitiveTemplates(field: XoStructurePrimitive, _: XcTreeNode): XcTemplate[] {
-        const templates = XcTemplateFactory.createTemplates(
+        let templates = XcTemplateFactory.createTemplates(
             field,
             this.container,
             this.readonlyMode,
             // mark for a change, which eventually updates the autocomplete component
             () => this.triggerMarkForChange()
         );
+        if (this.booleanAsDropdown && field.typeFqn.boolLike && !this.readonlyMode) {
+            templates = templates.filter(template => !(template instanceof XcCheckboxTemplate));
+            templates
+                .filter(template => template instanceof XcFormAutocompleteTemplate)
+                .forEach(template => (template as XcFormAutocompleteTemplate).asDropdown = true);
+        }
         templates.filter(template => template instanceof XcFormTemplate).forEach(template => {
             template.floatLabel = FloatStyle.always;
 
