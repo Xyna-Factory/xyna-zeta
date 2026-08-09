@@ -5,6 +5,7 @@
       class="zeta-scrollbar"
       matInput
       autocomplete="off"
+      [errorStateMatcher]="errorStateMatcher"
       [placeholder]="placeholder"
       [formControl]="formControl"
       [cdkAutosizeMinRows]="minLines"
@@ -18,6 +19,6 @@
     ></textarea>
   </div>
   @if (errorVisible) {
-    <mat-error align="end">{{errorContent}}</mat-error>
+    <mat-error align="end" aria-live="off">{{errorContent}}</mat-error>
   }
 </mat-form-field>
