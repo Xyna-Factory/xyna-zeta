@@ -134,7 +134,7 @@ export class AuthService {
         ).subscribe(sessionInfo => {
 
             // run consistency check
-            XoConsistencyCheck.run(apiService);
+            XoConsistencyCheck.run(apiService, this.configService.config.zeta.xo);
 
             // update server time offset
             sessionInfo.serverTimeOffset = sessionInfo.serverTime - +new Date();
