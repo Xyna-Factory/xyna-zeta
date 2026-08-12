@@ -31,6 +31,7 @@ import { XoExternalUserLoginRequest } from './xo/external-user-login-request.mod
 import { XoLoginRequest } from './xo/login-request.model';
 import { XoLogoutRequest } from './xo/logout-request.model';
 import { XoSharedLoginRequest } from './xo/shared-login-request.model';
+import { ConfigService } from '@zeta/api/config.service';
 
 
 export interface SmartCardInfo {
@@ -103,6 +104,7 @@ export class AuthService {
     private readonly authEventService = inject(AuthEventService);
     private readonly http = inject(HttpClient);
     private readonly router = inject(Router);
+    private readonly configService = inject(ConfigService);
 
 
     static readonly urlFragment = 'Authenticate';
@@ -132,7 +134,7 @@ export class AuthService {
         ).subscribe(sessionInfo => {
 
             // run consistency check
-            XoConsistencyCheck.run(apiService);
+            XoConsistencyCheck.run(apiService, this.configService.config.zeta.xo);
 
             // update server time offset
             sessionInfo.serverTimeOffset = sessionInfo.serverTime - +new Date();
@@ -252,6 +254,12 @@ export class AuthService {
         );
     }
 
+
+    private get pathToken(): string {
+        return this.configService.config.zeta.auth ? this.configService.config.zeta.auth.pathToken : '/';
+    }
+
+
     /**
      * normalizes backend smart card info into a clean, UI-friendly model with robust data.
      */
@@ -262,7 +270,6 @@ export class AuthService {
                 name: domain.name,
                 roles: (domain.roles ?? []).filter(role => !!role)
             }));
-
         const externaldomains = (info.externaldomains ?? [])
             .filter(domain => !!domain);
 
@@ -281,12 +288,12 @@ export class AuthService {
      * @param password Password
      */
     login(username: string, password: string, force = false): Observable<SessionInfo> {
-        return this.customLogin('auth/login', XoLoginRequest.withCredentials(username, password, force));
+        return this.customLogin('auth/login', XoLoginRequest.withCredentials(username, password, this.pathToken, force));
     }
 
 
     workflowLogin(username: string, password: string, domain: string, force = false): Observable<SessionInfo> {
-        return this.customLogin('auth/externalCredentialsLogin', XoExternalCredentialsLoginRequest.withDomain(username, password, domain, force));
+        return this.customLogin('auth/externalCredentialsLogin', XoExternalCredentialsLoginRequest.withDomain(username, password, domain, this.pathToken, force));
     }
 
 
@@ -297,7 +304,7 @@ export class AuthService {
      */
     smartCardLogin(domain: string, force = false, selectedRole?: string): Observable<SessionInfo> {
         // TODO: url should be 'auth/externallogin'
-        return this.customLogin('auth/externalUserLogin', XoExternalUserLoginRequest.withDomain(domain, force, selectedRole));
+        return this.customLogin('auth/externalUserLogin', XoExternalUserLoginRequest.withDomain(domain, this.pathToken, force, selectedRole));
     }
 
 
@@ -307,7 +314,7 @@ export class AuthService {
      * @param token Valid token
      */
     sharedLogin(sessionId: string, token: string): Observable<SessionInfo> {
-        return this.customLogin('auth/sharedlogin', XoSharedLoginRequest.withCredentials(sessionId, token));
+        return this.customLogin('auth/sharedlogin', XoSharedLoginRequest.withCredentials(sessionId, token, this.pathToken));
     }
 
 
@@ -315,7 +322,7 @@ export class AuthService {
      * Performs a server logout and clears the info about the current session
      */
     logout(): Observable<void> {
-        return this.http.post<void>('auth/logout', XoLogoutRequest.logout().encode()).pipe(
+        return this.http.post<void>('auth/logout', XoLogoutRequest.logout(this.pathToken).encode()).pipe(
             tap(() => {
                 this.authEventService.sessionInfoSubject.next(undefined);
                 this.authEventService.logoutSubject.next(undefined);
