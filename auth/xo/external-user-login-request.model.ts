@@ -30,12 +30,16 @@ export class XoExternalUserLoginRequest extends XoObject {
     @XoProperty()
     path: string;
 
+    @XoProperty()
+    selectedRole: string;
 
-    static withDomain(domain: string, path: string, force = false): XoExternalUserLoginRequest {
+
+    static withDomain(domain: string, path: string, force = false, selectedRole?: string): XoExternalUserLoginRequest {
         const request = new XoExternalUserLoginRequest();
         request.domain = domain;
         request.force = force;
         request.path = path;
+        request.selectedRole = selectedRole;
         return request;
     }
 }

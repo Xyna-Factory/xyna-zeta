@@ -20,7 +20,7 @@ import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable, of } from 'rxjs';
-import { catchError, filter, mapTo, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, mapTo, switchMap, tap } from 'rxjs/operators';
 
 import { A11yService } from '../a11y';
 import { ApiService, RuntimeContext, XoConsistencyCheck, XoObject } from '../api';
@@ -38,6 +38,21 @@ export interface SmartCardInfo {
     username: string;
     externaldomains: string[]; // TODO: rename to "externalDomains"
     userdisplayname: string;   // TODO: rename to "userDisplayname"
+    domains?: SmartCardDomainInfo[];
+}
+
+
+export interface SmartCardDomainInfo {
+    name: string;
+    roles: string[];
+}
+
+
+interface SmartCardInfoResponse {
+    username?: string;
+    externaldomains?: string[];
+    userdisplayname?: string;
+    domains?: SmartCardDomainInfo[];
 }
 
 
@@ -234,12 +249,38 @@ export class AuthService {
 
     fetchSmartCardInfo(): Observable<SmartCardInfo> {
         // TODO: url should be 'auth/externalinfo'
-        return this.http.get<SmartCardInfo>('auth/externalUserLoginInformation');
+        return this.http.get<SmartCardInfoResponse>('auth/externalUserLoginInformation').pipe(
+            map(info => this.normalizeSmartCardInfo(info))
+        );
     }
+
 
     private get pathToken(): string {
         return this.configService.config.zeta.auth ? this.configService.config.zeta.auth.pathToken : '/';
     }
+
+
+    /**
+     * normalizes backend smart card info into a clean, UI-friendly model with robust data.
+     */
+    private normalizeSmartCardInfo(info: SmartCardInfoResponse): SmartCardInfo {
+        const domains = (info.domains ?? [])
+            .filter(domain => !!domain?.name)
+            .map(domain => ({
+                name: domain.name,
+                roles: (domain.roles ?? []).filter(role => !!role)
+            }));
+        const externaldomains = (info.externaldomains ?? [])
+            .filter(domain => !!domain);
+
+        return {
+            username: info.username ?? '',
+            userdisplayname: info.userdisplayname ?? '',
+            externaldomains,
+            domains
+        };
+    }
+
 
     /**
      * Performs a login via xyna user credentials
@@ -261,9 +302,9 @@ export class AuthService {
      * @param domain Domain
      * @param force Enforce login
      */
-    smartCardLogin(domain: string, force = false): Observable<SessionInfo> {
+    smartCardLogin(domain: string, force = false, selectedRole?: string): Observable<SessionInfo> {
         // TODO: url should be 'auth/externallogin'
-        return this.customLogin('auth/externalUserLogin', XoExternalUserLoginRequest.withDomain(domain, this.pathToken, force));
+        return this.customLogin('auth/externalUserLogin', XoExternalUserLoginRequest.withDomain(domain, this.pathToken, force, selectedRole));
     }
 
 
