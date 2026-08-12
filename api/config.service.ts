@@ -28,8 +28,10 @@ class RTC {
 class XynaOptions {
 
     static toXynaOptions(input: XynaOptions): EnviromentXynaOptions {
-        const xyna = input as unknown as EnviromentXynaOptions;
-        xyna.runtimeContext = RTC.toRuntimeContext(input.runtimeContext);
+        const xyna: EnviromentXynaOptions = {
+            ...input,
+            runtimeContext: RTC.toRuntimeContext(input.runtimeContext)
+        }
         return xyna;
     }
     runtimeContext: RTC;
@@ -40,8 +42,10 @@ class XynaOptions {
 class ZetaProjectOptions {
 
     static toZetaProjectOptions(input: ZetaProjectOptions): EnviromentZetaProjectOptions {
-        const proj = input as unknown as EnviromentZetaProjectOptions;
-        proj.xo = XynaOptions.toXynaOptions(input.xo);
+        const proj: EnviromentZetaProjectOptions = {
+            ...input,
+            xo: XynaOptions.toXynaOptions(input.xo)
+        }
         if (proj.url.includes('location.origin')) {
             proj.url = proj.url.replace('location.origin', location.origin);
         }
@@ -56,8 +60,11 @@ class ZetaProjectOptions {
 class ZetaEnvironment {
 
     static toZetaEnvironment(input: ZetaEnvironment): EnviromentZetaEnvironment {
-        const env = input as unknown as EnviromentZetaEnvironment;
-        env.zeta = ZetaProjectOptions.toZetaProjectOptions(input.zeta);
+        const env: EnviromentZetaEnvironment = {
+            ...input,
+            production: environment.production,
+            zeta: ZetaProjectOptions.toZetaProjectOptions(input.zeta)
+        }
         return env;
     }
     zeta: ZetaProjectOptions;
