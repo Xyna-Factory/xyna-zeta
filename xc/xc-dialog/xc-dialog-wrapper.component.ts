@@ -44,27 +44,27 @@ export class XcDialogWrapperComponent implements AfterViewInit {
     private _maximizable = false;
     private readonly _dialogOptions: XcDialogOptions = {};
 
-    @Input()
+    @Input({transform: coerceBoolean})
     set draggable(value: boolean) {
-        this._draggable = coerceBoolean(value);
+        this._draggable = value;
     }
 
     get draggable(): boolean {
         return this._draggable;
     }
 
-    @Input()
+    @Input({transform: coerceBoolean})
     set resizable(value: boolean) {
-        this._resizable = coerceBoolean(value);
+        this._resizable = value;
     }
 
     get resizable(): boolean {
         return this._resizable;
     }
 
-    @Input()
+    @Input({transform: coerceBoolean})
     set maximized(value: boolean) {
-        this._maximized = coerceBoolean(value);
+        this._maximized = value;
 
         if (this.dialogRoot) {
             this.applyMaximizedState();
@@ -78,8 +78,9 @@ export class XcDialogWrapperComponent implements AfterViewInit {
     }
 
     @Input()
+    @Input({transform: coerceBoolean})
     set maximizable(value: boolean) {
-        this._maximizable = coerceBoolean(value);
+        this._maximizable = value;
     }
 
     get maximizable(): boolean {

@@ -91,9 +91,9 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 
 
     @HostBinding('class.compact')
-    @Input('xc-form-field-compact')
+    @Input({alias: 'xc-form-field-compact', transform: coerceBoolean})
     set compact(value: boolean) {
-        this._compact = coerceBoolean(value);
+        this._compact = value;
     }
 
 
@@ -176,9 +176,9 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
 
     @HostBinding('class.indicatechanges')
-    @Input('xc-form-field-indicatechanges')
+    @Input({alias: 'xc-form-field-indicatechanges', transform: coerceBoolean})
     set indicateChanges(value: boolean) {
-        this._indicateChanges = coerceBoolean(value);
+        this._indicateChanges = value;
     }
 
 
@@ -204,9 +204,8 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     }
 
 
-    @Input()
+    @Input({transform: coerceBoolean})
     set disabled(value: boolean) {
-        value = coerceBoolean(value);
         if (value) {
             this.formControl.disable({ emitEvent: false });
         } else {
@@ -221,8 +220,9 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
 
     @Input()
+    @Input({transform: coerceBoolean})
     set readonly(value: boolean) {
-        this._readonly = coerceBoolean(value);
+        this._readonly = value;
     }
 
 
