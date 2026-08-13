@@ -82,18 +82,18 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         return this._items;
     }
 
-    @Input('xc-tab-bar-reorderable')
+    @Input({alias: 'xc-tab-bar-reorderable', transform: coerceBoolean})
     set reorderable(value: boolean) {
-        this._reorderable = coerceBoolean(value);
+        this._reorderable = value;
     }
 
     get reorderable(): boolean {
         return this._reorderable;
     }
 
-    @Input('xc-tab-bar-contextmenu')
+    @Input({alias: 'xc-tab-bar-contextmenu', transform: coerceBoolean})
     set contextMenu(value: boolean) {
-        this._contextMenu = coerceBoolean(value);
+        this._contextMenu = value;
     }
 
     get contextMenu(): boolean {
@@ -193,9 +193,9 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     }
 
 
-    @Input('xc-tab-bar-showtooltips')
+    @Input({alias: 'xc-tab-bar-showtooltips', transform: coerceBoolean})
     set showTooltips(value: boolean) {
-        this._showTooltips = coerceBoolean(value);
+        this._showTooltips = value;
     }
 
 
@@ -204,9 +204,9 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     }
 
 
-    @Input()
+    @Input({transform: coerceBoolean})
     set busy(value: boolean) {
-        this._busySubject.next(coerceBoolean(value));
+        this._busySubject.next(value);
     }
 
 
