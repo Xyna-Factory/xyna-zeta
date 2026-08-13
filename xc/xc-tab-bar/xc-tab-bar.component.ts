@@ -493,6 +493,25 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         this.refreshAfterMenuAction();
     }
 
+    activateStart(item: XcTabBarItem) {
+        const idx = this.getIndex(item);
+
+        if (idx > 0) {
+            this.selection = this.items[0];
+        }
+        this.refreshAfterMenuAction();
+    }
+
+
+    activateEnd(item: XcTabBarItem) {
+        const idx = this.getIndex(item);
+
+        if (idx < this.items.length - 1) {
+            this.selection = this.items[this.items.length - 1];
+        }
+        this.refreshAfterMenuAction();
+    }
+
 
     activateLeft(item: XcTabBarItem) {
         const idx = this.getIndex(item);
@@ -666,17 +685,17 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
             },
 
             {
-                id: XcTabMenuEntry.ActivateLeft,
+                id: XcTabMenuEntry.ActivateStart,
                 separator: 'above',
-                name: this.i18n.translate('zeta.xc-tab-bar.menu.activate-left'),
+                name: this.i18n.translate('zeta.xc-tab-bar.menu.activate-start'),
                 disabled: this.getIndex(item) <= 0,
-                click: () => this.activateLeft(item)
+                click: () => this.activateStart(item)
             },
             {
-                id: XcTabMenuEntry.ActivateRight,
-                name: this.i18n.translate('zeta.xc-tab-bar.menu.activate-right'),
+                id: XcTabMenuEntry.ActivateEnd,
+                name: this.i18n.translate('zeta.xc-tab-bar.menu.activate-end'),
                 disabled: this.getIndex(item) >= this.items.length - 1,
-                click: () => this.activateRight(item)
+                click: () => this.activateEnd(item)
             },
 
             {
@@ -685,7 +704,20 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
                 name: this.i18n.translate('zeta.xc-tab-bar.menu.move-actions'),
                 children: [
                     {
+                        id: XcTabMenuEntry.ActivateLeft,
+                        name: this.i18n.translate('zeta.xc-tab-bar.menu.activate-left'),
+                        disabled: this.getIndex(item) <= 0,
+                        click: () => this.activateLeft(item)
+                    },
+                    {
+                        id: XcTabMenuEntry.ActivateRight,
+                        name: this.i18n.translate('zeta.xc-tab-bar.menu.activate-right'),
+                        disabled: this.getIndex(item) >= this.items.length - 1,
+                        click: () => this.activateRight(item)
+                    },
+                    {
                         id: XcTabMenuEntry.MoveLeft,
+                        separator: 'above',
                         name: this.i18n.translate('zeta.xc-tab-bar.menu.move-left'),
                         disabled: !this.canMoveLeft(item),
                         click: () => this.moveLeft(item)

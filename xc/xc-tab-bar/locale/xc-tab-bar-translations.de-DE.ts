@@ -30,11 +30,13 @@ export const xcTabBarTranslations_deDE: I18nTranslation[] = [
     { key: 'zeta.xc-tab-bar.menu.pin', value: 'Tab fixieren' },
     { key: 'zeta.xc-tab-bar.menu.unpin', value: 'Tab lösen' },
 
-    { key: 'zeta.xc-tab-bar.menu.activate-left', value: 'Nach links wechseln' },
-    { key: 'zeta.xc-tab-bar.menu.activate-right', value: 'Nach rechts wechseln' },
+    { key: 'zeta.xc-tab-bar.menu.activate-start', value: 'Zum Anfang springen' },
+    { key: 'zeta.xc-tab-bar.menu.activate-end', value: 'Zum Ende springen' },
 
     { key: 'zeta.xc-tab-bar.menu.move-actions', value: 'Weitere Aktionen' },
 
+    { key: 'zeta.xc-tab-bar.menu.activate-left', value: 'Nach links wechseln' },
+    { key: 'zeta.xc-tab-bar.menu.activate-right', value: 'Nach rechts wechseln' },
     { key: 'zeta.xc-tab-bar.menu.move-left', value: 'Nach links verschieben' },
     { key: 'zeta.xc-tab-bar.menu.move-right', value: 'Nach rechts verschieben' },
     { key: 'zeta.xc-tab-bar.menu.move-start', value: 'An Anfang verschieben' },
