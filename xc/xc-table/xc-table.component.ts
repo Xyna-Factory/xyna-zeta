@@ -409,15 +409,15 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                         if (this.dataSource.filterEnumsAsInput.has(path)) {
                             filter.template.asInput = true;
                             filter.template.suffix = 'clear';
+                        } else if (this.dataSource.filterEnumsAsMultiselect.has(path) || column.filterMultiselect) {
+                            filter.template.asDropdown = true;
+                            filter.template.asMultiselect = true;
+                            filter.template.multiSelectCallback = (value: string) => {
+                                this.dataSource.setFilter(path, value);
+                                this.dataSource.applyFilters();
+                            };
                         } else {
                             filter.template.asDropdown = true;
-                            if (column.filterMultiselect) {
-                                filter.template.asMultiselect = true;
-                                filter.template.multiSelectCallback = (value: string) => {
-                                    this.dataSource.setFilter(path, value);
-                                    this.dataSource.applyFilters();
-                                };
-                            }
                         }
                     }
                 } else {
