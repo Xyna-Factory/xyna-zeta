@@ -15,12 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NgClass } from '@angular/common';
 import { Component, EventEmitter, HostBinding, inject, Input, OnInit, Output } from '@angular/core';
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-
 import { I18nService, LocaleService } from '@zeta/i18n';
 
 import { coerceBoolean, isBoolean } from '../../../../base';
@@ -36,17 +34,6 @@ import { XcNavListItem, XcNavListOrientation } from '../xc-nav-list.types';
     selector: 'xc-nav-list-item',
     templateUrl: './xc-nav-list-item.component.html',
     styleUrls: ['./xc-nav-list-item.component.scss'],
-    animations: [
-        trigger('toggleAnimation', [
-            state('collapsed', style({
-                'display': 'none'
-            })),
-            state('expanded', style({
-                'display': 'block'
-            })),
-            transition('* => *', animate('0ms ease-in'))
-        ])
-    ],
     imports: [MatListItem, NgClass, XcIconComponent, RouterLinkActive, RouterLink, XcTooltipDirective]
 })
 export class XcNavListItemComponent extends XcThemeableComponent implements OnInit {
@@ -134,7 +121,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     }
 
 
-    get tooltipPosition(): string {
+    get tooltipPosition(): XcTooltipPosition {
         switch (this.orientation) {
             case XcNavListOrientation.TOP: return XcTooltipPosition.bottom;
             case XcNavListOrientation.RIGHT: return XcTooltipPosition.left;
@@ -142,11 +129,6 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
             case XcNavListOrientation.LEFT: return XcTooltipPosition.right;
             default: return undefined;
         }
-    }
-
-
-    get toggleAnimation(): string {
-        return this.collapsed ? 'collapsed' : 'expanded';
     }
 
 

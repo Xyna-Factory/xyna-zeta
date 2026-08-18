@@ -1,4 +1,3 @@
-import { AsyncPipe, NgStyle } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,10 +15,11 @@ import { AsyncPipe, NgStyle } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild, inject } from '@angular/core';
-
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
+
+import { AsyncPipe, NgStyle } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 
 import { coerceBoolean } from '../../../../base';
 import { I18nService } from '../../../../i18n';
@@ -36,7 +36,7 @@ import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.compone
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgStyle, XcIconButtonComponent, XcTooltipDirective, AsyncPipe]
 })
-export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterViewInit, OnDestroy {
+export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode> implements AfterViewInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
     readonly i18n = inject(I18nService);
 
@@ -53,7 +53,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
     readonly expand = new EventEmitter<XcStructureTreeNode>();
 
     @Output()
-    readonly widthChange = new EventEmitter<ResizeEvent>();
+    readonly widthChange = new EventEmitter<ResizeEvent<XcStructureTreeNode>>();
 
     expanded = false;
     indentation = 0;
@@ -76,9 +76,12 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
     }
 
 
-    childWidthChange(event: ResizeEvent) {
+    childWidthChange(event: ResizeEvent<XcStructureTreeNode>) {
         const maxChildWidth = this.updateChildWidth(event.node, event.width);
-        this.widthChange.emit({ node: this.node, width: Math.max(maxChildWidth, this.initialWidth) });
+        this.widthChange.emit({
+            node: this.node,
+            width: Math.max(maxChildWidth, this.initialWidth)
+        });
     }
 
 
@@ -144,7 +147,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
     }
 
 
-    @Input({alias: 'xc-tree-item-keep-breaks', transform: coerceBoolean})
+    @Input({ alias: 'xc-tree-item-keep-breaks', transform: coerceBoolean })
     set keepBreaks(value: boolean) {
         this._keepBreaks = value;
     }

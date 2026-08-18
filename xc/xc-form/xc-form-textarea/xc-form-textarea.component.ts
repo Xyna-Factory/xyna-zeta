@@ -1,3 +1,4 @@
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,15 +17,12 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component, forwardRef, Input, numberAttribute } from '@angular/core';
-
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { coerceBoolean } from '@zeta/base';
 
 import { XcFormBaseComponent } from '../xc-form-base/xc-form-base.component';
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { BooleanKeyframeTrack } from 'three';
 
 
 @Component({

@@ -174,7 +174,7 @@ export class XcTreeComponent implements OnDestroy {
     }
 
 
-    @Input('xc-tree-multiselect')
+
     @Input({alias: 'xc-tree-multiselect', transform: coerceBoolean})
     set multiSelect(value: boolean) {
         this._multiSelect = value;

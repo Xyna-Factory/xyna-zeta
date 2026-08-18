@@ -18,14 +18,14 @@
 import { XcTreeNode } from '../../xc-tree-data-source';
 
 
-export interface ResizeEvent {
-    node: XcTreeNode;
+export interface ResizeEvent<T extends XcTreeNode<T>> {
+    node: T;
     width: number;
 }
 
-export class XcTreeNodeComponent {
+export class XcTreeNodeComponent<T extends XcTreeNode> {
 
-    childWidths: Map<XcTreeNode, number> = new Map<XcTreeNode, number>();
+    childWidths = new Map<T, number>();
 
 
     /**
@@ -35,7 +35,7 @@ export class XcTreeNodeComponent {
      *
      * @return Maximum width over all children
      */
-    updateChildWidth(node: XcTreeNode, width: number): number {
+    updateChildWidth(node: T, width: number): number {
         this.childWidths.set(node, width);
         let maxChildWidth = 0;
         for (const childWidth of this.childWidths.values()) {

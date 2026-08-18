@@ -23,10 +23,10 @@ import { XcSelectionModel } from '../shared/xc-selection';
 import { XcTemplate } from '../xc-template/xc-template';
 
 
-export interface XcTreeNode {
-    parent: this;
+export interface XcTreeNode<T extends XcTreeNode<T> = any> {
+    parent: T;
     name: string;
-    children?: BehaviorSubject<this[]>;
+    children?: BehaviorSubject<T[]>;
     value?: XcTemplate[] | any;
     readonly?: boolean;
     disabled?: boolean;
@@ -38,7 +38,7 @@ export interface XcTreeNode {
 }
 
 
-export abstract class XcTreeDataSource<T extends XcTreeNode> extends XcDataSource<T> {
+export abstract class XcTreeDataSource<T extends XcTreeNode<T>> extends XcDataSource<T> {
 
     protected readonly _selectionModel = new XcSelectionModel<T>();
 

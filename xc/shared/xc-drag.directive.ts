@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, Output, Renderer2, SimpleChanges, inject } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, inject, Input, NgZone, OnChanges, OnDestroy, Output, Renderer2, SimpleChanges } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 
@@ -108,11 +108,11 @@ export class XcDragDirective implements OnChanges, OnDestroy {
 
         this.globalListeners
             .set(moveEvent, {
-                handler: this.onMousemove.bind(this),
+                handler: event => this.onMousemove(event as MouseEvent | TouchEvent),
                 options: false
             })
             .set(upEvent, {
-                handler: this.onMouseup.bind(this),
+                handler: event => this.onMouseup(event as MouseEvent | TouchEvent),
                 options: false
             });
 

@@ -15,10 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ValidatorFn } from '@angular/forms';
-
 import { combineLatest, merge, Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+
+import { ValidatorFn } from '@angular/forms';
 
 import { Xo, XoArray, XoArrayClass, XoObject, XoObjectClass, XoProperty, XoTransient } from '../../../../api';
 import { XoXPRCRuntimeContext } from '../../../../api/xo/runtime-context.model';
@@ -308,7 +308,7 @@ export class XoTablePanelDefinition extends XoFormPanelDefinition {
 
     @XoProperty()
     @XoTransient()
-    tableDataSource: XcTableDataSource;
+    tableDataSource: XcTableDataSource<XoObject>;
 
 
     protected afterDecode() {
@@ -334,7 +334,7 @@ export class XoTablePanelDefinition extends XoFormPanelDefinition {
     /**
      * @inheritdoc
      */
-    getTableDataSource(): XcTableDataSource {
+    getTableDataSource(): XcTableDataSource<XoObject> {
         return this.tableDataSource;
     }
 }

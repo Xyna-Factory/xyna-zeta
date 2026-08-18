@@ -10,13 +10,14 @@
     >{{instance}}</span>
   }
   @case (Type.XcFormTextTemplate.of(instance)) {
-    <xc-form-text [label]="instance.label"
-      [class]="instance.stylename"
-      [value]="instance.dataWrapper.value"
+    @let formText = $any(instance);
+    <xc-form-text [label]="formText.label"
+      [class]="formText.stylename"
+      [value]="formText.dataWrapper.value"
       [xc-form-field-aria-label]="ariaLabel"
-      [xc-form-field-compact]="instance.compact"
-      [xc-form-field-floatlabel]="instance.floatLabel"
-      xc-tooltip="{{instance.tooltip}}"
+      [xc-form-field-compact]="formText.compact"
+      [xc-form-field-floatlabel]="formText.floatLabel"
+      xc-tooltip="{{formText.tooltip}}"
      />
   }
   <!--
@@ -25,111 +26,120 @@
   This is why no class or tooltip is set here, because the element vanishes after unwrapping.
   -->
   @case (Type.XcDefinitionListEntryTemplate.of(instance)) {
-    <xc-definition-list-entry [definitionType]="instance.label"
-      [definitionData]="instance.data"
+    @let definitionListEntry = $any(instance);
+    <xc-definition-list-entry [definitionType]="definitionListEntry.label"
+      [definitionData]="definitionListEntry.data"
       xc-unwrap
      />
   }
   @case (Type.XcFormAutocompleteTemplate.of(instance)) {
-    <xc-form-autocomplete [label]="instance.label"
-      [placeholder]="instance.placeholder"
-      [readonly]="instance.readonly || readonly"
-      [disabled]="instance.disabled || disabled"
-      [class]="instance.stylename"
-      [xc-form-validators]="instance.validators"
-      [xc-form-validator-required]="instance.required"
+    @let formAutocomplete = $any(instance);
+    <xc-form-autocomplete [label]="formAutocomplete.label"
+      [placeholder]="formAutocomplete.placeholder"
+      [readonly]="formAutocomplete.readonly || readonly"
+      [disabled]="formAutocomplete.disabled || disabled"
+      [class]="formAutocomplete.stylename"
+      [xc-form-validators]="formAutocomplete.validators"
+      [xc-form-validator-required]="formAutocomplete.required"
       [xc-form-field-aria-label]="ariaLabel"
-      [xc-form-field-compact]="instance.compact"
-      [xc-form-field-suffix]="instance.suffix"
-      [xc-form-field-floatlabel]="instance.floatLabel"
-      [xc-form-field-indicatechanges]="instance.indicateChanges"
-      [xc-form-field-callback]="instance.callback"
-      [(xc-form-autocomplete-option)]="instance.dataWrapper.value"
-      [xc-form-autocomplete-options]="instance.dataWrapper.values"
-      [xc-form-autocomplete-asinput]="instance.asInput"
-      [xc-form-autocomplete-asdropdown]="instance.asDropdown"
-      [xc-form-autocomplete-asmultiselect]="instance.asMultiselect"
-      (xc-form-autocomplete-multiSelectChange)="instance.multiSelectCallback?.($event)"
-      xc-tooltip="{{instance.tooltip}}"
+      [xc-form-field-compact]="formAutocomplete.compact"
+      [xc-form-field-suffix]="formAutocomplete.suffix"
+      [xc-form-field-floatlabel]="formAutocomplete.floatLabel"
+      [xc-form-field-indicatechanges]="formAutocomplete.indicateChanges"
+      [xc-form-field-callback]="formAutocomplete.callback"
+      [(xc-form-autocomplete-option)]="formAutocomplete.dataWrapper.value"
+      [xc-form-autocomplete-options]="formAutocomplete.dataWrapper.values"
+      [xc-form-autocomplete-asinput]="formAutocomplete.asInput"
+      [xc-form-autocomplete-asdropdown]="formAutocomplete.asDropdown"
+      [xc-form-autocomplete-asmultiselect]="formAutocomplete.asMultiselect"
+      (xc-form-autocomplete-multiSelectChange)="formAutocomplete.multiSelectCallback?.($event)"
+      xc-tooltip="{{formAutocomplete.tooltip}}"
      />
   }
   @case (Type.XcFormInputTemplate.of(instance)) {
-    <xc-form-input [label]="instance.label"
-      [placeholder]="instance.placeholder"
-      [readonly]="instance.readonly || readonly"
-      [disabled]="instance.disabled || disabled"
-      [class]="instance.stylename"
-      [(value)]="instance.dataWrapper.value"
-      [type]="instance.type"
-      [xc-form-validators]="instance.validators"
-      [xc-form-validator-required]="instance.required"
+    @let formInput = $any(instance);
+    <xc-form-input [label]="formInput.label"
+      [placeholder]="formInput.placeholder"
+      [readonly]="formInput.readonly || readonly"
+      [disabled]="formInput.disabled || disabled"
+      [class]="formInput.stylename"
+      [(value)]="formInput.dataWrapper.value"
+      [type]="formInput.type"
+      [xc-form-validators]="formInput.validators"
+      [xc-form-validator-required]="formInput.required"
       [xc-form-field-aria-label]="ariaLabel"
-      [xc-form-field-compact]="instance.compact"
-      [xc-form-field-suffix]="instance.suffix"
-      [xc-form-field-floatlabel]="instance.floatLabel"
-      [xc-form-field-indicatechanges]="instance.indicateChanges"
-      [xc-form-field-callback]="instance.callback"
-      xc-tooltip="{{instance.tooltip}}"
+      [xc-form-field-compact]="formInput.compact"
+      [xc-form-field-suffix]="formInput.suffix"
+      [xc-form-field-floatlabel]="formInput.floatLabel"
+      [xc-form-field-indicatechanges]="formInput.indicateChanges"
+      [xc-form-field-callback]="formInput.callback"
+      xc-tooltip="{{formInput.tooltip}}"
       [iconTooltip]="toolTip"
      />
   }
   @case (Type.XcFormTextAreaTemplate.of(instance)) {
-    <xc-form-textarea [label]="instance.label"
-      [placeholder]="instance.placeholder"
-      [readonly]="instance.readonly || readonly"
-      [disabled]="instance.disabled || disabled"
-      [class]="instance.stylename"
-      [(value)]="instance.dataWrapper.value"
-      [xc-form-validators]="instance.validators"
-      [xc-form-validator-required]="instance.required"
+    @let formTextarea = $any(instance);
+    <xc-form-textarea [label]="formTextarea.label"
+      [placeholder]="formTextarea.placeholder"
+      [readonly]="formTextarea.readonly || readonly"
+      [disabled]="formTextarea.disabled || disabled"
+      [class]="formTextarea.stylename"
+      [(value)]="formTextarea.dataWrapper.value"
+      [xc-form-validators]="formTextarea.validators"
+      [xc-form-validator-required]="formTextarea.required"
       [xc-form-field-aria-label]="ariaLabel"
-      [xc-form-field-compact]="instance.compact"
-      [xc-form-field-floatlabel]="instance.floatLabel"
-      [xc-form-field-indicatechanges]="instance.indicateChanges"
-      [xc-form-field-callback]="instance.callback"
-      [xc-form-textarea-lines]="instance.lines"
-      xc-tooltip="{{instance.tooltip}}"
+      [xc-form-field-compact]="formTextarea.compact"
+      [xc-form-field-floatlabel]="formTextarea.floatLabel"
+      [xc-form-field-indicatechanges]="formTextarea.indicateChanges"
+      [xc-form-field-callback]="formTextarea.callback"
+      [xc-form-textarea-lines]="formTextarea.lines"
+      xc-tooltip="{{formTextarea.tooltip}}"
      />
   }
   @case (Type.XcCheckboxTemplate.of(instance)) {
-    <xc-checkbox [label]="instance.label"
-      [color]="instance.color"
-      [readonly]="instance.readonly || readonly"
-      [disabled]="instance.disabled || disabled"
-      [class]="instance.stylename"
-      [(checked)]="instance.dataWrapper.value"
-      [indeterminate]="instance.indeterminate"
-      xc-tooltip="{{instance.tooltip}}"
+    @let formCheckbox = $any(instance);
+    <xc-checkbox [label]="formCheckbox.label"
+      [color]="formCheckbox.color"
+      [readonly]="formCheckbox.readonly || readonly"
+      [disabled]="formCheckbox.disabled || disabled"
+      [class]="formCheckbox.stylename"
+      [(checked)]="formCheckbox.dataWrapper.value"
+      [indeterminate]="formCheckbox.indeterminate"
+      xc-tooltip="{{formCheckbox.tooltip}}"
       [attr.aria-label]="ariaLabel"
      />
   }
   @case (Type.XcButtonTemplate.of(instance)) {
+    @let formButton = $any(instance);
     <xc-button
-      [color]="instance.color"
-      [disabled]="instance.disabled || disabled || instance.busy"
-      [busy]="instance.busy"
-      [class]="instance.stylename"
-      xc-tooltip="{{instance.tooltip}}"
+      [color]="formButton.color"
+      [disabled]="formButton.disabled || disabled || formButton.busy"
+      [busy]="formButton.busy"
+      [class]="formButton.stylename"
+      xc-tooltip="{{formButton.tooltip}}"
       [xc-button-aria-label]="ariaLabel"
-      (click)="instance.action()"
-      ><xc-icon [color]="instance.color" [xc-icon-name]="instance.iconName" [xc-icon-style]="instance.iconStyle" [xc-icon-size]="instance.iconSize">{{instance.label}}</xc-icon></xc-button>
+      (click)="formButton.action()"
+      ><xc-icon [color]="formButton.color" [xc-icon-name]="formButton.iconName" [xc-icon-style]="formButton.iconStyle" [xc-icon-size]="formButton.iconSize">{{formButton.label}}</xc-icon></xc-button>
     }
     @case (Type.XcIconButtonTemplate.of(instance)) {
-      <xc-icon-button [color]="instance.color"
-        [disabled]="instance.disabled || disabled || instance.busy"
-        [busy]="instance.busy"
-        [class]="instance.stylename"
-        [xc-icon-name]="instance.iconName"
-        [xc-icon-style]="instance.iconStyle"
-        [xc-icon-size]="instance.iconSize"
-        xc-tooltip="{{instance.tooltip}}"
-        xc-button-aria-label="{{ariaLabel + (instance.label ? ' - ' + instance.label : '')}}"
-        (click)="instance.action()"
+      @let iconButton = $any(instance);
+      <xc-icon-button 
+        [color]="iconButton.color"
+        [disabled]="iconButton.disabled || disabled || iconButton.busy"    
+        [busy]="iconButton.busy"
+        [class]="iconButton.stylename"
+        [xc-icon-name]="iconButton.iconName"
+        [xc-icon-style]="iconButton.iconStyle"
+        [xc-icon-size]="iconButton.iconSize"
+        xc-tooltip="{{iconButton.tooltip}}"
+        xc-button-aria-label="{{ariaLabel + (iconButton.label ? ' - ' + iconButton.label : '')}}"
+        (click)="iconButton.action()"
        />
     }
     @case (Type.XcComponentTemplate.of(instance)) {
-      <ng-container [ngComponentOutlet]="instance.component"
-        [ngComponentOutletInjector]="instance.getComponentInjector(injector)"
+      @let componentTemplate = $any(instance);
+      <ng-container [ngComponentOutlet]="componentTemplate.component"
+        [ngComponentOutletInjector]="componentTemplate.getComponentInjector(injector)"
        />
     }
   }

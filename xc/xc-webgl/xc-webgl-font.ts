@@ -15,11 +15,11 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Type } from '@angular/core';
-
 import { Observable, of, Subject } from 'rxjs';
 import { Box2, BufferGeometry, Shape, Vector2 } from 'three';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+
+import { Type } from '@angular/core';
 
 
 export enum XcWebGLFontAlignment {
@@ -34,16 +34,24 @@ export class XcWebGLFont {
     protected static fontMap = new Map<string, Font>();
     protected static fontLoader = new FontLoader();
 
-    static load<T extends XcWebGLFont>(url: string, clazz?: Type<T>, ...args: any[]): Observable<T | XcWebGLFont> {
-        const createInstance = (font: Font): T | XcWebGLFont => clazz
-            ? new clazz(font, ...args)
-            : new XcWebGLFont(font);
-        // return font from cache
+    // Overload 1
+    static load(url: string): Observable<XcWebGLFont>;
+
+    // Overload 2
+    static load<T extends XcWebGLFont>(url: string, clazz: Type<T>, ...args: any[]): Observable<T>;
+
+    // Implementierung
+    static load<T extends XcWebGLFont>(url: string, clazz?: Type<T>, ...args: any[]): Observable<XcWebGLFont | T> {
+
+        const createInstance = (font: Font): T | XcWebGLFont =>
+            clazz ? new clazz(font, ...args) : new XcWebGLFont(font);
+
         if (XcWebGLFont.fontMap.has(url)) {
             return of(createInstance(XcWebGLFont.fontMap.get(url)));
         }
-        // load font from url and store in cache
-        const subject = new Subject<T | XcWebGLFont>();
+
+        const subject = new Subject<XcWebGLFont | T>();
+
         XcWebGLFont.fontLoader.load(
             url,
             font => {
@@ -54,15 +62,16 @@ export class XcWebGLFont {
             undefined,
             event => subject.error(event)
         );
+
         return subject.asObservable();
     }
 
 
     static getAlignmentFactor(alignment: XcWebGLFontAlignment): number {
         switch (alignment) {
-            case XcWebGLFontAlignment.LEFT:   return 0.0;
+            case XcWebGLFontAlignment.LEFT: return 0.0;
             case XcWebGLFontAlignment.CENTER: return 0.5;
-            case XcWebGLFontAlignment.RIGHT:  return 1.0;
+            case XcWebGLFontAlignment.RIGHT: return 1.0;
         }
     }
 
@@ -75,12 +84,12 @@ export class XcWebGLFont {
         const shapes = this.font.generateShapes(text, size);
         shapes.forEach(shape =>
             shape.getPoints().forEach(point => {
-                 
+
                 if (point.x < boundingBox.min.x) { boundingBox.min.x = point.x; }
                 if (point.x > boundingBox.max.x) { boundingBox.max.x = point.x; }
                 if (point.y < boundingBox.min.y) { boundingBox.min.y = point.y; }
                 if (point.y > boundingBox.max.y) { boundingBox.max.y = point.y; }
-                 
+
             })
         );
         return shapes;
@@ -98,7 +107,7 @@ export class XcWebGLFont {
         const width = boundingBox.max.x - boundingBox.min.x;
         const factor = XcWebGLFont.getAlignmentFactor(alignment);
         const alignmentOffset = -(boundingBox.min.x + factor * width);
-        const paddingOffset   = -(factor * 2 - 1) * padding;
+        const paddingOffset = -(factor * 2 - 1) * padding;
         return geometry.translate(alignmentOffset + paddingOffset, 0, 0);
     }
 }

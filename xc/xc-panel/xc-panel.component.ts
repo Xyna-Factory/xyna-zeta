@@ -44,9 +44,9 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
     private static readonly headerMouseDownEventName = 'mousedown';
     private static readonly headerMouseUpEventName = 'mouseup';
 
-    private _headerElement: Element;
-    private _headerLabelElement: Element;
-    private _toggleButtonElement: Element;
+    private _headerElement: HTMLElement;
+    private _headerLabelElement: HTMLLabelElement;
+    private _toggleButtonElement: HTMLElement;
     private _ariaLabel: string;
     private _collapsed = false;
     private _collapsable = false;

@@ -1,3 +1,5 @@
+import { filter, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2024 Xyna GmbH, Germany
@@ -16,14 +18,12 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component, inject, Injector } from '@angular/core';
-
 import { ApiService, StartOrderOptionsBuilder, Xo, XoManagedFileID, XoXPRCRuntimeContext, XoXPRCRuntimeContextFromRuntimeContext } from '@zeta/api';
+import { ConfigService } from '@zeta/api/config.service';
 import { pack } from '@zeta/base';
 import { I18nService } from '@zeta/i18n';
 import { XcDialogComponent } from '@zeta/xc/xc-dialog/xc-dialog.component';
 import { XcDialogService } from '@zeta/xc/xc-dialog/xc-dialog.service';
-
-import { filter, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../../../i18n';
 import { XcButtonComponent } from '../../../xc-button/xc-button.component';
@@ -32,7 +32,6 @@ import { XcFormDirective } from '../../xc-form-base/xc-form.directive';
 import { XcDefinitionProxyComponent } from '../containers/xc-definition-proxy/xc-definition-proxy.component';
 import { XoBaseDefinition, XoDefinition, XoDefinitionBundle, XoDefinitionObserver } from '../xo/base-definition.model';
 import { XoStartOrderButtonDefinition } from '../xo/item-definition.model';
-import { ConfigService } from '@zeta/api/config.service';
 
 
 @Component({

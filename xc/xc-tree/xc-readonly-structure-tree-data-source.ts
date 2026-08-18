@@ -23,7 +23,7 @@ import { XcBaseStructureTreeDataSource } from './xc-base-structure-tree-data-sou
 import { XcTreeNode } from './xc-tree-data-source';
 
 
-export interface XcStructureTreeNode extends XcTreeNode {
+export interface XcStructureTreeNode extends XcTreeNode<XcStructureTreeNode> {
     field: XoStructureField;
     complete: boolean;      // structure for this node has already been requested
     expandable: boolean;

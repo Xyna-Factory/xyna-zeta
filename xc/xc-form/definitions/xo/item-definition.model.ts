@@ -1,3 +1,6 @@
+import { combineLatest, Observable, of } from 'rxjs';
+import { filter, map, mergeMap, tap } from 'rxjs/operators';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,18 +20,15 @@
  */
 import { ValidatorFn } from '@angular/forms';
 
-import { isArray } from '../../../../base';
-import { combineLatest, Observable, of } from 'rxjs';
-import { filter, map, mergeMap, tap } from 'rxjs/operators';
-
 import { Xo, XoArray, XoArrayClass, XoObjectClass, XoProperty } from '../../../../api';
 import { XoXPRCRuntimeContext } from '../../../../api/xo/runtime-context.model';
+import { isArray } from '../../../../base';
 import { XcIdentityDataWrapper } from '../../../shared/xc-data-wrapper';
 import { XcOptionItem } from '../../../shared/xc-item';
-import { XcButtonTemplate, XcButtonBaseTemplate, XcCheckboxTemplate, XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTextAreaTemplate, XcTemplate, XcDefinitionListEntryTemplate, XcFormTextTemplate } from '../../../xc-template/xc-template';
+import { XcButtonBaseTemplate, XcButtonTemplate, XcCheckboxTemplate, XcDefinitionListEntryTemplate, XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTextAreaTemplate, XcFormTextTemplate, XcTemplate } from '../../../xc-template/xc-template';
 import { XcAutocompleteDataWrapper } from '../../xc-form-autocomplete/xc-form-autocomplete.component';
-import { XoBaseDefinition, XoDefinition, XoDefinitionObserver, XoDefinitionWorkflow } from './base-definition.model';
 import { XcDefinitionEventService, XoDefinitionEventArray } from '../xc-definition-event.service';
+import { XoBaseDefinition, XoDefinition, XoDefinitionObserver, XoDefinitionWorkflow } from './base-definition.model';
 
 
 /***********************************************
@@ -57,7 +57,7 @@ export class XoTextItemDefinition extends XoItemDefinition {
         if (!this.isHiddenFor(data)) {
             const template = new XcFormTextTemplate(new XcIdentityDataWrapper<string>(
                 () => this.resolveData(data).join(', '),
-                () => {}
+                () => { }
             ));
             template.compact = true;
             template.stylename = this.style;
@@ -210,7 +210,7 @@ export class XoPossibleValuesDefinition extends XoDefinition {
             console.warn('No possible values defined for DropDown. DataPath of PossibleValuesDefinition: ' + this.dataPath);
         }
 
-        return rawOptionsList.data.map(item => <XcOptionItem>{name: item.resolve(this.listItemLabelPath), value: item.resolve(this.listItemValuePath)});
+        return rawOptionsList.data.map(item => <XcOptionItem>{ name: item.resolve(this.listItemLabelPath), value: item.resolve(this.listItemValuePath) });
     }
 }
 
@@ -395,9 +395,10 @@ export class XoOpenDetailsButtonDefinition extends XoButtonDefinition {
 
 
     getTemplate(data: Xo[]): Observable<XcTemplate> {
-        return super.getTemplate(data).pipe(tap((template: XcButtonBaseTemplate) => {
-            if (template) {
-                template.action = () => {
+        return super.getTemplate(data).pipe(tap(template => {
+            const buttonTemplate = template as XcButtonBaseTemplate;
+            if (buttonTemplate) {
+                buttonTemplate.action = () => {
                     /* Use passed definition or call detail-definition-workflow with resolved data of this button
                      * The output is a new definition and maybe data.
                      * This is passed to the definition observer to open the new definition
@@ -455,9 +456,10 @@ export class XoOpenDialogButtonDefinition extends XoButtonDefinition {
 
 
     getTemplate(data: Xo[]): Observable<XcTemplate> {
-        return super.getTemplate(data).pipe(tap((template: XcButtonBaseTemplate) => {
-            if (template) {
-                template.action = () => {
+        return super.getTemplate(data).pipe(tap(template => {
+            const buttonTemplate = template as XcButtonBaseTemplate;
+            if (buttonTemplate) {
+                buttonTemplate.action = () => {
                     /* Use passed definition or call detail-definition-workflow with resolved data of this button
                      * The output is a new definition and maybe data.
                      * This is passed to the definition observer to open the new definition
@@ -513,9 +515,10 @@ export class XoStartOrderButtonDefinition extends XoButtonDefinition {
 
 
     getTemplate(data: Xo[]): Observable<XcTemplate> {
-        return super.getTemplate(data).pipe(tap((template: XcButtonBaseTemplate) => {
-            if (template) {
-                template.action = () => {
+        return super.getTemplate(data).pipe(tap(template => {
+            const buttonTemplate = template as XcButtonBaseTemplate;
+            if (buttonTemplate) {
+                buttonTemplate.action = () => {
                     // let observer start the Workflow
                     if (this.observer && this.observer.startOrder) {
                         const resolvedData = this.resolveData(data);
@@ -526,12 +529,12 @@ export class XoStartOrderButtonDefinition extends XoButtonDefinition {
                                 }
                             },
                             complete() {
-                                template.busy = false;
-                                template.triggerMarkForCheck();
+                                buttonTemplate.busy = false;
+                                buttonTemplate.triggerMarkForCheck();
                             }
                         });
-                        template.busy = true;
-                        template.triggerMarkForCheck();
+                        buttonTemplate.busy = true;
+                        buttonTemplate.triggerMarkForCheck();
                     }
                 };
             }
@@ -558,9 +561,10 @@ export class XoDefinitionEventButtonDefinition extends XoButtonDefinition {
 
 
     getTemplate(data: Xo[]): Observable<XcTemplate> {
-        return super.getTemplate(data).pipe(tap((template: XcButtonBaseTemplate) => {
-            if (template) {
-                template.action = () => {
+        return super.getTemplate(data).pipe(tap(template => {
+            const buttonTemplate = template as XcButtonBaseTemplate;
+            if (buttonTemplate) {
+                buttonTemplate.action = () => {
                     if (this.onClickEvent?.data) {
                         const resolvedData = this.resolveData(data);
                         XcDefinitionEventService.eventService?.triggerEventById(this.onClickEvent.data.map(e => e.eventId), resolvedData);
@@ -590,21 +594,22 @@ export class XoUploadButtonDefinition extends XoButtonDefinition {
 
 
     getTemplate(data: Xo[]): Observable<XcTemplate> {
-        return super.getTemplate(data).pipe(tap((template: XcButtonBaseTemplate) => {
-            if (template) {
-                template.action = () => {
+        return super.getTemplate(data).pipe(tap(template => {
+            const buttonTemplate = template as XcButtonBaseTemplate;
+            if (buttonTemplate) {
+                buttonTemplate.action = () => {
                     if (this.observer && this.observer.uploadFile) {
                         this.observer.uploadFile(this.host).subscribe({
                             next: managedFileId => {
                                 this.resolveAssignData(data, managedFileId.iD);
                             },
-                            complete : () => {
-                                template.busy = false;
-                                template.triggerMarkForCheck();
+                            complete: () => {
+                                buttonTemplate.busy = false;
+                                buttonTemplate.triggerMarkForCheck();
                             }
                         });
-                        template.busy = true;
-                        template.triggerMarkForCheck();
+                        buttonTemplate.busy = true;
+                        buttonTemplate.triggerMarkForCheck();
                     }
                 };
             }

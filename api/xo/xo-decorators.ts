@@ -42,17 +42,17 @@ export function XoObjectClass(baseClass: XoObjectClassInterface, path?: string, 
             static ctor = Object.getPrototypeOf(XoObjectDecorator);
             // static functions for decorator class
             static getAccessorMap() { return accessorMap ??= XoAccessorPropertyMap(XoObjectDecorator); }
-            static getAsyncMap()    { return ctorAsyncMap.get(XoObjectDecorator.ctor) ?? ctorAsyncMap.set(XoObjectDecorator.ctor, new Map()).get(XoObjectDecorator.ctor); }
+            static getAsyncMap() { return ctorAsyncMap.get(XoObjectDecorator.ctor) ?? ctorAsyncMap.set(XoObjectDecorator.ctor, new Map()).get(XoObjectDecorator.ctor); }
             // static properties for decorator class
             static readonly derivedClasses = new Map();
             static readonly rtc = rtc ?? baseClass?.rtc;
             static readonly fqn = FullQualifiedName.fromPathName(path, name) ?? baseClass?.fqn;
             // overwrite get/set instance methods
             get derivedClasses(): ReadonlyMap<string, XoObjectClassInterface> { return XoObjectDecorator.derivedClasses; }
-            get decoratorClass(): XoObjectClassInterface                      { return XoObjectDecorator; }
-            get rtc(): RuntimeContext         { return this._rtc ?? XoObjectDecorator.rtc; }
-            set rtc(value: RuntimeContext)    { this._rtc = value; }
-            get fqn(): FullQualifiedName      { return this._fqn ?? XoObjectDecorator.fqn; }
+            get decoratorClass(): XoObjectClassInterface { return XoObjectDecorator; }
+            get rtc(): RuntimeContext { return this._rtc ?? XoObjectDecorator.rtc; }
+            set rtc(value: RuntimeContext) { this._rtc = value; }
+            get fqn(): FullQualifiedName { return this._fqn ?? XoObjectDecorator.fqn; }
             set fqn(value: FullQualifiedName) { this._fqn = value; }
         };
         /*
@@ -93,12 +93,12 @@ export function XoArrayClass(genericClass: XoObjectClassInterface) {
             static readonly rtc = genericClass?.rtc;
             static readonly fqn = genericClass?.fqn;
             // overwrite get/set instance methods
-            get genericClass(): XoObjectClassInterface                       { return XoArrayDecorator.genericClass; }
+            get genericClass(): XoObjectClassInterface { return XoArrayDecorator.genericClass; }
             get derivedClasses(): ReadonlyMap<string, XoArrayClassInterface> { return XoArrayDecorator.derivedClasses; }
-            get decoratorClass(): XoArrayClassInterface                      { return XoArrayDecorator; }
-            get rtc(): RuntimeContext         { return this._rtc ?? XoArrayDecorator.rtc; }
-            set rtc(value: RuntimeContext)    { this._rtc = value; }
-            get fqn(): FullQualifiedName      { return this._fqn ?? XoArrayDecorator.fqn; }
+            get decoratorClass(): XoArrayClassInterface { return XoArrayDecorator; }
+            get rtc(): RuntimeContext { return this._rtc ?? XoArrayDecorator.rtc; }
+            set rtc(value: RuntimeContext) { this._rtc = value; }
+            get fqn(): FullQualifiedName { return this._fqn ?? XoArrayDecorator.fqn; }
             set fqn(value: FullQualifiedName) { this._fqn = value; }
         };
         // add to the base class' list of derived classes (if another class with same FQN hasn't been stored, yet)
@@ -119,7 +119,7 @@ export function XoArrayClass(genericClass: XoObjectClassInterface) {
  * @param propertyClass Class, which property is derived from
  */
 export function XoProperty(propertyClass?: XoObjectClassInterface | XoArrayClassInterface) {
-    return function(target: XoObject, key: string) {
+    return function (target: XoObject, key: string) {
         // delete property
         if (delete target[key]) {
             // create new property with getter and setter
@@ -133,25 +133,25 @@ export function XoProperty(propertyClass?: XoObjectClassInterface | XoArrayClass
             Object.defineProperty(target, key, {
                 enumerable: true,
                 get: wrapper
-                    ? function() {
+                    ? function (this: XoObject) {
                         return wrapper.wrap(this.data[sanitizedKey]);
                     }
-                    : function() {
+                    : function (this: XoObject) {
                         return this.data[sanitizedKey];
                     },
                 set: target.readonlyProperties.has(key)
-                    ? function() {}
+                    ? function (this: XoObject) { }
                     : observable
-                        ? function(value) {
+                        ? function (this: XoObject, value) {
                             if (value == null || enumValues.has(value)) {
                                 this.data[sanitizedKey] = value;
                             }
                         }
                         : wrapper
-                            ? function(value) {
+                            ? function (this: XoObject, value) {
                                 this.data[sanitizedKey] = wrapper.unwrap(value);
                             }
-                            : function(value) {
+                            : function (this: XoObject, value) {
                                 this.data[sanitizedKey] = value;
                             }
             });
@@ -167,7 +167,7 @@ export function XoProperty(propertyClass?: XoObjectClassInterface | XoArrayClass
  * Decorator for an enumerated property, which denotes its assignable values.
  */
 export function XoEnumerated(values: NativeArray = []) {
-    return function(target: XoObject, key: string) {
+    return function (target: XoObject, key: string) {
         const ctor = target.constructor;
         const asyncMap = ctorAsyncMap.get(ctor) ?? ctorAsyncMap.set(ctor, new Map()).get(ctor);
         const subject = asyncMap.get(key) ?? asyncMap.set(key, new BehaviorSubject(values)).get(key);
@@ -181,7 +181,7 @@ export function XoEnumerated(values: NativeArray = []) {
  * Decorator for a wrapped property, which denotes its wrapper.
  */
 export function XoWrapped(wrapper: XoWrapper) {
-    return function(target: XoObject, key: string) {
+    return function (target: XoObject, key: string) {
         const map = new Map(target.wrappedProperties);
         defineAccessorProperty<XoObject, Map<string, XoWrapper>>(target, 'wrappedProperties', () => map).set(key, wrapper);
     };
@@ -192,7 +192,7 @@ export function XoWrapped(wrapper: XoWrapper) {
  * Decorator for a transient property, which is being omited during the encoding process.
  */
 export function XoTransient() {
-    return function(target: XoObject, key: string) {
+    return function (target: XoObject, key: string) {
         const set = new Set(target.transientProperties);
         defineAccessorProperty<XoObject, Set<string>>(target, 'transientProperties', () => set).add(key);
     };
@@ -204,7 +204,7 @@ export function XoTransient() {
  * setter function.
  */
 export function XoReadonly() {
-    return function(target: XoObject, key: string) {
+    return function (target: XoObject, key: string) {
         const set = new Set(target.readonlyProperties);
         defineAccessorProperty<XoObject, Set<string>>(target, 'readonlyProperties', () => set).add(key);
     };
@@ -216,7 +216,7 @@ export function XoReadonly() {
  * xo object instance.
  */
 export function XoUnique() {
-    return function(target: XoObject, key: string) {
+    return function (target: XoObject, key: string) {
         const set = new Set(target.uniqueProperties);
         defineAccessorProperty<XoObject, Set<string>>(target, 'uniqueProperties', () => set).add(key);
     };
@@ -227,7 +227,7 @@ export function XoUnique() {
  * Decorator for an i18n property, which will automatically be translated by the I18nService.
  */
 export function XoI18n() {
-    return function(target: XoObject, key: string) {
+    return function (target: XoObject, key: string) {
         const set = new Set(target.i18nProperties);
         defineAccessorProperty<XoObject, Set<string>>(target, 'i18nProperties', () => set).add(key);
     };

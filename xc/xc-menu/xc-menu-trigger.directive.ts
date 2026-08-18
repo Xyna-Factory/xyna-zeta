@@ -27,7 +27,7 @@ import { XcMenu, XcMenuComponentInterface } from './xc-menu.types';
 @Directive({ selector: '[xc-menu-trigger]', exportAs: 'xcMenuTrigger' })
 export class XcMenuTriggerDirective extends MatMenuTrigger {
 
-    private outsideClickListener?: EventListener;
+    private outsideClickListener?: (event: MouseEvent) => void;
     private previousFocusedElement?: HTMLElement;
 
     @HostBinding('attr.aria-haspopup')

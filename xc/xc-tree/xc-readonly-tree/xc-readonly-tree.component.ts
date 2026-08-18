@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,9 +17,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, QueryList, ViewChildren, inject } from '@angular/core';
-
-import { Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 
 import { XoDescriber, XoStructureArray, XoStructureObject } from '../../../api';
 import { coerceBoolean } from '../../../base';
@@ -36,7 +36,7 @@ import { XcTreeItemComponent } from './xc-tree-item/xc-tree-item.component';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [XcTreeItemComponent]
 })
-export class XcReadonlyTreeComponent extends XcTreeNodeComponent implements OnDestroy {
+export class XcReadonlyTreeComponent extends XcTreeNodeComponent<XcStructureTreeNode> implements OnDestroy {
     private readonly _i18n = inject(I18nService);
     private readonly cdRef = inject(ChangeDetectorRef);
 
@@ -66,7 +66,7 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent implements OnDe
     }
 
 
-    widthChange(event: ResizeEvent) {
+    widthChange(event: ResizeEvent<XcStructureTreeNode>) {
         const propagateWidth = (width: number) => {
             this.firstColumnWidth = width;
             this.cdRef.markForCheck();
@@ -75,8 +75,8 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent implements OnDe
 
         const maxChildWidth = this.updateChildWidth(event.node, event.width);
 
-        // debounce events before propagating new width to all the tree nodes
         clearTimeout(this.changeWidthTimer);
+
         if (event.width !== this.firstColumnWidth) {
             this.changeWidthTimer = setTimeout(propagateWidth, 5, maxChildWidth);
         }
@@ -106,7 +106,7 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent implements OnDe
     }
 
 
-    @Input({alias: 'xc-tree-keep-breaks', transform: coerceBoolean})
+    @Input({ alias: 'xc-tree-keep-breaks', transform: coerceBoolean })
     set keepBreaks(value: boolean) {
         this._keepBreaks = value;
     }

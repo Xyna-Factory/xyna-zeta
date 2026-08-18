@@ -15,9 +15,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable, inject } from '@angular/core';
-
 import { Observable, Subject } from 'rxjs';
+
+import { inject, Injectable } from '@angular/core';
 
 import { OutsideListenerService } from './outside-listener.service';
 
@@ -39,7 +39,7 @@ export interface keyBoardObject {
 }
 
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export abstract class KeyDistributionService {
     private readonly outsideListenerService = inject(OutsideListenerService);
 
@@ -50,8 +50,17 @@ export abstract class KeyDistributionService {
     constructor() {
         const outsideListenerService = this.outsideListenerService;
 
-        outsideListenerService.addOutsideListener(<HTMLElement><unknown>window, 'keydown', (e: KeyboardEvent) => this.keyEvent(e, KeyboardEventType.KEY_TYPE_DOWN));
-        outsideListenerService.addOutsideListener(<HTMLElement><unknown>window, 'keyup',   (e: KeyboardEvent) => this.keyEvent(e, KeyboardEventType.KEY_TYPE_UP));
+        outsideListenerService.addOutsideListener(
+            window as unknown as HTMLElement,
+            'keydown',
+            e => this.keyEvent(e as KeyboardEvent, KeyboardEventType.KEY_TYPE_DOWN)
+        );
+
+        outsideListenerService.addOutsideListener(
+            window as unknown as HTMLElement,
+            'keyup',
+            e => this.keyEvent(e as KeyboardEvent, KeyboardEventType.KEY_TYPE_UP)
+        );
     }
 
 

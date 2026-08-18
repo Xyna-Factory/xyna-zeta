@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,8 +19,7 @@
  */
 import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
-
-import { Subscription } from 'rxjs';
+import { FloatLabelType } from '@angular/material/form-field';
 
 import { coerceBoolean } from '../../../base';
 import { I18nService, LocaleService } from '../../../i18n';
@@ -28,7 +29,6 @@ import { xcFormTranslations_enUS } from '../locale/xc-translations.en-US';
 
 
 export enum FloatStyle {
-    never = 'never',
     auto = 'auto',
     always = 'always'
 }
@@ -49,7 +49,7 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
     protected subs: Subscription[] = [];
 
     @Input('xc-form-field-floatlabel')
-    floatLabel: FloatStyle = FloatStyle.always;
+    floatLabel: FloatLabelType = 'always';
 
     i18nContext: string;
 
@@ -91,7 +91,7 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 
 
     @HostBinding('class.compact')
-    @Input({alias: 'xc-form-field-compact', transform: coerceBoolean})
+    @Input({ alias: 'xc-form-field-compact', transform: coerceBoolean })
     set compact(value: boolean) {
         this._compact = value;
     }
@@ -104,7 +104,7 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 
     @HostBinding('class.nolabel')
     protected get _xc_nolabel(): boolean {
-        return !this.label || this.floatLabel === FloatStyle.never;
+        return !this.label;
     }
 
     protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
@@ -176,7 +176,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
 
     @HostBinding('class.indicatechanges')
-    @Input({alias: 'xc-form-field-indicatechanges', transform: coerceBoolean})
+    @Input({ alias: 'xc-form-field-indicatechanges', transform: coerceBoolean })
     set indicateChanges(value: boolean) {
         this._indicateChanges = value;
     }
@@ -204,7 +204,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     }
 
 
-    @Input({transform: coerceBoolean})
+    @Input({ transform: coerceBoolean })
     set disabled(value: boolean) {
         if (value) {
             this.formControl.disable({ emitEvent: false });
@@ -219,8 +219,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     }
 
 
-    @Input()
-    @Input({transform: coerceBoolean})
+    @Input({ transform: coerceBoolean })
     set readonly(value: boolean) {
         this._readonly = value;
     }

@@ -1,3 +1,6 @@
+import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
+import { debounceTime, map, tap } from 'rxjs/operators';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -24,22 +27,17 @@ import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/f
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-
 import { MULTISELECT_FILTER_SEPARATOR } from '@zeta/xc/xc-table/xc-table-data-source';
-
-import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
-import { debounceTime, map, tap } from 'rxjs/operators';
 
 import { A11yService } from '../../../a11y';
 import { Xo, XoObject, XoPropertyBinding } from '../../../api';
 import { coerceBoolean, Comparable, isObject, isString, isTextOverflowing, Native, NativeArray } from '../../../base';
-import { I18nService } from '../../../i18n';
-import { XcI18nPipe } from '../../../i18n';
+import { I18nService, XcI18nPipe } from '../../../i18n';
 import { XcBoxableDataWrapper } from '../../shared/xc-data-wrapper';
 import { XcOptionItem, XcOptionItemString, XcOptionItemValueType } from '../../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString, XcSortPredicate } from '../../shared/xc-sort';
 import { XcIconComponent } from '../../xc-icon/xc-icon.component';
-import { XcTooltipDirective } from '../../xc-tooltip/xc-tooltip.directive';
+import { XcTooltipDirective, XcTooltipPosition } from '../../xc-tooltip/xc-tooltip.directive';
 import { XcFormBaseComponent } from '../xc-form-base/xc-form-base.component';
 import { XcFormBaseInputComponent } from '../xc-form-base/xc-form-baseinput.component';
 
@@ -192,6 +190,12 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     private readonly elementRef = inject(ElementRef<HTMLElement>);
     private readonly ngZone = inject(NgZone);
 
+    readonly tooltipPositions = [
+        XcTooltipPosition.bottomRight,
+        XcTooltipPosition.bottomLeft,
+        XcTooltipPosition.topRight,
+        XcTooltipPosition.topLeft
+    ];
 
     /**
      * Screen Reader will read this string (translated) if this component is an autocomplete (default or asinput)
@@ -278,7 +282,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
      * When enabled, users can select multiple options and values are
      * concatenated with MULTISELECT_FILTER_SEPARATOR ('|').
      */
-    @Input({alias: 'xc-form-autocomplete-asmultiselect', transform: coerceBoolean})
+    @Input({ alias: 'xc-form-autocomplete-asmultiselect', transform: coerceBoolean })
     set multiSelect(value: boolean) {
         this._multiSelect = value;
         if (this._multiSelect) {
@@ -608,7 +612,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     }
 
 
-    @Input({alias: 'xc-form-autocomplete-asinput', transform: coerceBoolean})
+    @Input({ alias: 'xc-form-autocomplete-asinput', transform: coerceBoolean })
     set asInput(value: boolean) {
         this._asInput = value;
     }
@@ -620,7 +624,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
 
     @HostBinding('class.as-dropdown')
-    @Input({alias: 'xc-form-autocomplete-asdropdown', transform: coerceBoolean})
+    @Input({ alias: 'xc-form-autocomplete-asdropdown', transform: coerceBoolean })
     set asDropdown(value: boolean) {
         this._asDropdown = value;
         if (this.asDropdown) {
@@ -634,7 +638,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     }
 
 
-    @Input({alias: 'xc-form-autocomplete-casesensitive', transform: coerceBoolean})
+    @Input({ alias: 'xc-form-autocomplete-casesensitive', transform: coerceBoolean })
     set caseSensitive(value: boolean) {
         this._caseSensitive = value;
     }
@@ -645,7 +649,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     }
 
 
-    @Input({alias: 'xc-form-autocomplete-fulltextsearch', transform: coerceBoolean})
+    @Input({ alias: 'xc-form-autocomplete-fulltextsearch', transform: coerceBoolean })
     set fullTextSearch(value: boolean) {
         this._fullTextSearch = value;
     }

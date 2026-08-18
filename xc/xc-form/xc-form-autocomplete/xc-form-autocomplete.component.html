@@ -78,7 +78,7 @@
           [value]="option"
           [disabled]="option.disabled || readonly"
           [xc-tooltip]="option.showTooltip ? option.name : ''"
-          [xc-tooltip-position]="['bottom-right', 'bottom-left', 'top-right', 'top-left']">
+          [xc-tooltip-position]="tooltipPositions">
           @if (option.icon) {
             <xc-icon [xc-icon-name]="option.icon" xc-icon-size="small">{{option.name}}</xc-icon>
           } @else {

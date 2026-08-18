@@ -1,3 +1,6 @@
+import { BehaviorSubject, Observable, of, PartialObserver } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,9 +19,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { ValidatorFn } from '@angular/forms';
-
-import { BehaviorSubject, Observable, of, PartialObserver } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { pack } from '@zeta/base';
 
 import { Xo, XoArray, XoArrayClass, XoManagedFileID, XoObject, XoObjectClass, XoProperty } from '../../../../api';
 import { XoXPRCRuntimeContext } from '../../../../api/xo/runtime-context.model';
@@ -26,9 +27,8 @@ import { XcStackItemInterface } from '../../../xc-stack/xc-stack-item/xc-stack-i
 import { XcTableDataSource } from '../../../xc-table/xc-table-data-source';
 import { XcTemplate } from '../../../xc-template/xc-template';
 import { XcDefinitionComponentTemplate } from '../shared/xc-definition-component-template.component';
-import { XoComponentDefinition, XoStartOrderButtonDefinition } from './item-definition.model';
 import { XoDefinitionEvent } from '../xc-definition-event.service';
-import { pack } from '@zeta/base';
+import { XoComponentDefinition, XoStartOrderButtonDefinition } from './item-definition.model';
 
 
 export interface XoDefinitionBundle {
@@ -369,7 +369,7 @@ export class XoDefinition extends XoObject {
     /**
      * @returns Data source of a table, if there is one in scope of this definition, returns *null* otherwise
      */
-    getTableDataSource(): XcTableDataSource {
+    getTableDataSource(): XcTableDataSource<XoObject> {
         return this.parent ? this.parent.getTableDataSource() : null;
     }
 

@@ -15,10 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, Output, Renderer2, inject } from '@angular/core';
-
 import { fromEvent, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, inject, Input, OnDestroy, Output, Renderer2 } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 
@@ -217,11 +217,11 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
             if (isSouth || isEast || isSouthEast || isSouthWest || isWest || isNorthWest || isNorth || isNorthEast) {
                 this.initResize(event, isSouth, isEast, isSouthEast, isSouthWest, isWest, isNorthWest, isNorth, isNorthEast);
 
-                const mouseup = fromEvent(document, upEvent);
+                const mouseup = fromEvent<MouseEvent | TouchEvent>(document, upEvent);
                 this.subscription = mouseup
                     .subscribe((ev: MouseEvent | TouchEvent) => this.onMouseup(ev));
 
-                const mouseMoveSub = fromEvent(document, moveEvent)
+                const mouseMoveSub = fromEvent<MouseEvent | TouchEvent>(document, moveEvent)
                     .pipe(takeUntil(mouseup))
                     .subscribe((e: MouseEvent | TouchEvent) => this.move(e, width, height, this.top, this.left, screenX, screenY));
 
