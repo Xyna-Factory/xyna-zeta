@@ -21,7 +21,7 @@ import { map, tap } from 'rxjs/operators';
 
 import { isPlatformBrowser } from '@angular/common';
 import { HttpBackend, HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, Injector, PLATFORM_ID, Signal, signal } from '@angular/core';
+import { computed, inject, Injectable, Injector, isSignal, PLATFORM_ID, Signal, signal } from '@angular/core';
 
 import { isString } from '../base';
 import { LocaleService } from './locale.service';
@@ -60,9 +60,13 @@ interface I18nJsonSchemaTranslation {
     translations: I18nTranslation[];
 }
 
+export type I18nSignalInput<T> = T | Signal<T>;
+
+export type I18nParamValue = string | number | boolean;
+
 export interface I18nParam {
     key: string;
-    value: string;
+    value: I18nSignalInput<I18nParamValue>;
     translate?: boolean;
 }
 
@@ -95,7 +99,7 @@ export class I18nService {
 
     /** currently selected language */
     private _language: string;
-    private readonly _languageSignal = signal(LocaleService.EN_US);
+    private readonly _languageSignal = signal<string>(undefined);
 
     private readonly _errorCodeRegEx = /(EC-[\da-z.]+)[\wQ#.,:;\-_ +*"´`'~!?=E]*/;
 
@@ -112,9 +116,6 @@ export class I18nService {
     TABLE = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.table + ':' + key, ...params) };
     // xc-form-label
     LABEL = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.label + ':' + key, ...params) };
-
-    readonly languageSignal = this._languageSignal.asReadonly();
-
 
     static i18nTypeForTagName = (tagName: string): string => {
         switch (tagName.toUpperCase()) {
@@ -268,6 +269,27 @@ export class I18nService {
     }
 
 
+    get languageSignal(): Signal<string> {
+        return this._languageSignal;
+    }
+
+
+    private resolveSignalInput<T>(value: I18nSignalInput<T>): T {
+        return isSignal(value) ? value() : value;
+    }
+
+
+    private resolveParam(param: I18nSignalInput<I18nParam>): { key: string; value: string; translate?: boolean } {
+        const resolvedParam = this.resolveSignalInput(param);
+        const resolvedValue = this.resolveSignalInput(resolvedParam.value);
+
+        return {
+            ...resolvedParam,
+            value: resolvedValue != undefined ? String(resolvedValue) : ''
+        };
+    }
+
+
     /**
      * @param key Fully qualified key with optional type, optional context and key
      * @returns translated *key* including replaced *params*
@@ -278,17 +300,19 @@ export class I18nService {
 
 
     /**
-     * @deprecated Use translateInstant() for one-off translations or translateSignal() for persistent UI state that must react to language changes.
+     * @deprecated Use translateInstant() for one-off translations or translateSignal() for reactive UI text.
      */
     translate(key: string, ...params: I18nParam[]): string {
         return this.translateInstant(key, ...params);
     }
 
 
-    translateSignal(key: string, ...params: I18nParam[]): Signal<string> {
+    translateSignal(key: I18nSignalInput<string>, ...params: I18nSignalInput<I18nParam>[]): Signal<string> {
         return computed(() => {
             this.languageSignal();
-            return this.translateInstant(key, ...params);
+            const resolvedKey = this.resolveSignalInput(key);
+            const resolvedParams = params?.map(param => this.resolveParam(param)) ?? [];
+            return this.translateInstant(resolvedKey, ...resolvedParams);
         });
     }
 
@@ -298,11 +322,13 @@ export class I18nService {
 
         // replace params
         if (params?.length > 0) {
+            const resolvedParams = params.map(param => this.resolveParam(param));
+
             // make a clone to not changing the translation object inside the cache
             const tmp = <I18nTranslation>{};
             Object.assign(tmp, translation);
             translation = tmp;
-            params.forEach(param => translation.value = translation.value.replace(new RegExp(escapeStringRegexp(param.key), 'g'), param.value));
+            resolvedParams.forEach(param => translation.value = translation.value.replace(new RegExp(escapeStringRegexp(param.key), 'g'), param.value));
         }
 
         return translation;
