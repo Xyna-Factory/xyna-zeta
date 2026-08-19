@@ -345,7 +345,7 @@ export class XoCheckboxDefinitionArray extends XoArray<XoCheckboxDefinition> {
 @XoObjectClass(XoItemDefinition, 'xmcp.forms.datatypes', 'ButtonDefinition')
 export class XoButtonDefinition extends XoItemDefinition {
 
-    getTemplate(data: Xo[]): Observable<XcTemplate> {
+    getTemplate(data: Xo[]): Observable<XcButtonBaseTemplate> {
         if (!this.isHiddenFor(data)) {
             const template = new XcButtonTemplate();
             template.disabled = this.disabled;
@@ -394,11 +394,10 @@ export class XoOpenDetailsButtonDefinition extends XoButtonDefinition {
     }
 
 
-    getTemplate(data: Xo[]): Observable<XcTemplate> {
-        return super.getTemplate(data).pipe(tap(template => {
-            const buttonTemplate = template as XcButtonBaseTemplate;
-            if (buttonTemplate) {
-                buttonTemplate.action = () => {
+    getTemplate(data: Xo[]): Observable<XcButtonTemplate> {
+        return super.getTemplate(data).pipe(tap((template: XcButtonBaseTemplate) => {
+            if (template) {
+                template.action = () => {
                     /* Use passed definition or call detail-definition-workflow with resolved data of this button
                      * The output is a new definition and maybe data.
                      * This is passed to the definition observer to open the new definition
@@ -455,11 +454,10 @@ export class XoOpenDialogButtonDefinition extends XoButtonDefinition {
     }
 
 
-    getTemplate(data: Xo[]): Observable<XcTemplate> {
-        return super.getTemplate(data).pipe(tap(template => {
-            const buttonTemplate = template as XcButtonBaseTemplate;
-            if (buttonTemplate) {
-                buttonTemplate.action = () => {
+    getTemplate(data: Xo[]): Observable<XcButtonTemplate> {
+        return super.getTemplate(data).pipe(tap((template: XcButtonBaseTemplate) => {
+            if (template) {
+                template.action = () => {
                     /* Use passed definition or call detail-definition-workflow with resolved data of this button
                      * The output is a new definition and maybe data.
                      * This is passed to the definition observer to open the new definition
@@ -514,11 +512,10 @@ export class XoStartOrderButtonDefinition extends XoButtonDefinition {
     encodeDataPath: string;
 
 
-    getTemplate(data: Xo[]): Observable<XcTemplate> {
-        return super.getTemplate(data).pipe(tap(template => {
-            const buttonTemplate = template as XcButtonBaseTemplate;
-            if (buttonTemplate) {
-                buttonTemplate.action = () => {
+    getTemplate(data: Xo[]): Observable<XcButtonBaseTemplate> {
+        return super.getTemplate(data).pipe(tap((template: XcButtonBaseTemplate) => {
+            if (template) {
+                template.action = () => {
                     // let observer start the Workflow
                     if (this.observer && this.observer.startOrder) {
                         const resolvedData = this.resolveData(data);
@@ -529,12 +526,12 @@ export class XoStartOrderButtonDefinition extends XoButtonDefinition {
                                 }
                             },
                             complete() {
-                                buttonTemplate.busy = false;
-                                buttonTemplate.triggerMarkForCheck();
+                                template.busy = false;
+                                template.triggerMarkForCheck();
                             }
                         });
-                        buttonTemplate.busy = true;
-                        buttonTemplate.triggerMarkForCheck();
+                        template.busy = true;
+                        template.triggerMarkForCheck();
                     }
                 };
             }
@@ -560,11 +557,10 @@ export class XoDefinitionEventButtonDefinition extends XoButtonDefinition {
     onClickEvent: XoDefinitionEventArray = new XoDefinitionEventArray();
 
 
-    getTemplate(data: Xo[]): Observable<XcTemplate> {
-        return super.getTemplate(data).pipe(tap(template => {
-            const buttonTemplate = template as XcButtonBaseTemplate;
-            if (buttonTemplate) {
-                buttonTemplate.action = () => {
+    getTemplate(data: Xo[]): Observable<XcButtonBaseTemplate> {
+        return super.getTemplate(data).pipe(tap((template: XcButtonBaseTemplate) => {
+            if (template) {
+                template.action = () => {
                     if (this.onClickEvent?.data) {
                         const resolvedData = this.resolveData(data);
                         XcDefinitionEventService.eventService?.triggerEventById(this.onClickEvent.data.map(e => e.eventId), resolvedData);
@@ -593,23 +589,22 @@ export class XoUploadButtonDefinition extends XoButtonDefinition {
     host: string;
 
 
-    getTemplate(data: Xo[]): Observable<XcTemplate> {
-        return super.getTemplate(data).pipe(tap(template => {
-            const buttonTemplate = template as XcButtonBaseTemplate;
-            if (buttonTemplate) {
-                buttonTemplate.action = () => {
+    getTemplate(data: Xo[]): Observable<XcButtonBaseTemplate> {
+        return super.getTemplate(data).pipe(tap((template: XcButtonBaseTemplate) => {
+            if (template) {
+                template.action = () => {
                     if (this.observer && this.observer.uploadFile) {
                         this.observer.uploadFile(this.host).subscribe({
                             next: managedFileId => {
                                 this.resolveAssignData(data, managedFileId.iD);
                             },
                             complete: () => {
-                                buttonTemplate.busy = false;
-                                buttonTemplate.triggerMarkForCheck();
+                                template.busy = false;
+                                template.triggerMarkForCheck();
                             }
                         });
-                        buttonTemplate.busy = true;
-                        buttonTemplate.triggerMarkForCheck();
+                        template.busy = true;
+                        template.triggerMarkForCheck();
                     }
                 };
             }
