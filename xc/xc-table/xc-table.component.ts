@@ -27,7 +27,7 @@ import { XoObject } from '../../api';
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
 import { XcIdentityDataWrapper } from '../shared/xc-data-wrapper';
-import { XcOptionItemString } from '../shared/xc-item';
+import { resolveXcDynamicString, XcDynamicString, XcOptionItemString } from '../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString, XcSortDirectionToLabel } from '../shared/xc-sort';
 import { XcVarDirective } from '../shared/xc-var.directive';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
@@ -54,6 +54,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private readonly elementRef = inject(ElementRef<HTMLElement>);
     private readonly _a11y = inject(A11yService);
     private readonly _i18n = inject(I18nService);
+    protected readonly resolveXcDynamicString = resolveXcDynamicString;
 
 
     private _allowSort = false;
@@ -346,7 +347,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     get columnNames(): string[] {
-        return this.columns.map(column => column.name);
+        return this.columns.map(column => this.resolveXcDynamicString(column.name));
     }
 
 
@@ -356,7 +357,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getColumnID(column: XcTableColumn): string {
-        return [column.path, column.name, column.disableSort ?? false, column.disableFilter ?? false, column.filterTooltip ?? '', column.filterMultiselect ?? false].join('\0');
+        return [column.path, this.resolveXcDynamicString(column.name) ?? '', column.disableSort ?? false, column.disableFilter ?? false, this.resolveXcDynamicString(column.filterTooltip) ?? '', column.filterMultiselect ?? false].join('\0');
     }
 
 
@@ -369,10 +370,16 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    getColumnFilterAriaLabel(name: string): string {
+    getColumnLabel(column: XcTableColumn): string {
+        const name = this.resolveXcDynamicString(column.name) || '';
+        return this.translateLabels ? this.i18n.translate(name) : name;
+    }
+
+
+    getColumnFilterAriaLabel(column: XcTableColumn): string {
         return this.i18n.translate('Input field for filtering of $0', {
             key: '$0',
-            value: this.i18n.translate(name || 'this column')
+            value: this.getColumnLabel(column) || this.i18n.translate('this column')
         });
     }
 
@@ -425,7 +432,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                 }
                 filter.template.disabled = column.disableFilter;
                 filter.template.compact = true;
-                filter.template.tooltip = column.filterTooltip;
+                filter.template.tooltip = this.resolveXcDynamicString(column.filterTooltip);
                 filter.template.callback = component => {
                     filter.component = component;
                     // set value and option of component because the datawrapper resets unknown options when autocomplete is used as input
@@ -581,7 +588,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             // TODO - if a column.path resolves to XcTemplate it returns the template instead of a primitive
             // Possible Solution: If it resolves to XcTemplate, then it could call toString()
             // it's up to the developer that toString() returns a string with the essential information
-            const colTexts = this.columns.map<string>(column => this.i18n.translate(column.name) + ' : ' + row.resolve(column.path));
+            const colTexts = this.columns.map<string>(column => this.getColumnLabel(column) + ' : ' + row.resolve(column.path));
             this._a11y.screenreaderSpeak(colTexts.join(', '), ScreenreaderPriority.Assertive);
         }
     }

@@ -22,6 +22,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, LocaleService } from '@zeta/i18n';
 
 import { coerceBoolean, isBoolean } from '../../../../base';
+import { resolveXcDynamicString } from '../../../shared/xc-item';
 import { XcThemeableComponent } from '../../../shared/xc-themeable.component';
 import { XcIconComponent } from '../../../xc-icon/xc-icon.component';
 import { XcTooltipDirective, XcTooltipPosition } from '../../../xc-tooltip/xc-tooltip.directive';
@@ -68,6 +69,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
 
     private readonly i18n = inject<I18nService>(I18nService);
+    protected readonly resolveXcDynamicString = resolveXcDynamicString;
 
     constructor() {
         super();

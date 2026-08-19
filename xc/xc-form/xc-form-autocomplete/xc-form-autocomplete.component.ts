@@ -34,7 +34,7 @@ import { Xo, XoObject, XoPropertyBinding } from '../../../api';
 import { coerceBoolean, Comparable, isObject, isString, isTextOverflowing, Native, NativeArray } from '../../../base';
 import { I18nService, XcI18nPipe } from '../../../i18n';
 import { XcBoxableDataWrapper } from '../../shared/xc-data-wrapper';
-import { XcOptionItem, XcOptionItemString, XcOptionItemValueType } from '../../shared/xc-item';
+import { resolveXcDynamicString, XcOptionItem, XcOptionItemString, XcOptionItemValueType } from '../../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString, XcSortPredicate } from '../../shared/xc-sort';
 import { XcIconComponent } from '../../xc-icon/xc-icon.component';
 import { XcTooltipDirective, XcTooltipPosition } from '../../xc-tooltip/xc-tooltip.directive';
@@ -184,6 +184,7 @@ interface XcOptionInternalAutocompleteItem extends XcOptionItem {
     imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, MatAutocompleteTrigger, MatAutocomplete, MatOption, XcTooltipDirective, XcIconComponent, MatError, MatIconButton, MatSuffix, MatIcon, AsyncPipe, XcI18nPipe, MatSelect]
 })
 export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implements AfterViewInit, OnDestroy {
+    protected readonly resolveXcDynamicString = resolveXcDynamicString;
     private readonly cdRef = inject(ChangeDetectorRef);
     private readonly a11yService = inject(A11yService);
     private readonly i18nService = inject(I18nService);
@@ -400,10 +401,10 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                 ? (this.options ?? []).concat(XcOptionItemString(this.value))
                 : (this.options ?? []);
             // try to find an option with the given value
-            option = options.find(o => !o.disabled && o.name === this.value);
+            option = options.find(o => !o.disabled && this.optionName(o) === this.value);
             // if no option was found, try to find one without case sensitivity
             if (option === undefined && !this.caseSensitive) {
-                option = options.find(o => !o.disabled && o.name.toLowerCase() === this.value.toLowerCase());
+                option = options.find(o => !o.disabled && this.optionName(o).toLowerCase() === this.value.toLowerCase());
             }
         } else {
             // use value, if it's an option
@@ -422,7 +423,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     protected sort(options: XcOptionItem[]) {
         return (this._sortDirection !== XcSortDirection.none)
-            ? options.sort(XcSortPredicate(this._sortDirection, this.caseSensitive ? option => option.name : option => option.name.toLowerCase()))
+            ? options.sort(XcSortPredicate(this._sortDirection, this.caseSensitive ? option => this.optionName(option) : option => this.optionName(option).toLowerCase()))
             : options;
     }
 
@@ -761,10 +762,10 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                     const childNodes = Array.from((el as HTMLElement).childNodes);
                     childNodes.forEach(childNode => {
                         if (childNode.nodeType === childNode.TEXT_NODE) {
-                            const option = this.options.find(op => op.name === childNode.nodeValue.trim()) as XcOptionInternalAutocompleteItem;
+                            const option = this.options.find(op => this.optionName(op) === childNode.nodeValue.trim()) as XcOptionInternalAutocompleteItem;
                             if (option) {
 
-                                const isOverflowing = isTextOverflowing(childNode.parentElement, option.name);
+                                const isOverflowing = isTextOverflowing(childNode.parentElement, this.optionName(option));
 
                                 // is there change
                                 if (!!option.showTooltip !== isOverflowing) {
@@ -800,7 +801,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
 
     optionName(option: XcOptionItem): string {
-        return option ? option.name : '';
+        return resolveXcDynamicString(option?.name) || '';
     }
 
 
@@ -840,7 +841,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         return values
             .map(val => {
                 const opt = this.filteredMultiSelectOptions.find(o => o.value === val);
-                return opt ? opt.name : val;
+                return opt ? this.optionName(opt) : val;
             })
             .join(', ');
     }
@@ -921,7 +922,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                 this.multiSelectA11yAnnouncement = '';
                 this.cdRef.detectChanges();
                 queueMicrotask(() => {
-                    this.multiSelectA11yAnnouncement = `${opt.name}, ${state}`;
+                    this.multiSelectA11yAnnouncement = `${this.optionName(opt)}, ${state}`;
                     this.cdRef.detectChanges();
                 });
             }
@@ -940,7 +941,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
             ? 'zeta.xc-form.autocomplete.selected'
             : 'zeta.xc-form.autocomplete.not-selected';
         const state = this.i18nService.translate(stateKey);
-        return `${option.name}, ${state}`;
+        return `${this.optionName(option)}, ${state}`;
     }
 
     /**

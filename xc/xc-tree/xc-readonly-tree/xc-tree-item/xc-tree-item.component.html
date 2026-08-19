@@ -7,13 +7,13 @@
         [class.rotated]="expanded"
         xc-icon-name="accordion"
         xc-icon-size="small"
-        [xc-button-aria-label]="i18n.translate('zeta.xc.tree.expand-collapse-arialabel') + ' ' + i18n.translate(node.name)"
+        [xc-button-aria-label]="i18n.translate('zeta.xc.tree.expand-collapse-arialabel') + ' ' + nodeLabel"
         [xc-tooltip]="i18n.translate('zeta.xc.tree.expand-collapse-tooltip')"
         xc-tooltip-showdelay="500"
         (click)="toggle($event)"
       ></xc-icon-button>
     }
-    <label class="label">{{node.name}}</label>
+    <label class="label">{{nodeLabel}}</label>
   </div>
   <div class="col-1">
     <label class="value" [class.undefined]="node.value == undefined" [class.keep-breaks]="keepBreaks">{{value}}</label>

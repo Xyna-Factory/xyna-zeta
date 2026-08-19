@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, ElementRef, inject, Input, NgZone, numberAttribute, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, inject, Input, isSignal, NgZone, numberAttribute, OnDestroy, OnInit, Signal, TemplateRef, ViewContainerRef } from '@angular/core';
 
 import { A11yService, ScreenreaderPriority } from '../../a11y';
 import { coerceBoolean, isArray, isObject, isString, retrieveFocusableElements } from '../../base';
@@ -25,10 +25,12 @@ import { I18nService, LocaleService } from '../../i18n';
 import { ATTRIBUTE_TOOLTIP } from '../shared/xc-i18n-attributes';
 
 
+type XcTooltipValue = string | Signal<string> | TemplateRef<any>;
+
 export interface XcTooltipController {
     delegateFunction?: (element: HTMLElement) => HTMLElement;
     autoDelegate?: boolean;
-    tooltip?: string | TemplateRef<any>;
+    tooltip?: XcTooltipValue;
 }
 
 export enum XcTooltipPosition {
@@ -55,7 +57,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     private observer: MutationObserver;
 
-    protected _tooltip: { key: string | TemplateRef<any>, translated: string } = { key: '', translated: '' };
+    protected _tooltip: { key: XcTooltipValue, translated: string } = { key: '', translated: '' };
 
     protected subs: Subscription[] = [];
 
@@ -113,13 +115,13 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     private preferedPosition: XcTooltipPosition[];
 
     @Input('xc-tooltip')
-    set tooltip(value: string | TemplateRef<any>) {
+    set tooltip(value: XcTooltipValue) {
         this._tooltip.key = value;
         this.translate(ATTRIBUTE_TOOLTIP);
     }
 
     get tooltip(): string | TemplateRef<any> {
-        return isString(this._tooltip.key) ? this._tooltip.translated : this._tooltip.key;
+        return (isString(this._tooltip.key) || isSignal(this._tooltip.key)) ? this._tooltip.translated : this._tooltip.key;
     }
 
     @Input({alias: 'xc-tooltip-islabel', transform: coerceBoolean})
@@ -233,7 +235,9 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
     protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
+        if (isSignal(this[attribute]["key"])) {
+            this[attribute]["translated"] = this[attribute]["key"]();
+        } else if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
             this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
         } else {
             this[attribute]["translated"] = this[attribute]["key"];
@@ -512,7 +516,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
     private getCurrentTooltip(): string | TemplateRef<any> {
-        return this.controller.tooltip || this.tooltip || '';
+        const tooltip = this.controller.tooltip || this.tooltip || '';
+        return isSignal(tooltip) ? tooltip() : tooltip;
     }
 
 
