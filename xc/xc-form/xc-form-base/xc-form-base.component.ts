@@ -15,10 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { Subscription } from 'rxjs';
+
 import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
-
-import { Subscription } from 'rxjs';
 
 import { coerceBoolean } from '../../../base';
 import { I18nService, LocaleService } from '../../../i18n';
@@ -219,7 +219,6 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     }
 
 
-    @Input()
     @Input({transform: coerceBoolean})
     set readonly(value: boolean) {
         this._readonly = value;

@@ -28,13 +28,13 @@
       <!-- content of a mat-menu-item button -->
       <ng-template #content>
         @if (item.translate) {
-          <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" xc-icon-size="small">{{item.name | xcI18n}}</xc-icon>
+          <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" xc-icon-size="small">{{resolveXcDynamicString(item.name) | xcI18n}}</xc-icon>
         }
         @if (!item.translate) {
-          <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" xc-icon-size="small">{{item.name}}</xc-icon>
+          <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" xc-icon-size="small">{{resolveXcDynamicString(item.name)}}</xc-icon>
         }
         @if (item.aside) {
-          <label>{{item.aside}}</label>
+          <label>{{resolveXcDynamicString(item.aside)}}</label>
         }
       </ng-template>
     }

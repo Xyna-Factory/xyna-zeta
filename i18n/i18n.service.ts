@@ -15,16 +15,16 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { HttpBackend, HttpClient } from '@angular/common/http';
-import { inject, Injectable, Injector, PLATFORM_ID } from '@angular/core';
-
 import escapeStringRegexp from 'escape-string-regexp';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
+import { isPlatformBrowser } from '@angular/common';
+import { HttpBackend, HttpClient } from '@angular/common/http';
+import { computed, inject, Injectable, Injector, PLATFORM_ID, Signal, signal } from '@angular/core';
+
 import { isString } from '../base';
 import { LocaleService } from './locale.service';
-import { isPlatformBrowser } from '@angular/common';
 
 
 export interface I18nTranslation {
@@ -95,6 +95,7 @@ export class I18nService {
 
     /** currently selected language */
     private _language: string;
+    private readonly _languageSignal = signal(LocaleService.EN_US);
 
     private readonly _errorCodeRegEx = /(EC-[\da-z.]+)[\wQ#.,:;\-_ +*"´`'~!?=E]*/;
 
@@ -104,13 +105,15 @@ export class I18nService {
     contextDismantlingSearch = true;
 
 
-    BUTTON = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.button + ':' + key, ...params) };
-    INPUT = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.input + ':' + key, ...params) };
-    CHECKBOX = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.checkbox + ':' + key, ...params) };
-    AUTOCOMPLETE = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.autocomplete + ':' + key, ...params) };
-    TABLE = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.table + ':' + key, ...params) };
+    BUTTON = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.button + ':' + key, ...params) };
+    INPUT = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.input + ':' + key, ...params) };
+    CHECKBOX = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.checkbox + ':' + key, ...params) };
+    AUTOCOMPLETE = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.autocomplete + ':' + key, ...params) };
+    TABLE = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.table + ':' + key, ...params) };
     // xc-form-label
-    LABEL = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.label + ':' + key, ...params) };
+    LABEL = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.label + ':' + key, ...params) };
+
+    readonly languageSignal = this._languageSignal.asReadonly();
 
 
     static i18nTypeForTagName = (tagName: string): string => {
@@ -152,11 +155,11 @@ export class I18nService {
             const args = argString.split(customArgumentPrefix || '#');
             args.splice(0, 1); // String.split() will create a the first array element empty
             const params: I18nParam[] =
-                args.map((key: string, index: number) => ({ key: '{' + index + '}', value: this.translate(key) }));
-            return this.translate(errorCode, ...params);
+                args.map((key: string, index: number) => ({ key: '{' + index + '}', value: this.translateInstant(key) }));
+            return this.translateInstant(errorCode, ...params);
         }
         console.warn('cannot find error code in \'' + msg + '\'');
-        return this.translate(msg);
+        return this.translateInstant(msg);
     }
 
 
@@ -269,8 +272,24 @@ export class I18nService {
      * @param key Fully qualified key with optional type, optional context and key
      * @returns translated *key* including replaced *params*
      */
-    translate(key: string, ...params: I18nParam[]): string {
+    translateInstant(key: string, ...params: I18nParam[]): string {
         return this.getTranslation(key, ...params).value;
+    }
+
+
+    /**
+     * @deprecated Use translateInstant() for one-off translations or translateSignal() for persistent UI state that must react to language changes.
+     */
+    translate(key: string, ...params: I18nParam[]): string {
+        return this.translateInstant(key, ...params);
+    }
+
+
+    translateSignal(key: string, ...params: I18nParam[]): Signal<string> {
+        return computed(() => {
+            this.languageSignal();
+            return this.translateInstant(key, ...params);
+        });
     }
 
 
@@ -352,5 +371,6 @@ export class I18nService {
 
     set language(value: string) {
         this._language = value;
+        this._languageSignal.set(value);
     }
 }

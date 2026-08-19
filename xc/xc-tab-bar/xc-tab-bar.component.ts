@@ -26,6 +26,7 @@ import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService, XcI18nPipe } from '../../i18n';
+import { resolveXcDynamicString } from '../shared/xc-item';
 import { XcThemeableComponent } from '../../xc/shared/xc-themeable.component';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcIconComponent } from '../xc-icon/xc-icon.component';
@@ -50,6 +51,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     private readonly injector = inject(Injector);
     protected readonly i18n = inject(I18nService);
     protected readonly menuService = inject(XcMenuService);
+    protected readonly resolveXcDynamicString = resolveXcDynamicString;
     private readonly cdr = inject(ChangeDetectorRef);
 
     private _tabGroup: MatTabGroup;
@@ -305,11 +307,11 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     getTooltip(item: XcTabBarItem): string {
 
         if (item.pinned) {
-            return item.name;
+            return this.resolveXcDynamicString(item.name);
         }
 
         if (this.showTooltips) {
-            return item.name;
+            return this.resolveXcDynamicString(item.name);
         }
 
         return undefined;

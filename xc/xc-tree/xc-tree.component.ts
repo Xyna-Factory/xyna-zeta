@@ -20,11 +20,12 @@ import { filter } from 'rxjs/operators';
 
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, inject, Input, NgZone, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, inject, Input, isSignal, NgZone, OnDestroy } from '@angular/core';
 import { MatNestedTreeNode, MatTree, MatTreeNodeDef, MatTreeNodeOutlet, MatTreeNodeToggle } from '@angular/material/tree';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService, XcI18nContextDirective, XcI18nPipe } from '../../i18n';
+import { resolveXcDynamicString } from '../shared/xc-item';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcTemplateComponent } from '../xc-template/xc-template.component';
 import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
@@ -84,6 +85,7 @@ export class XcTreeComponent implements OnDestroy {
     private readonly cdRef = inject(ChangeDetectorRef);
     private readonly _i18n = inject(I18nService);
     private readonly zone = inject(NgZone);
+    protected readonly resolveXcDynamicString = resolveXcDynamicString;
 
 
     private _allowSelect = false;
@@ -174,7 +176,6 @@ export class XcTreeComponent implements OnDestroy {
     }
 
 
-    @Input('xc-tree-multiselect')
     @Input({alias: 'xc-tree-multiselect', transform: coerceBoolean})
     set multiSelect(value: boolean) {
         this._multiSelect = value;
@@ -243,7 +244,7 @@ export class XcTreeComponent implements OnDestroy {
 
 
     getTemplateAriaLabelByNode(node: XcTreeNode): string {
-        return this.i18n.translate(node.name);
+        return this.getNodeLabel(node);
     }
 
 
@@ -330,7 +331,25 @@ export class XcTreeComponent implements OnDestroy {
 
 
     getTooltip(node: XcTreeNode): string {
-        return node.tooltip || '';
+        return this.resolveXcDynamicString(node.tooltip) || '';
+    }
+
+
+    getNodeLabel(node: XcTreeNode): string {
+        const name = this.resolveXcDynamicString(node.name) || '';
+        return this.translateLabels && !isSignal(node.name)
+            ? this.i18n.translate(name)
+            : name;
+    }
+
+
+    getExpandCollapseAriaLabel(node: XcTreeNode): string {
+        return this.i18n.translate('zeta.xc.tree.expand-collapse-arialabel') + ' ' + this.getNodeLabel(node);
+    }
+
+
+    getShowAriaLabel(node: XcTreeNode): string {
+        return this.i18n.translate('shows') + ' ' + this.getNodeLabel(node);
     }
 
 

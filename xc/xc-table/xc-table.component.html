@@ -43,12 +43,12 @@
   @for (column of columns; let i = $index; track i) {
     <ng-container [matColumnDef]="getColumnID(column)">
       <th mat-header-cell *matHeaderCellDef attr.aria-sort="{{getAriaSortForColumn(column)}}" scope="col">
-        <span mat-sort-header [disabled]="column.disableSort">{{ translateLabels ? i18n.translate(column.name) : column.name || '&nbsp;'}}</span>
+        <span mat-sort-header [disabled]="column.disableSort">{{ getColumnLabel(column) || '&nbsp;'}}</span>
         <div class="filter-container">
           @if (allowFilter) {
             <xc-template
               [xc-template-instance]="getColumnFilterTemplate(column)"
-              [xc-template-aria-label]="getColumnFilterAriaLabel(column.name)"
+              [xc-template-aria-label]="getColumnFilterAriaLabel(column)"
             ></xc-template>
           }
         </div>
@@ -63,7 +63,7 @@
         [class.pre]="column.pre"
         [class.align-right]="column.align === 'right'"
         [class.align-center]="column.align === 'center'"
-        [attr.aria-label]="getCellData(row, column.path) ? ( translateLabels ? i18n.translate(column.name) : column.name) : null"
+        [attr.aria-label]="getCellData(row, column.path) ? getColumnLabel(column) : null"
         >
         <ng-container *xc-var="getCellData(row, column.path); let cellData">
           <!-- ngIf = displays cellData xc-templates if it is an Array -->
@@ -92,7 +92,7 @@
                       [xc-tooltip]="actionElement.tooltip"
                       [xc-icon-name]="actionElement.iconName"
                       [xc-icon-style]="actionElement.iconStyle"
-                      [xc-button-aria-label]="actionElement.ariaLabel ? actionElement.ariaLabel : undefined"
+                      [xc-button-aria-label]="actionElement.ariaLabel ? resolveXcDynamicString(actionElement.ariaLabel) : undefined"
                       xc-icon-size="small"
                     ></xc-icon-button>
                   }

@@ -15,9 +15,17 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { isSignal, Signal } from '@angular/core';
+
 import { Comparable } from '../../base';
 import { I18nService } from '../../i18n';
 
+
+export type XcDynamicString = string | Signal<string>;
+
+export function resolveXcDynamicString(value?: XcDynamicString): string | undefined {
+    return isSignal(value) ? value() : value;
+}
 
 export interface XcItem {
     name?: string;
@@ -28,7 +36,8 @@ export interface XcItem {
 
 export type XcOptionItemValueType = Comparable | any;
 
-export interface XcOptionItem<V = XcOptionItemValueType> extends XcItem {
+export interface XcOptionItem<V = XcOptionItemValueType> extends Omit<XcItem, 'name'> {
+    name?: XcDynamicString;
     value: V;
 }
 

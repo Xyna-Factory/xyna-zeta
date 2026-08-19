@@ -23,7 +23,7 @@ import { CollectionViewer } from '@angular/cdk/collections';
 import { Xo, XoObject } from '../../api';
 import { Comparable } from '../../base';
 import { I18nService } from '../../i18n';
-import { XcOptionItem } from '../shared/xc-item';
+import { XcDynamicString, XcOptionItem } from '../shared/xc-item';
 import { XcSubSelectionModel } from '../shared/xc-selection';
 import { XcSelectionDataSource } from '../shared/xc-selection-data-source';
 import { XcSortDirection } from '../shared/xc-sort';
@@ -32,13 +32,13 @@ import { XcTemplate } from '../xc-template/xc-template';
 
 export interface XcTableColumn {
     readonly path: string;
-    readonly name: string;
+    readonly name: XcDynamicString;
     readonly disableSort?: boolean;
     readonly disableFilter?: boolean;
     readonly shrink?: boolean;
     readonly break?: boolean;
     readonly pre?: boolean;
-    readonly filterTooltip?: string;
+    readonly filterTooltip?: XcDynamicString;
     readonly filterMultiselect?: boolean;
     readonly pronunciationLang?: string;
     readonly align?: string;
@@ -56,10 +56,10 @@ export interface XcTableDataActionElement<T>  {
     onAction: (row: T) => void;
     iconName: string;
     iconStyle?: string;
-    tooltip?: string;
+    tooltip?: XcDynamicString;
     disabled?: boolean;
     class?: string;
-    ariaLabel?: string;
+    ariaLabel?: XcDynamicString;
 }
 
 

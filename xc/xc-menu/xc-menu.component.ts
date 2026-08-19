@@ -21,6 +21,7 @@ import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
 import { XcI18nPipe } from '../../i18n';
+import { resolveXcDynamicString } from '../shared/xc-item';
 import { XcIconComponent } from '../xc-icon/xc-icon.component';
 import { XcContextMenuService } from './xc-context-menu.service';
 import { XcMenuTriggerDirective } from './xc-menu-trigger.directive';
@@ -35,6 +36,7 @@ import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPositio
 })
 export class XcMenuComponent {
     protected readonly contextMenuService = inject(XcContextMenuService);
+    protected readonly resolveXcDynamicString = resolveXcDynamicString;
 
     /*
      * Sadly, there is no support for not overlapping the trigger horizontally.
