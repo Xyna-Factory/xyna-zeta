@@ -24,7 +24,7 @@ import { I18nService } from './i18n.service';
 /**
  * @deprecated Use *XcI18nPipe* instead
  */
-@Pipe({ name: 'i18n' })
+@Pipe({ name: 'i18n', pure: false })
 export class I18nPipe implements PipeTransform {
     private readonly i18nService = inject(I18nService);
 
@@ -37,7 +37,7 @@ export class I18nPipe implements PipeTransform {
 }
 
 
-@Pipe({ name: 'xcI18n' })
+@Pipe({ name: 'xcI18n', pure: false })
 export class XcI18nPipe extends XcI18nBase implements PipeTransform {
     private readonly i18nService = inject(I18nService);
     private readonly element = inject<ElementRef<HTMLElement>>(ElementRef);

@@ -15,16 +15,16 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { HttpBackend, HttpClient } from '@angular/common/http';
-import { inject, Injectable, Injector, PLATFORM_ID } from '@angular/core';
-
 import escapeStringRegexp from 'escape-string-regexp';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
+import { isPlatformBrowser } from '@angular/common';
+import { HttpBackend, HttpClient } from '@angular/common/http';
+import { inject, Injectable, Injector, PLATFORM_ID } from '@angular/core';
+
 import { isString } from '../base';
 import { LocaleService } from './locale.service';
-import { isPlatformBrowser } from '@angular/common';
 
 
 export interface I18nTranslation {
@@ -87,6 +87,8 @@ export enum I18N_TYPES {
 @Injectable({ providedIn: 'root' })
 export class I18nService {
     private readonly injector = inject(Injector);
+    private readonly platformId = inject(PLATFORM_ID);
+    private readonly http = inject(HttpClient);
 
 
     /** translation map: language -> (key -> value) */
@@ -296,6 +298,7 @@ export class I18nService {
             item.key = (item.type ? item.type + ':' : '') + (item.context ? item.context + '.' : '') + item.key;
             translationMap.set(item.key, item);
         });
+        this._cache.delete(language);
     }
 
 
@@ -306,20 +309,13 @@ export class I18nService {
      * Check and modify the "angular.json" accordingly
      */
     readTranslations(language: string, file: string): Observable<I18nTranslation[]> {
-        // Verwende functional injection (Angular 14+)
-        const injector = inject(Injector);
-        const platformId = inject(PLATFORM_ID);
-
-        if (isPlatformBrowser(platformId)) {
-            // Im Browser: Verwende normalen HttpClient (mit Interceptors)
-            const http = inject(HttpClient);
-            return http.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
+        if (isPlatformBrowser(this.platformId)) {
+            return this.http.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
                 tap(translation => this.setTranslations(language, translation.translations)),
                 map(translation => translation.translations)
             );
         } else {
-            // Server-side: Erstelle HttpClient ohne Interceptors
-            const httpBackend = injector.get(HttpBackend);
+            const httpBackend = this.injector.get(HttpBackend);
             const nonInterceptedJSONHTTPClient = new HttpClient(httpBackend);
             return nonInterceptedJSONHTTPClient.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
                 tap(translation => this.setTranslations(language, translation.translations)),
