@@ -77,7 +77,6 @@ export class XcDialogWrapperComponent implements AfterViewInit {
         return this._maximized;
     }
 
-    @Input()
     @Input({transform: coerceBoolean})
     set maximizable(value: boolean) {
         this._maximizable = value;
