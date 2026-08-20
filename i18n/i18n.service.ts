@@ -21,7 +21,7 @@ import { map, tap } from 'rxjs/operators';
 
 import { isPlatformBrowser } from '@angular/common';
 import { HttpBackend, HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, Injector, isSignal, PLATFORM_ID, Signal, signal } from '@angular/core';
+import { computed, inject, Injectable, Injector, isSignal, PLATFORM_ID, Signal } from '@angular/core';
 
 import { isString } from '../base';
 import { LocaleService } from './locale.service';
@@ -70,6 +70,10 @@ export interface I18nParam {
     translate?: boolean;
 }
 
+export function resolveSignalInput<T>(value: Signal<T>): T {
+    return value();
+}
+
 export enum NoI18nTranslationFoundBehavior {
     ReturnKey = 'ReturnKey',
     ReturnLastPartOfKey = 'ReturnLastPartOfKey',
@@ -99,7 +103,7 @@ export class I18nService {
 
     /** currently selected language */
     private _language: string;
-    private readonly _languageSignal = signal<string>(undefined);
+    private readonly localeService = inject(LocaleService);
 
     private readonly _errorCodeRegEx = /(EC-[\da-z.]+)[\wQ#.,:;\-_ +*"´`'~!?=E]*/;
 
@@ -133,8 +137,7 @@ export class I18nService {
     constructor() {
         const injector = this.injector;
 
-        const localeService = injector.get(LocaleService);
-        localeService.languageChange.subscribe(lang => this.language = lang);
+        injector.get(LocaleService).languageChange.subscribe(lang => this.language = lang);
     }
 
 
@@ -269,19 +272,14 @@ export class I18nService {
     }
 
 
-    get languageSignal(): Signal<string> {
-        return this._languageSignal;
-    }
-
-
-    private resolveSignalInput<T>(value: I18nSignalInput<T>): T {
-        return isSignal(value) ? value() : value;
+    private resolveInput<T>(value: I18nSignalInput<T>): T {
+        return isSignal(value) ? resolveSignalInput(value) : value;
     }
 
 
     private resolveParam(param: I18nSignalInput<I18nParam>): { key: string; value: string; translate?: boolean } {
-        const resolvedParam = this.resolveSignalInput(param);
-        const resolvedValue = this.resolveSignalInput(resolvedParam.value);
+        const resolvedParam = this.resolveInput(param);
+        const resolvedValue = this.resolveInput(resolvedParam.value);
 
         return {
             ...resolvedParam,
@@ -309,8 +307,8 @@ export class I18nService {
 
     translateSignal(key: I18nSignalInput<string>, ...params: I18nSignalInput<I18nParam>[]): Signal<string> {
         return computed(() => {
-            this.languageSignal();
-            const resolvedKey = this.resolveSignalInput(key);
+            this.localeService.languageSignal();
+            const resolvedKey = this.resolveInput(key);
             const resolvedParams = params?.map(param => this.resolveParam(param)) ?? [];
             return this.translateInstant(resolvedKey, ...resolvedParams);
         });
@@ -397,6 +395,5 @@ export class I18nService {
 
     set language(value: string) {
         this._language = value;
-        this._languageSignal.set(value);
     }
 }

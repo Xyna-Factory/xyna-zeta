@@ -92,7 +92,7 @@
                       [xc-tooltip]="actionElement.tooltip"
                       [xc-icon-name]="actionElement.iconName"
                       [xc-icon-style]="actionElement.iconStyle"
-                      [xc-button-aria-label]="actionElement.ariaLabel ? resolveXcDynamicString(actionElement.ariaLabel) : undefined"
+                      [xc-button-aria-label]="actionElement.ariaLabel ? resolveDynamicString(actionElement.ariaLabel) : undefined"
                       xc-icon-size="small"
                     ></xc-icon-button>
                   }

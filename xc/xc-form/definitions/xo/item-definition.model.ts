@@ -15,20 +15,17 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { signal } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
-
-import { isArray } from '../../../../base';
-import { combineLatest, Observable, of } from 'rxjs';
-import { filter, map, mergeMap, tap } from 'rxjs/operators';
 
 import { Xo, XoArray, XoArrayClass, XoObjectClass, XoProperty } from '../../../../api';
 import { XoXPRCRuntimeContext } from '../../../../api/xo/runtime-context.model';
 import { XcIdentityDataWrapper } from '../../../shared/xc-data-wrapper';
 import { XcOptionItem } from '../../../shared/xc-item';
-import { XcButtonTemplate, XcButtonBaseTemplate, XcCheckboxTemplate, XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTextAreaTemplate, XcTemplate, XcDefinitionListEntryTemplate, XcFormTextTemplate } from '../../../xc-template/xc-template';
+import { XcButtonBaseTemplate, XcButtonTemplate, XcCheckboxTemplate, XcDefinitionListEntryTemplate, XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTextAreaTemplate, XcFormTextTemplate, XcTemplate } from '../../../xc-template/xc-template';
 import { XcAutocompleteDataWrapper } from '../../xc-form-autocomplete/xc-form-autocomplete.component';
-import { XoBaseDefinition, XoDefinition, XoDefinitionObserver, XoDefinitionWorkflow } from './base-definition.model';
 import { XcDefinitionEventService, XoDefinitionEventArray } from '../xc-definition-event.service';
+import { XoBaseDefinition, XoDefinition, XoDefinitionObserver, XoDefinitionWorkflow } from './base-definition.model';
 
 
 /***********************************************
@@ -210,7 +207,7 @@ export class XoPossibleValuesDefinition extends XoDefinition {
             console.warn('No possible values defined for DropDown. DataPath of PossibleValuesDefinition: ' + this.dataPath);
         }
 
-        return rawOptionsList.data.map(item => <XcOptionItem>{name: item.resolve(this.listItemLabelPath), value: item.resolve(this.listItemValuePath)});
+        return rawOptionsList.data.map(item => <XcOptionItem>{ name: signal(item.resolve(this.listItemLabelPath)), value: item.resolve(this.listItemValuePath) });
     }
 }
 

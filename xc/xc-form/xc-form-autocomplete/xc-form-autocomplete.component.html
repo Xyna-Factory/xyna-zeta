@@ -70,7 +70,7 @@
 
     <mat-autocomplete class="zeta-scrollbar" #auto="matAutocomplete"
       (optionSelected)="optionSelected($event.option)"
-      [displayWith]="optionName"
+      [displayWith]="displayWith"
       (opened)="openedAutocomplete()"
       (closed)="closedAutocomplete()">
       @for (option of filteredOptions | async; let i = $index; track i) {

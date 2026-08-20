@@ -15,21 +15,20 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 
 import { Xo, XoArray, XoObject } from '../../../../../api';
 import { pack } from '../../../../../base';
-import { I18nService } from '../../../../../i18n';
+import { I18nService, XcI18nPipe, XcI18nTranslateDirective } from '../../../../../i18n';
+import { XcButtonComponent } from '../../../../xc-button/xc-button.component';
+import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
 import { XcLocalTableDataSource } from '../../../../xc-table/xc-local-table-data-source';
 import { TableCounts, XcTableColumn } from '../../../../xc-table/xc-table-data-source';
+import { XcTableComponent } from '../../../../xc-table/xc-table.component';
+import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
 import { XoBaseDefinition, XoDefinition } from '../../xo/base-definition.model';
 import { XoPredefinedTablePanelDefinition } from '../../xo/containers.model';
 import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-form-panel-definition.component';
-import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
-import { XcButtonComponent } from '../../../../xc-button/xc-button.component';
-import { XcI18nPipe, XcI18nTranslateDirective } from '../../../../../i18n';
-import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
-import { XcTableComponent } from '../../../../xc-table/xc-table.component';
 
 
 @Component({
@@ -80,8 +79,8 @@ export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefini
         this.dataSource = new XcLocalTableDataSource<XoObject>(this.i18n);
         this.dataSource.limit = 50;
         this.dataSource.localTableData = {
-            rows: this.resolvedData.length > 0 && this.resolvedData[0] instanceof XoArray ? (<XoArray> this.resolvedData[0]).data : [],
-            columns: this.tableDefinition.columns.data.map(column => <XcTableColumn>{ name: column.name, path: column.path })
+            rows: this.resolvedData.length > 0 && this.resolvedData[0] instanceof XoArray ? (this.resolvedData[0] as XoArray<XoObject>).data : [],
+            columns: this.tableDefinition.columns.data.map(column => <XcTableColumn>{ name: signal(column.name), path: column.path })
         };
         this.dataSource.countChange.subscribe(counts => this.tableCounts = counts);
 

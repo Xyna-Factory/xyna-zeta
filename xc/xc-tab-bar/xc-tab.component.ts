@@ -55,8 +55,7 @@ export interface XcTabContextMenuItem extends XcMenuItem {
     insertAfter?: XcTabMenuEntry;
 }
 
-export interface XcTabBarItem<D = any> extends Omit<XcItem, 'name'> {
-    name?: XcDynamicString;
+export interface XcTabBarItem<D = any> extends XcItem {
     tabId?: number;
 
     disabledMenuEntries?: XcTabMenuEntry[];

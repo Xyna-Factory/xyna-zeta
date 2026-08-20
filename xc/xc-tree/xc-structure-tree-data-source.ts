@@ -16,6 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Observable, Subject } from 'rxjs';
+import { signal } from '@angular/core';
 
 import { I18nService } from '@zeta/i18n';
 
@@ -201,7 +202,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             });
 
             autocompleteDataWrapper.values = subtypes.map(type => ({
-                name: type.typeLabel + (ambiguousLabels.has(type.typeLabel) ? (' ' + type.typeFqn.path) : ''), // show path for ambiguous labels
+                name: signal(type.typeLabel + (ambiguousLabels.has(type.typeLabel) ? (' ' + type.typeFqn.path) : '')), // show path for ambiguous labels
                 value: new ComparableDescriber(type.typeRtc, type.typeFqn),
                 disabled: type.typeAbstract
             }));
@@ -369,7 +370,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
         // create template
         const template = new XcFormAutocompleteTemplate(new XcAutocompleteDataWrapper(
             getter, setter, [{
-                name: '[' + field.typeLabel + ']',
+                name: signal('[' + field.typeLabel + ']'),
                 value: new ComparableDescriber(field.typeRtc, field.typeFqn),
                 disabled: field.typeAbstract
             }]
@@ -388,7 +389,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
         const resolved = this.container.resolveHead(field.path);
         node.readonly = resolved.value instanceof XoObject && resolved.value.readonlyProperties.has(resolved.tail);
         // set tooltip
-        node.tooltip = field.docu;
+        node.tooltip = signal(field.docu);
         // get templates array
         let templates: XcTemplate[] = [];
         if (field instanceof XoStructurePrimitive) {

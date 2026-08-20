@@ -57,11 +57,8 @@ export interface LoginComponentData {
 }
 
 
-interface LoginTabItem {
-    closable: boolean;
+interface LoginTabItem extends XcTabBarItem<LoginComponentData> {
     component: any;
-    name: string;
-    data: LoginComponentData;
 }
 
 
@@ -86,7 +83,7 @@ export class AuthLoginComponent {
     readonly smartCardTabItem: LoginTabItem = {
         closable: false,
         component: SmartCardLoginTabComponent,
-        name: 'SmartCard',
+        name: signal('SmartCard'),
         data: <LoginComponentData>{
             username: '',
             selectedRole: undefined,
@@ -102,7 +99,7 @@ export class AuthLoginComponent {
     readonly credentialsTabItem: LoginTabItem = {
         closable: false,
         component: CredentialsLoginTabComponent,
-        name: 'Credentials',
+        name: signal('Credentials'),
         data: <LoginComponentData>{
             username: '',
             password: '',
@@ -117,7 +114,7 @@ export class AuthLoginComponent {
     readonly workflowTabItem: LoginTabItem = {
         closable: false,
         component: WorkflowLoginTabComponent,
-        name: 'Workflow',
+        name: signal('Workflow'),
         data: <LoginComponentData>{
             username: '',
             password: '',

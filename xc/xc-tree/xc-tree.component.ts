@@ -20,12 +20,12 @@ import { filter } from 'rxjs/operators';
 
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, inject, Input, isSignal, NgZone, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, inject, Input, NgZone, OnDestroy } from '@angular/core';
 import { MatNestedTreeNode, MatTree, MatTreeNodeDef, MatTreeNodeOutlet, MatTreeNodeToggle } from '@angular/material/tree';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService, XcI18nContextDirective, XcI18nPipe } from '../../i18n';
-import { resolveXcDynamicString } from '../shared/xc-item';
+import { XcDynamicString } from '../shared/xc-item';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcTemplateComponent } from '../xc-template/xc-template.component';
 import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
@@ -84,10 +84,8 @@ export interface XcTreeObserver {
 export class XcTreeComponent implements OnDestroy {
     private readonly cdRef = inject(ChangeDetectorRef);
     private readonly _i18n = inject(I18nService);
+    protected readonly resolveDynamicString = (value: XcDynamicString) => value();
     private readonly zone = inject(NgZone);
-    protected readonly resolveXcDynamicString = resolveXcDynamicString;
-
-
     private _allowSelect = false;
     private _multiSelect = false;
     private _controlPressed = false;
@@ -331,13 +329,13 @@ export class XcTreeComponent implements OnDestroy {
 
 
     getTooltip(node: XcTreeNode): string {
-        return this.resolveXcDynamicString(node.tooltip) || '';
+        return this.resolveDynamicString(node.tooltip) || '';
     }
 
 
     getNodeLabel(node: XcTreeNode): string {
-        const name = this.resolveXcDynamicString(node.name) || '';
-        return this.translateLabels && !isSignal(node.name)
+        const name = node.name || '';
+        return this.translateLabels
             ? this.i18n.translate(name)
             : name;
     }
