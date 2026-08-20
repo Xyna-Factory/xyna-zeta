@@ -38,7 +38,7 @@
           xc-icon-name="accordion"
           xc-icon-size="small"
           [xc-button-aria-label]="getShowAriaLabel(node)"
-          xc-tooltip="{{'tooltip-show' | xcI18n}}"
+          [xc-tooltip]="'tooltip-show' | xcI18n"
           xc-tooltip-showdelay="500"
         ></xc-icon-button>
       }

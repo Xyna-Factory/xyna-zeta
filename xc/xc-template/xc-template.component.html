@@ -17,7 +17,7 @@
       [xc-form-field-aria-label]="ariaLabel"
       [xc-form-field-compact]="formText.compact"
       [xc-form-field-floatlabel]="formText.floatLabel"
-      xc-tooltip="{{formText.tooltip}}"
+      [xc-tooltip]="formText.tooltip"
      />
   }
   <!--
@@ -53,7 +53,7 @@
       [xc-form-autocomplete-asdropdown]="formAutocomplete.asDropdown"
       [xc-form-autocomplete-asmultiselect]="formAutocomplete.asMultiselect"
       (xc-form-autocomplete-multiSelectChange)="formAutocomplete.multiSelectCallback?.($event)"
-      xc-tooltip="{{formAutocomplete.tooltip}}"
+      [xc-tooltip]="formAutocomplete.tooltip"
      />
   }
   @case (Type.XcFormInputTemplate.of(instance)) {
@@ -73,7 +73,7 @@
       [xc-form-field-floatlabel]="formInput.floatLabel"
       [xc-form-field-indicatechanges]="formInput.indicateChanges"
       [xc-form-field-callback]="formInput.callback"
-      xc-tooltip="{{formInput.tooltip}}"
+      [xc-tooltip]="formInput.tooltip"
       [iconTooltip]="toolTip"
      />
   }
@@ -93,7 +93,7 @@
       [xc-form-field-indicatechanges]="formTextarea.indicateChanges"
       [xc-form-field-callback]="formTextarea.callback"
       [xc-form-textarea-lines]="formTextarea.lines"
-      xc-tooltip="{{formTextarea.tooltip}}"
+      [xc-tooltip]="formTextarea.tooltip"
      />
   }
   @case (Type.XcCheckboxTemplate.of(instance)) {
@@ -105,7 +105,7 @@
       [class]="formCheckbox.stylename"
       [(checked)]="formCheckbox.dataWrapper.value"
       [indeterminate]="formCheckbox.indeterminate"
-      xc-tooltip="{{formCheckbox.tooltip}}"
+      [xc-tooltip]="formCheckbox.tooltip"
       [attr.aria-label]="ariaLabel"
      />
   }
@@ -116,7 +116,7 @@
       [disabled]="formButton.disabled || disabled || formButton.busy"
       [busy]="formButton.busy"
       [class]="formButton.stylename"
-      xc-tooltip="{{formButton.tooltip}}"
+      [xc-tooltip]="formButton.tooltip"
       [xc-button-aria-label]="ariaLabel"
       (click)="formButton.action()"
       ><xc-icon [color]="formButton.color" [xc-icon-name]="formButton.iconName" [xc-icon-style]="formButton.iconStyle" [xc-icon-size]="formButton.iconSize">{{formButton.label}}</xc-icon></xc-button>
@@ -131,8 +131,8 @@
         [xc-icon-name]="iconButton.iconName"
         [xc-icon-style]="iconButton.iconStyle"
         [xc-icon-size]="iconButton.iconSize"
-        xc-tooltip="{{iconButton.tooltip}}"
-        xc-button-aria-label="{{ariaLabel + (iconButton.label ? ' - ' + iconButton.label : '')}}"
+        [xc-tooltip]="iconButton.tooltip"
+        [xc-button-aria-label]="ariaLabel + (iconButton.label ? ' - ' + iconButton.label : '')"
         (click)="iconButton.action()"
        />
     }

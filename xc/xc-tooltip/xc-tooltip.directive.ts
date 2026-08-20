@@ -17,12 +17,11 @@ import { Subscription } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, ElementRef, inject, Input, isSignal, NgZone, numberAttribute, OnDestroy, OnInit, Signal, TemplateRef, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, computed, Directive, ElementRef, inject, input, Input, isSignal, NgZone, numberAttribute, OnDestroy, OnInit, Signal, signal, TemplateRef, ViewContainerRef } from '@angular/core';
 
 import { A11yService, ScreenreaderPriority } from '../../a11y';
 import { coerceBoolean, isArray, isObject, isString, retrieveFocusableElements } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
-import { ATTRIBUTE_TOOLTIP } from '../shared/xc-i18n-attributes';
 
 
 type XcTooltipValue = string | Signal<string> | TemplateRef<any>;
@@ -56,8 +55,6 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
     private observer: MutationObserver;
-
-    protected _tooltip: { key: XcTooltipValue, translated: string } = { key: '', translated: '' };
 
     protected subs: Subscription[] = [];
 
@@ -114,14 +111,17 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     private preferedPosition: XcTooltipPosition[];
 
-    @Input('xc-tooltip')
-    set tooltip(value: XcTooltipValue) {
-        this._tooltip.key = value;
-        this.translate(ATTRIBUTE_TOOLTIP);
-    }
+    readonly tooltipInput = input<XcTooltipValue>('', { alias: 'xc-tooltip' });
+
+    private readonly tooltipContext = signal<string | undefined>(undefined);
+
+    private readonly resolvedTooltip = computed<string | TemplateRef<any>>(() => {
+        this.localeService.languageSignal();
+        return this.resolveTooltip(this.tooltipInput(), this.tooltipContext());
+    });
 
     get tooltip(): string | TemplateRef<any> {
-        return (isString(this._tooltip.key) || isSignal(this._tooltip.key)) ? this._tooltip.translated : this._tooltip.key;
+        return this.resolvedTooltip();
     }
 
     @Input({alias: 'xc-tooltip-islabel', transform: coerceBoolean})
@@ -201,7 +201,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     private readonly viewContainerRef: ViewContainerRef;
 
-    i18nContext: string;
+    i18nContext: string | undefined;
 
     protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
@@ -234,14 +234,28 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     }
 
 
-    protected translate(attribute: string) {
-        if (isSignal(this[attribute]["key"])) {
-            this[attribute]["translated"] = this[attribute]["key"]();
-        } else if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
-            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
-        } else {
-            this[attribute]["translated"] = this[attribute]["key"];
+    private resolveTooltip(value: XcTooltipValue, context: string | undefined): string | TemplateRef<any> {
+        if (value instanceof TemplateRef) {
+            return value;
         }
+
+        const rawValue = isSignal(value) ? value() : value;
+        if (!rawValue) {
+            return rawValue;
+        }
+
+        const contextKey = context ? context + '.' + rawValue : rawValue;
+        const contextTranslation = this.i18n.getTranslation(contextKey);
+        if (contextTranslation?.value && contextTranslation.value !== contextKey) {
+            return contextTranslation.value;
+        }
+
+        const plainTranslation = this.i18n.getTranslation(rawValue);
+        if (plainTranslation?.value && plainTranslation.value !== rawValue) {
+            return plainTranslation.value;
+        }
+
+        return rawValue;
     }
 
 
@@ -254,28 +268,15 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         const el = this.elementRef.nativeElement;
 
-        this.i18nContext = el.getAttribute('xc-i18n');
-
-        // Übersetzung, falls Tooltip bereits gesetzt ist
-        if (this._tooltip.key) {
-            this.translate(ATTRIBUTE_TOOLTIP);
-        }
-
-        // Subscription für Sprachwechsel
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._tooltip.key) {
-                this.translate(ATTRIBUTE_TOOLTIP);
-            }
-        }));
+        this.i18nContext = el.getAttribute('xc-i18n') || undefined;
+        this.tooltipContext.set(this.i18nContext);
 
         // MutationObserver erstellen
         this.observer = new MutationObserver(() => {
             const newContext = el.getAttribute('xc-i18n');
             if (newContext !== this.i18nContext) {
-                this.i18nContext = newContext;
-                if (this._tooltip.key) {
-                    this.translate(ATTRIBUTE_TOOLTIP);
-                }
+                this.i18nContext = newContext || undefined;
+                this.tooltipContext.set(this.i18nContext);
             }
         });
 
