@@ -25,8 +25,7 @@ export enum XcNavListOrientation {
     LEFT
 }
 
-export interface XcNavListItem extends Omit<XcItem, 'name'> {
-    name?: XcDynamicString;
+export interface XcNavListItem extends XcItem {
     link?: string;
     class?: string;
     children?: this[];

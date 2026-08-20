@@ -21,12 +21,12 @@ import { concatMap, distinctUntilChanged, filter, map, tap } from 'rxjs/operator
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, EventEmitter, inject, Injector, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, EventEmitter, inject, Injector, Input, OnDestroy, Output, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService, XcI18nPipe } from '../../i18n';
-import { resolveXcDynamicString } from '../shared/xc-item';
+import { XcDynamicString } from '../shared/xc-item';
 import { XcThemeableComponent } from '../../xc/shared/xc-themeable.component';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcIconComponent } from '../xc-icon/xc-icon.component';
@@ -51,7 +51,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     private readonly injector = inject(Injector);
     protected readonly i18n = inject(I18nService);
     protected readonly menuService = inject(XcMenuService);
-    protected readonly resolveXcDynamicString = resolveXcDynamicString;
+    protected readonly resolveDynamicString = (value: XcDynamicString) => value();
     private readonly cdr = inject(ChangeDetectorRef);
 
     private _tabGroup: MatTabGroup;
@@ -144,6 +144,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
             item.afterActivate?.(idx);
             setTimeout(() => {
                 this._componentInitialized.add(item);
+                this.refreshAfterMenuAction();
             }, 0);
         }
     }
@@ -307,11 +308,11 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     getTooltip(item: XcTabBarItem): string {
 
         if (item.pinned) {
-            return this.resolveXcDynamicString(item.name);
+            return this.resolveDynamicString(item.name);
         }
 
         if (this.showTooltips) {
-            return this.resolveXcDynamicString(item.name);
+            return this.resolveDynamicString(item.name);
         }
 
         return undefined;
@@ -345,6 +346,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
             // switch to new item
             this.selection = item;
         }
+        this.refreshAfterMenuAction();
         return this.getComponentInstance(item);
     }
 
@@ -650,31 +652,31 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         const standardItems: XcTabMenuItem[] = [
             {
                 id: XcTabMenuEntry.Close,
-                name: this.i18n.translate('zeta.xc-tab-bar.menu.close'),
+                name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.close')),
                 disabled: !this.isClosable(item),
                 click: () => this.close(item).subscribe()
             },
             {
                 id: XcTabMenuEntry.CloseAll,
-                name: this.i18n.translate('zeta.xc-tab-bar.menu.close-all'),
+                name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.close-all')),
                 disabled: closableTabs.length === 0,
                 click: () => this.closeAll()
             },
             {
                 id: XcTabMenuEntry.CloseOthers,
-                name: this.i18n.translate('zeta.xc-tab-bar.menu.close-others'),
+                name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.close-others')),
                 disabled: closableTabsExcept.length === 0,
                 click: () => this.closeOthers(item)
             },
             {
                 id: XcTabMenuEntry.CloseLeft,
-                name: this.i18n.translate('zeta.xc-tab-bar.menu.close-left'),
+                name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.close-left')),
                 disabled: closableTabsLeft.length === 0,
                 click: () => this.closeLeft(item)
             },
             {
                 id: XcTabMenuEntry.CloseRight,
-                name: this.i18n.translate('zeta.xc-tab-bar.menu.close-right'),
+                name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.close-right')),
                 disabled: closableTabsRight.length === 0,
                 click: () => this.closeRight(item)
             },
@@ -682,20 +684,20 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
             {
                 id: XcTabMenuEntry.Pin,
                 separator: 'above',
-                name: item.pinned ? this.i18n.translate('zeta.xc-tab-bar.menu.unpin') : this.i18n.translate('zeta.xc-tab-bar.menu.pin'),
+                name: signal(item.pinned ? this.i18n.translateInstant('zeta.xc-tab-bar.menu.unpin') : this.i18n.translateInstant('zeta.xc-tab-bar.menu.pin')),
                 click: () => this.togglePinned(item)
             },
 
             {
                 id: XcTabMenuEntry.ActivateStart,
                 separator: 'above',
-                name: this.i18n.translate('zeta.xc-tab-bar.menu.activate-start'),
+                name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.activate-start')),
                 disabled: this.getIndex(item) <= 0,
                 click: () => this.activateStart(item)
             },
             {
                 id: XcTabMenuEntry.ActivateEnd,
-                name: this.i18n.translate('zeta.xc-tab-bar.menu.activate-end'),
+                name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.activate-end')),
                 disabled: this.getIndex(item) >= this.items.length - 1,
                 click: () => this.activateEnd(item)
             },
@@ -703,43 +705,43 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
             {
                 id: XcTabMenuEntry.MoveActions,
                 separator: 'above',
-                name: this.i18n.translate('zeta.xc-tab-bar.menu.move-actions'),
+                name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.move-actions')),
                 children: [
                     {
                         id: XcTabMenuEntry.ActivateLeft,
-                        name: this.i18n.translate('zeta.xc-tab-bar.menu.activate-left'),
+                        name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.activate-left')),
                         disabled: this.getIndex(item) <= 0,
                         click: () => this.activateLeft(item)
                     },
                     {
                         id: XcTabMenuEntry.ActivateRight,
-                        name: this.i18n.translate('zeta.xc-tab-bar.menu.activate-right'),
+                        name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.activate-right')),
                         disabled: this.getIndex(item) >= this.items.length - 1,
                         click: () => this.activateRight(item)
                     },
                     {
                         id: XcTabMenuEntry.MoveLeft,
                         separator: 'above',
-                        name: this.i18n.translate('zeta.xc-tab-bar.menu.move-left'),
+                        name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.move-left')),
                         disabled: !this.canMoveLeft(item),
                         click: () => this.moveLeft(item)
                     },
                     {
                         id: XcTabMenuEntry.MoveRight,
-                        name: this.i18n.translate('zeta.xc-tab-bar.menu.move-right'),
+                        name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.move-right')),
                         disabled: !this.canMoveRight(item),
                         click: () => this.moveRight(item)
                     },
                     {
                         id: XcTabMenuEntry.MoveToStart,
                         separator: 'above',
-                        name: this.i18n.translate('zeta.xc-tab-bar.menu.move-start'),
+                        name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.move-start')),
                         disabled: !this.canMoveToStart(item),
                         click: () => this.moveToStart(item)
                     },
                     {
                         id: XcTabMenuEntry.MoveToEnd,
-                        name: this.i18n.translate('zeta.xc-tab-bar.menu.move-end'),
+                        name: signal(this.i18n.translateInstant('zeta.xc-tab-bar.menu.move-end')),
                         disabled: !this.canMoveToEnd(item),
                         click: () => this.moveToEnd(item)
                     }

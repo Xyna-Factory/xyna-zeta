@@ -21,8 +21,7 @@ import { MatMenu, MenuPositionX, MenuPositionY } from '@angular/material/menu';
 import { XcDynamicString, XcItem } from '../shared/xc-item'; // Pfad ggf. anpassen
 
 
-export interface XcMenuItem extends Omit<XcItem, 'name'> {
-    name?: XcDynamicString;
+export interface XcMenuItem extends XcItem {
     children?: XcMenuItem[];              // <--- KORREKTUR: Statt "this[]"
     translate?: boolean;
     click?: (item: XcMenuItem) => void;   // <--- KORREKTUR: Statt "(item: this)"

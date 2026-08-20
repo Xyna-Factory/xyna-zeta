@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
 
 import { Xo, XoArray, XoObject } from '../../../../../api';
 import { pack } from '../../../../../base';
@@ -80,7 +80,7 @@ export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefini
         this.dataSource.limit = 50;
         this.dataSource.localTableData = {
             rows: this.resolvedData.length > 0 && this.resolvedData[0] instanceof XoArray ? (this.resolvedData[0] as XoArray<XoObject>).data : [],
-            columns: this.tableDefinition.columns.data.map(column => <XcTableColumn>{ name: column.name, path: column.path })
+            columns: this.tableDefinition.columns.data.map(column => <XcTableColumn>{ name: signal(column.name), path: column.path })
         };
         this.dataSource.countChange.subscribe(counts => this.tableCounts = counts);
 

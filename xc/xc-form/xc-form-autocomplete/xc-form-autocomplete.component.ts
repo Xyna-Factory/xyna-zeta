@@ -18,8 +18,11 @@ import { debounceTime, map, tap } from 'rxjs/operators';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
+import { debounceTime, map, tap } from 'rxjs/operators';
+
 import { AsyncPipe } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, HostBinding, inject, Input, NgZone, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, HostBinding, inject, Input, NgZone, OnDestroy, Output, signal, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { MatIconButton } from '@angular/material/button';
@@ -34,7 +37,7 @@ import { Xo, XoObject, XoPropertyBinding } from '../../../api';
 import { coerceBoolean, Comparable, isObject, isString, isTextOverflowing, Native, NativeArray } from '../../../base';
 import { I18nService, XcI18nPipe } from '../../../i18n';
 import { XcBoxableDataWrapper } from '../../shared/xc-data-wrapper';
-import { resolveXcDynamicString, XcOptionItem, XcOptionItemString, XcOptionItemValueType } from '../../shared/xc-item';
+import { XcDynamicString, XcOptionItem, XcOptionItemString, XcOptionItemValueType } from '../../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString, XcSortPredicate } from '../../shared/xc-sort';
 import { XcIconComponent } from '../../xc-icon/xc-icon.component';
 import { XcTooltipDirective, XcTooltipPosition } from '../../xc-tooltip/xc-tooltip.directive';
@@ -56,7 +59,7 @@ export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxa
 
 
     static getXoEnumeratedValuesMapper<W = XcOptionItemValueType>(): OperatorFunction<NativeArray, XcOptionItem<W>[]> {
-        return map((data: any[]) => data.map(value => <XcOptionItem>{ name: `${value}`, value: value }));
+        return map((data: any[]) => data.map(value => <XcOptionItem>{ name: signal(`${value}`), value: value }));
     }
 
     static getXoEnumeratedOptionItems<W = XcOptionItemValueType>(instance: Xo, propertyPath: string): Observable<XcOptionItem<W>[]> {
@@ -184,7 +187,8 @@ interface XcOptionInternalAutocompleteItem extends XcOptionItem {
     imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, MatAutocompleteTrigger, MatAutocomplete, MatOption, XcTooltipDirective, XcIconComponent, MatError, MatIconButton, MatSuffix, MatIcon, AsyncPipe, XcI18nPipe, MatSelect]
 })
 export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implements AfterViewInit, OnDestroy {
-    protected readonly resolveXcDynamicString = resolveXcDynamicString;
+    protected readonly resolveDynamicString = (value: XcDynamicString) => value();
+    readonly displayWith = (option: XcOptionItem) => this.optionName(option);
     private readonly cdRef = inject(ChangeDetectorRef);
     private readonly a11yService = inject(A11yService);
     private readonly i18nService = inject(I18nService);
@@ -801,7 +805,8 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
 
     optionName(option: XcOptionItem): string {
-        return resolveXcDynamicString(option?.name) || '';
+        const name = option?.name;
+        return typeof name === 'function' ? name() : name || '';
     }
 
 

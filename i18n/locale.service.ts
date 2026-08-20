@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable, LOCALE_ID, Provider } from '@angular/core';
+import { Injectable, LOCALE_ID, Provider, Signal, signal } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 
@@ -29,6 +29,7 @@ export class LocaleService {
 
     /** currently selected language */
     private readonly languageSubject = new BehaviorSubject<string>(LocaleService.EN_US);
+    private readonly _languageSignal = signal<string>(undefined);
 
 
     constructor() {
@@ -47,6 +48,7 @@ export class LocaleService {
 
     set language(value: string) {
         this.languageSubject.next(value);
+        this._languageSignal.set(value);
 
         const html = document.querySelector('html');
         if (html) {
@@ -58,6 +60,11 @@ export class LocaleService {
 
     get languageChange(): Observable<string> {
         return this.languageSubject.asObservable();
+    }
+
+
+    get languageSignal(): Signal<string> {
+        return this._languageSignal;
     }
 }
 

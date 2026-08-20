@@ -15,6 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { signal } from '@angular/core';
 import { Xo, XoStructureField } from '../../api';
 import { defineAccessorProperty } from '../../base';
 import { XcIdentityDataWrapper, XcStringFloatDataWrapper, XcStringIntegerDataWrapper } from '../shared/xc-data-wrapper';
@@ -50,7 +51,7 @@ export class XcTemplateFactory {
                 const autocompleteDataWrapper = new XcAutocompleteDataWrapper(
                     getter,
                     setter,
-                    [{name: false.toString(), value: false}, {name: true.toString(), value: true}],
+                    [{name: signal(false.toString()), value: false}, {name: signal(true.toString()), value: true}],
                     nullable
                 );
                 // create checkbox template

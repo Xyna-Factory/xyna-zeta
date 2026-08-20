@@ -19,11 +19,10 @@ import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import { AsyncPipe, NgStyle } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, isSignal, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 
 import { coerceBoolean } from '../../../../base';
 import { I18nService } from '../../../../i18n';
-import { resolveXcDynamicString } from '../../../shared/xc-item';
 import { XcIconButtonComponent } from '../../../xc-button/xc-icon-button.component';
 import { XcTooltipDirective } from '../../../xc-tooltip/xc-tooltip.directive';
 import { XcStructureTreeNode } from '../../xc-readonly-structure-tree-data-source';
@@ -40,9 +39,6 @@ import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.compone
 export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode> implements AfterViewInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
     readonly i18n = inject(I18nService);
-    protected readonly resolveXcDynamicString = resolveXcDynamicString;
-
-
     static readonly INDENTATION = 20;
     private subscription: Subscription;
     private _node: XcStructureTreeNode;
@@ -128,8 +124,8 @@ export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode
 
 
     get nodeLabel(): string {
-        const name = this.resolveXcDynamicString(this.node?.name) || '';
-        return !isSignal(this.node?.name) ? this.i18n.translate(name) : name;
+        const name = this.node?.name || '';
+        return this.i18n.translate(name);
     }
 
 

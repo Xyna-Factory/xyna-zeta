@@ -88,10 +88,10 @@ export class XcLanguageSelectorComponent {
                     }
                 }
             );
-            const mapped = languages.map(value => {
-                value.label = this.i18n.translate(value.label);
-                return { name: value.label, value: new ComparableLanguage(value) };
-            });
+            const mapped = languages.map(value => ({
+                name: this.i18n.translateSignal(value.label),
+                value: new ComparableLanguage(value)
+            }));
             this.selectLanguageDataWrapper.values = mapped;
         }
     }

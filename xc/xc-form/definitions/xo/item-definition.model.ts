@@ -1,6 +1,3 @@
-import { combineLatest, Observable, of } from 'rxjs';
-import { filter, map, mergeMap, tap } from 'rxjs/operators';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +15,10 @@ import { filter, map, mergeMap, tap } from 'rxjs/operators';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { combineLatest, Observable, of } from 'rxjs';
+import { filter, map, mergeMap, tap } from 'rxjs/operators';
+
+import { signal } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
 
 import { Xo, XoArray, XoArrayClass, XoObjectClass, XoProperty } from '../../../../api';
@@ -210,7 +211,7 @@ export class XoPossibleValuesDefinition extends XoDefinition {
             console.warn('No possible values defined for DropDown. DataPath of PossibleValuesDefinition: ' + this.dataPath);
         }
 
-        return rawOptionsList.data.map(item => <XcOptionItem>{ name: item.resolve(this.listItemLabelPath), value: item.resolve(this.listItemValuePath) });
+        return rawOptionsList.data.map(item => <XcOptionItem>{ name: signal(item.resolve(this.listItemLabelPath)), value: item.resolve(this.listItemValuePath) });
     }
 }
 
