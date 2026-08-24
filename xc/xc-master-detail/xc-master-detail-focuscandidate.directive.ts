@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, ElementRef, inject, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, effect, inject, input, OnInit } from '@angular/core';
 
 
 export interface XcMasterDetailFocusCandidateObserver {
@@ -39,23 +39,38 @@ export class XcMasterDetailFocusCandidateDirective implements OnInit {
 
     // the preexisting value of the referee should not cause the directive to focus on the element
     private _beforeInit = false;
+    private _lastValue: any;
 
-    @Input('xc-master-detail-focus-candidate')
-    moment: 'close' | 'open' | 'none' = 'none';
+    readonly momentInput = input<'close' | 'open' | 'none'>('none', { alias: 'xc-master-detail-focus-candidate' });
 
-    @Input('xc-master-detail-focus-candidate-observer')
-    observer: XcMasterDetailFocusCandidateObserver;
+    readonly observerInput = input<XcMasterDetailFocusCandidateObserver | undefined>(undefined, { alias: 'xc-master-detail-focus-candidate-observer' });
 
-    @Input('xc-master-detail-focus-candidate-valuereferee')
-    set valueReferee(value: any) {
-        if (this._beforeInit && !!value) {
-            this.focus();
-        }
+    readonly valueRefereeInput = input<any>(undefined, { alias: 'xc-master-detail-focus-candidate-valuereferee' });
+
+    get moment(): 'close' | 'open' | 'none' {
+        return this.momentInput();
+    }
+
+
+    get observer(): XcMasterDetailFocusCandidateObserver | undefined {
+        return this.observerInput();
+    }
+
+
+    constructor() {
+        effect(() => {
+            const value = this.valueRefereeInput();
+            if (this._beforeInit && !!value && value !== this._lastValue) {
+                this.focus();
+            }
+            this._lastValue = value;
+        });
     }
 
     ngOnInit() {
         // the referee is now allowed to be active
         this._beforeInit = true;
+        this._lastValue = this.valueRefereeInput();
     }
 
     focus() {

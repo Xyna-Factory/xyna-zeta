@@ -4,7 +4,7 @@
         <ng-content select="[master]" />
     </mat-drawer-content>
 
-    <mat-drawer #drawer [mode]="mode" [position]="position" [disableClose]="!escapable" [opened]="opened" (openedChange)="openedChange($event)">
+    <mat-drawer #drawer [mode]="mode" [position]="position" [disableClose]="!escapable" [opened]="opened" (openedChange)="openedChangeHandler($event)">
         <ng-content select="[detail]" />
     </mat-drawer>
 

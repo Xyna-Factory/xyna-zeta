@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, ContentChildren, ElementRef, HostBinding, HostListener, Input, QueryList, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, contentChildren, effect, ElementRef, HostBinding, HostListener, input, output, signal, viewChild } from '@angular/core';
 import { MatDrawerContainer, MatDrawerContent, MatDrawer } from '@angular/material/sidenav';
 
 import { coerceBoolean } from '../../base';
@@ -31,50 +31,52 @@ type XcMasterDetailPosition = 'start' | 'end';
     selector: 'xc-master-detail',
     templateUrl: './xc-master-detail.component.html',
     styleUrls: ['./xc-master-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [MatDrawerContainer, MatDrawerContent, MatDrawer]
 })
 export class XcMasterDetailComponent {
 
-    @ViewChild(MatDrawerContainer, { static: false })
-    private readonly _drawerContainer: MatDrawerContainer;
+    private readonly drawerContainer = viewChild(MatDrawerContainer);
+    private readonly drawerContentEl = viewChild(MatDrawerContent);
+    readonly focusCandidates = contentChildren(XcMasterDetailFocusCandidateDirective, { descendants: true });
+    readonly openedChange = output<boolean>();
 
-    @ViewChild(MatDrawerContent, { read: ElementRef, static: false })
-    private readonly _drawerContentEl: ElementRef<HTMLElement>;
+    readonly modeInput = input<XcMasterDetailMode>('side', { alias: 'xc-master-detail-mode' });
+    readonly positionInput = input<XcMasterDetailPosition>('end', { alias: 'xc-master-detail-position' });
+    readonly openedInput = input(false, { alias: 'xc-master-detail-opened', transform: coerceBoolean });
+    readonly escapableInput = input(false, { alias: 'xc-master-detail-escapable', transform: coerceBoolean });
+    readonly sideAreaSizeInput = input<XcMasterDetailSideAreaSize>('golden', { alias: 'xc-master-detail-side-area-size' });
 
-    private _opened = false;
-    private _escapable = false;
-    private _sideAreaSize: XcMasterDetailSideAreaSize = 'golden';
+    private readonly _opened = signal(false);
+    private readonly _mode = signal<XcMasterDetailMode>('side');
+    private readonly _position = signal<XcMasterDetailPosition>('end');
+    private readonly _escapable = signal(false);
+    private readonly _sideAreaSize = signal<XcMasterDetailSideAreaSize>('golden');
 
-    @ContentChildren(XcMasterDetailFocusCandidateDirective, { descendants: true })
-    focusCandidates = new QueryList<XcMasterDetailFocusCandidateDirective>();
-
-    @Input('xc-master-detail-mode')
     @HostBinding('attr.detail-mode')
-    mode: XcMasterDetailMode = 'side';
+    get mode(): XcMasterDetailMode {
+        return this._mode();
+    }
 
-    @Input('xc-master-detail-position')
-    position: XcMasterDetailPosition = 'end';
 
-
-    @Input('xc-master-detail-opened')
-    set opened(value: boolean) {
-        this._opened = value;
+    get position(): XcMasterDetailPosition {
+        return this._position();
     }
 
 
     get opened(): boolean {
-        return this._opened;
-    }
-
-
-    @Input({alias: 'xc-master-detail-escapable', transform: coerceBoolean})
-    set escapable(value: boolean) {
-        this._escapable = value;
+        return this._opened();
     }
 
 
     get escapable(): boolean {
-        return this._escapable;
+        return this._escapable();
+    }
+
+
+    @HostBinding('attr.side-area-size')
+    get sideAreaSize(): XcMasterDetailSideAreaSize {
+        return this._sideAreaSize();
     }
 
 
@@ -84,35 +86,40 @@ export class XcMasterDetailComponent {
     }
 
 
-    @Input('xc-master-detail-side-area-size')
-    @HostBinding('attr.side-area-size')
-    set sideAreaSize(value: XcMasterDetailSideAreaSize) {
-        this._sideAreaSize = value;
-    }
+    constructor() {
+        effect(() => {
+            this._mode.set(this.modeInput());
+            this._position.set(this.positionInput());
+            this._opened.set(this.openedInput());
+            this._escapable.set(this.escapableInput());
+            this._sideAreaSize.set(this.sideAreaSizeInput());
+        });
 
-
-    get sideAreaSize(): XcMasterDetailSideAreaSize {
-        return this._sideAreaSize;
-    }
-
-
-    openedChange(event: boolean) {
-
-        if (this._drawerContentEl) {
-            if (event && this.sideAreaSize === 'full') {
-                this._drawerContentEl.nativeElement.setAttribute('inert', '');
-            } else {
-                this._drawerContentEl.nativeElement.removeAttribute('inert');
+        effect(() => {
+            const drawerContentEl = this.drawerContentEl();
+            if (!drawerContentEl) {
+                return;
             }
-        }
+            if (this._opened() && this._sideAreaSize() === 'full') {
+                drawerContentEl.getElementRef().nativeElement.setAttribute('inert', '');
+            } else {
+                drawerContentEl.getElementRef().nativeElement.removeAttribute('inert');
+            }
+        });
+    }
+
+
+    openedChangeHandler(event: boolean) {
+        this._opened.set(event);
+        this.openedChange.emit(event);
 
         if (event) {
-            const open = this.focusCandidates.find(can => can.moment === 'open');
+            const open = this.focusCandidates().find(can => can.moment === 'open');
             if (open) {
                 open.focus();
             }
         } else {
-            const close = this.focusCandidates.find(can => can.moment === 'close');
+            const close = this.focusCandidates().find(can => can.moment === 'close');
             if (close) {
                 close.focus();
             }
@@ -123,10 +130,11 @@ export class XcMasterDetailComponent {
     resize() {
         // autosize feature of MatDrawContainer can badly effect the overall performance
         // so it is only true until the next change detection, which is triggered by setTimeout
-        if (this._drawerContainer) {
-            this._drawerContainer.autosize = true;
+        const drawerContainer = this.drawerContainer();
+        if (drawerContainer) {
+            drawerContainer.autosize = true;
             // Promise.resolve().then(() => this._drawerContainer.autosize = false);
-            window.setTimeout(() => this._drawerContainer.autosize = false, 0);
+            window.setTimeout(() => drawerContainer.autosize = false, 0);
         }
     }
 }
