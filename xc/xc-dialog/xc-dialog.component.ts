@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, DestroyRef, HostListener, inject, InjectionToken, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, HostListener, inject, InjectionToken, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
@@ -27,7 +27,8 @@ import { XcDialogWrapperComponent } from './xc-dialog-wrapper.component';
 
 
 @Component({
-    template: ''
+    template: '',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export abstract class XcDialogComponent<R = void, D = void>
