@@ -18,7 +18,7 @@
 import { Subscription } from 'rxjs';
 
 import { NgClass } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, HostBinding, inject, input, OnDestroy, signal, viewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
@@ -54,19 +54,22 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private readonly elementRef = inject(ElementRef<HTMLElement>);
     private readonly _a11y = inject(A11yService);
     private readonly _i18n = inject(I18nService);
+    private readonly _localeService = inject(LocaleService);
 
 
-    private _allowSort = false;
-    private _allowFilter = false;
-    private _allowSelect = false;
-    private _allowActivate = false;
-    private _multiSelect = false;
-    private _cellSelect = false;
-    private _lazyUpdate = false;
-    private _visibleActions = false;
-    private _dataSource: XcTableDataSource<any>;
+    readonly dataSourceInput = input<XcTableDataSource<any> | undefined>(undefined, { alias: 'xc-table-datasource' });
+    readonly allowSortInput = input(false, { alias: 'xc-table-allowsort', transform: coerceBoolean });
+    readonly allowFilterInput = input(false, { alias: 'xc-table-allowfilter', transform: coerceBoolean });
+    readonly allowActivateInput = input(false, { alias: 'xc-table-allowactivate', transform: coerceBoolean });
+    readonly allowSelectInput = input(false, { alias: 'xc-table-allowselect', transform: coerceBoolean });
+    readonly multiSelectInput = input(false, { alias: 'xc-table-multiselect', transform: coerceBoolean });
+    readonly cellSelectInput = input(false, { alias: 'xc-table-cellselect', transform: coerceBoolean });
+    readonly lazyUpdateInput = input(false, { alias: 'xc-table-lazyupdate', transform: coerceBoolean });
+    readonly visibleActionsInput = input(false, { alias: 'xc-table-visibleactions', transform: coerceBoolean });
+
+    private readonly dataSourceState = signal<XcTableDataSource<any> | undefined>(undefined);
     private _dataSourceSubscriptions = new Array<Subscription>();
-    private _matSort: MatSort;
+    private readonly matSortInput = viewChild(MatSort);
 
     private readonly filterTemplates = new Map<string, {
         template: XcFormTemplate<any, any>;
@@ -76,21 +79,40 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     private tbody: HTMLTableSectionElement;
     private thead: HTMLTableSectionElement;
+    private readonly viewInitializedState = signal(false);
 
-    private focusViaTabDetectionSubscription: Subscription;
+    private focusViaTabDetectionSubscription?: Subscription;
 
 
     constructor() {
-        const _i18n = this._i18n;
+        this._i18n.setTranslations(LocaleService.EN_US, xcTableTranslations_enUS);
+        this._i18n.setTranslations(LocaleService.DE_DE, xcTableTranslations_deDE);
+        effect(() => {
+            this._localeService.languageSignal();
+            this.cdRef.markForCheck();
+        });
 
-        _i18n.setTranslations(LocaleService.EN_US, xcTableTranslations_enUS);
-        _i18n.setTranslations(LocaleService.DE_DE, xcTableTranslations_deDE);
+        effect(() => {
+            this.applyDataSource(this.dataSourceInput());
+        });
+
+        effect((onCleanup) => {
+            const matSort = this.matSortInput();
+            if (!matSort) {
+                return;
+            }
+
+            const subscription = matSort.sortChange.subscribe(() => this.updateDataSourceSort());
+            onCleanup(() => subscription.unsubscribe());
+            this.updateMatSort();
+        });
     }
 
 
     ngAfterViewInit() {
+        this.viewInitializedState.set(true);
         void Promise.resolve().then(() => {
-            if (!this.lazyUpdate) {
+            if (!this.lazyUpdate && this.dataSource) {
                 this.dataSource.refresh();
             }
         });
@@ -113,7 +135,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
                 if (!rowFound && this.tbody) {
                     // focus the first row
-                    row = this.dataSource.rows[0];
+                    row = this.dataSource?.rows[0];
                     rowEl = this.tbody.querySelector('tr');
 
                     if (row && rowEl) {
@@ -129,16 +151,51 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.unsubscribeDataSource();
-
-        if (this.focusViaTabDetectionSubscription) {
-            this.focusViaTabDetectionSubscription.unsubscribe();
-        }
+        this.filterTemplateSubscriptions.forEach(subscription => subscription.unsubscribe());
+        this.filterTemplateSubscriptions.splice(0);
+        this.focusViaTabDetectionSubscription?.unsubscribe();
     }
 
 
     private unsubscribeDataSource() {
         this._dataSourceSubscriptions.forEach(subscription => subscription.unsubscribe());
         this._dataSourceSubscriptions = [];
+    }
+
+    private clearFilterTemplates() {
+        this.filterTemplates.clear();
+        this.filterTemplateSubscriptions.forEach(subscription => subscription.unsubscribe());
+        this.filterTemplateSubscriptions.splice(0);
+    }
+
+
+    private applyDataSource(value: XcTableDataSource<any> | undefined) {
+        if (this.dataSource === value) {
+            return;
+        }
+
+        this.unsubscribeDataSource();
+        this.clearFilterTemplates();
+        this.dataSourceState.set(value);
+
+        if (this.dataSource) {
+            // subscribe to sort changes
+            this.updateMatSort();
+            this._dataSourceSubscriptions.push(
+                this.dataSource.sortChange.subscribe(() => this.updateMatSort())
+            );
+            // subscribe to mark for changes
+            this._dataSourceSubscriptions.push(
+                this.dataSource.markForChange.subscribe(() => this.cdRef.markForCheck())
+            );
+            // subscribe to data changes
+            this._dataSourceSubscriptions.push(
+                this.dataSource.dataChange.subscribe(() => this.clearFilterTemplates())
+            );
+            if (this.viewInitializedState() && !this.lazyUpdate) {
+                this.dataSource.refresh();
+            }
+        }
     }
 
 
@@ -187,138 +244,55 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @ViewChild(MatSort, {static: false})
-    set matSort(value: MatSort) {
-        this._matSort = value;
-        this.matSort.sortChange.subscribe(() => this.updateDataSourceSort());
-        this.updateMatSort();
+    get matSort(): MatSort | undefined {
+        return this.matSortInput();
     }
 
 
-    get matSort(): MatSort {
-        return this._matSort;
-    }
-
-
-    @Input('xc-table-datasource')
-    set dataSource(value: XcTableDataSource<any>) {
-        this.unsubscribeDataSource();
-        this.filterTemplates.clear();
-        this._dataSource = value;
-        if (this.dataSource) {
-            // subscribe to sort changes
-            this.updateMatSort();
-            this._dataSourceSubscriptions.push(
-                this.dataSource.sortChange.subscribe(() => this.updateMatSort())
-            );
-            // subscribe to mark for changes
-            this._dataSourceSubscriptions.push(
-                this.dataSource.markForChange.subscribe(() => this.cdRef.markForCheck())
-            );
-            // subscribe to data changes
-            this._dataSourceSubscriptions.push(
-                this.dataSource.dataChange.subscribe(() => {
-                    this.filterTemplates.clear();
-                    this.filterTemplateSubscriptions.forEach(subscription => subscription.unsubscribe());
-                    this.filterTemplateSubscriptions.splice(0);
-                })
-            );
-        }
-    }
-
-
-    get dataSource(): XcTableDataSource<any> {
-        return this._dataSource;
-    }
-
-
-    @Input({alias: 'xc-table-allowsort', transform: coerceBoolean})
-    set allowSort(value: boolean) {
-        this._allowSort = value;
+    get dataSource(): XcTableDataSource<any> | undefined {
+        return this.dataSourceState();
     }
 
 
     get allowSort(): boolean {
-        return this._allowSort;
-    }
-
-
-    @Input({alias: 'xc-table-allowfilter', transform: coerceBoolean})
-    set allowFilter(value: boolean) {
-        this._allowFilter = value;
+        return this.allowSortInput();
     }
 
 
     get allowFilter(): boolean {
-        return this._allowFilter;
-    }
-
-
-    @Input({alias: 'xc-table-allowactivate', transform: coerceBoolean})
-    set allowActivate(value: boolean) {
-        this._allowActivate = value;
+        return this.allowFilterInput();
     }
 
 
     get allowActivate(): boolean {
-        return this._allowActivate;
+        return this.allowActivateInput();
     }
 
 
     @HostBinding('class.allowselect')
-    @Input({alias: 'xc-table-allowselect', transform: coerceBoolean})
-    set allowSelect(value: boolean) {
-        this._allowSelect = value;
-    }
-
-
     get allowSelect(): boolean {
-        return this._allowSelect;
-    }
-
-
-    @Input({alias: 'xc-table-multiselect', transform: coerceBoolean})
-    set multiSelect(value: boolean) {
-        this._multiSelect = value;
+        return this.allowSelectInput();
     }
 
 
     get multiSelect(): boolean {
-        return this._multiSelect;
+        return this.multiSelectInput();
     }
 
 
     @HostBinding('class.cellselect')
-    @Input({alias: 'xc-table-cellselect', transform: coerceBoolean})
-    set cellSelect(value: boolean) {
-        this._cellSelect = value;
-    }
-
-
     get cellSelect(): boolean {
-        return this._cellSelect;
-    }
-
-
-    @Input({alias: 'xc-table-lazyupdate', transform: coerceBoolean})
-    set lazyUpdate(value: boolean) {
-        this._lazyUpdate = value;
+        return this.cellSelectInput();
     }
 
 
     get lazyUpdate(): boolean {
-        return this._lazyUpdate;
-    }
-
-
-    @Input({alias: 'xc-table-visibleactions', transform: coerceBoolean})
-    set visibleActions(value: boolean) {
-        this._visibleActions = value;
+        return this.lazyUpdateInput();
     }
 
 
     get visibleActions(): boolean {
-        return this._visibleActions;
+        return this.visibleActionsInput();
     }
 
 
@@ -375,8 +349,8 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    protected resolveDynamicString(value: XcDynamicString | string | undefined): string {
-        return typeof value === 'function' ? value() : value || '';
+    protected resolveDynamicString(value?: XcDynamicString): string {
+        return value ? value() : '';
     }
 
 
@@ -442,7 +416,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                     // set value and option of component because the datawrapper resets unknown options when autocomplete is used as input
                     if (component instanceof XcFormAutocompleteComponent && this.dataSource.filterEnumsAsInput.has(path)) {
                         component.value = this.dataSource.getFilter(path);
-                        component.option = XcOptionItemString(component.value);
+                        component.selectedOption.set(XcOptionItemString(component.value));
                     }
                     this.filterTemplateSubscriptions.push(
                         filter.component.valueKeydown.subscribe((event: KeyboardEvent) => {

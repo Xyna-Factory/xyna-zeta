@@ -16,6 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { Xo } from '../../api';
 import { Comparable } from '../../base';
@@ -34,8 +35,9 @@ export class XcLocalTableDataSource<T extends Comparable = Comparable> extends X
 
     protected request(options: XcTableDataRequestOptions) {
         const process = () => {
-            let rows = this.localTableData.rows.concat();
-            const columns = this.localTableData.columns;
+            const sourceData = this.localTableData ?? { rows: [], columns: [] };
+            let rows = sourceData.rows.concat();
+            const columns = sourceData.columns;
             // filter rows first
             if (options.filter) {
                 rows = this.filter(rows, options.filter);
@@ -62,11 +64,11 @@ export class XcLocalTableDataSource<T extends Comparable = Comparable> extends X
             };
 
             this.tableCounts.displayedCount = rows.length;
-            this.countSubject.next(this.tableCounts);
+            this.updateTableCount();
         };
 
         if (this.localTableDataAsync) {
-            this.localTableDataAsync.subscribe(() => process());
+            this.localTableDataAsync.pipe(take(1)).subscribe(() => process());
         } else {
             process();
         }

@@ -96,7 +96,7 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
 
     static readonly DEFAULT_DEBOUNCE_TIME = 500;
 
-    private _subscription: Subscription;
+    private _subscription?: Subscription;
     private _tableData: XcTableData<T>;
     private _debounceTime = 0;
 
@@ -147,6 +147,7 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
     private removeSubscription() {
         if (this._subscription) {
             this._subscription.unsubscribe();
+            this._subscription = undefined;
         }
     }
 
@@ -166,6 +167,11 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
 
     private updateSubject() {
         this.data = this.tableData.rows;
+    }
+
+
+    protected updateTableCount() {
+        this.countSubject.next(this.tableCounts);
     }
 
 
