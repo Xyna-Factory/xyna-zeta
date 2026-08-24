@@ -1,6 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, inject, Input, Output, Renderer2, ViewChild, signal } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 import { coerceBoolean } from '../../base';
@@ -31,6 +31,7 @@ export interface XcDialogOptions {
     selector: 'xc-dialog-wrapper',
     templateUrl: './xc-dialog-wrapper.component.html',
     styleUrls: ['./xc-dialog-wrapper.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgClass, XcResizeDirective, XcDragDirective, MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, XcIconButtonComponent]
 })
 export class XcDialogWrapperComponent implements AfterViewInit {
@@ -38,63 +39,64 @@ export class XcDialogWrapperComponent implements AfterViewInit {
     private readonly element = inject(ElementRef);
 
 
-    private _draggable = false;
-    private _resizable = false;
-    private _maximized = false;
-    private _maximizable = false;
-    private readonly _dialogOptions: XcDialogOptions = {};
+    private readonly draggableState = signal(false);
+    private readonly resizableState = signal(false);
+    private readonly maximizedState = signal(false);
+    private readonly maximizableState = signal(false);
+    private readonly dialogOptionsState = signal<XcDialogOptions>({});
 
     @Input({transform: coerceBoolean})
     set draggable(value: boolean) {
-        this._draggable = value;
+        this.draggableState.set(value);
     }
 
     get draggable(): boolean {
-        return this._draggable;
+        return this.draggableState();
     }
 
     @Input({transform: coerceBoolean})
     set resizable(value: boolean) {
-        this._resizable = value;
+        this.resizableState.set(value);
+        this.element.nativeElement.style.setProperty('--resizable', value);
     }
 
     get resizable(): boolean {
-        return this._resizable;
+        return this.resizableState();
     }
 
     @Input({transform: coerceBoolean})
     set maximized(value: boolean) {
-        this._maximized = value;
+        this.maximizedState.set(value);
 
         if (this.dialogRoot) {
             this.applyMaximizedState();
         }
 
-        this.maximizedChange.emit(this._maximized);
+        this.maximizedChange.emit(this.maximizedState());
     }
 
     get maximized(): boolean {
-        return this._maximized;
+        return this.maximizedState();
     }
 
     @Input({transform: coerceBoolean})
     set maximizable(value: boolean) {
-        this._maximizable = value;
+        this.maximizableState.set(value);
     }
 
     get maximizable(): boolean {
-        return this._maximizable;
+        return this.maximizableState();
     }
 
     @Input('xc-dialog-options')
     set dialogOptions(value: XcDialogOptions) {
         if (value) {
-            this._dialogOptions.dragOptions = {
+            const dragOptions: XcDragOptions = {
                 dragX: coerceBoolean(value.dragOptions?.dragX),
                 dragY: coerceBoolean(value.dragOptions?.dragY),
                 dragInViewport: coerceBoolean(value.dragOptions?.dragInViewport)
             };
-            this._dialogOptions.resizeOptions = {
+            const resizeOptions: XcResizeOptions = {
                 all: coerceBoolean(value.resizeOptions?.all),
                 south: coerceBoolean(value.resizeOptions?.south),
                 east: coerceBoolean(value.resizeOptions?.east),
@@ -104,22 +106,26 @@ export class XcDialogWrapperComponent implements AfterViewInit {
                 northWest: coerceBoolean(value.resizeOptions?.northWest),
                 north: coerceBoolean(value.resizeOptions?.north),
                 northEast: coerceBoolean(value.resizeOptions?.northEast),
-
                 resizeInViewport: coerceBoolean(value.resizeOptions?.resizeInViewport),
-
                 minHeight: value.resizeOptions?.minHeight,
                 minWidth: value.resizeOptions?.minWidth,
                 maxHeight: value.resizeOptions?.maxHeight,
                 maxWidth: value.resizeOptions?.maxWidth
             };
-            this._dialogOptions.initialHeight = value.initialHeight;
-            this._dialogOptions.initialWidth = value.initialWidth;
-            this._dialogOptions.position = value.position;
+            this.dialogOptionsState.set({
+                dragOptions,
+                resizeOptions,
+                initialHeight: value.initialHeight,
+                initialWidth: value.initialWidth,
+                position: value.position
+            });
+        } else {
+            this.dialogOptionsState.set({});
         }
     }
 
     get dialogOptions(): XcDialogOptions {
-        return this._dialogOptions;
+        return this.dialogOptionsState();
     }
 
     @Output()
@@ -137,7 +143,7 @@ export class XcDialogWrapperComponent implements AfterViewInit {
     ngAfterViewInit() {
         this.center();
 
-        if (this._maximized) {
+        if (this.maximized) {
             this.applyMaximizedState();
         }
     }
@@ -206,7 +212,7 @@ export class XcDialogWrapperComponent implements AfterViewInit {
 
         const el = this.dialogRoot.nativeElement;
 
-        if (this._maximized) {
+        if (this.maximized) {
             // speichern
             this._preMaximize.top = parseFloat(el.style.top) || 0;
             this._preMaximize.left = parseFloat(el.style.left) || 0;

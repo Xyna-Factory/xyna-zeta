@@ -18,7 +18,8 @@ import { Observable } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostListener, inject, InjectionToken, ViewChild } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, InjectionToken, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { XcDynamicDismissableComponent } from '../shared/xc-dynamic-dismissable.component';
@@ -33,11 +34,20 @@ export abstract class XcDialogComponent<R = void, D = void>
     extends XcDynamicDismissableComponent<R, D> {
 
     private readonly dialogRef = inject(MatDialogRef<any>);
+    private readonly destroyRef = inject(DestroyRef);
 
     @ViewChild(XcDialogWrapperComponent)
     private wrapper: XcDialogWrapperComponent;
 
-    protected _maximized = false;
+    private readonly maximizedState = signal(false);
+
+    protected get _maximized(): boolean {
+        return this.maximizedState();
+    }
+
+    protected set _maximized(value: boolean) {
+        this.maximizedState.set(value);
+    }
 
     constructor() {
         super();
@@ -46,7 +56,7 @@ export abstract class XcDialogComponent<R = void, D = void>
 
     ngAfterViewInit() {
         if (this.wrapper) {
-            this.wrapper.maximizedChange.subscribe(value => {
+            this.wrapper.maximizedChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
                 this._maximized = value;
             });
         }

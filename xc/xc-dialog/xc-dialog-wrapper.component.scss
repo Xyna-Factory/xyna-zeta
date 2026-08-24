@@ -5,6 +5,7 @@ $resizable: var(--resizable);
 ::ng-deep mat-dialog-container.mat-mdc-dialog-container {
     box-shadow: none;
     border: none;
+    overflow: hidden;
 
     .mdc-dialog__content {
         font-size: 14px;
@@ -13,6 +14,10 @@ $resizable: var(--resizable);
     .mdc-dialog__surface {
         box-shadow: $xc-dialog-box-shadow;
         border: none;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        max-height: calc(100vh - 32px);
 
         &::before {
             display: none;
@@ -30,6 +35,8 @@ $resizable: var(--resizable);
         box-shadow: $xc-dialog-box-shadow;
         min-width: 200px;
         min-height: 150px;
+        max-height: calc(100vh - 32px);
+        overflow: hidden;
 
         .header {
             display: flex;
@@ -38,6 +45,7 @@ $resizable: var(--resizable);
             padding: 0 16px;
             border-top-left-radius: $xc-dialog-border-radius;
             border-top-right-radius: $xc-dialog-border-radius;
+            flex: 0 0 auto;
 
             h2 {
                 white-space: nowrap;
@@ -84,7 +92,8 @@ $resizable: var(--resizable);
             // max-height: unset;
             line-height: unset;
             flex: 1 1 auto;
-            overflow: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
             min-height: 0;
             max-height: unset;
         }
@@ -95,6 +104,7 @@ $resizable: var(--resizable);
             height: 48px;
             display: flex;
             justify-content: space-around;
+            flex: 0 0 auto;
 
             color: $xc-dialog-footer-color;
             background-color: $xc-dialog-footer-background-color;
@@ -114,12 +124,15 @@ $resizable: var(--resizable);
         box-shadow: $xc-dialog-box-shadow;
         display: flex;
         flex-direction: column;
+        max-height: calc(100vh - 32px);
+        overflow: hidden;
 
         .header {
             display: flex;
             align-items: baseline;
             background-color: $xc-dialog-title-background-color;
             padding: 0 16px;
+            flex: 0 0 auto;
         }
 
         .draggable {
@@ -159,7 +172,8 @@ $resizable: var(--resizable);
             // max-height: unset;
             line-height: unset;
             flex: 1 1 auto;
-            overflow: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
             min-height: 0;
             max-height: unset;
         }
@@ -170,6 +184,7 @@ $resizable: var(--resizable);
             height: 48px;
             display: flex;
             justify-content: space-around;
+            flex: 0 0 auto;
 
             color: $xc-dialog-footer-color;
             background-color: $xc-dialog-footer-background-color;
