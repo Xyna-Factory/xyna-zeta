@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
 import { XcI18nContextDirective, XcI18nPipe, XcI18nTranslateDirective } from '../../i18n';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
@@ -40,25 +40,36 @@ export interface XcAboutDialogConfig {
 @Component({
     templateUrl: './xc-about-dialog.component.html',
     styleUrls: ['./xc-about-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcI18nPipe, XcButtonComponent]
 })
 export class XcAboutDialogComponent extends XcDialogComponent<void, XcAboutDialogConfig> {
     protected readonly http = inject(HttpClient);
 
-    license = '';
-    details = false;
+    private readonly licenseState = signal('');
+    private readonly detailsState = signal(false);
+
+    get license(): string {
+        return this.licenseState();
+    }
+
+    get details(): boolean {
+        return this.detailsState();
+    }
 
 
     constructor() {
         super();
 
-        this.http.get(this.injectedData.detailsLink, { responseType: 'text' }).subscribe(
-            result => this.license = result
-        );
+        if (this.injectedData.detailsLink) {
+            this.http.get(this.injectedData.detailsLink, { responseType: 'text' }).subscribe(
+                result => this.licenseState.set(result)
+            );
+        }
     }
 
 
     toggleDetails() {
-        this.details = !this.details;
+        this.detailsState.update(value => !value);
     }
 }
