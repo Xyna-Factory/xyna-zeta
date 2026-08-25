@@ -64,6 +64,9 @@ export class XoTableColumn extends XoObject {
 
     @XoProperty()
     align?: string;
+  
+    @XoProperty()
+    pronunciationLang?: string;
 
     get asXcTableColumn(): XcTableColumn {
         return {
@@ -76,6 +79,7 @@ export class XoTableColumn extends XoObject {
             pre: this.pre,
             filterTooltip: this.filterTooltip,
             filterMultiselect: this.filterMultiselect,
+            pronunciationLang: this.pronunciationLang,
             align: this.align
         };
     }

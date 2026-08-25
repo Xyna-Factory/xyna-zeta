@@ -28,7 +28,7 @@ import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
 import { XcIdentityDataWrapper } from '../shared/xc-data-wrapper';
 import { XcOptionItemString } from '../shared/xc-item';
-import { XcSortDirection, XcSortDirectionFromString } from '../shared/xc-sort';
+import { XcSortDirection, XcSortDirectionFromString, XcSortDirectionToLabel } from '../shared/xc-sort';
 import { XcVarDirective } from '../shared/xc-var.directive';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
@@ -68,7 +68,10 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private _dataSourceSubscriptions = new Array<Subscription>();
     private _matSort: MatSort;
 
-    private readonly filterTemplates = new Map<string, { template: XcFormTemplate<any, any>; component?: XcFormBaseComponent }>();
+    private readonly filterTemplates = new Map<string, {
+        template: XcFormTemplate<any, any>;
+        component?: XcFormBaseComponent
+    }>();
     private readonly filterTemplateSubscriptions: Subscription[] = [];
 
     private tbody: HTMLTableSectionElement;
@@ -100,8 +103,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         this.tbody = xcTable.querySelector('tbody');
         this.tbody.setAttribute('tabindex', '0');
         this.tbody.onkeydown = this.keyDown.bind(this);
-        const tbodyMessage = this.i18n.translate('Use the arrow keys Up and Down to switch between rows');
-        this.tbody.setAttribute('aria-label', tbodyMessage);
 
 
         this.focusViaTabDetectionSubscription = this._a11y.emitElementFocusStateChange(this.tbody).subscribe(state => {
@@ -158,8 +159,12 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                 this.matSort.active = this.getColumnID(column);
             }
             switch (this.dataSource.getSortDirection()) {
-                case XcSortDirection.asc: this.matSort.direction = 'asc'; break;
-                case XcSortDirection.dsc: this.matSort.direction = 'desc'; break;
+                case XcSortDirection.asc:
+                    this.matSort.direction = 'asc';
+                    break;
+                case XcSortDirection.dsc:
+                    this.matSort.direction = 'desc';
+                    break;
                 default:
                     this.matSort.direction = '';
                     this.matSort.active = '';
@@ -182,7 +187,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @ViewChild(MatSort, { static: false })
+    @ViewChild(MatSort, {static: false})
     set matSort(value: MatSort) {
         this._matSort = value;
         this.matSort.sortChange.subscribe(() => this.updateDataSourceSort());
@@ -227,9 +232,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-allowsort')
+    @Input({alias: 'xc-table-allowsort', transform: coerceBoolean})
     set allowSort(value: boolean) {
-        this._allowSort = coerceBoolean(value);
+        this._allowSort = value;
     }
 
 
@@ -238,9 +243,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-allowfilter')
+    @Input({alias: 'xc-table-allowfilter', transform: coerceBoolean})
     set allowFilter(value: boolean) {
-        this._allowFilter = coerceBoolean(value);
+        this._allowFilter = value;
     }
 
 
@@ -250,8 +255,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     @Input('xc-table-allowactivate')
+    @Input({alias: 'xc-table-allowactivate', transform: coerceBoolean})
     set allowActivate(value: boolean) {
-        this._allowActivate = coerceBoolean(value);
+        this._allowActivate = value;
     }
 
 
@@ -262,8 +268,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     @HostBinding('class.allowselect')
     @Input('xc-table-allowselect')
+    @Input({alias: 'xc-table-allowselect', transform: coerceBoolean})
     set allowSelect(value: boolean) {
-        this._allowSelect = coerceBoolean(value);
+        this._allowSelect = value;
     }
 
 
@@ -273,8 +280,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     @Input('xc-table-multiselect')
+    @Input({alias: 'xc-table-multiselect', transform: coerceBoolean})
     set multiSelect(value: boolean) {
-        this._multiSelect = coerceBoolean(value);
+        this._multiSelect = value;
     }
 
 
@@ -285,8 +293,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     @HostBinding('class.cellselect')
     @Input('xc-table-cellselect')
+    @Input({alias: 'xc-table-cellselect', transform: coerceBoolean})
     set cellSelect(value: boolean) {
-        this._cellSelect = coerceBoolean(value);
+        this._cellSelect = value;
     }
 
 
@@ -296,8 +305,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     @Input('xc-table-lazyupdate')
+    @Input({alias: 'xc-table-lazyupdate', transform: coerceBoolean})
     set lazyUpdate(value: boolean) {
-        this._lazyUpdate = coerceBoolean(value);
+        this._lazyUpdate = value;
     }
 
 
@@ -307,8 +317,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     @Input('xc-table-visibleactions')
+    @Input({alias: 'xc-table-visibleactions', transform: coerceBoolean})
     set visibleActions(value: boolean) {
-        this._visibleActions = coerceBoolean(value);
+        this._visibleActions = value;
     }
 
 
@@ -355,8 +366,20 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
+    getAriaSortForColumn(column: XcTableColumn): string {
+        if(this.dataSource.getSortPath() ===  column.path) {
+            const sortDirection = this.dataSource.getSortDirection();
+            return XcSortDirectionToLabel(sortDirection);
+        }
+        return null;
+    }
+
+
     getColumnFilterAriaLabel(name: string): string {
-        return this.i18n.translate('Input field for filtering of $0', { key: '$0', value: this.i18n.translate(name || 'this column') });
+        return this.i18n.translate('Input field for filtering of $0', {
+            key: '$0',
+            value: this.i18n.translate(name || 'this column')
+        });
     }
 
 
@@ -373,7 +396,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             let filter = this.filterTemplates.get(path);
             // create new template
             if (!filter) {
-                filter = { template: undefined };
+                filter = {template: undefined};
                 const filterEnum = this.dataSource.filterEnums.get(path);
                 if (filterEnum) {
                     // autocomplete template
@@ -386,15 +409,15 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                         if (this.dataSource.filterEnumsAsInput.has(path)) {
                             filter.template.asInput = true;
                             filter.template.suffix = 'clear';
+                        } else if (this.dataSource.filterEnumsAsMultiselect.has(path) || column.filterMultiselect) {
+                            filter.template.asDropdown = true;
+                            filter.template.asMultiselect = true;
+                            filter.template.multiSelectCallback = (value: string) => {
+                                this.dataSource.setFilter(path, value);
+                                this.dataSource.applyFilters();
+                            };
                         } else {
                             filter.template.asDropdown = true;
-                            if (column.filterMultiselect) {
-                                filter.template.asMultiselect = true;
-                                filter.template.multiSelectCallback = (value: string) => {
-                                    this.dataSource.setFilter(path, value);
-                                    this.dataSource.applyFilters();
-                                };
-                            }
                         }
                     }
                 } else {
