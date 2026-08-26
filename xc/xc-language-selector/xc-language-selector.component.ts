@@ -16,16 +16,16 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
+import { ConfigService } from '@zeta/api/config.service';
 
 import { SelectableLanguage } from '../../api';
 import { Comparable } from '../../base';
+import { LocaleService, XcI18nTranslateDirective } from '../../i18n';
 import { I18nService } from '../../i18n/i18n.service';
 import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { xcLanguageSelectorTranslations_deDE } from './locale/xc-language-selector-translations.de-DE';
 import { xcLanguageSelectorTranslations_enUS } from './locale/xc-language-selector-translations.en-US';
-import { LocaleService, XcI18nTranslateDirective } from '../../i18n';
-import { ConfigService } from '@zeta/api/config.service';
 
 
 class ComparableLanguage extends Comparable implements SelectableLanguage {
@@ -58,7 +58,11 @@ export class XcLanguageSelectorComponent {
     readonly locale = inject(LocaleService);
     readonly configService = inject(ConfigService);
 
-    @Input() tabIndex?: number = 0;
+    readonly tabIndexInput = input(0);
+
+    get tabIndex(): number {
+        return this.tabIndexInput();
+    }
 
     selectLanguageDataWrapper: XcAutocompleteDataWrapper;
     hasLanguages: boolean;
