@@ -15,17 +15,13 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterContentInit, Component, computed, ElementRef, EventEmitter, HostBinding, inject, Input, OnInit, Output, signal } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatLabel } from '@angular/material/form-field';
-
 import { XcI18nTranslateDirective } from '@zeta/i18n/i18n.directive';
 
-import { Subscription } from 'rxjs';
-
 import { coerceBoolean } from '../../base';
-import { I18nService, LocaleService } from '../../i18n';
-import { ATTRIBUTE_LABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
+import { I18nService } from '../../i18n';
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
 
 
@@ -36,7 +32,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
     providers: [XcI18nTranslateDirective],
     imports: [MatCheckbox, MatLabel]
 })
-export class XcCheckboxComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
+export class XcCheckboxComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
     private readonly elementRef = inject(ElementRef<HTMLElement>);
     protected readonly i18n = inject(I18nService);
 
@@ -48,28 +44,32 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     protected _indeterminate = false;
     protected _disabled = false;
     protected _readonly = false;
-    protected _label: KeyTranslationPair = {key: '', translated: ''};
+    private readonly labelKeyState = signal('');
+    protected readonly i18nContextState = signal('');
+    private readonly labelTranslationKey = computed(() => {
+        const key = this.labelKeyState();
+        if (!key) {
+            return '';
+        }
 
-    protected subs: Subscription[] = [];
+        const context = this.i18nContextState();
+        return context ? context + '.' + key : key;
+    });
+    protected readonly labelTranslation = this.i18n.translateSignal(this.labelTranslationKey);
 
     @Input()
     set label(value: string) {
-        this._label.key = value;
-        this.translate(ATTRIBUTE_LABEL);
+        this.labelKeyState.set(value || '');
     }
 
 
     get label(): string {
-        return this._label.translated;
+        return this.labelTranslation();
     }
 
     @Output()
     readonly checkedChange = new EventEmitter<boolean>();
 
-
-    i18nContext: string;
-
-    protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
     constructor() {
         super();
@@ -77,18 +77,8 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
 
-    ngOnDestroy(): void {
-        this.subs.forEach(sub => sub.unsubscribe());
-    }
-
-
     ngAfterContentInit(): void {
-        this.i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._label.key) {
-                this.translate(ATTRIBUTE_LABEL);
-            }
-        }));
+        this.i18nContextState.set(this.elementRef.nativeElement.getAttribute('xc-i18n') ?? '');
     }
 
 
@@ -98,17 +88,6 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
             input.tabIndex = -1;
         }
     }
-
-
-    protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
-            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
-        } else {
-            this[attribute]["translated"] = this[attribute]["key"];
-        }
-    }
-
-
     get labelRef(): string {
         return this._labelRef;
     }
