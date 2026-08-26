@@ -254,7 +254,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-allowactivate')
     @Input({alias: 'xc-table-allowactivate', transform: coerceBoolean})
     set allowActivate(value: boolean) {
         this._allowActivate = value;
@@ -267,7 +266,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     @HostBinding('class.allowselect')
-    @Input('xc-table-allowselect')
     @Input({alias: 'xc-table-allowselect', transform: coerceBoolean})
     set allowSelect(value: boolean) {
         this._allowSelect = value;
@@ -279,7 +277,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-multiselect')
     @Input({alias: 'xc-table-multiselect', transform: coerceBoolean})
     set multiSelect(value: boolean) {
         this._multiSelect = value;
@@ -292,7 +289,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     @HostBinding('class.cellselect')
-    @Input('xc-table-cellselect')
     @Input({alias: 'xc-table-cellselect', transform: coerceBoolean})
     set cellSelect(value: boolean) {
         this._cellSelect = value;
@@ -304,7 +300,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-lazyupdate')
     @Input({alias: 'xc-table-lazyupdate', transform: coerceBoolean})
     set lazyUpdate(value: boolean) {
         this._lazyUpdate = value;
@@ -316,7 +311,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-visibleactions')
     @Input({alias: 'xc-table-visibleactions', transform: coerceBoolean})
     set visibleActions(value: boolean) {
         this._visibleActions = value;
