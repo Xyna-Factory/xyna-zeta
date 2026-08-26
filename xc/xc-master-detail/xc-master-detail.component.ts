@@ -15,8 +15,8 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, contentChildren, effect, ElementRef, HostBinding, HostListener, input, output, signal, viewChild } from '@angular/core';
-import { MatDrawerContainer, MatDrawerContent, MatDrawer } from '@angular/material/sidenav';
+import { Component, contentChildren, effect, HostBinding, HostListener, input, output, signal, viewChild } from '@angular/core';
+import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 
 import { coerceBoolean } from '../../base';
 import { XcMasterDetailFocusCandidateDirective } from './xc-master-detail-focuscandidate.directive';
@@ -31,7 +31,6 @@ type XcMasterDetailPosition = 'start' | 'end';
     selector: 'xc-master-detail',
     templateUrl: './xc-master-detail.component.html',
     styleUrls: ['./xc-master-detail.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [MatDrawerContainer, MatDrawerContent, MatDrawer]
 })
 export class XcMasterDetailComponent {
