@@ -70,6 +70,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private _cellSelect = false;
     private _lazyUpdate = false;
     private _visibleActions = false;
+    private _leadingActions = false;
     private _dataSource: XcTableDataSource<any>;
     private _dataSourceSubscriptions = new Array<Subscription>();
     private _matSort: MatSort;
@@ -339,6 +340,19 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
+    /** Render row actions in a leading Actions column (default: false). */
+    @Input('xc-table-leading-actions')
+    @Input({alias: 'xc-table-leading-actions', transform: coerceBoolean})
+    set leadingActions(value: boolean) {
+        this._leadingActions = value;
+    }
+
+
+    get leadingActions(): boolean {
+        return this._leadingActions;
+    }
+
+
     @HostBinding('class.refreshing')
     get refreshing(): boolean {
         return this.dataSource && this.dataSource.refreshing;
@@ -365,7 +379,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     private includeLeadingActionsColumn(): boolean {
-        return this.columns.length > 0;
+        return this.leadingActions && this.columns.length > 0;
     }
 
 

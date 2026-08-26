@@ -77,43 +77,68 @@
           } @else {
             <span role="link" class="text-cell" [attr.lang]="column.pronunciationLang || null">{{ cellData }}</span>
           }
+          <!-- action buttons appended in the last data column -->
+          @if (!leadingActions && i === columns.length - 1) {
+            <div class="action-elements">
+              @for (actionElement of dataSource?.actionElements; let i = $index; track i) {
+                <div>
+                  <!-- chrome bugfix: "&& !actionElement.disabled" is sometimes necessary to prevent click -->
+                  @if (actionElement.onShow && actionElement.onShow(row) || !actionElement.onShow) {
+                    <xc-icon-button
+                      (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row)"
+                      [class]="actionElement.class"
+                      [disabled]="actionElement.disabled"
+                      [xc-tooltip]="actionElement.tooltip"
+                      [xc-icon-name]="actionElement.iconName"
+                      [xc-icon-style]="actionElement.iconStyle"
+                      [xc-button-aria-label]="actionElement.ariaLabel ? actionElement.ariaLabel : undefined"
+                      xc-icon-size="small"
+                    ></xc-icon-button>
+                  }
+                </div>
+              }
+            </div>
+          }
         </ng-container>
       </td>
     </ng-container>
   }
 
-  <ng-container [matColumnDef]="actionsColumnId">
-    <th mat-header-cell *matHeaderCellDef class="xc-table-actions-col" scope="col" [attr.id]="actionsColumnHeaderId"
-        [attr.aria-label]="actionsColumnHeaderLabel">
-      <span mat-sort-header>{{ actionsColumnHeaderLabel || '&nbsp;' }}</span>
-      <div class="filter-container">
-        @if (allowFilter) {
-          <div class="xc-table-actions-filter-placeholder" aria-hidden="true"></div>
-        }
-      </div>
-    </th>
-    <td mat-cell *matCellDef="let row" class="xc-table-actions-col" role="cell" [attr.headers]="actionsColumnHeaderId">
-      <div class="action-elements">
-        @for (actionElement of dataSource?.actionElements; let ai = $index; track ai) {
-          <div>
-            @if (actionElement.onShow && actionElement.onShow(row) || !actionElement.onShow) {
-              <xc-icon-button
-                (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row)"
-                [class]="actionElement.class"
-                [disabled]="actionElement.disabled"
-                [xc-icon-name]="actionElement.iconName"
-                [xc-icon-style]="actionElement.iconStyle"
-                [xc-button-aria-label]="actionElement.ariaLabel || actionElement.tooltip"
-                [xc-tooltip]="actionElement.tooltip"
-                [xc-tooltip-disabled]="!!(actionElement.ariaLabel || actionElement.tooltip)"
-                xc-icon-size="small"
-              ></xc-icon-button>
-            }
-          </div>
-        }
-      </div>
-    </td>
-  </ng-container>
+  <!-- action buttons appended in the leading Actions column -->
+  @if (leadingActions) {
+    <ng-container [matColumnDef]="actionsColumnId">
+      <th mat-header-cell *matHeaderCellDef class="xc-table-actions-col" scope="col" [attr.id]="actionsColumnHeaderId"
+          [attr.aria-label]="actionsColumnHeaderLabel">
+        <span mat-sort-header>{{ actionsColumnHeaderLabel || '&nbsp;' }}</span>
+        <div class="filter-container">
+          @if (allowFilter) {
+            <div class="xc-table-actions-filter-placeholder" aria-hidden="true"></div>
+          }
+        </div>
+      </th>
+      <td mat-cell *matCellDef="let row" class="xc-table-actions-col" role="cell" [attr.headers]="actionsColumnHeaderId">
+        <div class="action-elements">
+          @for (actionElement of dataSource?.actionElements; let ai = $index; track ai) {
+            <div>
+              @if (actionElement.onShow && actionElement.onShow(row) || !actionElement.onShow) {
+                <xc-icon-button
+                  (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row)"
+                  [class]="actionElement.class"
+                  [disabled]="actionElement.disabled"
+                  [xc-icon-name]="actionElement.iconName"
+                  [xc-icon-style]="actionElement.iconStyle"
+                  [xc-button-aria-label]="actionElement.ariaLabel || actionElement.tooltip"
+                  [xc-tooltip]="actionElement.tooltip"
+                  [xc-tooltip-disabled]="!!(actionElement.ariaLabel || actionElement.tooltip)"
+                  xc-icon-size="small"
+                ></xc-icon-button>
+              }
+            </div>
+          }
+        </div>
+      </td>
+    </ng-container>
+  }
 
   <!-- Here begins the actual inner template view of the xc-table using the containers defined above -->
   <tr mat-header-row attr.aria-rowindex="1" *matHeaderRowDef="columnIds; sticky: true"></tr>
