@@ -141,12 +141,20 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 }
 
 
+export type XcFormErrorMessageCase = 'default' | 'uppercase' | 'lowercase' | 'capitalize';
+
+function normalizeErrorMessageCase(value: XcFormErrorMessageCase | string): XcFormErrorMessageCase {
+    const normalizedValue = (value ?? '').toString().trim().toLowerCase();
+    return normalizedValue === 'uppercase' || normalizedValue === 'lowercase' || normalizedValue === 'capitalize' ? normalizedValue : 'default';
+}
 
 @Component({ template: '' })
 export class XcFormBaseComponent extends XcFormComponent implements AfterContentInit {
 
     protected _indicateChanges = false;
     protected _readonly = false;
+    protected _errorMessageCase: XcFormErrorMessageCase = 'default';
+    protected _errorMessageCaseExplicitlySet = false;
     protected _placeholder: KeyTranslationPair = { key: '', translated: '' };
 
     readonly formControl = new FormControl();
@@ -167,6 +175,18 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     @Input('xc-form-field-errorfunc')
     errorFunc: (key: string, data: any) => string;
+
+
+    @Input({alias: 'xc-form-field-error-message-case', transform: normalizeErrorMessageCase})
+    set errorMessageCase(value: XcFormErrorMessageCase) {
+        this._errorMessageCaseExplicitlySet = true;
+        this._errorMessageCase = value;
+    }
+
+
+    get errorMessageCase(): XcFormErrorMessageCase {
+        return this._errorMessageCase;
+    }
 
 
     @Input('xc-form-field-callback')
@@ -271,7 +291,8 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
             key => {
                 const data = this.formControl.errors[key];
                 const error = this.errorFunc ? this.errorFunc(key, data) : null;
-                return error || errorFunc(key, data);
+                const message = error || errorFunc(key, data);
+                return this.transformErrorMessageCase(message);
             }
         ).join(', ');
     }
@@ -289,6 +310,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     ngAfterContentInit() {
         super.ngAfterContentInit();
+        this.applyInheritedErrorMessageCase();
 
         this.subs.push(this.localeService.languageChange.subscribe(() => {
             if (this._placeholder.key) {
@@ -310,5 +332,35 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     addValidator(validator: ValidatorFn) {
         const composedValidators = Validators.compose([this.formControl.validator, validator]);
         this.formControl.setValidators(composedValidators);
+    }
+
+
+    protected transformErrorMessageCase(message: string): string {
+        if (!message) {
+            return message;
+        }
+
+        switch (this.errorMessageCase) {
+            case 'uppercase':
+                return message.toUpperCase();
+            case 'lowercase':
+                return message.toLowerCase();
+            case 'capitalize':
+                return message
+                    .toLowerCase()
+                    .replace(/\b\p{L}/gu, (char: string) => char.toUpperCase());
+            default:
+                return message;
+        }
+    }
+
+
+    protected applyInheritedErrorMessageCase(): void {
+        if (this._errorMessageCaseExplicitlySet) {
+            return;
+        }
+        const inheritedErrorMessageCase = this.element.nativeElement.closest('[xc-form-field-error-message-case]')
+            ?.getAttribute('xc-form-field-error-message-case');
+        this._errorMessageCase = normalizeErrorMessageCase(inheritedErrorMessageCase);
     }
 }

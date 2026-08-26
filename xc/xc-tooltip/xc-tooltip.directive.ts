@@ -390,9 +390,9 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
             // adding it to the dom so that its bounding rect can be calculated
             const overlayWrapper =
-                document.querySelector('.cdk-global-overlay-wrapper')
-                || document.querySelector('.cdk-overlay-container')
-                || document.body;
+                this.focusableElement.closest('.cdk-global-overlay-wrapper')
+                ?? this.focusableElement.closest('.cdk-overlay-container')
+                ?? document.body;
 
             overlayWrapper.appendChild(localCurrentTemplateElement);
             this.stack.push(localCurrentTemplateElement);
