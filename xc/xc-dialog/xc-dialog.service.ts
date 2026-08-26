@@ -1,5 +1,3 @@
-import { filter, map } from 'rxjs/operators';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,6 +15,8 @@ import { filter, map } from 'rxjs/operators';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { filter, map } from 'rxjs/operators';
+
 import { ComponentType } from '@angular/cdk/portal';
 import { inject, Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
@@ -137,7 +137,7 @@ export class XcDialogService {
             ariaDescribedBy: 'xc-info-dialog-message-container',
             role: 'alertdialog'
         };
-        return this.openMessageDialog(XcInfoDialogComponent, this.i18n.translate(XcDialogService.defaultErrorTitle), message, null, ariaLabel, stackTrace, draggable, resizable, maximizable, maximized, dialogOptions, overrideConfig);
+        return this.openMessageDialog(XcInfoDialogComponent, this.i18n.translateSignal(XcDialogService.defaultErrorTitle)(), message, null, ariaLabel, stackTrace, draggable, resizable, maximizable, maximized, dialogOptions, overrideConfig);
     }
 
 

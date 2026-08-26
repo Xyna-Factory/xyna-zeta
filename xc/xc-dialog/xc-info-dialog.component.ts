@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 import { XcI18nContextDirective, XcI18nPipe, XcI18nTranslateDirective } from '../../i18n';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
@@ -26,7 +26,6 @@ import { XcMessageDialogComponent } from './xc-message-dialog.component';
 @Component({
     templateUrl: './xc-info-dialog.component.html',
     styleUrls: ['./xc-info-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcI18nPipe, XcButtonComponent]
 })
 export class XcInfoDialogComponent extends XcMessageDialogComponent<void, void> {
