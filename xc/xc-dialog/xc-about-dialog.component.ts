@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 
 import { XcI18nContextDirective, XcI18nPipe, XcI18nTranslateDirective } from '../../i18n';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
@@ -40,7 +40,6 @@ export interface XcAboutDialogConfig {
 @Component({
     templateUrl: './xc-about-dialog.component.html',
     styleUrls: ['./xc-about-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcI18nPipe, XcButtonComponent]
 })
 export class XcAboutDialogComponent extends XcDialogComponent<void, XcAboutDialogConfig> {

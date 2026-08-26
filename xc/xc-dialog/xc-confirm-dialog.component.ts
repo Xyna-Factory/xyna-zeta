@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
@@ -26,7 +26,6 @@ import { XcMessageDialogComponent } from './xc-message-dialog.component';
 @Component({
     templateUrl: './xc-confirm-dialog.component.html',
     styleUrls: ['./xc-confirm-dialog.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcButtonComponent]
 })
 export class XcConfirmDialogComponent extends XcMessageDialogComponent<boolean, void> {
