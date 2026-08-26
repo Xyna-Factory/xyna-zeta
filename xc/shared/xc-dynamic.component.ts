@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, InjectionToken, Injector, inject } from '@angular/core';
+import { Component, inject, InjectionToken, Injector } from '@angular/core';
 
 
 export type XcDynamicComponentType<D> = new (...args: any[]) => XcDynamicComponent<D>;

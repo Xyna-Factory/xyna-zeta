@@ -15,9 +15,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, inject } from '@angular/core';
-
 import { Observable, Subject, Subscription } from 'rxjs';
+
+import { Component, ElementRef, EventEmitter, inject, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 
 import { coerceBoolean, isNumber, timeString } from '../../base';
 import { CanvasHelperRecording, MouseEventType, ScreenInfo, XcCanvasHelper, XcCanvasMouseEventsOption } from './xc-canvas-helper.class';
@@ -116,13 +116,11 @@ export interface XcCanvasObserver {
 @Component({
     selector: 'xc-canvas',
     templateUrl: './xc-canvas.component.html',
-    styleUrls: ['./xc-canvas.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['./xc-canvas.component.scss']
 })
 export class XcCanvasComponent implements OnInit, OnDestroy {
     protected elementRef = inject(ElementRef);
     protected zone = inject(NgZone);
-    protected cdr = inject(ChangeDetectorRef);
 
 
     private static _num = 0;

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 
 import { ApiService, RuntimeContext } from '@zeta/api';
 
@@ -109,8 +109,12 @@ export class ChangePasswordDialogComponent extends XcDialogComponent {
             }
         });
 
-        this.newPasswordValidator.errorText = this.i18n.translateSignal('dialog.changePassword.newPassword.error')().toUpperCase();
-        this.confirmPasswordValidator.errorText = this.i18n.translateSignal('dialog.changePassword.confirmPassword.error')().toUpperCase();
+        const newPasswordErrorText = this.i18n.translateSignal('dialog.changePassword.newPassword.error');
+        const confirmPasswordErrorText = this.i18n.translateSignal('dialog.changePassword.confirmPassword.error');
+        effect(() => {
+            this.newPasswordValidator.errorText = newPasswordErrorText().toUpperCase();
+            this.confirmPasswordValidator.errorText = confirmPasswordErrorText().toUpperCase();
+        });
     }
 
 
