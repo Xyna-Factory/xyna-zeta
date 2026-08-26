@@ -38,6 +38,18 @@ export const authTranslations_deDE: I18nTranslation[] = [
         value: 'Workflow-Anmeldung'
     },
     {
+        key: 'zeta.auth-login.tab-smartcard',
+        value: 'SmartCard'
+    },
+    {
+        key: 'zeta.auth-login.tab-credentials',
+        value: 'Benutzer'
+    },
+    {
+        key: 'zeta.auth-login.tab-workflow',
+        value: 'Workflow'
+    },
+    {
         key: 'zeta.auth-login.login-button',
         value: 'Anmelden'
     },

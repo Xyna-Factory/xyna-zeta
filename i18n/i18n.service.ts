@@ -97,7 +97,7 @@ export class I18nService {
     private readonly injector = inject(Injector);
     private readonly platformId = inject(PLATFORM_ID);
     private readonly http = inject(HttpClient);
-
+    private readonly localeService = inject(LocaleService);
 
     /** translation map: language -> (key -> value) */
     private readonly _translations = new Map<string, Map<string, I18nTranslation>>();
@@ -105,7 +105,6 @@ export class I18nService {
 
     /** currently selected language */
     private _language: string;
-    private readonly localeService = inject(LocaleService);
 
     private readonly _errorCodeRegEx = /(EC-[\da-z.]+)[\wQ#.,:;\-_ +*"´`'~!?=E]*/;
 
@@ -137,9 +136,7 @@ export class I18nService {
 
 
     constructor() {
-        const injector = this.injector;
-
-        injector.get(LocaleService).languageChange.subscribe(lang => this.language = lang);
+        this.localeService.languageChange.subscribe(lang => this.language = lang);
     }
 
 
