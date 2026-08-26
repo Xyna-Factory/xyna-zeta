@@ -141,7 +141,12 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 }
 
 
-type XcFormErrorMessageCase = 'default' | 'uppercase' | 'lowercase' | 'capitalize';
+export type XcFormErrorMessageCase = 'default' | 'uppercase' | 'lowercase' | 'capitalize';
+
+function normalizeErrorMessageCase(value: XcFormErrorMessageCase | string): XcFormErrorMessageCase {
+    const normalizedValue = (value ?? '').toString().trim().toLowerCase();
+    return normalizedValue === 'uppercase' || normalizedValue === 'lowercase' || normalizedValue === 'capitalize' ? normalizedValue : 'default';
+}
 
 @Component({ template: '' })
 export class XcFormBaseComponent extends XcFormComponent implements AfterContentInit {
@@ -171,10 +176,11 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     @Input('xc-form-field-errorfunc')
     errorFunc: (key: string, data: any) => string;
 
-    @Input('xc-form-field-error-message-case')
-    set errorMessageCase(value: XcFormErrorMessageCase | string) {
+
+    @Input({alias: 'xc-form-field-error-message-case', transform: normalizeErrorMessageCase})
+    set errorMessageCase(value: XcFormErrorMessageCase) {
         this._errorMessageCaseExplicitlySet = true;
-        this._errorMessageCase = this.normalizeErrorMessageCase(value);
+        this._errorMessageCase = value;
     }
 
 
@@ -349,22 +355,12 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     }
 
 
-    protected normalizeErrorMessageCase(value: XcFormErrorMessageCase | string): XcFormErrorMessageCase {
-        const normalizedValue = (value ?? '').toString().trim().toLowerCase();
-        return normalizedValue === 'uppercase'
-            || normalizedValue === 'lowercase'
-            || normalizedValue === 'capitalize'
-            ? normalizedValue
-            : 'default';
-    }
-
-
     protected applyInheritedErrorMessageCase(): void {
         if (this._errorMessageCaseExplicitlySet) {
             return;
         }
         const inheritedErrorMessageCase = this.element.nativeElement.closest('[xc-form-field-error-message-case]')
             ?.getAttribute('xc-form-field-error-message-case');
-        this._errorMessageCase = this.normalizeErrorMessageCase(inheritedErrorMessageCase);
+        this._errorMessageCase = normalizeErrorMessageCase(inheritedErrorMessageCase);
     }
 }
