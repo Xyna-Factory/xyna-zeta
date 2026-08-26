@@ -32,7 +32,7 @@
     @if (!shrink) {
       @if (!collapsed) {
         <ul [attr.id]="uniquePanelId" [attr.aria-label]="ariaLabel">
-          @for (child of item.children; let i = $index; track i) {
+          @for (child of item.children; let i = $index; track child.link ? child.link : i) {
             <li>
               <xc-nav-list-item
                 [attr.id]="'xc-nav-list-item-depth-' + (depth+1) + '-' + i"

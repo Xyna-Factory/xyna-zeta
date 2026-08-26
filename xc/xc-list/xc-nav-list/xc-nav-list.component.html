@@ -1,6 +1,6 @@
 <mat-nav-list>
   <ul>
-  @for (item of items; let i = $index; track i) {
+  @for (item of items; let i = $index; track item.link ? item.link : i) {
     <li>
       <xc-nav-list-item
         [item]="item"

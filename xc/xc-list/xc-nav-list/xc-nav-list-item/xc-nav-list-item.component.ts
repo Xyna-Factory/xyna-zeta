@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NgClass } from '@angular/common';
-import { Component, EventEmitter, HostBinding, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, computed, EventEmitter, HostBinding, inject, Input, OnInit, Output, signal } from '@angular/core';
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, LocaleService } from '@zeta/i18n';
@@ -42,8 +42,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     private static _num = 0;
     uniquePanelId = 'xc-nav-list-panel-' + XcNavListItemComponent._num++;
 
-    @Input()
-    item: XcNavListItem;
+    private readonly itemState = signal<XcNavListItem>(undefined);
 
     @Input()
     size: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
@@ -70,6 +69,10 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
     private readonly i18n = inject<I18nService>(I18nService);
     protected readonly resolveDynamicString = (value: XcDynamicString) => value();
+    readonly ariaLabelState = computed(() => {
+        const item = this.item;
+        return this.i18n.translateSignal('menu_with_elements', { key: '$0', value: (item?.children?.length ?? 0).toString() })();
+    });
 
     constructor() {
         super();
@@ -79,8 +82,19 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     }
 
 
+    @Input()
+    set item(value: XcNavListItem) {
+        this.itemState.set(value);
+    }
+
+
+    get item(): XcNavListItem {
+        return this.itemState();
+    }
+
+
     get ariaLabel(): string {
-        return this.i18n.translate('menu_with_elements', { key: '$0', value: this.item.children.length.toString() });
+        return this.ariaLabelState();
     }
 
 

@@ -15,14 +15,13 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { Subscription } from 'rxjs';
+
 import { Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatNavList } from '@angular/material/list';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
-
 import { coerceBoolean } from '@zeta/base';
 import { I18nService, LocaleService } from '@zeta/i18n';
-
-import { Subscription } from 'rxjs';
 
 import { XcThemeableComponent } from '../../shared/xc-themeable.component';
 import { xcNavListTranslations_deDE } from './locale/xc-nav-list-translations.de-DE';
@@ -100,7 +99,7 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
 
 
     get ariaLabel(): string {
-        return this.i18n.translate('menu_with_elements', { key: '$0', value: this.items.length.toString() });
+        return this.i18n.translateSignal('menu_with_elements', { key: '$0', value: this.items.length.toString() })();
     }
 
 
