@@ -109,8 +109,8 @@ export class ChangePasswordDialogComponent extends XcDialogComponent {
             }
         });
 
-        this.newPasswordValidator.errorText = this.i18n.translate('dialog.changePassword.newPassword.error').toUpperCase();
-        this.confirmPasswordValidator.errorText = this.i18n.translate('dialog.changePassword.confirmPassword.error').toUpperCase();
+        this.newPasswordValidator.errorText = this.i18n.translateSignal('dialog.changePassword.newPassword.error')().toUpperCase();
+        this.confirmPasswordValidator.errorText = this.i18n.translateSignal('dialog.changePassword.confirmPassword.error')().toUpperCase();
     }
 
 
