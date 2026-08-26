@@ -15,32 +15,38 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Subscription } from 'rxjs';
-
-import { AfterContentInit, Component, ElementRef, HostBinding, HostListener, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, computed, ElementRef, HostBinding, HostListener, inject, Input, OnInit, signal, ViewChild } from '@angular/core';
 import { MatRipple } from '@angular/material/core';
 
 import { coerceBoolean } from '../../base';
-import { I18nService, LocaleService } from '../../i18n';
-import { ATTRIBUTE_ARIALABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
+import { I18nService } from '../../i18n';
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
 
 
 @Component({ 
     template: ''
 })
-export class XcButtonBaseComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
+export class XcButtonBaseComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
     protected elementRef = inject(ElementRef);
     protected readonly i18n = inject(I18nService);
 
 
-    protected _ariaLabel: KeyTranslationPair = { key: '', translated: '' };
-    protected _tabDisabled = false;
-    protected _disabled = false;
-    protected _busy = false;
-    protected _focusInitial = false;
+    protected readonly ariaLabelKeyState = signal('');
+    protected readonly i18nContextState = signal('');
+    private readonly ariaLabelTranslationKey = computed(() => {
+        const key = this.ariaLabelKeyState();
+        if (!key) {
+            return '';
+        }
 
-    protected subs: Subscription[] = [];
+        const context = this.i18nContextState();
+        return context ? context + '.' + key : key;
+    });
+    protected readonly ariaLabelTranslation = this.i18n.translateSignal(this.ariaLabelTranslationKey);
+    private readonly tabDisabledState = signal(false);
+    private readonly disabledState = signal(false);
+    private readonly busyState = signal(false);
+    private readonly focusInitialState = signal(false);
 
     @Input()
     type = 'button';
@@ -54,8 +60,6 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
 
     i18nContext: string;
-
-    protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
     constructor() {
         super();
@@ -71,7 +75,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
 
     protected setAriaLabel(value: string) {
-        this._ariaLabel.key = value;
+        this.ariaLabelKeyState.set(value || '');
     }
 
 
@@ -81,85 +85,65 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     }
 
 
-    ngOnDestroy(): void {
-        this.subs.forEach(sub => sub.unsubscribe());
-    }
-
-
     ngAfterContentInit() {
-        this.i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._ariaLabel.key) {
-                this.translate(ATTRIBUTE_ARIALABEL);
-            }
-        }));
-    }
-
-
-    protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
-            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
-        } else {
-            this[attribute]["translated"] = this[attribute]["key"];
-        }
+        this.i18nContextState.set(this.elementRef.nativeElement.getAttribute('xc-i18n') ?? '');
     }
 
 
     @Input({transform: coerceBoolean})
     set tabDisabled(value: boolean) {
-        this._tabDisabled = value;
+        this.tabDisabledState.set(value);
     }
 
 
     get tabDisabled(): boolean {
-        return this._tabDisabled;
+        return this.tabDisabledState();
     }
 
 
     @HostBinding('class.disabled')
     @Input({transform: coerceBoolean})
     set disabled(value: boolean) {
-        this._disabled = value;
+        this.disabledState.set(value);
     }
 
 
     get disabled(): boolean {
-        return this._disabled;
+        return this.disabledState();
     }
 
 
     @HostBinding('class.busy')
     @Input({transform: coerceBoolean})
     set busy(value: boolean) {
-        this._busy = value;
+        this.busyState.set(value);
     }
 
 
     get busy(): boolean {
-        return this._busy;
+        return this.busyState();
     }
 
 
     get focusInitial(): boolean {
-        return this._focusInitial;
+        return this.focusInitialState();
     }
 
 
     @Input({alias: 'xc-focus-initial', transform: coerceBoolean})
     set focusInitial(value: boolean) {
-        this._focusInitial = value;
+        this.focusInitialState.set(value);
     }
 
 
     @Input('xc-button-aria-label')
     set ariaLabel(value: string) {
         this.setAriaLabel(value);
-        this.translate(ATTRIBUTE_ARIALABEL);
     }
 
 
     get ariaLabel(): string {
-        return this._ariaLabel.translated;
+        return this.ariaLabelTranslation();
     }
 
     @Input('xc-button-tab-index')

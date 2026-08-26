@@ -15,12 +15,11 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, inject, Input } from '@angular/core';
+import { Component, computed, HostBinding, Input, signal } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
 import { coerceBoolean } from '../../base';
-import { I18nService } from '../../i18n/i18n.service';
 import { XcIconComponent } from '../xc-icon/xc-icon.component';
 import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
 import { XcButtonBaseComponent } from './xc-button-base.component';
@@ -33,14 +32,29 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
     imports: [MatIconButton, MatRipple, XcIconComponent, XcProgressBarComponent]
 })
 export class XcIconButtonComponent extends XcButtonBaseComponent {
-    private readonly i18nService = inject(I18nService);
-
-
     private _iconMaterial = false;
     private _iconSvg = false;
+    private readonly iconNameState = signal('');
+    private readonly iconAriaLabelKey = computed(() => this.ariaLabelKeyState() || this.iconNameState());
+    private readonly iconAriaLabelTranslationKey = computed(() => {
+        const key = this.iconAriaLabelKey();
+        if (!key) {
+            return '';
+        }
+
+        const context = this.i18nContextState();
+        return context ? context + '.' + key : key;
+    });
+    private readonly iconAriaLabelTranslation = this.i18n.translateSignal(this.iconAriaLabelTranslationKey);
 
     @Input('xc-icon-name')
-    iconName: string;
+    set iconName(value: string) {
+        this.iconNameState.set(value || '');
+    }
+
+    get iconName(): string {
+        return this.iconNameState();
+    }
 
     @Input('xc-icon-style')
     iconStyle: string;
@@ -50,8 +64,8 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
     iconSize: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
 
 
-    protected setAriaLabel(value: string) {
-        super.setAriaLabel(value || (this.iconName ? this.i18nService.translate(this.iconName) : ''));
+    get ariaLabel(): string {
+        return this.iconAriaLabelTranslation();
     }
 
 

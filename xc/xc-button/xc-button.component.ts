@@ -15,11 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, OnInit } from '@angular/core';
+import { Component, computed, effect, OnInit, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
-import { ATTRIBUTE_LABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
 import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
 import { XcButtonBaseComponent } from './xc-button-base.component';
 
@@ -30,29 +29,45 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
     styleUrls: ['./xc-button-base.component.scss', './xc-button.component.scss'],
     imports: [MatButton, MatRipple, XcProgressBarComponent]
 })
-export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, AfterContentInit {
+export class XcButtonComponent extends XcButtonBaseComponent implements OnInit {
 
-    private _translate: boolean;
-    private _label: KeyTranslationPair = { key: '', translated: ''};
+    private readonly translateState = signal(false);
+    private readonly labelKeyState = signal('');
+    private readonly labelTranslationKey = computed(() => {
+        const key = this.labelKeyState();
+        if (!key) {
+            return '';
+        }
+
+        if (!this.translateState()) {
+            return key;
+        }
+
+        const context = this.i18nContextState();
+        return context ? context + '.' + key : key;
+    });
+    private readonly labelTranslation = this.i18n.translateSignal(this.labelTranslationKey);
 
     private element: HTMLElement;
+
+    constructor() {
+        super();
+        effect(() => {
+            if (!this.translateState() || !this.element) {
+                return;
+            }
+
+            const translated = this.labelTranslation();
+            if (translated !== this.element.textContent) {
+                this.element.textContent = translated;
+            }
+        });
+    }
 
     ngOnInit() {
         super.ngOnInit();
         this.element = this.elementRef.nativeElement.querySelector('.mdc-button__label');
-        this._translate = Array.from(this.element.childNodes).some(childNode => childNode.nodeType === Node.TEXT_NODE);
-    }
-
-    ngAfterContentInit() {
-        super.ngAfterContentInit();
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._translate && this.element && this.i18nContext !== undefined && this.i18nContext !== null) {
-                if (this._label.translated !== this.element.textContent) {
-                    this._label.key = this.element.textContent;
-                }
-                this.translate(ATTRIBUTE_LABEL);
-                this.element.textContent = this._label.translated;
-            }
-        }));
+        this.translateState.set(Array.from(this.element.childNodes).some(childNode => childNode.nodeType === Node.TEXT_NODE));
+        this.labelKeyState.set(this.element.textContent ?? '');
     }
 }
