@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, signal, ViewChild } from '@angular/core';
 
 import { RuntimeContext } from '@zeta/api';
 
@@ -39,15 +39,11 @@ import { runtimeContextSelection_translations_en_US } from './locale/runtime-con
 @Component({
     templateUrl: './runtime-context-selection.component.html',
     styleUrls: ['./runtime-context-selection.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcFormAutocompleteComponent, XcFormValidatorRequiredDirective, XcButtonComponent]
 })
 export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeContext, RuntimeContextSelectionSettings> implements OnDestroy {
     private readonly apiService = inject(ApiService);
     private readonly i18n = inject(I18nService);
-    private readonly cdr = inject(ChangeDetectorRef);
-
-
     private runtimeContext: RuntimeContext;
     private readonly settings: RuntimeContextSelectionSettings;
     private subscription: Subscription;
@@ -111,7 +107,6 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
             map(rtcs => rtcs.map(rtc => <XcOptionItem>{name: signal(rtc.uniqueKey.replace(RuntimeContext.SEPARATOR, ' ')), value: rtc}))
         ).subscribe(options => {
             this.runtimeContextDataWrapper.values = options;
-            this.cdr.markForCheck();
         });
     }
 
