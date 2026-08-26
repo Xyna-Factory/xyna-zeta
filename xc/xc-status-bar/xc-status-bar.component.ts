@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, inject } from '@angular/core';
+import { Component, HostBinding, inject, signal } from '@angular/core';
 
 import { XcDialogService } from '../xc-dialog/xc-dialog.service';
 import { XcStatusBarDialogComponent } from './xc-status-bar-dialog.component';
@@ -34,14 +34,19 @@ export class XcStatusBarComponent {
     private readonly statusBarService = inject(XcStatusBarService);
 
 
-    private readonly entries = new Array<XcStatusBarEntry>();
+    private readonly entriesState = signal<XcStatusBarEntry[]>([]);
     private timeout: any;
 
-    @HostBinding('attr.flashing')
-    type: XcStatusBarEntryType;
+    readonly typeState = signal<XcStatusBarEntryType>(XcStatusBarEntryType.NONE);
 
-    message: string;
-    collapsed = true;
+    readonly messageState = signal<string | undefined>(undefined);
+    readonly collapsedState = signal(true);
+
+
+    @HostBinding('attr.flashing')
+    get flashing(): XcStatusBarEntryType {
+        return this.typeState();
+    }
 
 
     constructor() {
@@ -52,22 +57,22 @@ export class XcStatusBarComponent {
 
 
     flash(type: XcStatusBarEntryType) {
-        this.type = XcStatusBarEntryType.NONE;
+        this.typeState.set(XcStatusBarEntryType.NONE);
         if (type !== XcStatusBarEntryType.NONE) {
-            setTimeout(() => this.type = type, 0);
+            setTimeout(() => this.typeState.set(type), 0);
         }
     }
 
 
     show(message: string) {
-        this.message = message;
-        this.collapsed = false;
+        this.messageState.set(message);
+        this.collapsedState.set(false);
         clearTimeout(this.timeout);
         this.timeout = setTimeout(() => {
-            this.collapsed = true;
+            this.collapsedState.set(true);
             this.timeout = setTimeout(() => {
                 this.timeout = undefined;
-                this.message = undefined;
+                this.messageState.set(undefined);
             }, 600);
         }, 5000);
     }
@@ -84,18 +89,23 @@ export class XcStatusBarComponent {
 
 
     clear() {
-        this.entries.splice(0);
+        this.entriesState.set([]);
     }
 
 
     add(entry: XcStatusBarEntry) {
-        this.entries.push(entry);
+        this.entriesState.update(entries => [...entries, entry]);
         this.flash(entry.type);
         this.show(entry.message);
     }
 
 
     get count(): number {
-        return this.entries.length;
+        return this.entriesState().length;
+    }
+
+
+    get entries(): XcStatusBarEntry[] {
+        return this.entriesState();
     }
 }
