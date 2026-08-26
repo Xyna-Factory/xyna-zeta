@@ -15,13 +15,12 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, HostBinding, Input, OnInit, inject } from '@angular/core';
-
+import { AfterContentInit, Component, computed, effect, ElementRef, HostBinding, inject, input, OnInit, signal } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 import { I18nService } from '@zeta/i18n';
 
 import { coerceBoolean } from '../../base';
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
-import { MatIcon } from '@angular/material/icon';
 
 
 @Component({
@@ -34,78 +33,81 @@ export class XcIconComponent extends XcThemeableComponent implements OnInit, Aft
     protected elementRef = inject(ElementRef);
     protected readonly i18n = inject(I18nService);
 
+    private readonly translateState = signal(false);
+    private readonly i18nContextState = signal('');
+    private readonly projectedLabelState = signal('');
+    private readonly projectedLabelTranslation = computed(() => {
+        if (!this.translateState()) {
+            return this.projectedLabelState();
+        }
 
-    private _reverseDirection = false;
-    private _iconMaterial = false;
-    private _iconSvg = false;
-    private _iconStyle: string;
-    private _iconName: string;
+        const label = this.projectedLabelState();
+        if (!label) {
+            return '';
+        }
 
-    private _translate: boolean;
+        const context = this.i18nContextState();
+        const key = context ? context + '.' + label : label;
+        return this.i18n.translateSignal(key)();
+    });
 
-    i18nContext: string;
+    readonly iconSizeInput = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: 'xc-icon-size' });
+    readonly reverseDirectionInput = input(false, { alias: 'xc-icon-reverse-direction', transform: coerceBoolean });
+    readonly iconMaterialInput = input(false, { alias: 'xc-icon-material', transform: coerceBoolean });
+    readonly iconSvgInput = input(false, { alias: 'xc-icon-svg', transform: coerceBoolean });
+    readonly iconStyleInput = input('', { alias: 'xc-icon-style' });
+    readonly iconNameInput = input('', { alias: 'xc-icon-name' });
+
+    constructor() {
+        super();
+        effect(() => {
+            if (!this.translateState()) {
+                return;
+            }
+
+            const el = this.elementRef.nativeElement.querySelector('span');
+            if (!el) {
+                return;
+            }
+
+            const translated = this.projectedLabelTranslation();
+            if (el.textContent !== translated) {
+                el.textContent = translated;
+            }
+        });
+    }
 
     @HostBinding('attr.size')
-    @Input('xc-icon-size')
-    iconSize: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
+    get iconSize(): 'small' | 'medium' | 'large' | 'extra-large' {
+        return this.iconSizeInput();
+    }
 
 
     @HostBinding('class.reverse-direction')
-    @Input({alias: 'xc-icon-reverse-direction', transform: coerceBoolean})
-    set reverseDirection(value: boolean) {
-        this._reverseDirection = value;
-    }
-
-
     get reverseDirection(): boolean {
-        return this._reverseDirection;
-    }
-
-
-    @Input({alias: 'xc-icon-material', transform: coerceBoolean})
-    set iconMaterial(value: boolean) {
-        this._iconMaterial = value;
+        return this.reverseDirectionInput();
     }
 
 
     get iconMaterial(): boolean {
-        return this._iconMaterial;
-    }
-
-
-    @Input({alias: 'xc-icon-svg', transform: coerceBoolean})
-    set iconSvg(value: boolean) {
-        this._iconSvg = value;
+        return this.iconMaterialInput();
     }
 
 
     get iconSvg(): boolean {
-        return this._iconSvg;
-    }
-
-
-    @Input('xc-icon-style')
-    set iconStyle(value: string) {
-        this._iconStyle = value;
+        return this.iconSvgInput();
     }
 
 
     get iconStyle(): string {
-        return this._iconStyle || 'xds';
+        return this.iconStyleInput() || 'xds';
     }
 
 
     @HostBinding('attr.name')
-    @Input('xc-icon-name')
-    set iconName(value: string) {
-        this._iconName = value;
-    }
-
-
     get iconName(): string {
-        return this._iconName;
+        return this.iconNameInput();
     }
-
 
     get iconClass(): string {
         return ['icon', this.iconStyle, this.iconName].join('-');
@@ -113,18 +115,13 @@ export class XcIconComponent extends XcThemeableComponent implements OnInit, Aft
 
 
     ngOnInit() {
-        this._translate = !!this.elementRef.nativeElement.textContent;
+        this.translateState.set(!!this.elementRef.nativeElement.textContent);
     }
 
-
     ngAfterContentInit() {
-        if (this._translate || !!this.elementRef.nativeElement.textContent) {
-            const el = this.elementRef.nativeElement.querySelector('span');
-            this.i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');
-            if (el && this.i18nContext != null) {
-                el.textContent = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + el.textContent : el.textContent);
-            }
-        }
+        const el = this.elementRef.nativeElement.querySelector('span');
+        this.i18nContextState.set(this.elementRef.nativeElement.getAttribute('xc-i18n') ?? '');
+        this.projectedLabelState.set(el?.textContent ?? '');
     }
 }
 
