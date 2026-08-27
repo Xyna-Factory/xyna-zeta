@@ -78,7 +78,12 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private thead: HTMLTableSectionElement;
 
     private focusViaTabDetectionSubscription: Subscription;
-
+    private scrollTopBeforeKeyboardFocus: number | null = null;
+    private readonly onDocumentKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Tab') {
+            this.scrollTopBeforeKeyboardFocus = this.elementRef.nativeElement.scrollTop;
+        }
+    };
 
     constructor() {
         const _i18n = this._i18n;
@@ -104,24 +109,35 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         this.tbody.setAttribute('tabindex', '0');
         this.tbody.onkeydown = this.keyDown.bind(this);
 
+        document.addEventListener('keydown', this.onDocumentKeyDown, true);
 
         this.focusViaTabDetectionSubscription = this._a11y.emitElementFocusStateChange(this.tbody).subscribe(state => {
             if (state.type === 'focus' && state.achieved === 'keyboard') {
+                const parent = this.elementRef.nativeElement;
+
+                if (this.scrollTopBeforeKeyboardFocus !== null) {
+                    parent.scrollTop = this.scrollTopBeforeKeyboardFocus;
+                }
+
                 let row = this.getFocusedRow();
                 let rowEl = this.getFocusedRowElement();
-                const rowFound = row && rowEl;
 
-                if (!rowFound && this.tbody) {
+                if ((!row || !rowEl) && this.tbody) {
                     // focus the first row
                     row = this.dataSource.rows[0];
                     rowEl = this.tbody.querySelector('tr');
 
                     if (row && rowEl) {
                         this.focusRow(row);
-                        this.focusRowElement(rowEl);
                         this.cdRef.detectChanges();
                     }
                 }
+
+                if (rowEl) {
+                    this.focusRowElement(rowEl);
+                }
+
+                this.scrollTopBeforeKeyboardFocus = null;
             }
         });
     }
@@ -129,6 +145,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.unsubscribeDataSource();
+        document.removeEventListener('keydown', this.onDocumentKeyDown, true);
 
         if (this.focusViaTabDetectionSubscription) {
             this.focusViaTabDetectionSubscription.unsubscribe();
@@ -586,10 +603,20 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         }
     }
 
+    private getStickyHeaderBottomOffset(): number {
+        const parent = this.elementRef.nativeElement;
+        const parentRect = parent.getBoundingClientRect();
+        const stickyRow = this.thead?.querySelector('.mat-mdc-header-row');
+
+        return stickyRow
+            ? stickyRow.getBoundingClientRect().bottom - parentRect.top
+            : 0;
+    }
+
 
     focusRowElement(element: HTMLTableRowElement) {
         const parent = this.elementRef.nativeElement;
-        const topOffset = this.thead.getBoundingClientRect().height;
+        const topOffset = this.getStickyHeaderBottomOffset();
         const e = element.getBoundingClientRect();
         const p = parent.getBoundingClientRect();
         if (e.top < p.top + topOffset) {
