@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, EventEmitter, forwardRef, inject, Input, numberAttribute, Output, ViewChild, input } from '@angular/core';
 import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
@@ -32,7 +32,7 @@ import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPositio
     selector: 'xc-menu',
     templateUrl: './xc-menu.component.html',
     styleUrls: ['./xc-menu.component.scss'],
-    imports: [CommonModule, MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, XcI18nPipe, forwardRef(() => XcMenuComponent)],
+    imports: [MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, XcI18nPipe, forwardRef(() => XcMenuComponent)],
 })
 export class XcMenuComponent {
     protected readonly contextMenuService = inject(XcContextMenuService);
