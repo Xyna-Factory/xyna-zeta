@@ -1,6 +1,6 @@
 <xc-panel xc-i18n-context="zeta.auth-login">
   <header>
-    <xc-icon xc-icon-name="user" xc-icon-size="extra-large"></xc-icon>
+    <xc-icon xc-icon-name="user" xc-icon-size="extra-large" />
     <div>
       <h1 class="title" xc-i18n>login-title</h1>
       @if (smartCardMethodUsed) {
@@ -15,7 +15,7 @@
         <div class="subtitle" xc-i18n>subtitle3</div>
       }
     </div>
-    <xc-language-selector class="language-selector" [tabIndex]="6"></xc-language-selector>
+    <xc-language-selector class="language-selector" [tabIndex]="6" />
   </header>
 
   <!-- Case 1 use a tab bar, from which the user can select the login method -->
@@ -26,17 +26,17 @@
     @if (useSmartCardLogin) {
       <!-- Case 2 only use the smart card login method -->
       <section class="smart-card-login">
-        <smart-card-login [data]="smartCardTabItem.data"></smart-card-login>
+        <smart-card-login [data]="smartCardTabItem.data" />
       </section>
     } @else if (useCredentialsLogin) {
       <!-- Case 3 only use the user login method -->
       <section class="credentials-login">
-        <credentials-login [data]="credentialsTabItem.data"></credentials-login>
+        <credentials-login [data]="credentialsTabItem.data" />
       </section>
     } @else if (useWorkflowLogin) {
       <!-- Case 4 only use the workflow login method -->
       <section class="workflow-login">
-        <workflow-login [data]="workflowTabItem.data"></workflow-login>
+        <workflow-login [data]="workflowTabItem.data" />
       </section>
     }
   }

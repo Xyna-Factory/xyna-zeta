@@ -8,7 +8,7 @@
     <th mat-header-cell *matHeaderCellDef [attr.colspan]="columns.length">
       <div style="position: absolute; top: 0; width: 100%; height: 4px; z-index: 100;">
         @if (refreshing) {
-          <xc-progress-bar color="primary"></xc-progress-bar>
+          <xc-progress-bar color="primary" />
         }
       </div>
     </th>
@@ -31,7 +31,7 @@
           <label class="left">{{dataSource?.footerLabelLeft}}</label>
         }
         @if (dataSource?.moreDataAvailable && !noData) {
-          <xc-icon-button xc-icon-name="arrowdown" (click)="loadMoreData()"></xc-icon-button>
+          <xc-icon-button xc-icon-name="arrowdown" (click)="loadMoreData()" />
         }
         @if (dataSource?.showFooterLabels) {
           <label class="right">{{dataSource?.footerLabelRight}}</label>
@@ -46,10 +46,9 @@
         <span mat-sort-header [disabled]="column.disableSort">{{ getColumnLabel(column) || '&nbsp;'}}</span>
         <div class="filter-container">
           @if (allowFilter) {
-            <xc-template
-              [xc-template-instance]="getColumnFilterTemplate(column)"
+            <xc-template [xc-template-instance]="getColumnFilterTemplate(column)"
               [xc-template-aria-label]="getColumnFilterAriaLabel(column)"
-            ></xc-template>
+             />
           }
         </div>
       </th>
@@ -70,7 +69,7 @@
           @if (cellData?.constructor?.name === 'Array') {
             <div class="template-container">
               @for (template of cellData; track template) {
-                <xc-template [xc-template-instance]="template"></xc-template>
+                <xc-template [xc-template-instance]="template" />
               }
             </div>
           } @else {
@@ -85,8 +84,7 @@
                 <div>
                   <!-- chrome bugfix: "&& !actionElement.disabled" is sometimes necessary to prevent click -->
                   @if (actionElement.onShow && actionElement.onShow(row) || !actionElement.onShow) {
-                    <xc-icon-button
-                      (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row)"
+                    <xc-icon-button (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row)"
                       [class]="actionElement.class"
                       [disabled]="actionElement.disabled"
                       [xc-tooltip]="actionElement.tooltip"
@@ -94,7 +92,7 @@
                       [xc-icon-style]="actionElement.iconStyle"
                       [xc-button-aria-label]="actionElement.ariaLabel ? resolveDynamicString(actionElement.ariaLabel) : undefined"
                       xc-icon-size="small"
-                    ></xc-icon-button>
+                     />
                   }
                 </div>
               }

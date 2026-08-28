@@ -7,8 +7,8 @@
   [attr.tabindex]="tabDisabled ? '-1' : tabIndex()"
   [attr.cdkFocusInitial]="focusInitial || null"
   >
-  <ng-content></ng-content>
+  <ng-content />
   @if (busy) {
-    <xc-progress-bar></xc-progress-bar>
+    <xc-progress-bar />
   }
 </button>

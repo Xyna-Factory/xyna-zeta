@@ -18,8 +18,7 @@
       [class.fixed]="node.fixed"
       >{{visitNode(node)}}
       @if (isNodeExpandable(node)) {
-        <xc-icon-button
-          class="toggle"
+        <xc-icon-button class="toggle"
           [color]="readonlyMode ? 'invert' : 'normal'"
           [class.rotated]="isNodeExpanded(node)"
           xc-icon-name="accordion"
@@ -29,18 +28,17 @@
           [xc-button-aria-label]="getExpandCollapseAriaLabel(node)"
           [xc-tooltip]="i18n.translateSignal('zeta.xc.tree.expand-collapse-tooltip')()"
           xc-tooltip-showdelay="1000"
-        ></xc-icon-button>
+         />
       }
       @if (isNodeLimit(node)) {
-        <xc-icon-button
-          (click)="unlimitNode(node)"
+        <xc-icon-button (click)="unlimitNode(node)"
           [color]="readonlyMode ? 'invert' : 'normal'"
           xc-icon-name="accordion"
           xc-icon-size="small"
           [xc-button-aria-label]="getShowAriaLabel(node)"
           [xc-tooltip]="'tooltip-show' | xcI18n"
           xc-tooltip-showdelay="500"
-        ></xc-icon-button>
+         />
       }
       <div class="child" [ngClass]="node.classes || []" [class.fixed]="node.fixed">
         <!-- label -->
@@ -50,8 +48,7 @@
 
         <!-- tooltip icon or padding -->
         @if (!!node.tooltip) {
-          <xc-icon-button
-            class="tooltip"
+          <xc-icon-button class="tooltip"
             [xc-tooltip]="node.tooltip"
             xc-tooltip-position="before"
             [xc-tooltip-controller]="{autoDelegate: false}"
@@ -61,7 +58,7 @@
             xc-icon-size="small"
             disabled 
             tabindex="0"
-          ></xc-icon-button>
+           />
         }
         @if (!node.tooltip && !readonlyMode) {
           <div
@@ -71,17 +68,16 @@
 
         <!-- templates -->
         @for (template of node.value; track template) {
-          <xc-template
-            [xc-template-instance]="template"
+          <xc-template [xc-template-instance]="template"
             [xc-template-readonly]="isNodeReadonly(node)"
             [xc-template-disabled]="isNodeDisabled(node)"
             [xc-template-aria-label]="getTemplateAriaLabelByNode(node)"
-          ></xc-template>
+           />
         }
       </div>
     </div>
     <div class="parent" [class.fixed]="node.fixed" [class.hidden]="isNodeCollapsed(node)">
-      <ng-container matTreeNodeOutlet></ng-container>
+      <ng-container matTreeNodeOutlet />
     </div>
   </mat-nested-tree-node>
 </mat-tree>

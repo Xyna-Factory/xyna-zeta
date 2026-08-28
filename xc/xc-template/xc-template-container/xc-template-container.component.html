@@ -5,9 +5,8 @@
 
   <section>
     @for (child of templates | async; track child) {
-      <xc-template
-        [xc-template-instance]="child"
-      ></xc-template>
+      <xc-template [xc-template-instance]="child"
+       />
     }
   </section>
 

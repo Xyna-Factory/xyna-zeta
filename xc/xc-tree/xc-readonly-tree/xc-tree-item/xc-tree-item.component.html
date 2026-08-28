@@ -1,8 +1,7 @@
 <div class="row">
   <div class="col-0" #col0 [style]="{'min-width.px': firstColumnWidth(), 'padding-left.px': indentation}">
     @if (node.expandable) {
-      <xc-icon-button
-        class="toggle"
+      <xc-icon-button class="toggle"
         color="black"
         [class.rotated]="expanded"
         xc-icon-name="accordion"
@@ -11,7 +10,7 @@
         [xc-tooltip]="i18n.translateSignal('zeta.xc.tree.expand-collapse-tooltip')()"
         xc-tooltip-showdelay="500"
         (click)="toggle($event)"
-      ></xc-icon-button>
+       />
     }
     <label class="label">{{nodeLabel}}</label>
   </div>

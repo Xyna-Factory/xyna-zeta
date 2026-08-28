@@ -2,12 +2,10 @@
     <ng-container header><span xc-i18n>{{header()}}</span></ng-container>
 
     <section content>
-        <xc-definition-proxy
-            [xc-base-definition]="injectedData.definition"
+        <xc-definition-proxy [xc-base-definition]="injectedData.definition"
             [xc-base-definition-data]="injectedData.data"
             [xc-definition-observer]="this"
-            (xc-definition-closed)="dismiss(injectedData.data)">
-        </xc-definition-proxy>
+            (xc-definition-closed)="dismiss(injectedData.data)" />
     </section>
 
     <ng-container footer>

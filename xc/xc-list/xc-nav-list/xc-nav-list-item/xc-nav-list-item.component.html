@@ -19,13 +19,12 @@
       (blur)="focusChange.emit()"
       >
       @if (!shrink) {
-        <xc-icon
-          class="toggle"
+        <xc-icon class="toggle"
           [ngClass]="['disabled']"
           [class.rotated]="!item.collapsed"
           xc-icon-name="accordion"
           xc-icon-size="small"
-        ></xc-icon>
+         />
       }
       <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" [xc-icon-size]="size()">{{shrink ? '' : resolveDynamicString(item.name)}}</xc-icon>
     </a>
@@ -34,15 +33,14 @@
         <ul [attr.id]="uniquePanelId" [attr.aria-label]="ariaLabel">
           @for (child of item.children; let i = $index; track child.link ? child.link : i) {
             <li>
-              <xc-nav-list-item
-                [attr.id]="'xc-nav-list-item-depth-' + (depth+1) + '-' + i"
+              <xc-nav-list-item [attr.id]="'xc-nav-list-item-depth-' + (depth+1) + '-' + i"
                 [item]="child"
                 [size]="size()"
                 [depth]="depth+1"
                 [orientation]="orientation()"
                 [color]="color"
                 (focusChange)="focusChange.emit($event)"
-              ></xc-nav-list-item>
+               />
             </li>
           }
         </ul>

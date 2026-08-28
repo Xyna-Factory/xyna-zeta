@@ -1,10 +1,9 @@
 <dl>
   @for (child of definitionListDefinition?.children; track child) {
-    <xc-definition-proxy
-      [xc-base-definition]="child"
+    <xc-definition-proxy [xc-base-definition]="child"
       [xc-base-definition-data]="definitionData"
       (xc-definition-closed)="closed.emit($event)"
       xc-dl-unwrap
-    ></xc-definition-proxy>
+     />
   }
 </dl>
