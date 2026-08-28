@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, computed, ElementRef, EventEmitter, HostBinding, inject, Input, OnInit, Output, signal } from '@angular/core';
+import { AfterContentInit, Component, computed, ElementRef, HostBinding, inject, Input, OnInit, output, signal } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatLabel } from '@angular/material/form-field';
 import { XcI18nTranslateDirective } from '@zeta/i18n/i18n.directive';
@@ -67,8 +67,7 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
         return this.labelTranslation();
     }
 
-    @Output()
-    readonly checkedChange = new EventEmitter<boolean>();
+    readonly checkedChange = output<boolean>();
 
 
     constructor() {

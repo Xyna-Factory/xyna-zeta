@@ -17,7 +17,7 @@
  */
 import { Observable, Subject, Subscription } from 'rxjs';
 
-import { Component, ElementRef, EventEmitter, inject, Input, NgZone, OnDestroy, OnInit, Output, input } from '@angular/core';
+import { Component, ElementRef, inject, Input, NgZone, OnDestroy, OnInit, input, output } from '@angular/core';
 
 import { coerceBoolean, isNumber, timeString } from '../../base';
 import { CanvasHelperRecording, MouseEventType, ScreenInfo, XcCanvasHelper, XcCanvasMouseEventsOption } from './xc-canvas-helper.class';
@@ -204,12 +204,10 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
     /**
      * Is triggerd if the canvas is resized.
      */
-    @Output()
-    readonly resizeChange = new EventEmitter<ScreenInfo>(false);
+    readonly resizeChange = output<ScreenInfo>();
 
 
-    @Output()
-    readonly parentSizeChange = new EventEmitter<ScreenInfo>(false);
+    readonly parentSizeChange = output<ScreenInfo>();
 
 
     get width(): number {
@@ -351,7 +349,7 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
                 this.resizeToParent();
                 this._oldParentSize.width = rect.width;
                 this._oldParentSize.height = rect.height;
-                this.parentSizeChange.next(<ScreenInfo>{
+                this.parentSizeChange.emit(<ScreenInfo>{
                     width: rect.width,
                     height: rect.height,
                     aspect: rect.width / rect.height

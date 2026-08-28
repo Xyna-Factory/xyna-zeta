@@ -1,3 +1,6 @@
+import { Subscription } from 'rxjs';
+
+import { NgComponentOutlet } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,26 +18,23 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, HostListener, Injector, effect, inject, input } from '@angular/core';
-
-import { Subscription } from 'rxjs';
+import { Component, effect, HostBinding, HostListener, inject, Injector, input } from '@angular/core';
 
 import { coerceBoolean, templateClassType } from '../../base';
 import { XcDataWrapper } from '../shared/xc-data-wrapper';
-import { XcButtonTemplate, XcCheckboxTemplate, XcComponentTemplate, XcDataTemplate, XcDefinitionListEntryTemplate, XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTextAreaTemplate, XcFormTextTemplate, XcIconButtonTemplate, XcTemplate } from '../xc-template/xc-template';
-import { XcFormTextComponent } from '../xc-form/xc-form-text/xc-form-text.component';
-import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
-import { XcDefinitionListEntryComponent } from '../xc-form/definitions/containers/xc-definition-list-definition/xc-definition-list-entry/xc-definition-list-entry.component';
 import { XcUnwrapDirective } from '../shared/xc-unwrap.directive';
-import { XcFormAutocompleteComponent } from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
-import { XcFormValidatorsDirective, XcFormValidatorRequiredDirective } from '../xc-form/xc-form-base/xc-form-validators.directive';
-import { XcFormInputComponent } from '../xc-form/xc-form-input/xc-form-input.component';
-import { XcFormTextareaComponent } from '../xc-form/xc-form-textarea/xc-form-textarea.component';
-import { XcCheckboxComponent } from '../xc-checkbox/xc-checkbox.component';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
-import { XcIconComponent } from '../xc-icon/xc-icon.component';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
-import { NgComponentOutlet } from '@angular/common';
+import { XcCheckboxComponent } from '../xc-checkbox/xc-checkbox.component';
+import { XcDefinitionListEntryComponent } from '../xc-form/definitions/containers/xc-definition-list-definition/xc-definition-list-entry/xc-definition-list-entry.component';
+import { XcFormAutocompleteComponent } from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
+import { XcFormValidatorRequiredDirective, XcFormValidatorsDirective } from '../xc-form/xc-form-base/xc-form-validators.directive';
+import { XcFormInputComponent } from '../xc-form/xc-form-input/xc-form-input.component';
+import { XcFormTextComponent } from '../xc-form/xc-form-text/xc-form-text.component';
+import { XcFormTextareaComponent } from '../xc-form/xc-form-textarea/xc-form-textarea.component';
+import { XcIconComponent } from '../xc-icon/xc-icon.component';
+import { XcButtonTemplate, XcCheckboxTemplate, XcComponentTemplate, XcDataTemplate, XcDefinitionListEntryTemplate, XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTextAreaTemplate, XcFormTextTemplate, XcIconButtonTemplate, XcTemplate } from '../xc-template/xc-template';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 
 
 @Component({

@@ -17,7 +17,7 @@
  */
 import { Subscription } from 'rxjs';
 
-import { Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit, input } from '@angular/core';
+import { Component, HostBinding, HostListener, inject, Input, input, OnDestroy, OnInit } from '@angular/core';
 import { MatNavList } from '@angular/material/list';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
 import { coerceBoolean } from '@zeta/base';

@@ -17,8 +17,7 @@
  */
 import { Component, inject, InjectionToken, Input } from '@angular/core';
 
-import { I18nService } from '../../i18n';
-import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n';
+import { I18nService, XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n';
 import { XcDynamicComponent } from '../shared/xc-dynamic.component';
 import { XcOptionItem } from '../shared/xc-item';
 import { XcButtonComponent } from '../xc-button/xc-button.component';

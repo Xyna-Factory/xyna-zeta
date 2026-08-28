@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ContentChildren, Directive, EventEmitter, OnDestroy, Output, QueryList, inject, contentChildren } from '@angular/core';
+import { ContentChildren, Directive, OnDestroy, QueryList, inject, contentChildren, output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { merge, Observable, Subscription } from 'rxjs';
@@ -34,8 +34,7 @@ export class XcFormDirective implements OnDestroy {
     private readonly _formControlInvalidMap = new Map<FormControl, boolean>();
     private _formControlStateChangeSubscription;
 
-    @Output('xc-form-validity-change')
-    private readonly validityChangeEmitter = new EventEmitter<XcFormDirective>();
+    readonly validityChangeEmitter = output<XcFormDirective>({ alias: 'xc-form-validity-change' });
 
     /**
      * Query all XcFormBaseComponents; No matter if they have a validator attached or not.
@@ -138,7 +137,7 @@ export class XcFormDirective implements OnDestroy {
 
 
     get validityChange(): Observable<XcFormDirective> {
-        return this.validityChangeEmitter.asObservable();
+        return new Observable(subscriber => this.validityChangeEmitter.subscribe(value => subscriber.next(value)));
     }
 
 

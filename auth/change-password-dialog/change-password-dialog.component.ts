@@ -1,3 +1,6 @@
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,11 +19,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component, effect } from '@angular/core';
-
 import { ApiService, RuntimeContext } from '@zeta/api';
-
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 
 import { I18nService, LocaleService } from '../../i18n';
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';

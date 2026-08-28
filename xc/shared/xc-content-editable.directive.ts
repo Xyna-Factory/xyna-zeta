@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, ElementRef, EventEmitter, HostBinding, HostListener, inject, Input, Output } from '@angular/core';
+import { Directive, ElementRef, HostBinding, HostListener, inject, Input, output } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 
@@ -47,14 +47,11 @@ export class XcContentEditableDirective {
     @HostBinding('class.xc-content-editable-active')
     _active = false;
 
-    @Output('xc-content-editable-enter')
-    readonly enter = new EventEmitter<XcContentEditableDirective>();
+    readonly enter = output<XcContentEditableDirective>({ alias: 'xc-content-editable-enter' });
 
-    @Output('xc-content-editable-leave')
-    readonly leave = new EventEmitter<XcContentEditableDirective>();
+    readonly leave = output<XcContentEditableDirective>({ alias: 'xc-content-editable-leave' });
 
-    @Output('xc-content-editable-textChange')
-    readonly textChange = new EventEmitter<string>();
+    readonly textChange = output<string>({ alias: 'xc-content-editable-textChange' });
 
 
     @Input('xc-content-editable')

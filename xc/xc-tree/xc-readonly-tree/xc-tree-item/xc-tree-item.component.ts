@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import { AsyncPipe } from '@angular/common';
-import { AfterViewInit, Component, computed, ElementRef, EventEmitter, inject, Input, OnDestroy, Output, signal, input, viewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, inject, Input, input, OnDestroy, output, signal, viewChild } from '@angular/core';
 
 import { coerceBoolean } from '../../../../base';
 import { I18nService } from '../../../../i18n';
@@ -46,11 +46,9 @@ export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode
 
     readonly column0 = viewChild<ElementRef>('col0');
 
-    @Output()
-    readonly expand = new EventEmitter<XcStructureTreeNode>();
+    readonly expand = output<XcStructureTreeNode>();
 
-    @Output()
-    readonly widthChange = new EventEmitter<ResizeEvent<XcStructureTreeNode>>();
+    readonly widthChange = output<ResizeEvent<XcStructureTreeNode>>();
 
     expanded = false;
     indentation = 0;

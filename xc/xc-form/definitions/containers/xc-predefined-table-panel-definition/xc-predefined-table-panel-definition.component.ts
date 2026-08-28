@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -29,7 +31,6 @@ import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/
 import { XoBaseDefinition, XoDefinition } from '../../xo/base-definition.model';
 import { XoPredefinedTablePanelDefinition } from '../../xo/containers.model';
 import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-form-panel-definition.component';
-import { Subscription } from 'rxjs';
 
 
 @Component({

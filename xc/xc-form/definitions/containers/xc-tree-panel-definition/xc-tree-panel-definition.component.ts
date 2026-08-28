@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,17 +17,15 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, OnDestroy, inject } from '@angular/core';
-
-import { Subscription } from 'rxjs';
+import { Component, inject, Input, OnDestroy } from '@angular/core';
 
 import { ApiService, RuntimeContext } from '../../../../../api';
 import { I18nService } from '../../../../../i18n';
 import { XcStructureTreeDataSource } from '../../../../xc-tree/xc-structure-tree-data-source';
+import { XcTreeComponent } from '../../../../xc-tree/xc-tree.component';
+import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
 import { XoTreePanelDefinition } from '../../xo/containers.model';
 import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-form-panel-definition.component';
-import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
-import { XcTreeComponent } from '../../../../xc-tree/xc-tree.component';
 
 
 @Component({

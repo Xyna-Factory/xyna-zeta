@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,10 +19,9 @@
  */
 import { Component, Input } from '@angular/core';
 
+import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
 import { XoFormPanelDefinition } from '../../xo/containers.model';
 import { XcFormDefinitionComponent } from '../xc-form-definition/xc-form-definition.component';
-import { Subscription } from 'rxjs';
-import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
 
 
 @Component({
@@ -40,7 +41,10 @@ export class XcFormPanelDefinitionComponent extends XcFormDefinitionComponent {
         this.closeEventSubscription?.unsubscribe();
         if (this.panelDefinition?.closable && this.panelDefinition.triggerClose?.eventId) {
             this.closeEventSubscription = this.eventService.getDefinitionEventPayloadById(this.panelDefinition.triggerClose.eventId).subscribe(
-                () => this.closed.emit()
+                () => this.closed.emit({
+                    definition: this.panelDefinition,
+                    data: this.definitionData ?? []
+                })
             );
         }
     }

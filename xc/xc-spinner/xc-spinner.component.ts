@@ -16,9 +16,9 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component } from '@angular/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 
 @Component({

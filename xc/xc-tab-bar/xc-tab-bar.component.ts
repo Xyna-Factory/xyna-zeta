@@ -21,7 +21,7 @@ import { concatMap, distinctUntilChanged, filter, map, tap } from 'rxjs/operator
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, EventEmitter, inject, Injector, Input, OnDestroy, Output, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, inject, Injector, Input, OnDestroy, output, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { coerceBoolean } from '../../base';
@@ -101,8 +101,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         return this._contextMenu;
     }
 
-    @Output('xc-tab-bar-selectionChange')
-    readonly selectionChange = new EventEmitter<XcTabBarItem>();
+    readonly selectionChange = output<XcTabBarItem>({ alias: 'xc-tab-bar-selectionChange' });
 
     readonly tabMenuItems: XcMenuItem[] = [];
 

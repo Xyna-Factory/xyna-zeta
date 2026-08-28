@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, HostListener, inject, NgZone, OnDestroy, Output, input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, HostListener, inject, NgZone, OnDestroy, input, output } from '@angular/core';
 
 import { downloadFile, MimeTypes, NOP } from '@zeta/base';
 
@@ -63,11 +63,9 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
 
     readonly destroy = input(() => { }, { alias: "xc-webgl-destroy" });
 
-    @Output('xc-webgl-resize')
-    private readonly resizeEmitter = new EventEmitter<void>();
+    readonly resizeEmitter = output<void>({ alias: 'xc-webgl-resize' });
 
-    @Output('xc-webgl-interaction')
-    private readonly interactionEmitter = new EventEmitter<XcWebGLInteraction>();
+    readonly interactionEmitter = output<XcWebGLInteraction>({ alias: 'xc-webgl-interaction' });
 
 
     ngAfterViewInit() {
@@ -141,12 +139,12 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
 
 
     get resize(): Observable<void> {
-        return this.resizeEmitter.asObservable();
+        return new Observable(subscriber => this.resizeEmitter.subscribe(value => subscriber.next(value))); 
     }
 
 
     get interaction(): Observable<XcWebGLInteraction> {
-        return this.interactionEmitter.asObservable();
+        return new Observable(subscriber => this.interactionEmitter.subscribe(value => subscriber.next(value))); 
     }
 
 
@@ -156,7 +154,7 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
             this._width = this.elementRef.nativeElement.clientWidth;
             this._height = this.elementRef.nativeElement.clientHeight;
             this.renderer.setSize(this.width, this.height);
-            this.resizeEmitter.next();
+            this.resizeEmitter.emit();
         };
         requestAnimationFrame(resize);
     }

@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, computed, effect, ElementRef, EventEmitter, HostBinding, inject, Input, Output, signal } from '@angular/core';
+import { AfterContentInit, Component, computed, effect, ElementRef, HostBinding, inject, Input, signal, output } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 import { FloatLabelType } from '@angular/material/form-field';
 
@@ -257,19 +257,13 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         this.explicitErrorMessageCaseState.set(normalizeErrorMessageCase(value));
     }
 
-    @Output()
-    readonly valueChange = this.formControl.valueChanges;
+    readonly valueChange = output<any>();
 
-    @Output()
-    readonly valueKeydown = new EventEmitter<KeyboardEvent>();
+    readonly valueKeydown = output<KeyboardEvent>();
 
-    @Output()
+    readonly focus = output<FocusEvent>();
 
-    readonly focus = new EventEmitter<FocusEvent>();
-
-    @Output()
-
-    readonly blur = new EventEmitter<FocusEvent>();
+    readonly blur = output<FocusEvent>();
 
     @HostBinding('class.indicatechanges')
     get indicateChanges(): boolean {

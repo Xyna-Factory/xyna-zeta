@@ -17,10 +17,10 @@
  */
 import { Component, HostBinding, inject, signal } from '@angular/core';
 
+import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcDialogService } from '../xc-dialog/xc-dialog.service';
 import { XcStatusBarDialogComponent } from './xc-status-bar-dialog.component';
 import { XcStatusBarEntry, XcStatusBarEntryType, XcStatusBarService } from './xc-status-bar.service';
-import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 
 
 @Component({

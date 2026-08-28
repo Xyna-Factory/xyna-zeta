@@ -18,7 +18,7 @@
 import { fromEvent, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, inject, Input, OnDestroy, Output, Renderer2, input } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, HostListener, inject, Input, OnDestroy, Renderer2, input, output } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 
@@ -87,9 +87,9 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
         return this._resizeOptions;
     }
 
-    @Output() readonly resizeBegin: EventEmitter<any> = new EventEmitter();
-    @Output() readonly resizing: EventEmitter<ResizableEvent> = new EventEmitter();
-    @Output() readonly resizeEnd: EventEmitter<ResizableEvent> = new EventEmitter();
+    readonly resizeBegin = output<MouseEvent | TouchEvent>();
+    readonly resizing = output<ResizableEvent>();
+    readonly resizeEnd = output<ResizableEvent>();
 
     element: HTMLElement;
     private subscription: Subscription;
@@ -362,7 +362,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
         this.newLeft = this.element.clientLeft;
         this.newTop = this.element.clientTop;
         event.stopPropagation();
-        this.resizeBegin.emit();
+        this.resizeBegin.emit(event);
     }
 
     endResize(event: MouseEvent | TouchEvent) {

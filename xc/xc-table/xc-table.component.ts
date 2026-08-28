@@ -72,7 +72,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         template: XcFormTemplate<any, any>;
         component?: XcFormBaseComponent
     }>();
-    private readonly filterTemplateSubscriptions: Subscription[] = [];
+    private readonly filterTemplateSubscriptions: Array<{ unsubscribe(): void }> = [];
 
     private tbody: HTMLTableSectionElement;
     private thead: HTMLTableSectionElement;

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
+import { Component, inject, Input, signal, output } from '@angular/core';
 
 import { pack } from '../../../../../base';
 
@@ -50,8 +50,7 @@ export class XcBaseDefinitionComponent {
     private readonly resolvedDataState = signal<Xo[] | undefined>(undefined);
     private readonly hiddenState = signal(false);
 
-    @Output('xc-definition-closed')
-    readonly closed = new EventEmitter<XoCloseDefinitionData>();
+    readonly closed = output<XoCloseDefinitionData>({ alias: 'xc-definition-closed' });
 
 
     constructor() {

@@ -1,3 +1,5 @@
+import { Observable, Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,8 +19,6 @@
  */
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, InjectionToken, OnDestroy, signal } from '@angular/core';
-
-import { Observable, Subscription } from 'rxjs';
 
 import { XcDynamicComponent } from '../../shared/xc-dynamic.component';
 import { XcPanelComponent } from '../../xc-panel/xc-panel.component';

@@ -17,7 +17,7 @@
  */
 import { take } from 'rxjs';
 
-import { Directive, EventEmitter, HostListener, inject, input, Output } from '@angular/core';
+import { Directive, HostListener, inject, input, output } from '@angular/core';
 
 import { XcContextMenuService } from './xc-context-menu.service';
 import { XcMenuService } from './xc-menu.service';
@@ -44,8 +44,7 @@ export class XcContextMenuTriggerDirective {
         return this.disabledInput();
     }
 
-    @Output()
-    readonly beforeOpen = new EventEmitter<void>();
+    readonly beforeOpen = output<void>();
 
     @HostListener('contextmenu', ['$event'])
     onContextMenu(event: MouseEvent): void {

@@ -18,7 +18,7 @@
 import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
 import { debounceTime, map, startWith, tap } from 'rxjs/operators';
 
-import { AfterViewInit, Component, computed, effect, ElementRef, EventEmitter, forwardRef, HostBinding, inject, input, NgZone, OnDestroy, Output, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, forwardRef, HostBinding, inject, input, NgZone, OnDestroy, output, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
@@ -291,14 +291,11 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     /** Reference to multiselect input for focus management */
     readonly multiSelectInputElement = viewChild<ElementRef<HTMLInputElement>>('multiSelectInput');
 
-    @Output('xc-form-autocomplete-optionChange')
-    readonly optionChange = new EventEmitter<XcOptionItem>();
+    readonly optionChange = output<XcOptionItem>({ alias: 'xc-form-autocomplete-optionChange' });
 
-    @Output('xc-form-autocomplete-optionsOpened')
-    readonly optionsOpened = new EventEmitter();
+    readonly optionsOpened = output({ alias: 'xc-form-autocomplete-optionsOpened' });
 
-    @Output('xc-form-autocomplete-optionsClosed')
-    readonly optionsClosed = new EventEmitter();
+    readonly optionsClosed = output({ alias: 'xc-form-autocomplete-optionsClosed' });
 
     /**
      * Enable multiselect mode using mat-select with multiple attribute.
@@ -310,8 +307,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     /**
      * Emits the MULTISELECT_FILTER_SEPARATOR-delimited string of selected values when multiselect is applied.
      */
-    @Output('xc-form-autocomplete-multiSelectChange')
-    readonly multiSelectChange = new EventEmitter<string>();
+    readonly multiSelectChange = output<string>({ alias: 'xc-form-autocomplete-multiSelectChange' });
 
 
     constructor() {

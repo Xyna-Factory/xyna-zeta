@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NgClass } from '@angular/common';
-import { Component, computed, EventEmitter, HostBinding, inject, Input, OnInit, Output, signal, input } from '@angular/core';
+import { Component, computed, HostBinding, inject, Input, input, OnInit, output, signal } from '@angular/core';
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, LocaleService } from '@zeta/i18n';
@@ -61,8 +61,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
     readonly orientation = input<XcNavListOrientation>(undefined);
 
-    @Output()
-    readonly focusChange = new EventEmitter<XcNavListItem>();
+    readonly focusChange = output<XcNavListItem>();
 
 
     private readonly i18n = inject<I18nService>(I18nService);

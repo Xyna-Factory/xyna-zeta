@@ -1,3 +1,6 @@
+import { Subscription } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,9 +20,7 @@
  */
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
-import { Subscription } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { ConfigService } from '@zeta/api/config.service';
 
 import { ApiService, StartOrderOptionsBuilder } from '../../../../../api';
 import { RouteComponent } from '../../../../../nav/route.component';
@@ -29,7 +30,6 @@ import { XcStackComponent } from '../../../../xc-stack/xc-stack.component';
 import { XcComponentTemplate } from '../../../../xc-template/xc-template';
 import { XoFormDefinition } from '../../xo/containers.model';
 import { DefinitionStackItemComponentData, XcDefinitionStackItemComponent } from '../xc-definition-stack-item/xc-definition-stack-item.component';
-import { ConfigService } from '@zeta/api/config.service';
 
 
 @Component({

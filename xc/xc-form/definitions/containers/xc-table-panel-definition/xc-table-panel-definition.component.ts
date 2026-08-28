@@ -1,3 +1,6 @@
+import { Subscription } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,25 +18,20 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, OnDestroy, inject } from '@angular/core';
-
+import { Component, inject, Input, OnDestroy } from '@angular/core';
 import { pack } from '@zeta/base';
 
-import { Subscription } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
-
 import { ApiService, XynaMonitoringLevel, XynaPriority } from '../../../../../api';
-import { I18nService } from '../../../../../i18n';
+import { I18nService, XcI18nPipe } from '../../../../../i18n';
+import { XcButtonComponent } from '../../../../xc-button/xc-button.component';
+import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
 import { XcRemoteTableDataSource } from '../../../../xc-table/xc-remote-table-data-source';
+import { XcTableComponent } from '../../../../xc-table/xc-table.component';
+import { XcTooltipDirective } from '../../../../xc-tooltip/xc-tooltip.directive';
+import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
 import { XoBaseDefinition, XoDefinition } from '../../xo/base-definition.model';
 import { XoTablePanelDefinition } from '../../xo/containers.model';
 import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-form-panel-definition.component';
-import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
-import { XcButtonComponent } from '../../../../xc-button/xc-button.component';
-import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
-import { XcTooltipDirective } from '../../../../xc-tooltip/xc-tooltip.directive';
-import { XcTableComponent } from '../../../../xc-table/xc-table.component';
-import { XcI18nPipe } from '../../../../../i18n';
 
 
 @Component({

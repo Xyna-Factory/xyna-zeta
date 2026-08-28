@@ -1,3 +1,6 @@
+import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
+import { filter, map, switchMapTo } from 'rxjs/operators';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,19 +18,15 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, effect, inject, viewChildren } from '@angular/core';
-
+import { AfterViewInit, Component, effect, ElementRef, inject, Input, OnDestroy, viewChildren } from '@angular/core';
 import { coerceBoolean, retrieveFocusableElements, scrollToElement } from '@zeta/base';
 import { I18nService } from '@zeta/i18n';
 
-import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
-import { filter, map, switchMapTo } from 'rxjs/operators';
-
+import { XcButtonComponent } from '../xc-button/xc-button.component';
+import { XcTemplateComponent } from '../xc-template/xc-template.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 import { XcStackDataSource } from './xc-stack-data-source';
 import { XcStackItemInterface, XcStackObserver } from './xc-stack-item/xc-stack-item';
-import { XcTemplateComponent } from '../xc-template/xc-template.component';
-import { XcButtonComponent } from '../xc-button/xc-button.component';
-import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 
 
 export interface XcStackInterface {

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, computed, HostBinding, Input, signal, input } from '@angular/core';
+import { Component, computed, HostBinding, Input, input, signal } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 

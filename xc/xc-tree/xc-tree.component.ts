@@ -20,7 +20,7 @@ import { filter } from 'rxjs/operators';
 
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { NgClass } from '@angular/common';
-import { Component, HostBinding, inject, Input, NgZone, OnDestroy, signal, input } from '@angular/core';
+import { Component, HostBinding, inject, Input, input, NgZone, OnDestroy, signal } from '@angular/core';
 import { MatNestedTreeNode, MatTree, MatTreeNodeDef, MatTreeNodeOutlet, MatTreeNodeToggle } from '@angular/material/tree';
 
 import { coerceBoolean } from '../../base';

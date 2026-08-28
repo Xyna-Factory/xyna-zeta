@@ -1,3 +1,5 @@
+import { filter, Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,15 +18,13 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component, forwardRef, Input } from '@angular/core';
-
 import { XoArray } from '@zeta/api';
-
-import { filter, Subscription } from 'rxjs';
 
 import { XcBaseDefinitionComponent } from '../../shared/xc-base-definition/xc-base-definition.component';
 import { XoBaseDefinition, XoBaseDefinitionArray } from '../../xo/base-definition.model';
 import { XoFormDefinition } from '../../xo/containers.model';
 import { XcDefinitionProxyComponent } from '../xc-definition-proxy/xc-definition-proxy.component';
+
 
 @Component({
     selector: 'xc-form-definition',

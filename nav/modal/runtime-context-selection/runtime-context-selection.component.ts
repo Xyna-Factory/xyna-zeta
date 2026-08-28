@@ -1,3 +1,6 @@
+import { Subscription } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,11 +19,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component, inject, OnDestroy, signal, ViewChild } from '@angular/core';
-
 import { RuntimeContext } from '@zeta/api';
-
-import { Subscription } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 
 import { ApiService, RuntimeContextSelectionSettings } from '../../../api/api.service';
 import { XoApplication, XoApplicationArray, XoWorkspace, XoWorkspaceArray } from '../../../api/xo/xo-runtime-context';
@@ -46,7 +45,7 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
     private readonly i18n = inject(I18nService);
     private runtimeContext: RuntimeContext;
     private readonly settings: RuntimeContextSelectionSettings;
-    private subscription: Subscription;
+    private subscription: { unsubscribe(): void } | undefined;
 
 
     runtimeContextDataWrapper = new XcAutocompleteDataWrapper(

@@ -1,3 +1,6 @@
+import { Observable, of, Subscription, throwError } from 'rxjs';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,11 +19,8 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AfterViewInit, Component, inject, Injector, OnDestroy } from '@angular/core';
-
+import { ConfigService } from '@zeta/api/config.service';
 import { pack } from '@zeta/base';
-
-import { Observable, of, Subscription, throwError } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
 
 import { ApiService, StartOrderOptionsBuilder, Xo, XoManagedFileID, XoXPRCRuntimeContext, XoXPRCRuntimeContextFromRuntimeContext } from '../../../../../api';
 import { I18nService } from '../../../../../i18n';
@@ -33,7 +33,6 @@ import { XcDialogDefinitionComponent } from '../../xc-dialog-definition/xc-dialo
 import { XoBaseDefinition, XoCloseDefinitionData, XoDefinition, XoDefinitionBundle, XoDefinitionObserver } from '../../xo/base-definition.model';
 import { XoFormDefinition } from '../../xo/containers.model';
 import { XoStartOrderButtonDefinition } from '../../xo/item-definition.model';
-import { ConfigService } from '@zeta/api/config.service';
 
 
 export interface DefinitionStackItemComponentData extends XcStackItemComponentData {

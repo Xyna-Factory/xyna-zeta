@@ -28,7 +28,7 @@ export class XcMenuService {
     private _component: XcMenuComponentInterface;
     private _items: XcMenuItem[];
     private _options: XcMenuOptions;
-    private readonly subscriptions = new Array<Subscription>();
+    private readonly subscriptions = new Array<{ unsubscribe(): void }>();
     private readonly selectItem = new Subject<XcMenuItem>();
 
     constructor() {

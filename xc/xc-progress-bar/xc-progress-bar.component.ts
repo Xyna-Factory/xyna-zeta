@@ -16,9 +16,9 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { Component } from '@angular/core';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
-import { MatProgressBar } from '@angular/material/progress-bar';
 
 
 @Component({

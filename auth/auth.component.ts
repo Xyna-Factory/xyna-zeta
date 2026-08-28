@@ -1,3 +1,4 @@
+import { NgComponentOutlet } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -21,7 +22,6 @@ import { I18nService } from '../i18n';
 import { AuthBackgroundComponent } from './background/auth-background.component';
 import { authTranslations_deDE } from './locale/auth-translations.de-DE';
 import { authTranslations_enUS } from './locale/auth-translations.en-US';
-import { NgComponentOutlet } from '@angular/common';
 
 
 @Component({

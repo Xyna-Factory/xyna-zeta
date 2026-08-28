@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { EventEmitter } from '@angular/core';
+import { OutputEmitterRef } from '@angular/core';
 import { MatMenu, MenuPositionX, MenuPositionY } from '@angular/material/menu';
 
 import { XcDynamicString, XcItem } from '../shared/xc-item'; // Pfad ggf. anpassen
@@ -67,5 +67,5 @@ export interface XcMenu extends MatMenu, XcMenuOptions {
 
 export interface XcMenuComponentInterface {
     menu: XcMenu;
-    select: EventEmitter<XcMenuItem>;
+    select: OutputEmitterRef<XcMenuItem>;
 }
