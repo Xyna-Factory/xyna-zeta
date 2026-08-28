@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-0" #col0 [ngStyle]="{'min-width.px': firstColumnWidth(), 'padding-left.px': indentation}">
+  <div class="col-0" #col0 [style]="{'min-width.px': firstColumnWidth(), 'padding-left.px': indentation}">
     @if (node.expandable) {
       <xc-icon-button
         class="toggle"

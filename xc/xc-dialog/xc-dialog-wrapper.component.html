@@ -9,7 +9,7 @@
 >
     <div
         class="header"
-        [ngClass]="{ draggable: draggable }"
+        [class.draggable]="draggable"
         (mousedown)="initDrag($event)"
         (touchstart)="initDrag($event)"
     >

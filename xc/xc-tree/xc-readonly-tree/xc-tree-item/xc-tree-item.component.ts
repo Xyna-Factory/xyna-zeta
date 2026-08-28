@@ -18,7 +18,7 @@
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
-import { AsyncPipe, NgStyle } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { AfterViewInit, Component, computed, ElementRef, EventEmitter, inject, Input, OnDestroy, Output, signal, ViewChild, input } from '@angular/core';
 
 import { coerceBoolean } from '../../../../base';
@@ -33,7 +33,7 @@ import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.compone
     selector: 'xc-tree-item',
     templateUrl: './xc-tree-item.component.html',
     styleUrls: ['./xc-tree-item.component.scss'],
-    imports: [NgStyle, XcIconButtonComponent, XcTooltipDirective, AsyncPipe]
+    imports: [XcIconButtonComponent, XcTooltipDirective, AsyncPipe]
 })
 export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode> implements AfterViewInit, OnDestroy {
     readonly i18n = inject(I18nService);

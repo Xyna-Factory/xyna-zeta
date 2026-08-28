@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,21 +16,22 @@ import { AsyncPipe, NgClass } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, forwardRef, Input, Output, computed, signal, input } from '@angular/core';
+import { Component, computed, EventEmitter, forwardRef, Input, input, Output, signal } from '@angular/core';
 
 import { Xo } from '../../../../../api';
-import { XcI18nContextDirective, XcI18nPipe, XcI18nTranslateDirective } from '../../../../../i18n';
+import { XcI18nPipe } from '../../../../../i18n';
 import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
 import { XcPanelComponent } from '../../../../xc-panel/xc-panel.component';
 import { XcTooltipDirective } from '../../../../xc-tooltip/xc-tooltip.directive';
 import { XcDefinitionProxyComponent } from '../../containers/xc-definition-proxy/xc-definition-proxy.component';
 import { XoFormPanelDefinition } from '../../xo/containers.model';
 
+
 @Component({
     selector: 'xc-form-generic-panel',
     templateUrl: './xc-form-generic-panel.component.html',
     styleUrls: ['./xc-form-generic-panel.component.scss'],
-    imports: [XcPanelComponent, NgClass, forwardRef(() => XcDefinitionProxyComponent), XcIconButtonComponent, XcTooltipDirective, AsyncPipe, XcI18nPipe]
+    imports: [XcPanelComponent, forwardRef(() => XcDefinitionProxyComponent), XcIconButtonComponent, XcTooltipDirective, AsyncPipe, XcI18nPipe]
 })
 export class XcFormGenericPanelComponent {
 
