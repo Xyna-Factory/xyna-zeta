@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, Input, Output, ViewChild, inject, numberAttribute } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, numberAttribute, viewChild } from '@angular/core';
 
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Box2, BufferGeometry, Color, Mesh, Object3D, OrthographicCamera, RawShaderMaterial, Scene, Shape, Vector2, Vector3, WebGLRenderer } from 'three';
@@ -1404,8 +1404,7 @@ export class XcGraphComponent {
     private _resized = false;
     private _initialized = false;
 
-    @ViewChild(XcWebGLComponent, { static: true })
-    webGL: XcWebGLComponent;
+    readonly webGL = viewChild(XcWebGLComponent);
 
     @Output('xc-graph-resize')
     readonly resizeEmitter = new EventEmitter<any>();
@@ -1416,8 +1415,8 @@ export class XcGraphComponent {
 
     private render() {
         if (this.resized) {
-            this.webGL.renderer.clear();
-            this.graphScenes.forEach(graphScene => graphScene.render(this.webGL.renderer));
+            this.webGL().renderer.clear();
+            this.graphScenes.forEach(graphScene => graphScene.render(this.webGL().renderer));
         }
     }
 
@@ -1432,7 +1431,7 @@ export class XcGraphComponent {
 
     private init() {
         this._initialized = true;
-        this.webGL.renderer.setClearColor(new Color(0), 0);
+        this.webGL().renderer.setClearColor(new Color(0), 0);
         this.graphResources = new XcGraphResources(0x88888d, 0x2a2a2d, 0x2a2a2d, 0x1a1a1d, 0x002c33, 0xeaeaed, 0x88888d, 0x88888d, 0x88888d, 'assets/zeta/opensans-regular.json');
         this.graphScenes.forEach(graphScene => graphScene.init(this.graphResources, this.authService.serverTimeOffset));
         this.start();
@@ -1447,18 +1446,19 @@ export class XcGraphComponent {
 
 
     resize() {
-        if (this.webGL.width && this.webGL.height) {
+        const webGL = this.webGL();
+        if (webGL.width && webGL.height) {
             this._resized = true;
             const count = this.graphScenes.length;
             const colGap = XcGraphComponent.COL_GAP;
             const cols = this._columns;
             const cols1 = cols - 1;
-            const colWidth = (this.webGL.width - cols1 * colGap) / cols;
+            const colWidth = (webGL.width - cols1 * colGap) / cols;
             const colWidthGap = colWidth + colGap;
             const rowGap = XcGraphComponent.ROW_GAP;
             const rows = Math.ceil(count / cols);
             const rows1 = rows - 1;
-            const rowHeight = (this.webGL.height - rows1 * rowGap) / rows;
+            const rowHeight = (webGL.height - rows1 * rowGap) / rows;
             const rowHeightGap = rowHeight + rowGap;
 
             this.graphScenes.forEach((graphScene, idx) => {
@@ -1511,18 +1511,18 @@ export class XcGraphComponent {
 
 
     updateSize() {
-        this.webGL.updateSize();
+        this.webGL().updateSize();
     }
 
 
     start() {
-        this.webGL.startRenderLoop(this.advance.bind(this));
-        this.webGL.updateSize();
+        this.webGL().startRenderLoop(this.advance.bind(this));
+        this.webGL().updateSize();
     }
 
 
     stop() {
-        this.webGL.stopRenderLoop();
+        this.webGL().stopRenderLoop();
     }
 
 
@@ -1548,7 +1548,7 @@ export class XcGraphComponent {
 
 
     downloadImage() {
-        this.webGL.downloadFrame(this.getName());
+        this.webGL().downloadFrame(this.getName());
     }
 
 

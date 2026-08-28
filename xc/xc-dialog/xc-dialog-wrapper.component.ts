@@ -1,6 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, Output, Renderer2, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, Output, Renderer2, signal, viewChild } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 import { coerceBoolean } from '../../base';
@@ -67,7 +67,7 @@ export class XcDialogWrapperComponent implements AfterViewInit {
     set maximized(value: boolean) {
         this.maximizedState.set(value);
 
-        if (this.dialogRoot) {
+        if (this.dialogRoot()) {
             this.applyMaximizedState();
         }
 
@@ -131,7 +131,7 @@ export class XcDialogWrapperComponent implements AfterViewInit {
     maximizedChange = new EventEmitter<boolean>();
 
 
-    @ViewChild('dialogRoot', { static: false }) dialogRoot: ElementRef;
+    readonly dialogRoot = viewChild<ElementRef>('dialogRoot');
 
     dragEventTarget: MouseEvent | TouchEvent;
 
@@ -155,20 +155,21 @@ export class XcDialogWrapperComponent implements AfterViewInit {
     };
 
     center() {
-        if (this.dialogRoot) {
-            this.renderer.setStyle(this.dialogRoot.nativeElement, 'height', this.dialogOptions.initialHeight ? this.dialogOptions.initialHeight : 'unset');
-            this.renderer.setStyle(this.dialogRoot.nativeElement, 'width', this.dialogOptions.initialWidth ? this.dialogOptions.initialWidth : 'unset');
-            const elementWidth = this.dialogRoot.nativeElement.offsetWidth;
-            const elementHeight = this.dialogRoot.nativeElement.offsetHeight;
-            this.renderer.setStyle(this.dialogRoot.nativeElement, 'height', this.dialogOptions.initialHeight ? this.dialogOptions.initialHeight : elementHeight > window.innerHeight ? '80vh' : 'auto');
-            this.renderer.setStyle(this.dialogRoot.nativeElement, 'width', this.dialogOptions.initialWidth ? this.dialogOptions.initialWidth : elementWidth > window.innerWidth ? '80vw' : 'auto');
+        const dialogRoot = this.dialogRoot();
+        if (dialogRoot) {
+            this.renderer.setStyle(dialogRoot.nativeElement, 'height', this.dialogOptions.initialHeight ? this.dialogOptions.initialHeight : 'unset');
+            this.renderer.setStyle(dialogRoot.nativeElement, 'width', this.dialogOptions.initialWidth ? this.dialogOptions.initialWidth : 'unset');
+            const elementWidth = dialogRoot.nativeElement.offsetWidth;
+            const elementHeight = dialogRoot.nativeElement.offsetHeight;
+            this.renderer.setStyle(dialogRoot.nativeElement, 'height', this.dialogOptions.initialHeight ? this.dialogOptions.initialHeight : elementHeight > window.innerHeight ? '80vh' : 'auto');
+            this.renderer.setStyle(dialogRoot.nativeElement, 'width', this.dialogOptions.initialWidth ? this.dialogOptions.initialWidth : elementWidth > window.innerWidth ? '80vw' : 'auto');
             this.setPosition();
         }
     }
 
     setPosition() {
-        const elementWidth = this.dialogRoot.nativeElement.offsetWidth;
-        const elementHeight = this.dialogRoot.nativeElement.offsetHeight;
+        const elementWidth = this.dialogRoot().nativeElement.offsetWidth;
+        const elementHeight = this.dialogRoot().nativeElement.offsetHeight;
         let left: number;
         let top: number;
         switch (this.dialogOptions.position) {
@@ -197,8 +198,9 @@ export class XcDialogWrapperComponent implements AfterViewInit {
                 top = Math.max((window.innerHeight - elementHeight) / 2, 0);
         }
 
-        this.renderer.setStyle(this.dialogRoot.nativeElement, 'left', left + 'px');
-        this.renderer.setStyle(this.dialogRoot.nativeElement, 'top', top + 'px');
+        const dialogRoot = this.dialogRoot();
+        this.renderer.setStyle(dialogRoot.nativeElement, 'left', left + 'px');
+        this.renderer.setStyle(dialogRoot.nativeElement, 'top', top + 'px');
     }
 
     initDrag(event: MouseEvent | TouchEvent) {
@@ -207,9 +209,10 @@ export class XcDialogWrapperComponent implements AfterViewInit {
 
 
     private applyMaximizedState() {
-        if (!this.dialogRoot) return;
+        const dialogRoot = this.dialogRoot();
+        if (!dialogRoot) return;
 
-        const el = this.dialogRoot.nativeElement;
+        const el = dialogRoot.nativeElement;
 
         if (this.maximized) {
             // speichern

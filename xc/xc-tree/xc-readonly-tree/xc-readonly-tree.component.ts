@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, Input, OnDestroy, QueryList, ViewChildren } from '@angular/core';
+import { Component, inject, Input, OnDestroy, viewChildren } from '@angular/core';
 
 import { XoDescriber, XoStructureArray, XoStructureObject } from '../../../api';
 import { coerceBoolean } from '../../../base';
@@ -43,8 +43,7 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent<XcStructureTree
     private _subscription: Subscription;
     private _keepBreaks = false;
 
-    @ViewChildren(XcTreeItemComponent)
-    items: QueryList<XcTreeItemComponent>;
+    readonly items = viewChildren(XcTreeItemComponent);
 
     firstColumnWidth = 100;
     changeWidthTimer = undefined;

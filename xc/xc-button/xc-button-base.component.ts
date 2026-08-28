@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, computed, ElementRef, HostBinding, HostListener, inject, Input, OnInit, signal, ViewChild, input } from '@angular/core';
+import { AfterContentInit, Component, computed, ElementRef, HostBinding, HostListener, inject, Input, OnInit, signal, input, viewChild } from '@angular/core';
 import { MatRipple } from '@angular/material/core';
 
 import { coerceBoolean } from '../../base';
@@ -50,12 +50,10 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
     readonly type = input('button');
 
-    @ViewChild('button', { read: ElementRef, static: false })
-    buttonElementRef: ElementRef;
+    readonly buttonElementRef = viewChild('button', { read: ElementRef });
 
     /** material design ripple directive of the button */
-    @ViewChild(MatRipple, { static: false })
-    ripple: MatRipple;
+    readonly ripple = viewChild(MatRipple);
 
 
     i18nContext: string;
@@ -66,7 +64,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
         (elementRef.nativeElement as HTMLElement).onclick = (event: MouseEvent) => {
             // prevent clicks outside of button dom element
-            if (!this.buttonElementRef.nativeElement.contains(event.target)) {
+            if (!this.buttonElementRef().nativeElement.contains(event.target)) {
                 event.stopPropagation();
             }
         };
@@ -155,7 +153,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     @HostListener('keydown.enter')
     @HostListener('keydown.space')
     launchRipple() {
-        this.ripple.launch(0, 0, { centered: true });
+        this.ripple().launch(0, 0, { centered: true });
     }
 
 

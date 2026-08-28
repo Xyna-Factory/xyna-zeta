@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ContentChildren, Directive, EventEmitter, OnDestroy, Output, QueryList, inject } from '@angular/core';
+import { ContentChildren, Directive, EventEmitter, OnDestroy, Output, QueryList, inject, contentChildren } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { merge, Observable, Subscription } from 'rxjs';
@@ -41,8 +41,7 @@ export class XcFormDirective implements OnDestroy {
      * Query all XcFormBaseComponents; No matter if they have a validator attached or not.
      * Additional Remark: Only affects elements inside the component of this directive. Sub-component's templates are black boxes to its ancestors (see doc of ContentChildren)
      */
-    @ContentChildren(XcFormBaseComponent, { descendants: true })
-    components = new QueryList<XcFormBaseComponent>();
+    readonly components = contentChildren(XcFormBaseComponent, { descendants: true });
 
     /**
      * Query all first validators* but only their host's FormControl is needed
@@ -104,7 +103,7 @@ export class XcFormDirective implements OnDestroy {
      */
     checkValidators() {
         void Promise.resolve().then(() => {
-            this.updateInvalidState(this.components.some(component => {
+            this.updateInvalidState(this.components().some(component => {
                 if (component.formControl.validator) {
                     return component.formControl.validator(component.formControl) !== null;
                 }
@@ -159,7 +158,7 @@ export class XcFormDirective implements OnDestroy {
 
 
     get dirty(): boolean {
-        return this.components.some(component => component.formControl.dirty);
+        return this.components().some(component => component.formControl.dirty);
     }
 
 
@@ -169,36 +168,36 @@ export class XcFormDirective implements OnDestroy {
 
 
     get touched(): boolean {
-        return this.components.some(component => component.formControl.touched);
+        return this.components().some(component => component.formControl.touched);
     }
 
 
     get valueChanges(): Observable<any> {
-        return merge(...this.components.map(component => component.formControl.valueChanges));
+        return merge(...this.components().map(component => component.formControl.valueChanges));
     }
 
 
     get statusChanges(): Observable<any> {
-        return merge(...this.components.map(component => component.formControl.statusChanges));
+        return merge(...this.components().map(component => component.formControl.statusChanges));
     }
 
 
     markAsPristine() {
-        this.components.forEach(component => component.formControl.markAsPristine());
+        this.components().forEach(component => component.formControl.markAsPristine());
     }
 
 
     markAsDirty() {
-        this.components.forEach(component => component.formControl.markAsDirty());
+        this.components().forEach(component => component.formControl.markAsDirty());
     }
 
 
     markAsUntouched() {
-        this.components.forEach(component => component.formControl.markAsUntouched());
+        this.components().forEach(component => component.formControl.markAsUntouched());
     }
 
 
     markAsTouched() {
-        this.components.forEach(component => component.formControl.markAsTouched());
+        this.components().forEach(component => component.formControl.markAsTouched());
     }
 }

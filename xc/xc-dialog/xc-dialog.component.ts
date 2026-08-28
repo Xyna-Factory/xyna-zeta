@@ -18,7 +18,7 @@
  */
 import { Observable } from 'rxjs';
 
-import { Component, DestroyRef, HostListener, inject, InjectionToken, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, InjectionToken, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
@@ -36,8 +36,7 @@ export abstract class XcDialogComponent<R = void, D = void>
     private readonly dialogRef = inject(MatDialogRef<any>);
     private readonly destroyRef = inject(DestroyRef);
 
-    @ViewChild(XcDialogWrapperComponent)
-    private wrapper: XcDialogWrapperComponent;
+    private readonly wrapper = viewChild(XcDialogWrapperComponent);
 
     private readonly maximizedState = signal(false);
 
@@ -55,8 +54,9 @@ export abstract class XcDialogComponent<R = void, D = void>
 
 
     ngAfterViewInit() {
-        if (this.wrapper) {
-            this.wrapper.maximizedChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
+        const wrapper = this.wrapper();
+        if (wrapper) {
+            wrapper.maximizedChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
                 this._maximized = value;
             });
         }
@@ -79,8 +79,9 @@ export abstract class XcDialogComponent<R = void, D = void>
     toggleMaximize(event: Event) {
         this._maximized = !this._maximized;
 
-        if (this.wrapper) {
-            this.wrapper.maximized = this._maximized;
+        const wrapper = this.wrapper();
+        if (wrapper) {
+            wrapper.maximized = this._maximized;
         }
 
         event.preventDefault();

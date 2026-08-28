@@ -18,7 +18,7 @@
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, filter, finalize } from 'rxjs/operators';
 
-import { Component, effect, inject, signal, ViewChild } from '@angular/core';
+import { Component, effect, inject, signal, viewChild } from '@angular/core';
 
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 import { I18nParam, I18nService } from '../../i18n/i18n.service';
@@ -126,8 +126,7 @@ export class AuthLoginComponent {
         }
     };
 
-    @ViewChild(XcTabBarComponent, { static: false })
-    tabBar: XcTabBarComponent;
+    readonly tabBar = viewChild(XcTabBarComponent);
 
     tabBarSelection = this.smartCardTabItem;
     smartCardDomain = '';

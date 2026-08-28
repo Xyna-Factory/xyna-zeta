@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import { AsyncPipe } from '@angular/common';
-import { AfterViewInit, Component, computed, ElementRef, EventEmitter, inject, Input, OnDestroy, Output, signal, ViewChild, input } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, EventEmitter, inject, Input, OnDestroy, Output, signal, input, viewChild } from '@angular/core';
 
 import { coerceBoolean } from '../../../../base';
 import { I18nService } from '../../../../i18n';
@@ -44,8 +44,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode
     private readonly nodeNameState = signal('');
     readonly nodeLabelState = computed(() => this.i18n.translateSignal(this.nodeNameState())());
 
-    @ViewChild('col0')
-    column0: ElementRef;
+    readonly column0 = viewChild<ElementRef>('col0');
 
     @Output()
     readonly expand = new EventEmitter<XcStructureTreeNode>();
@@ -62,7 +61,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode
 
     ngAfterViewInit() {
         // FIXME: This call is very expensive for many items
-        this.initialWidth = this.column0.nativeElement.offsetWidth;
+        this.initialWidth = this.column0().nativeElement.offsetWidth;
         this.widthChange.emit({ node: this.node, width: this.initialWidth });
     }
 

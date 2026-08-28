@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, QueryList, ViewChildren, effect, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, effect, inject, viewChildren } from '@angular/core';
 
 import { coerceBoolean, retrieveFocusableElements, scrollToElement } from '@zeta/base';
 import { I18nService } from '@zeta/i18n';
@@ -58,14 +58,10 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
     private dataSourceSubscription: Subscription;
     private readonly breadcrumbSubscriptons: Subscription[] = [];
 
-    @ViewChildren('items') itemList: QueryList<ElementRef>;
+    readonly itemList = viewChildren<ElementRef>('items');
 
 
     ngAfterViewInit() {
-        this.itemList.changes.subscribe(() => {
-            // scroll to last item if item list changes
-            this.scrollToStackItem(this._dataSource.stackItems.length - 1);
-        });
     }
 
 
@@ -105,6 +101,10 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
         effect(() => {
             this.i18n.translateSignal('Item')();
             this.updateBreadcrumbFallbackLabels();
+            const items = this.itemList();
+            if (items.length > 0 && this._dataSource?.stackItems?.length) {
+                this.scrollToStackItem(this._dataSource.stackItems.length - 1);
+            }
         });
     }
 
@@ -167,7 +167,7 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
 
 
     scrollToStackItem(idx: number) {
-        const elementToScrollInto = this.itemList.find((_, index) => index === idx);
+        const elementToScrollInto = this.itemList().find((_, index) => index === idx);
 
         // focus first focusable element inside the stack item
         const focusItem = () => {
