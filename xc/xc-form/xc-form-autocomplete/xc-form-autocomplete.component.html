@@ -1,7 +1,7 @@
 <mat-form-field [floatLabel]="floatLabel" hideRequiredMarker>
   <mat-label>{{label}}</mat-label>
 
-  @if (multiSelect) {
+  @if (multiSelect()) {
     <!-- multiselect mode: display input + hidden mat-select -->
     <input matInput
       #multiSelectInput
@@ -73,7 +73,7 @@
       [displayWith]="displayWith"
       (opened)="openedAutocomplete()"
       (closed)="closedAutocomplete()">
-      @for (option of filteredOptions | async; let i = $index; track i) {
+      @for (option of filteredOptions(); let i = $index; track i) {
         <mat-option tabindex="0"
           [value]="option"
           [disabled]="option.disabled || readonly"
@@ -99,7 +99,7 @@
       (click)="suffixClick($event)"
       [tabIndex]="(readonly || disabled) ? -1 : tabIndexSuffix"
       [attr.aria-label]="iconTooltip || suffixContent"
-      xc-tooltip="{{iconTooltip || (suffixContent | xcI18n)}}"
+      [xc-tooltip]="iconTooltip || (suffixContent | xcI18n)"
       [disabled]="readonly || disabled">
       <mat-icon>{{suffixContent}}</mat-icon>
     </button>

@@ -22,6 +22,7 @@ import { ApiService, RuntimeContext, StartOrderOptionsBuilder, StartOrderResult,
 import { isObject, pack } from '../../base';
 import { I18nService } from '../../i18n';
 import { signal } from '@angular/core';
+import { XcDynamicString } from '../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString } from '../shared/xc-sort';
 import { XcTemplate } from '../xc-template/xc-template';
 import { XcTableColumn, XcTableDataRequestOptions, XcTableDataSource } from './xc-table-data-source';
@@ -459,7 +460,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
 
 
     // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-    resolve(row: T, path: string): XcTemplate[] | Object {
+    resolve(row: T, path: string): XcTemplate[] | XcDynamicString | Object {
         return this.resolveXo(row, path);
     }
 

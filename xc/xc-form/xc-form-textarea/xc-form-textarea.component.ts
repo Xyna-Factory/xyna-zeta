@@ -1,4 +1,3 @@
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,7 +15,8 @@ import { CdkTextareaAutosize } from '@angular/cdk/text-field';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, forwardRef, Input, numberAttribute } from '@angular/core';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { Component, effect, forwardRef, input, numberAttribute } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -38,68 +38,57 @@ export class XcFormTextareaComponent extends XcFormBaseComponent {
     private _minLines = 5;
     private _maxLines = 5;
     private _textareaAutosize = true;
+    readonly linesInput = input<number | undefined>(undefined, { alias: 'xc-form-textarea-lines', transform: numberAttribute });
+    readonly minLinesInput = input<number | undefined>(undefined, { alias: 'xc-form-textarea-minlines', transform: numberAttribute });
+    readonly maxLinesInput = input<number | undefined>(undefined, { alias: 'xc-form-textarea-maxlines', transform: numberAttribute });
+    readonly textareaAutosizeInput = input(true, { alias: 'xc-form-textarea-autosize', transform: coerceBoolean });
+
+    constructor() {
+        super();
+        effect(() => {
+            const lines = this.linesInput();
+            if (lines !== undefined) {
+                this._minLines = lines;
+                this._maxLines = lines;
+                this._textareaAutosize = true;
+            } else {
+                const minLines = this.minLinesInput();
+                const maxLines = this.maxLinesInput();
+                this._minLines = minLines !== undefined ? minLines : this._minLines;
+                this._maxLines = maxLines !== undefined ? maxLines : this._maxLines;
+                this._textareaAutosize = this.textareaAutosizeInput();
+            }
+        });
+    }
 
     /**
      * Sets height for the given number of lines
      */
-    @Input({alias: 'xc-form-textarea-lines', transform: numberAttribute })
-    set lines(value: number) {
-        this.minLines = value;
-        this.maxLines = value;
-        // NOTE: When this textarea is inside a container controlled by *ngIf="!collapsed",
-        // the element may not exist in the DOM at the moment this setter (lines) is executed.
-        // Calling autosize.resizeToFitContent(true) at this point happens too early,
-        // because *ngIf removes the DOM node entirely while the panel is collapsed.
-        // As a result, autosize measures a 0×0 element and the textarea appears too small.
-        //
-        // The (commented out) setTimeout(...) delays the autosize call until the next
-        // JavaScript tick, after Angular has re-inserted the textarea into the DOM.
-        // Alternatives: avoid *ngIf (use [hidden] instead), or explicitly trigger
-        // resizeToFitContent() after the panel is expanded (e.g. via ngZone.onStable
-        // or collapsedChange).
-        // setTimeout(() => this.autosize.resizeToFitContent(true));
-        this._textareaAutosize = true;
-    }
-
-    /**
-     * sets a minimum of lines in which the component finds
-     * the optimized height for its current content
-     * Note: works only if "xc-form-textarea-autosize" is true
-     */
-    @Input({alias: 'xc-form-textarea-minlines', transform: numberAttribute })
-    set minLines(value: number) {
-        this._minLines = value;
+    get lines(): number | undefined {
+        return this.linesInput();
     }
 
     get minLines(): number {
         return this._minLines;
     }
 
-    /**
-     * sets a maximum of lines in which the component finds
-     * the optimized height for its current content
-     * Note: works only if "xc-form-textarea-autosize" is true
-     */
-    @Input({alias: 'xc-form-textarea-maxlines', transform: numberAttribute })
-    set maxLines(value: number) {
-        this._maxLines = value;
+    set minLines(value: number) {
+        this._minLines = value;
     }
 
     get maxLines(): number {
         return this._maxLines;
     }
 
-    /**
-     * de-/activates the search for the optimzed height for
-     * the optimzed height for the current content
-     * Autosize deactivated makes it easier for custom style to show effect
-     */
-    @Input({alias: 'xc-form-textarea-autosize', transform: coerceBoolean})
-    set textareaAutosize(value: boolean) {
-        this._textareaAutosize = value;
+    set maxLines(value: number) {
+        this._maxLines = value;
     }
 
     get textareaAutosize(): boolean {
         return this._textareaAutosize;
+    }
+
+    set textareaAutosize(value: boolean) {
+        this._textareaAutosize = value;
     }
 }

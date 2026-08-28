@@ -78,7 +78,11 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
 
 
     ngAfterContentInit(): void {
-        this.i18nContextState.set(this.elementRef.nativeElement.getAttribute('xc-i18n') ?? '');
+        this.i18nContextState.set(
+            this.elementRef.nativeElement.getAttribute('xc-i18n-context')
+            ?? this.elementRef.nativeElement.getAttribute('xc-i18n')
+            ?? ''
+        );
     }
 
 
@@ -93,7 +97,7 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
 
-    @Input({transform: coerceBoolean})
+    @Input({ transform: coerceBoolean })
     set checked(value: boolean) {
         if (this._checked !== value) {
             this._checked = value;
@@ -106,7 +110,7 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
 
-    @Input({transform: coerceBoolean})
+    @Input({ transform: coerceBoolean })
     @HostBinding('class.disabled')
     set disabled(value: boolean) {
         this._disabled = value;
@@ -118,7 +122,7 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
 
-    @Input({transform: coerceBoolean})
+    @Input({ transform: coerceBoolean })
     @HostBinding('class.readonly')
     set readonly(value: boolean) {
         this._readonly = value;
@@ -130,7 +134,7 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
 
-    @Input({transform: coerceBoolean})
+    @Input({ transform: coerceBoolean })
     set indeterminate(value: boolean) {
         this._indeterminate = value;
     }

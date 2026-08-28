@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, effect, forwardRef, input } from '@angular/core';
 
 import { XoDefinitionListDefinition } from '../../xo/containers.model';
 import { XcDefinitionProxyComponent } from '../xc-definition-proxy/xc-definition-proxy.component';
@@ -29,10 +29,13 @@ import { XcDefinitionListUnwrapDirective } from './xc-dl-unwrap.directive';
     imports: [forwardRef(() => XcDefinitionProxyComponent), XcDefinitionListUnwrapDirective]
 })
 export class XcDefinitionListDefinitionComponent extends XcFormDefinitionComponent {
+    readonly definitionListDefinitionInput = input<XoDefinitionListDefinition | undefined>(undefined, { alias: 'xc-definition-list-definition' });
 
-    @Input('xc-definition-list-definition')
-    set definitionListDefinition(value: XoDefinitionListDefinition) {
-        this.definition = value;
+    constructor() {
+        super();
+        effect(() => {
+            this.definition = this.definitionListDefinitionInput();
+        });
     }
 
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, computed, effect, OnInit, signal } from '@angular/core';
+import { AfterContentChecked, Component, computed, effect, OnInit, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
@@ -29,8 +29,10 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
     styleUrls: ['./xc-button-base.component.scss', './xc-button.component.scss'],
     imports: [MatButton, MatRipple, XcProgressBarComponent]
 })
-export class XcButtonComponent extends XcButtonBaseComponent implements OnInit {
+export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, AfterContentChecked {
 
+    private readonly initializedState = signal(false);
+    private readonly labelKeyCapturedState = signal(false);
     private readonly translateState = signal(false);
     private readonly labelKeyState = signal('');
     private readonly labelTranslationKey = computed(() => {
@@ -53,11 +55,11 @@ export class XcButtonComponent extends XcButtonBaseComponent implements OnInit {
     constructor() {
         super();
         effect(() => {
-            if (!this.translateState() || !this.element) {
+            if (!this.initializedState() || !this.translateState() || !this.element || !this.labelKeyState()) {
                 return;
             }
 
-            const translated = this.labelTranslation();
+            const translated = this.labelTranslation() || this.labelKeyState();
             if (translated !== this.element.textContent) {
                 this.element.textContent = translated;
             }
@@ -67,7 +69,30 @@ export class XcButtonComponent extends XcButtonBaseComponent implements OnInit {
     ngOnInit() {
         super.ngOnInit();
         this.element = this.elementRef.nativeElement.querySelector('.mdc-button__label');
-        this.translateState.set(Array.from(this.element.childNodes).some(childNode => childNode.nodeType === Node.TEXT_NODE));
-        this.labelKeyState.set(this.element.textContent ?? '');
+    }
+
+
+    ngAfterContentChecked() {
+        this.syncLabelFromDom();
+    }
+
+
+    private syncLabelFromDom() {
+        if (this.labelKeyCapturedState()) {
+            return;
+        }
+        if (!this.element) {
+            return;
+        }
+
+        const labelText = (this.element.textContent ?? '').trim();
+        if (!labelText) {
+            return;
+        }
+
+        this.labelKeyState.set(labelText);
+        this.translateState.set(labelText.length > 0);
+        this.initializedState.set(true);
+        this.labelKeyCapturedState.set(true);
     }
 }

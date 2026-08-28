@@ -15,10 +15,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatLabel } from '@angular/material/form-field';
 
-import { ATTRIBUTE_VALUE } from '../../../xc/shared/xc-i18n-attributes';
 import { XcFormComponent } from '../xc-form-base/xc-form-base.component';
 
 
@@ -28,32 +27,10 @@ import { XcFormComponent } from '../xc-form-base/xc-form-base.component';
     styleUrls: ['./xc-form-text.component.scss'],
     imports: [MatLabel]
 })
-export class XcFormTextComponent extends XcFormComponent implements AfterContentInit {
-
-    protected _value: {key: any, translated: string} = {key: '', translated : ''}
-
-    @Input()
-    set value(value: any) {
-        this._value.key = value;
-        this.translate(ATTRIBUTE_VALUE);
-    }
+export class XcFormTextComponent extends XcFormComponent {
 
     get value(): any {
-        return this._value.translated || this._value.key;
-    }
-
-    constructor() {
-        super();
-    }
-
-
-    ngAfterContentInit() {
-        super.ngAfterContentInit();
-
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._value.key) {
-                this.translate(ATTRIBUTE_VALUE);
-            }
-        }));
+        const value = this.valueInputState();
+        return this.translateValue(value) || value;
     }
 }

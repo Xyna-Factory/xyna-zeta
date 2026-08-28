@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
@@ -33,7 +33,6 @@ import { xcPanelTranslations_enUS } from './locale/xc-panel-translations.en-US';
 })
 export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDestroy {
     private readonly elementRef = inject(ElementRef<HTMLElement>);
-    private readonly cdr = inject(ChangeDetectorRef);
     private readonly i18n = inject(I18nService);
 
 
@@ -52,7 +51,7 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
     private _collapsable = false;
     private _mouseDown = false;
 
-    tooltip: string;
+    readonly tooltip = this.i18n.translateSignal('zeta.xc-panel.collapse-toggle');
 
 
     private readonly _targetIsSelectable = (target: EventTarget) =>
@@ -81,7 +80,6 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
         this.i18n.setTranslations(LocaleService.DE_DE, xcPanelTranslations_deDE);
         this.i18n.setTranslations(LocaleService.EN_US, xcPanelTranslations_enUS);
 
-        this.tooltip = this.i18n.translate('zeta.xc-panel.collapse-toggle');
     }
 
     ngAfterContentInit(): void {
@@ -115,7 +113,6 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
     togglePanel() {
         this.collapsed = !this.collapsed;
         this.collapsedChange.emit(this.collapsed);
-        this.cdr.markForCheck();
     }
 
 

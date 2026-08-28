@@ -1,5 +1,3 @@
-import { filter, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2024 Xyna GmbH, Germany
@@ -17,7 +15,9 @@ import { filter, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, Injector } from '@angular/core';
+import { filter, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+
+import { Component, inject, Injector, signal } from '@angular/core';
 import { ApiService, StartOrderOptionsBuilder, Xo, XoManagedFileID, XoXPRCRuntimeContext, XoXPRCRuntimeContextFromRuntimeContext } from '@zeta/api';
 import { ConfigService } from '@zeta/api/config.service';
 import { pack } from '@zeta/base';
@@ -47,13 +47,13 @@ export class XcDialogDefinitionComponent extends XcDialogComponent<Xo[], XoDefin
     private readonly configService = inject(ConfigService);
 
 
-    header = '';
+    readonly header = signal('');
 
     constructor() {
         super();
 
         if (this.injectedData.definition instanceof XoBaseDefinition) {
-            this.header = this.injectedData.definition.label;
+            this.header.set(this.injectedData.definition.label);
         }
     }
 

@@ -52,6 +52,7 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
 
     private readonly subscriptions: Subscription[] = [];
     private refreshEventSubscription: Subscription;
+    private detailSelectionToken = 0;
 
     tableInputFQN = '';
 
@@ -74,6 +75,7 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
 
 
     refresh(clearSelection?: boolean) {
+        this.detailSelectionToken++;
         if (clearSelection) {
             this.dataSource.selectionModel.clear();
         }
@@ -93,6 +95,11 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
 
     protected afterUpdate() {
         super.afterUpdate();
+
+        this.detailSelectionToken++;
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
+        this.subscriptions.splice(0);
+        this.refreshEventSubscription?.unsubscribe();
 
         // request table
         const rtc = this.tableDefinition.tableWorkflowRTC
@@ -121,18 +128,19 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
         this.dataSource.selectionModel.selectionChangeForUnchangedSelection = true;
 
         this.subscriptions.push(
-            this.dataSource.countChange.subscribe(() => this.cdr.detectChanges())
+            this.dataSource.countChange.subscribe(() => {})
         );
 
-        this.dataSource.error.subscribe({
+        this.subscriptions.push(this.dataSource.error.subscribe({
             next: result => console.error('XcRemoteTableDataSource error StartOrderResult: ', result),
             error: error => console.error('XcRemoteTableDataSource error string: ', error)
-        });
+        }));
 
         // a table-definition has to know its data source
         this.tableDefinition.tableDataSource = this.dataSource;
 
-        this.dataSource.selectionModel.selectionChange.subscribe(model => {
+        this.subscriptions.push(this.dataSource.selectionModel.selectionChange.subscribe(model => {
+            const selectionToken = ++this.detailSelectionToken;
             if (model.selection.length <= 0) {
                 return;
             }
@@ -155,10 +163,16 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
                 const resolvedData = compoundDefinition.resolveData(compoundData);
                 this.tableDefinition.detailsDefinitionReference.resolveDefinition(pack(resolvedData)).subscribe({
                     next: definitionBundle => {
+                        if (selectionToken !== this.detailSelectionToken) {
+                            return;
+                        }
                         // open the resolved definition
                         if (this.tableDefinition.observer && this.tableDefinition.observer.openDefinition && definitionBundle.definition instanceof XoBaseDefinition) {
                             this.tableDefinition.observer.openDefinition(definitionBundle.definition, definitionBundle.data).subscribe({
                                 next: stackItem => {
+                                    if (selectionToken !== this.detailSelectionToken) {
+                                        return;
+                                    }
                                     if (stackItem && definitionBundle.definition) {
                                         this.detailsDefinition = definitionBundle.definition;
 
@@ -183,7 +197,7 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
                     }
                 });
             }
-        });
+        }));
         this.dataSource.refresh();
 
         this.refreshEventSubscription?.unsubscribe();

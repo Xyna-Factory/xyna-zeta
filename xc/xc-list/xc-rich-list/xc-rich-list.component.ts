@@ -17,7 +17,7 @@
  */
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { Component, ComponentRef, Injector, Input, QueryList, ViewChildren, inject } from '@angular/core';
+import { Component, ComponentRef, Injector, QueryList, ViewChildren, inject, input } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
@@ -38,12 +38,11 @@ export class XcRichListComponent extends XcThemeableComponent implements XcRichL
     private readonly _componentInjectors = new Map<XcRichListItem, Injector>();
     private readonly _componentSubjects = new Map<XcRichListItem, Subject<XcRichListItemComponent>>();
 
-    @Input('xc-rich-list-items')
-    items = new Array<XcRichListItem>();
+    readonly items = input(new Array<XcRichListItem>(), { alias: "xc-rich-list-items" });
 
 
     private _getComponentInstance(item: XcRichListItem): XcRichListItemComponent | null {
-        const idx = this.items.indexOf(item);
+        const idx = this.items().indexOf(item);
         if (idx >= 0 && idx < this.componentOutlets.length) {
             const componentOutlet = this.componentOutlets.toArray()[idx];
             // necessary private access
@@ -107,7 +106,7 @@ export class XcRichListComponent extends XcThemeableComponent implements XcRichL
             this._componentSubjects.delete(item);
         }
         // remove from items array
-        const index = this.items.indexOf(item);
-        this.items.splice(index, 1);
+        const index = this.items().indexOf(item);
+        this.items().splice(index, 1);
     }
 }

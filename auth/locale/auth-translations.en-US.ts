@@ -90,6 +90,10 @@ export const authTranslations_enUS: I18nTranslation[] = [
         value: 'Username'
     },
     {
+        key: 'zeta.auth-login.expand_more',
+        value: 'Show Options'
+    },
+    {
         key: 'zeta.auth-login.clear-tooltip',
         value: 'Clear'
     },

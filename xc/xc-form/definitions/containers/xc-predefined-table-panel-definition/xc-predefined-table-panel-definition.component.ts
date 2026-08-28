@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, Input, signal } from '@angular/core';
+import { Component, inject, Input, OnDestroy, signal } from '@angular/core';
 
 import { Xo, XoArray, XoObject } from '../../../../../api';
 import { pack } from '../../../../../base';
@@ -29,6 +29,7 @@ import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/
 import { XoBaseDefinition, XoDefinition } from '../../xo/base-definition.model';
 import { XoPredefinedTablePanelDefinition } from '../../xo/containers.model';
 import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-form-panel-definition.component';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -37,9 +38,11 @@ import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-f
     styleUrls: ['./xc-predefined-table-panel-definition.component.scss'],
     imports: [XcFormGenericPanelComponent, XcButtonComponent, XcI18nTranslateDirective, XcI18nPipe, XcIconButtonComponent, XcTableComponent]
 })
-export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefinitionComponent {
+export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefinitionComponent implements OnDestroy {
     private readonly i18n = inject(I18nService);
 
+    private readonly subscriptions: Subscription[] = [];
+    private detailSelectionToken = 0;
 
     dataSource: XcLocalTableDataSource<XoObject>;
     tableCounts: TableCounts;
@@ -58,6 +61,7 @@ export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefini
 
 
     refresh() {
+        this.detailSelectionToken++;
         this.dataSource.refresh();
 
         // close details on refresh
@@ -73,8 +77,17 @@ export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefini
     }
 
 
+    ngOnDestroy() {
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    }
+
+
     protected afterUpdate() {
         super.afterUpdate();
+
+        this.detailSelectionToken++;
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
+        this.subscriptions.splice(0);
 
         this.dataSource = new XcLocalTableDataSource<XoObject>(this.i18n);
         this.dataSource.limit = 50;
@@ -82,12 +95,15 @@ export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefini
             rows: this.resolvedData.length > 0 && this.resolvedData[0] instanceof XoArray ? (this.resolvedData[0] as XoArray<XoObject>).data : [],
             columns: this.tableDefinition.columns.data.map(column => <XcTableColumn>{ name: signal(column.name), path: column.path })
         };
-        this.dataSource.countChange.subscribe(counts => this.tableCounts = counts);
+        this.subscriptions.push(this.dataSource.countChange.subscribe(counts => {
+            this.tableCounts = counts;
+        }));
 
         // a table-definition has to know its data source
         this.tableDefinition.tableDataSource = this.dataSource;
 
-        this.dataSource.selectionModel.selectionChange.subscribe(model => {
+        this.subscriptions.push(this.dataSource.selectionModel.selectionChange.subscribe(model => {
+            const selectionToken = ++this.detailSelectionToken;
             if (model.selection.length <= 0) {
                 return;
             }
@@ -110,6 +126,9 @@ export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefini
                 const resolvedData = compoundDefinition.resolveData(compoundData);
                 this.tableDefinition.detailsDefinitionReference.resolveDefinition(pack(resolvedData)).subscribe({
                     next: definitionBundle => {
+                        if (selectionToken !== this.detailSelectionToken) {
+                            return;
+                        }
                         // open the resolved definition
                         if (this.tableDefinition.observer && this.tableDefinition.observer.openDefinition && definitionBundle.definition instanceof XoBaseDefinition) {
                             this.detailsDefinition = definitionBundle.definition;
@@ -118,7 +137,7 @@ export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefini
                     }
                 });
             }
-        });
+        }));
         this.dataSource.refresh();
     }
 }

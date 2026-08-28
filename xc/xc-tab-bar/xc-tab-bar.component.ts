@@ -26,8 +26,8 @@ import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService, XcI18nPipe } from '../../i18n';
-import { XcDynamicString } from '../shared/xc-item';
 import { XcThemeableComponent } from '../../xc/shared/xc-themeable.component';
+import { XcDynamicString } from '../shared/xc-item';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcIconComponent } from '../xc-icon/xc-icon.component';
 import { XcContextMenuTriggerDirective } from '../xc-menu/xc-context-menu-trigger.directive';
@@ -51,9 +51,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     private readonly injector = inject(Injector);
     protected readonly i18n = inject(I18nService);
     protected readonly menuService = inject(XcMenuService);
-    protected readonly resolveDynamicString = (value: XcDynamicString) => value();
     private readonly cdr = inject(ChangeDetectorRef);
-
+    protected readonly resolveDynamicString = (value: XcDynamicString) => value();
     private _tabGroup: MatTabGroup;
     private _componentOutlets: QueryList<NgComponentOutlet>;
     private readonly _componentInjectors = new Map<XcTabBarItem, Injector>();
@@ -619,7 +618,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     private refreshAfterMenuAction(): void {
-        queueMicrotask(() => this.cdr.detectChanges());
+        queueMicrotask(() => this.cdr.markForCheck());
     }
 
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, computed, ElementRef, HostBinding, HostListener, inject, Input, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, computed, ElementRef, HostBinding, HostListener, inject, Input, OnInit, signal, ViewChild, input } from '@angular/core';
 import { MatRipple } from '@angular/material/core';
 
 import { coerceBoolean } from '../../base';
@@ -48,8 +48,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     private readonly busyState = signal(false);
     private readonly focusInitialState = signal(false);
 
-    @Input()
-    type = 'button';
+    readonly type = input('button');
 
     @ViewChild('button', { read: ElementRef, static: false })
     buttonElementRef: ElementRef;
@@ -86,7 +85,11 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
 
     ngAfterContentInit() {
-        this.i18nContextState.set(this.elementRef.nativeElement.getAttribute('xc-i18n') ?? '');
+        this.i18nContextState.set(
+            this.elementRef.nativeElement.getAttribute('xc-i18n-context')
+            ?? this.elementRef.nativeElement.getAttribute('xc-i18n')
+            ?? ''
+        );
     }
 
 
@@ -146,8 +149,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
         return this.ariaLabelTranslation();
     }
 
-    @Input('xc-button-tab-index')
-    tabIndex?: number = 0;
+    readonly tabIndex = input<number>(0, { alias: "xc-button-tab-index" });
 
 
     @HostListener('keydown.enter')

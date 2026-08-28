@@ -15,12 +15,12 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, QueryList, ViewChildren, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, QueryList, ViewChildren, effect, inject } from '@angular/core';
 
 import { coerceBoolean, retrieveFocusableElements, scrollToElement } from '@zeta/base';
 import { I18nService } from '@zeta/i18n';
 
-import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
 import { filter, map, switchMapTo } from 'rxjs/operators';
 
 import { XcStackDataSource } from './xc-stack-data-source';
@@ -46,17 +46,15 @@ export interface XcStackInterface {
 })
 export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDestroy {
     private readonly i18n = inject(I18nService);
-
-
     private _dataSource: XcStackDataSource;
     readonly breadcrumbLabels: Map<XcStackItemInterface, string> = new Map();
+    private readonly breadcrumbFallbackItems = new Set<XcStackItemInterface>();
 
     /**
      * Active state of stack. Is passed to each stack item.
      * Can be used to tell all stack items to halt expensive processes while inactive
      */
     private readonly _activeSubject = new BehaviorSubject<boolean>(true);
-    private _openedStackItemSubject: Subject<XcStackItemInterface>;
     private dataSourceSubscription: Subscription;
     private readonly breadcrumbSubscriptons: Subscription[] = [];
 
@@ -67,13 +65,6 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
         this.itemList.changes.subscribe(() => {
             // scroll to last item if item list changes
             this.scrollToStackItem(this._dataSource.stackItems.length - 1);
-
-            // if an item has been opened, it's open now - so complete waiting subject
-            if (this._openedStackItemSubject) {
-                this._openedStackItemSubject.next(this._dataSource.last());
-                this._openedStackItemSubject.complete();
-                this._openedStackItemSubject = null;
-            }
         });
     }
 
@@ -96,14 +87,24 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
 
         this.dataSourceSubscription = this.dataSource.stackItemsChange.subscribe(() => {
             this.breadcrumbLabels.clear();
+            this.breadcrumbFallbackItems.clear();
             this.breadcrumbSubscriptons.forEach(subscription => subscription.unsubscribe());
+            this.breadcrumbSubscriptons.splice(0);
             this.dataSource.stackItems.forEach((item: XcStackItemInterface & XcStackObserver, index: number) => {
                 item.setStack(this);
 
                 this.breadcrumbSubscriptons.push(item.getBreadcrumbLabel().subscribe(label =>
-                    this.breadcrumbLabels.set(item, label || this.i18n.translate('Item') + ' ' + (index + 1))
+                    this.setBreadcrumbLabel(item, label, index + 1)
                 ));
             });
+        });
+    }
+
+
+    constructor() {
+        effect(() => {
+            this.i18n.translateSignal('Item')();
+            this.updateBreadcrumbFallbackLabels();
         });
     }
 
@@ -126,13 +127,10 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
 
     open(stackItem: XcStackItemInterface & XcStackObserver): Observable<XcStackItemInterface> {
         this.dataSource.add(stackItem);
-
         for (const observer of this.dataSource.stackItems) {
             observer.afterOpen(stackItem);
         }
-
-        this._openedStackItemSubject = new Subject<XcStackItemInterface>();
-        return this._openedStackItemSubject;
+        return of(stackItem);
     }
 
 
@@ -187,6 +185,29 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
 
 
     ariaBreadcrumbLabel(stackItem: XcStackItemInterface): string {
-        return this.i18n.translate('Select breadcrumb for $0', { key: '$0', value: this.breadcrumbLabels.get(stackItem) });
+        return this.i18n.translateSignal('Select breadcrumb for $0', { key: '$0', value: this.breadcrumbLabels.get(stackItem) })();
+    }
+
+
+    private setBreadcrumbLabel(stackItem: XcStackItemInterface, label: string, fallbackIndex: number) {
+        if (label) {
+            this.breadcrumbFallbackItems.delete(stackItem);
+            this.breadcrumbLabels.set(stackItem, label);
+            return;
+        }
+
+        this.breadcrumbFallbackItems.add(stackItem);
+        this.breadcrumbLabels.set(stackItem, this.i18n.translateSignal('Item')() + ' ' + fallbackIndex);
+    }
+
+
+    private updateBreadcrumbFallbackLabels() {
+        let index = 1;
+        this._dataSource?.stackItems.forEach(stackItem => {
+            if (this.breadcrumbFallbackItems.has(stackItem)) {
+                this.breadcrumbLabels.set(stackItem, this.i18n.translateSignal('Item')() + ' ' + index);
+            }
+            index++;
+        });
     }
 }

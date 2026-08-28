@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NgClass } from '@angular/common';
-import { Component, computed, EventEmitter, HostBinding, inject, Input, OnInit, Output, signal } from '@angular/core';
+import { Component, computed, EventEmitter, HostBinding, inject, Input, OnInit, Output, signal, input } from '@angular/core';
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, LocaleService } from '@zeta/i18n';
@@ -44,8 +44,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
     private readonly itemState = signal<XcNavListItem>(undefined);
 
-    @Input()
-    size: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
+    readonly size = input<'small' | 'medium' | 'large' | 'extra-large'>('medium');
 
     @HostBinding('attr.depth')
     @Input()
@@ -60,8 +59,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     }
     private _shrink = false;
 
-    @Input()
-    orientation: XcNavListOrientation;
+    readonly orientation = input<XcNavListOrientation>(undefined);
 
     @Output()
     readonly focusChange = new EventEmitter<XcNavListItem>();
@@ -138,7 +136,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
 
     get tooltipPosition(): XcTooltipPosition {
-        switch (this.orientation) {
+        switch (this.orientation()) {
             case XcNavListOrientation.TOP: return XcTooltipPosition.bottom;
             case XcNavListOrientation.RIGHT: return XcTooltipPosition.left;
             case XcNavListOrientation.BOTTOM: return XcTooltipPosition.top;

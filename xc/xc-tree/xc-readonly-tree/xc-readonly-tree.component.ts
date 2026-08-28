@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnDestroy, QueryList, ViewChildren } from '@angular/core';
+import { Component, inject, Input, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 
 import { XoDescriber, XoStructureArray, XoStructureObject } from '../../../api';
 import { coerceBoolean } from '../../../base';
@@ -33,12 +33,10 @@ import { XcTreeItemComponent } from './xc-tree-item/xc-tree-item.component';
     selector: 'xc-readonly-tree',
     templateUrl: './xc-readonly-tree.component.html',
     styleUrls: ['./xc-readonly-tree.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [XcTreeItemComponent]
 })
 export class XcReadonlyTreeComponent extends XcTreeNodeComponent<XcStructureTreeNode> implements OnDestroy {
     private readonly _i18n = inject(I18nService);
-    private readonly cdRef = inject(ChangeDetectorRef);
 
 
     private _dataSource: XcReadonlyStructureTreeDataSource;
@@ -69,7 +67,6 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent<XcStructureTree
     widthChange(event: ResizeEvent<XcStructureTreeNode>) {
         const propagateWidth = (width: number) => {
             this.firstColumnWidth = width;
-            this.cdRef.markForCheck();
             this.changeWidthTimer = undefined;
         };
 
@@ -97,7 +94,7 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent<XcStructureTree
     set dataSource(value: XcReadonlyStructureTreeDataSource) {
         this._subscription?.unsubscribe();
         this._dataSource = value;
-        this._subscription = this.dataSource.dataChange.subscribe(() => this.cdRef.markForCheck());
+        this._subscription = this.dataSource.dataChange.subscribe(() => {});
     }
 
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectorRef, Component, forwardRef, inject, Input } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 
 import { XoArray } from '@zeta/api';
 
@@ -33,8 +33,6 @@ import { XcDefinitionProxyComponent } from '../xc-definition-proxy/xc-definition
     imports: [forwardRef(() => XcDefinitionProxyComponent)]
 })
 export class XcFormDefinitionComponent extends XcBaseDefinitionComponent {
-
-    protected readonly cdr: ChangeDetectorRef = inject<ChangeDetectorRef>(ChangeDetectorRef);
     private changeChildrenEventSubscription: Subscription;
 
     @Input('xc-form-definition')
@@ -63,7 +61,6 @@ export class XcFormDefinitionComponent extends XcBaseDefinitionComponent {
                     if (payload.length > 1) {
                         this.definitionDataUnpacked = payload.slice(1);
                     }
-                    this.cdr.markForCheck();
                 }
             );
         }

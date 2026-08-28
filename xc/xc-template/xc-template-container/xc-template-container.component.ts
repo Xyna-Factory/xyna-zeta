@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, InjectionToken, OnDestroy } from '@angular/core';
+import { Component, inject, InjectionToken, OnDestroy, signal } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
 
@@ -34,18 +34,15 @@ import { XoTemplateDefinedBase } from './template-container-base.model';
     imports: [XcPanelComponent, XcTemplateComponent, AsyncPipe]
 })
 export class XcTemplateContainerComponent extends XcDynamicComponent<XoTemplateDefinedBase> implements OnDestroy {
-    protected readonly cdRef = inject(ChangeDetectorRef);
+    readonly childTemplatesVersion = signal(0);
 
 
     private readonly subscription: Subscription;
 
     constructor() {
         super();
-        const cdRef = this.cdRef;
-
-
         this.subscription = this.injectedData.getTemplate()?.childTemplatesChange().subscribe(() => {
-            cdRef.markForCheck();
+            this.childTemplatesVersion.update(value => value + 1);
         });
     }
 

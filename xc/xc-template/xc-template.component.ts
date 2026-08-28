@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectorRef, Component, HostBinding, HostListener, Injector, Input, inject } from '@angular/core';
+import { Component, HostBinding, HostListener, Injector, effect, inject, input } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
@@ -45,7 +45,6 @@ import { NgComponentOutlet } from '@angular/common';
 })
 export class XcTemplateComponent {
     injector = inject(Injector);
-    private readonly cdRef = inject(ChangeDetectorRef);
 
 
     readonly Type = {
@@ -61,28 +60,17 @@ export class XcTemplateComponent {
         XcComponentTemplate: templateClassType(XcComponentTemplate)
     };
 
+    readonly ariaLabelInput = input('', { alias: 'xc-template-aria-label' });
+    readonly instanceInput = input<XcTemplate | unknown>(undefined, { alias: 'xc-template-instance' });
+    readonly readonlyInput = input(false, { alias: 'xc-template-readonly', transform: coerceBoolean });
+    readonly disabledInput = input(false, { alias: 'xc-template-disabled', transform: coerceBoolean });
+
     private _instance: XcTemplate | unknown;
     private _readonly = false;
     private _disabled = false;
-    private _markForCheckSubscription: Subscription;
 
-    @Input('xc-template-aria-label')
-    ariaLabel = '';
-
-
-    @Input('xc-template-instance')
-    set instance(value: XcTemplate | unknown) {
-        if (this._markForCheckSubscription) {
-            this._markForCheckSubscription.unsubscribe();
-        }
-
-        this._instance = value;
-
-        if (this._instance instanceof XcTemplate) {
-            this._markForCheckSubscription = this._instance.markedForCheck.subscribe(() =>
-                this.cdRef.markForCheck()
-            );
-        }
+    get ariaLabel(): string {
+        return this.ariaLabelInput();
     }
 
 
@@ -90,25 +78,22 @@ export class XcTemplateComponent {
         return this._instance;
     }
 
-
-    @Input({alias: 'xc-template-readonly', transform: coerceBoolean})
-    set readonly(value: boolean) {
-        this._readonly = value;
-    }
-
     get readonly(): boolean {
         return this._readonly;
     }
 
 
-    @Input({alias: 'xc-template-disabled', transform: coerceBoolean})
-    set disabled(value: boolean) {
-        this._disabled = value;
+    get disabled(): boolean {
+        return this._disabled;
     }
 
 
-    get disabled(): boolean {
-        return this._disabled;
+    constructor() {
+        effect(() => {
+            this._readonly = this.readonlyInput();
+            this._disabled = this.disabledInput();
+            this._instance = this.instanceInput();
+        });
     }
 
 

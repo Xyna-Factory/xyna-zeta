@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 
 import { pack } from '../../../../../base';
 
@@ -36,19 +36,19 @@ export class XcBaseDefinitionComponent {
     protected readonly eventService: XcDefinitionEventService = inject<XcDefinitionEventService>(XcDefinitionEventService);
     private clearDataChangedEventSubscription: Subscription;
 
-    private _definition: XoBaseDefinition;
+    private readonly definitionState = signal<XoBaseDefinition | undefined>(undefined);
 
     /**
      * Complex objects (e. g. Data-Outputs of a Definition Workflow). Data to show must be resolved via definition.dataPath
      */
-    private _definitionData: Xo[];
-    private _definitionObserver: XoDefinitionObserver;
+    private readonly definitionDataState = signal<Xo[] | undefined>(undefined);
+    private readonly definitionObserverState = signal<XoDefinitionObserver | undefined>(undefined);
 
     /**
      * Resolved data for all data paths - must be a complex object
      */
-    resolvedData: Xo[];
-    hidden = false;
+    private readonly resolvedDataState = signal<Xo[] | undefined>(undefined);
+    private readonly hiddenState = signal(false);
 
     @Output('xc-definition-closed')
     readonly closed = new EventEmitter<XoCloseDefinitionData>();
@@ -86,12 +86,12 @@ export class XcBaseDefinitionComponent {
 
 
     protected get definition(): XoBaseDefinition {
-        return this._definition;
+        return this.definitionState();
     }
 
 
     protected set definition(value: XoBaseDefinition) {
-        this._definition = value;
+        this.definitionState.set(value);
         if (this.definition && this.definitionObserver) {
             this.definition.setObserver(this.definitionObserver);
         }
@@ -109,19 +109,19 @@ export class XcBaseDefinitionComponent {
 
     @Input('xc-base-definition-data')
     set definitionDataUnpacked(value: Xo[] | Xo) {
-        this._definitionData = pack(value);
+        this.definitionDataState.set(pack(value));
         this._afterUpdate();
     }
 
 
     get definitionData(): Xo[] {
-        return this._definitionData;
+        return this.definitionDataState();
     }
 
 
     @Input('xc-definition-observer')
     set definitionObserver(value: XoDefinitionObserver) {
-        this._definitionObserver = value;
+        this.definitionObserverState.set(value);
         if (this.definition) {
             this.definition.setObserver(this.definitionObserver);
         }
@@ -129,16 +129,26 @@ export class XcBaseDefinitionComponent {
 
 
     get definitionObserver(): XoDefinitionObserver {
-        return this._definitionObserver;
+        return this.definitionObserverState();
     }
 
 
     private _afterUpdate() {
         if (this.definition && this.definitionData) {
-            this.resolvedData = this.definition.resolveData(this.definitionData);
-            this.hidden = this.definition.isHiddenFor(this.definitionData);
+            this.resolvedDataState.set(this.definition.resolveData(this.definitionData));
+            this.hiddenState.set(this.definition.isHiddenFor(this.definitionData));
             this.afterUpdate();
         }
+    }
+
+
+    get resolvedData(): Xo[] {
+        return this.resolvedDataState() || [];
+    }
+
+
+    get hidden(): boolean {
+        return this.hiddenState();
     }
 
 

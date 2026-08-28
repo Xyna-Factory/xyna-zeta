@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { Component, EventEmitter, forwardRef, inject, Input, numberAttribute, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, forwardRef, inject, Input, numberAttribute, Output, ViewChild, input } from '@angular/core';
 import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
@@ -143,8 +143,7 @@ export class XcMenuComponent {
         // no need to set value to menu, since it is via setPositionClasses
     }
 
-    @Input('xc-menu-items')
-    items = new Array<XcMenuItem>();
+    readonly items = input(new Array<XcMenuItem>(), { alias: "xc-menu-items" });
 
     @Output('xc-menu-item-select')
     readonly select = new EventEmitter<XcMenuItem>();
@@ -156,5 +155,16 @@ export class XcMenuComponent {
     clickItem(item: XcMenuItem) {
         item.click?.(item);
         this.selectItem(item);
+    }
+
+
+    trackItem(item: XcMenuItem): string {
+        return [
+            this.resolveDynamicString(item.name),
+            item.icon ?? '',
+            item.iconStyle ?? '',
+            item.separator ?? '',
+            item.children?.length ?? 0
+        ].join('|');
     }
 }

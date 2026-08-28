@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Injector, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, inject, Injector, OnDestroy } from '@angular/core';
 
 import { pack } from '@zeta/base';
 
@@ -51,7 +51,6 @@ interface DefinitionStackItem {
 @Component({
     templateUrl: './xc-definition-stack-item.component.html',
     styleUrls: ['./xc-definition-stack-item.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [XcDefinitionProxyComponent]
 })
 export class XcDefinitionStackItemComponent extends XcStackItemComponent<DefinitionStackItemComponentData> implements XoDefinitionObserver, AfterViewInit, OnDestroy {
@@ -59,7 +58,6 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
     private readonly api = inject(ApiService);
     private readonly dialogs = inject(XcDialogService);
     private readonly i18n = inject(I18nService);
-    private readonly cdr = inject(ChangeDetectorRef);
     private readonly configService = inject(ConfigService);
 
 
@@ -99,7 +97,10 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
             this.detailsItem = { item: new XcStackItem(), definition: definition };
             this.detailsItem.item.addItemObserver(<XcStackItemObserver>{
                 beforeClose: () => this.detailsItem.definition.hasDataChanges()
-                    ? this.dialogs.confirm(this.i18n.translate('Confirm Close'), this.i18n.translate('There are unsaved changes. Close anyway and discard changes?')).afterDismiss()
+                    ? this.dialogs.confirm(
+                        this.i18n.translateSignal('Confirm Close')(),
+                        this.i18n.translateSignal('There are unsaved changes. Close anyway and discard changes?')()
+                    ).afterDismiss()
                     : of(true),
                 afterClose: () => {
                     this.detailsItem = null;
@@ -109,8 +110,7 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
                 XcDefinitionStackItemComponent,
                 <DefinitionStackItemComponentData>{ stackItem: this.detailsItem.item, definition: definition, data: data }
             ));
-            // markForCheck has to be called before stack.open to work propperly
-            return of(null).pipe(tap(() => this.cdr.markForCheck()), switchMap(() => this.stackItem.stack.open(this.detailsItem.item)));
+            return this.stackItem.stack.open(this.detailsItem.item);
         };
 
         // close current details item, if any
@@ -133,13 +133,7 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
             // force - remove dirty flags
             this.injectedData.definition.clearDataChangeState();
         }
-        return this.stackItem.stack.close(this.stackItem).pipe(
-            tap(closed => {
-                if (closed) {
-                    this.cdr.markForCheck();
-                }
-            })
-        );
+        return this.stackItem.stack.close(this.stackItem);
     }
 
 

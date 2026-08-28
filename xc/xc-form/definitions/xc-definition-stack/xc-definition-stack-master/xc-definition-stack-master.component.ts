@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Subscription } from 'rxjs';
@@ -36,11 +36,9 @@ import { ConfigService } from '@zeta/api/config.service';
     selector: 'xc-definition-stack-master',
     templateUrl: './xc-definition-stack-master.component.html',
     styleUrls: ['./xc-definition-stack-master.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [XcStackComponent]
 })
 export class XcDefinitionStackMasterComponent extends RouteComponent implements OnDestroy {
-    private readonly cdr = inject(ChangeDetectorRef);
     private readonly route = inject(ActivatedRoute);
     private readonly api = inject(ApiService);
     private readonly configService = inject(ConfigService);
@@ -49,7 +47,11 @@ export class XcDefinitionStackMasterComponent extends RouteComponent implements 
     readonly stackDataSource = new XcStackDataSource();
     private readonly subscription: Subscription;
 
-    active = false;
+    readonly activeState = signal(false);
+
+    get active(): boolean {
+        return this.activeState();
+    }
 
 
     constructor() {
@@ -79,9 +81,7 @@ export class XcDefinitionStackMasterComponent extends RouteComponent implements 
             });
         });
 
-        this.subscription = this.stackDataSource.stackItemsChange.subscribe(() =>
-            this.cdr.markForCheck()
-        );
+        this.subscription = this.stackDataSource.stackItemsChange.subscribe(() => {});
     }
 
 
@@ -98,19 +98,10 @@ export class XcDefinitionStackMasterComponent extends RouteComponent implements 
     onShow() {
         super.onShow();
 
-        this.active = true;
-        this.cdr.markForCheck();
+        this.activeState.set(true);
     }
 
-
     onHide() {
-        this.active = false;
-
-        /*
-         * REMARK
-         * For some reason, "detectChanges" instead of "markForCheck" has to be called here
-         * to get the active state into the stack
-         */
-        this.cdr.detectChanges();
+        this.activeState.set(false);
     }
 }

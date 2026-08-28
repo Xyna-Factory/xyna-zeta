@@ -17,7 +17,7 @@
  */
 import { take } from 'rxjs';
 
-import { Directive, EventEmitter, HostListener, inject, Input, Output } from '@angular/core';
+import { Directive, EventEmitter, HostListener, inject, input, Output } from '@angular/core';
 
 import { XcContextMenuService } from './xc-context-menu.service';
 import { XcMenuService } from './xc-menu.service';
@@ -31,11 +31,18 @@ export class XcContextMenuTriggerDirective {
     private readonly menuService = inject(XcMenuService);
     private readonly contextMenuService = inject(XcContextMenuService);
 
-    @Input('xc-context-menu-items')
-    contextMenuItems: XcMenuItem[] | (() => XcMenuItem[]);
+    readonly contextMenuItemsInput = input<XcMenuItem[] | (() => XcMenuItem[])>(undefined, { alias: 'xc-context-menu-items' });
 
-    @Input()
-    disabled = false;
+    readonly disabledInput = input(false);
+
+    get contextMenuItems(): XcMenuItem[] | (() => XcMenuItem[]) {
+        return this.contextMenuItemsInput();
+    }
+
+
+    get disabled(): boolean {
+        return this.disabledInput();
+    }
 
     @Output()
     readonly beforeOpen = new EventEmitter<void>();

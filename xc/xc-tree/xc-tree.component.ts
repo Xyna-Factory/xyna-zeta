@@ -20,7 +20,7 @@ import { filter } from 'rxjs/operators';
 
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, inject, Input, NgZone, OnDestroy } from '@angular/core';
+import { Component, HostBinding, inject, Input, NgZone, OnDestroy, signal, input } from '@angular/core';
 import { MatNestedTreeNode, MatTree, MatTreeNodeDef, MatTreeNodeOutlet, MatTreeNodeToggle } from '@angular/material/tree';
 
 import { coerceBoolean } from '../../base';
@@ -78,40 +78,34 @@ export interface XcTreeObserver {
     selector: 'xc-tree',
     templateUrl: './xc-tree.component.html',
     styleUrls: ['./xc-tree.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [MatTree, XcI18nContextDirective, XcI18nPipe, MatTreeNodeDef, MatNestedTreeNode, XcIconButtonComponent, MatTreeNodeToggle, XcTooltipDirective, NgClass, XcTemplateComponent, MatTreeNodeOutlet]
 })
 export class XcTreeComponent implements OnDestroy {
-    private readonly cdRef = inject(ChangeDetectorRef);
     private readonly _i18n = inject(I18nService);
     protected readonly resolveDynamicString = (value: XcDynamicString) => value();
     private readonly zone = inject(NgZone);
     private _allowSelect = false;
     private _multiSelect = false;
-    private _controlPressed = false;
+    private readonly controlPressedState = signal(false);
     private _dataSource: XcTreeDataSource<XcTreeNode>;
     private _dataSourceSubscriptions = new Array<Subscription>();
     private readonly _treeControl = new NestedTreeControl<XcTreeNode>(node => this.getNodeChildren(node));
 
     private readonly keyCatcherOnKeydown = (e: KeyboardEvent) => {
-        if (e.key === 'Control' && !this._controlPressed) {
-            this._controlPressed = true;
-            this.cdRef.detectChanges();
+        if (e.key === 'Control' && !this.controlPressedState()) {
+            this.controlPressedState.set(true);
         }
     };
 
     private readonly keyCatcherOnKeyup = (e: KeyboardEvent) => {
         if (e.key === 'Control') {
-            this._controlPressed = false;
-            this.cdRef.detectChanges();
+            this.controlPressedState.set(false);
         }
     };
 
-    @Input('xc-tree-observer')
-    observer: XcTreeObserver;
+    readonly observer = input<XcTreeObserver>(undefined, { alias: "xc-tree-observer" });
 
-    @Input('xc-tree-autoexpand')
-    autoExpand: 'first' | 'all';
+    readonly autoExpand = input<'first' | 'all'>(undefined, { alias: "xc-tree-autoexpand" });
 
 
     constructor() {
@@ -190,21 +184,16 @@ export class XcTreeComponent implements OnDestroy {
         this.unsubscribeDataSource();
         this._dataSource = value;
         if (this.dataSource) {
-            // subscribe to mark for changes
-            this._dataSourceSubscriptions.push(
-                this.dataSource.markForChange.subscribe(() => {
-                    this.cdRef.markForCheck();
-                })
-            );
             // subscribe to data changes
             this._dataSourceSubscriptions.push(
                 this.dataSource.dataChange.pipe<XcTreeNode[]>(
-                    filter(nodes => this.autoExpand && nodes.length > 0)
+                    filter(nodes => this.autoExpand() && nodes.length > 0)
                 ).subscribe(nodes =>
                     nodes.forEach(node => {
-                        if (this.autoExpand === 'first') {
+                        const autoExpand = this.autoExpand();
+                        if (autoExpand === 'first') {
                             this.treeControl.expand(node);
-                        } else if (this.autoExpand === 'all') {
+                        } else if (autoExpand === 'all') {
                             const expandChildren = (parentNode: XcTreeNode) => {
                                 this.treeControl.expand(parentNode);
                                 this._dataSourceSubscriptions.push(parentNode.children.pipe(filter(children => children.length > 0)).subscribe(children =>
@@ -237,7 +226,7 @@ export class XcTreeComponent implements OnDestroy {
 
 
     get recursiveToggling() {
-        return this._controlPressed;
+        return this.controlPressedState();
     }
 
 
@@ -248,12 +237,14 @@ export class XcTreeComponent implements OnDestroy {
 
     isNodeReadonly(node: XcTreeNode): boolean {
         const readonly = node.readonly && !this.readonlyMode;
-        return readonly || this.observer && this.observer.readonlyNode && this.observer.readonlyNode(node, readonly);
+        const observer = this.observer();
+        return readonly || observer && observer.readonlyNode && observer.readonlyNode(node, readonly);
     }
 
     isNodeDisabled(node: XcTreeNode): boolean {
         const disabled = node.disabled && !this.readonlyMode;
-        return disabled || this.observer && this.observer.disableNode && this.observer.disableNode(node, disabled);
+        const observer = this.observer();
+        return disabled || observer && observer.disableNode && observer.disableNode(node, disabled);
     }
 
 
@@ -268,16 +259,18 @@ export class XcTreeComponent implements OnDestroy {
         const hidden = readonlyHidden && (node.readonly || parentHidden);
 
         // observer can overwrite the default visibility
-        if (this.observer && this.observer.hideNode) {
-            return this.observer.hideNode(node, hidden);
+        const observer = this.observer();
+        if (observer && observer.hideNode) {
+            return observer.hideNode(node, hidden);
         }
         return hidden;
     }
 
 
     visitNode(node: XcTreeNode) {
-        if (this.observer && this.observer.visitNode) {
-            return this.observer.visitNode(node);
+        const observer = this.observer();
+        if (observer && observer.visitNode) {
+            return observer.visitNode(node);
         }
     }
 
@@ -288,7 +281,8 @@ export class XcTreeComponent implements OnDestroy {
 
 
     isNodeExpandable(node: XcTreeNode): boolean {
-        if (!node.fixed && (!this.observer || !this.observer.disableExpandability || !this.observer.disableExpandability(node))) {
+        const observer = this.observer();
+        if (!node.fixed && (!observer || !observer.disableExpandability || !observer.disableExpandability(node))) {
             const children = node.children ? node.children.getValue() : [];
             return children.some(child => this.isNodeVisible(child));
         }
@@ -336,18 +330,18 @@ export class XcTreeComponent implements OnDestroy {
     getNodeLabel(node: XcTreeNode): string {
         const name = node.name || '';
         return this.translateLabels
-            ? this.i18n.translate(name)
+            ? this.i18n.translateSignal(name)()
             : name;
     }
 
 
     getExpandCollapseAriaLabel(node: XcTreeNode): string {
-        return this.i18n.translate('zeta.xc.tree.expand-collapse-arialabel') + ' ' + this.getNodeLabel(node);
+        return this.i18n.translateSignal('zeta.xc.tree.expand-collapse-arialabel')() + ' ' + this.getNodeLabel(node);
     }
 
 
     getShowAriaLabel(node: XcTreeNode): string {
-        return this.i18n.translate('shows') + ' ' + this.getNodeLabel(node);
+        return this.i18n.translateSignal('shows')() + ' ' + this.getNodeLabel(node);
     }
 
 

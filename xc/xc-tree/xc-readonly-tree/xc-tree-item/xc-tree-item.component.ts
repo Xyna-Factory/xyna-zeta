@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import { AsyncPipe, NgStyle } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, EventEmitter, inject, Input, OnDestroy, Output, signal, ViewChild, input } from '@angular/core';
 
 import { coerceBoolean } from '../../../../base';
 import { I18nService } from '../../../../i18n';
@@ -33,16 +33,16 @@ import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.compone
     selector: 'xc-tree-item',
     templateUrl: './xc-tree-item.component.html',
     styleUrls: ['./xc-tree-item.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgStyle, XcIconButtonComponent, XcTooltipDirective, AsyncPipe]
 })
 export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode> implements AfterViewInit, OnDestroy {
-    private readonly cdr = inject(ChangeDetectorRef);
     readonly i18n = inject(I18nService);
     static readonly INDENTATION = 20;
     private subscription: Subscription;
     private _node: XcStructureTreeNode;
     private _keepBreaks = false;
+    private readonly nodeNameState = signal('');
+    readonly nodeLabelState = computed(() => this.i18n.translateSignal(this.nodeNameState())());
 
     @ViewChild('col0')
     column0: ElementRef;
@@ -56,8 +56,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode
     expanded = false;
     indentation = 0;
 
-    @Input()
-    firstColumnWidth: number;
+    readonly firstColumnWidth = input<number>(undefined);
     initialWidth: number;
 
 
@@ -124,8 +123,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode
 
 
     get nodeLabel(): string {
-        const name = this.node?.name || '';
-        return this.i18n.translate(name);
+        return this.nodeLabelState();
     }
 
 
@@ -133,9 +131,8 @@ export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode
     set node(value: XcStructureTreeNode) {
         this.subscription?.unsubscribe();
         this._node = value;
-        this.subscription = this.node?.children.subscribe(
-            () => this.cdr.markForCheck()
-        );
+        this.nodeNameState.set(this._node?.name || '');
+        this.subscription = this.node?.children.subscribe(() => {});
 
         // set action callback to toggle node
         this.node.action = () => this.expandRecursively();

@@ -55,8 +55,8 @@ export class XcStatusBarDialogComponent extends XcDialogComponent<boolean, XcSta
         this.dataSource.localTableData = {
             rows: this.injectedData.entries,
             columns: [
-                { path: 'time', name: signal(this.i18n.translateSignal('Timestamp')()), disableFilter: true, shrink: true, pre: true },
-                { path: 'message', name: signal(this.i18n.translateSignal('Message')()) }
+                { path: 'time', name: this.i18n.translateSignal('Timestamp'), disableFilter: true, shrink: true, pre: true },
+                { path: 'message', name: this.i18n.translateSignal('Message') }
             ]
         };
         this.dataSource.setSortPathAndDirection('time', XcSortDirection.dsc);

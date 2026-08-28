@@ -15,40 +15,88 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, Input, ViewChild } from '@angular/core';
+import { Component, HostBinding, Input, ViewChild, effect, signal } from '@angular/core';
 import { ValidatorFn, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 
 import { XcFormBaseComponent } from './xc-form-base.component';
 
 
-@Component({ 
-    template: ''
+@Component({
+    template: '',
 })
 export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
-    private suffixToggled = false;
-    private suffixUnfocusedInput = false;
+    private readonly suffixToggledState = signal(false);
+    private readonly suffixUnfocusedInputState = signal(false);
+    private readonly typeState = signal('text');
+    private readonly requiredState = signal(false);
+    private readonly tabIndexSuffixState = signal<number | undefined>(-1);
+    private readonly suffixInputState = signal<'clear' | 'nullify' | 'password' | 'dropdown' | undefined>(undefined);
+    private readonly typeInputState = signal('text');
+    private readonly tabIndexSuffixInputState = signal<number | undefined>(-1);
 
     @HostBinding('attr.suffix')
-    @Input('xc-form-field-suffix')
     suffix?: 'clear' | 'nullify' | 'password' | 'dropdown';
 
     @ViewChild(MatInput, { static: false })
     input: MatInput;
 
-    @Input()
-    type = 'text';
+    @Input('xc-form-field-suffix')
+    set suffixInput(value: 'clear' | 'nullify' | 'password' | 'dropdown' | undefined) {
+        this.suffixInputState.set(value);
+    }
 
-    required = false;
+    @Input('type')
+    set typeInput(value: string) {
+        this.typeInputState.set(value || 'text');
+    }
 
     @Input('xc-form-field-tab-index-suffix')
-    tabIndexSuffix?: number = -1;
+    set tabIndexSuffixInput(value: number | undefined) {
+        this.tabIndexSuffixInputState.set(value);
+    }
+
+    get type(): string {
+        return this.typeState();
+    }
+
+    get required(): boolean {
+        return this.requiredState();
+    }
+
+    set required(value: boolean) {
+        this.requiredState.set(value);
+    }
+
+    get tabIndexSuffix(): number | undefined {
+        return this.tabIndexSuffixState();
+    }
+
+    set tabIndexSuffix(value: number | undefined) {
+        this.tabIndexSuffixState.set(value);
+    }
+
+    private get suffixUnfocusedInput(): boolean {
+        return this.suffixUnfocusedInputState();
+    }
+
+    private set suffixUnfocusedInput(value: boolean) {
+        this.suffixUnfocusedInputState.set(value);
+    }
 
     constructor() {
         super();
 
-        this.required = this.element.nativeElement.hasAttribute('xc-form-validator-required');
+        this.requiredState.set(this.element.nativeElement.hasAttribute('xc-form-validator-required'));
+        effect(() => {
+            const suffix = this.suffixInputState();
+            if (suffix !== undefined) {
+                this.suffix = suffix;
+            }
+            this.typeState.set(this.typeInputState());
+            this.tabIndexSuffixState.set(this.tabIndexSuffixInputState());
+        });
     }
 
 
@@ -80,7 +128,7 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
             return 'clear';
         }
         if (this.suffix === 'password') {
-            return this.suffixToggled ? 'visibility_off' : 'visibility';
+            return this.suffixToggledState() ? 'visibility_off' : 'visibility';
         }
         if (this.suffix === 'dropdown') {
             return 'expand_more';
@@ -102,21 +150,21 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
     suffixClick(event: MouseEvent) {
         event.stopPropagation();
         if (!this.disabled && !this.readonly) {
-            this.suffixToggled = !this.suffixToggled;
+            this.suffixToggledState.update(value => !value);
 
             if (this.suffix === 'clear') {
                 this.formControl.setValue('');
             } else if (this.suffix === 'nullify') {
                 this.formControl.setValue(null);
             } else if (this.suffix === 'password') {
-                this.type = this.suffixToggled ? 'text' : 'password';
+                this.typeState.set(this.suffixToggledState() ? 'text' : 'password');
             }
             if (this.suffix === 'clear' || this.suffix === 'nullify') {
                 this.formControl.markAsDirty();
                 this.suffixClickChangedValue(this.suffixUnfocusedInput);
             }
         }
-        this.suffixUnfocusedInput = false;
+        this.suffixUnfocusedInputState.set(false);
     }
 
 

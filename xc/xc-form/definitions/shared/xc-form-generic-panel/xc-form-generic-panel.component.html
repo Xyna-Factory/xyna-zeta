@@ -1,5 +1,5 @@
 <xc-panel [xc-panel-collapsable]="definition?.collapsable" [xc-panel-collapsed]="definition?.collapsed"
-  class="{{classList}}" [ngClass]="{'maximize': areaValue}">
+  class="{{classList()}}" [ngClass]="{'maximize': areaValue}">
   <header>
     @if (definition?.label) {
 
@@ -41,19 +41,19 @@
     }
     <div class="items-left">
       @for (child of definition?.header?.leftArea?.children; track child ? child.stringify() : '') {
-      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
+      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData()"
         [xc-definition-observer]="definition.observer"></xc-definition-proxy>
       }
     </div>
     <div class="items-right">
       @for (child of definition?.header?.rightArea?.children; track child ? child.stringify() : '') {
-      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
+      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData()"
         [xc-definition-observer]="definition.observer"></xc-definition-proxy>
       }
       <ng-content select="[additionalHeaderItems]"></ng-content>
       @if (!definition?.getParent()) {
       <xc-icon-button [xc-icon-name]="areaValue ? 'minimize' : 'maximize'" xc-icon-size="small" xc-icon-style="xds"
-        (click)="resize()" [xc-tooltip]="toolTip | xcI18n"
+        (click)="resize()"         [xc-tooltip]="toolTip() | xcI18n"
         [xc-button-aria-label]="'resize' | xcI18n"></xc-icon-button>
       }
       @if (definition.closable) {
@@ -65,7 +65,7 @@
   @if (definition?.children?.length > 0) {
   <section class="stretch scroll">
     @for (child of definition?.children; track child ? child.stringify() : '') {
-    <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
+    <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData()"
       [xc-definition-observer]="definition.observer"></xc-definition-proxy>
     }
   </section>
@@ -75,7 +75,7 @@
     @if (definition?.footer?.leftArea?.children) {
     <div class="items-left">
       @for (child of definition?.footer?.leftArea?.children; track child ? child.stringify() : '') {
-      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
+      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData()"
         [xc-definition-observer]="definition.observer"></xc-definition-proxy>
       }
     </div>
@@ -84,7 +84,7 @@
     @if (definition?.footer?.rightArea?.children) {
     <div class="items-right">
       @for (child of definition?.footer?.rightArea?.children; track child ? child.stringify() : '') {
-      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
+      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData()"
         [xc-definition-observer]="definition.observer"></xc-definition-proxy>
       }
     </div>

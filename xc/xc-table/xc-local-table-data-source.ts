@@ -21,6 +21,7 @@ import { take } from 'rxjs/operators';
 import { Xo } from '../../api';
 import { Comparable } from '../../base';
 import { XcSortPredicate } from '../shared/xc-sort';
+import { XcDynamicString } from '../shared/xc-item';
 import { XcTemplate } from '../xc-template/xc-template';
 import { MULTISELECT_FILTER_SEPARATOR, XcTableData, XcTableDataFilter, XcTableDataRequestOptions, XcTableDataSort, XcTableDataSource } from './xc-table-data-source';
 
@@ -80,10 +81,10 @@ export class XcLocalTableDataSource<T extends Comparable = Comparable> extends X
             for (const keyValue of filter.map) {
                 const path = keyValue[0];
                 const filterValue = keyValue[1];
-                const resolved = this.resolve(row, path);
+                const resolved = this.resolveStringValue(this.resolve(row, path));
 
                 if (resolved) {
-                    const valueString = filter.caseSensitive ? resolved.toString() : resolved.toString().toLowerCase();
+                    const valueString = filter.caseSensitive ? resolved : resolved.toLowerCase();
 
                     // Skip empty filter values
                     if (!filterValue || filterValue.trim() === '') {
@@ -120,7 +121,7 @@ export class XcLocalTableDataSource<T extends Comparable = Comparable> extends X
 
 
     protected sort(rows: T[], sort: XcTableDataSort): T[] {
-        return rows.sort(XcSortPredicate(sort.direction, row => this.resolve(row, sort.path)));
+        return rows.sort(XcSortPredicate(sort.direction, row => this.resolveStringValue(this.resolve(row, sort.path))));
     }
 
 
@@ -135,10 +136,18 @@ export class XcLocalTableDataSource<T extends Comparable = Comparable> extends X
 
 
     // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-    resolve(row: T, path: string): XcTemplate[] | Object {
+    resolve(row: T, path: string): XcTemplate[] | XcDynamicString | Object {
         return row instanceof Xo
             ? this.resolveXo(row, path)
             : row[path];
+    }
+
+
+    private resolveStringValue(value: any): string {
+        if (typeof value === 'function') {
+            return value();
+        }
+        return value != null ? value.toString() : '';
     }
 
 

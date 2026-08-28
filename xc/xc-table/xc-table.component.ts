@@ -18,7 +18,7 @@
 import { Subscription } from 'rxjs';
 
 import { NgClass } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, HostBinding, inject, input, OnDestroy, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, HostBinding, inject, input, OnDestroy, signal, viewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
@@ -46,15 +46,12 @@ import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
     selector: 'xc-table',
     templateUrl: './xc-table.component.html',
     styleUrls: ['./xc-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, XcProgressBarComponent, MatFooterCellDef, MatFooterCell, XcIconButtonComponent, MatSortHeader, XcTemplateComponent, MatCellDef, MatCell, NgClass, XcVarDirective, XcTooltipDirective, MatHeaderRowDef, MatHeaderRow, MatFooterRowDef, MatFooterRow, MatRowDef, MatRow]
 })
 export class XcTableComponent implements AfterViewInit, OnDestroy {
-    private readonly cdRef = inject(ChangeDetectorRef);
     private readonly elementRef = inject(ElementRef<HTMLElement>);
     private readonly _a11y = inject(A11yService);
     private readonly _i18n = inject(I18nService);
-    private readonly _localeService = inject(LocaleService);
 
 
     readonly dataSourceInput = input<XcTableDataSource<any> | undefined>(undefined, { alias: 'xc-table-datasource' });
@@ -87,10 +84,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     constructor() {
         this._i18n.setTranslations(LocaleService.EN_US, xcTableTranslations_enUS);
         this._i18n.setTranslations(LocaleService.DE_DE, xcTableTranslations_deDE);
-        effect(() => {
-            this._localeService.languageSignal();
-            this.cdRef.markForCheck();
-        });
 
         effect(() => {
             this.applyDataSource(this.dataSourceInput());
@@ -141,7 +134,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                     if (row && rowEl) {
                         this.focusRow(row);
                         this.focusRowElement(rowEl);
-                        this.cdRef.detectChanges();
                     }
                 }
             }
@@ -185,9 +177,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                 this.dataSource.sortChange.subscribe(() => this.updateMatSort())
             );
             // subscribe to mark for changes
-            this._dataSourceSubscriptions.push(
-                this.dataSource.markForChange.subscribe(() => this.cdRef.markForCheck())
-            );
             // subscribe to data changes
             this._dataSourceSubscriptions.push(
                 this.dataSource.dataChange.subscribe(() => this.clearFilterTemplates())
@@ -345,7 +334,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     getColumnLabel(column: XcTableColumn): string {
         const name = this.resolveDynamicString(column.name) || '';
-        return this.translateLabels ? this.i18n.translate(name) : name;
+        return this.translateLabels ? this.i18n.translateSignal(name)() : name;
     }
 
 
@@ -355,10 +344,10 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getColumnFilterAriaLabel(column: XcTableColumn): string {
-        return this.i18n.translate('Input field for filtering of $0', {
+        return this.i18n.translateSignal('Input field for filtering of $0', {
             key: '$0',
-            value: this.getColumnLabel(column) || this.i18n.translate('this column')
-        });
+            value: this.getColumnLabel(column) || this.i18n.translateSignal('this column')()
+        })();
     }
 
 
@@ -441,6 +430,13 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
+    resolveCellValue(value: XcTemplate[] | any): any {
+        return typeof value === 'function'
+            ? value()
+            : value;
+    }
+
+
     getCellStyles(row: any, path: string): string[] {
         return this.dataSource && this.dataSource.stylesFunction
             ? this.dataSource.stylesFunction(row, path)
@@ -476,16 +472,12 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         if (event.ctrlKey && (event.key === 'ArrowRight' || event.key === 'Right')) {
             this.dataSource.selectionModel.activate(row);
             event.preventDefault();
-            // so that the xc-table-component updates css classes and stylings
-            this.cdRef.detectChanges();
         }
         if (event.ctrlKey && (event.key === 'ArrowLeft' || event.key === 'Left')) {
             if (this.isRowActivated(row)) {
                 this.dataSource.selectionModel.activate(null);
             }
             event.preventDefault();
-            // so that the xc-table-component updates css classes and stylings
-            this.cdRef.detectChanges();
         }
     }
 
@@ -566,7 +558,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             // TODO - if a column.path resolves to XcTemplate it returns the template instead of a primitive
             // Possible Solution: If it resolves to XcTemplate, then it could call toString()
             // it's up to the developer that toString() returns a string with the essential information
-            const colTexts = this.columns.map<string>(column => this.getColumnLabel(column) + ' : ' + row.resolve(column.path));
+            const colTexts = this.columns.map<string>(column => this.getColumnLabel(column) + ' : ' + this.resolveCellValue(row.resolve(column.path)));
             this._a11y.screenreaderSpeak(colTexts.join(', '), ScreenreaderPriority.Assertive);
         }
     }
@@ -677,7 +669,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             if (this.noRows && !this.noColumns) {
                 dataError = 'rows';
             }
-            label = this.i18n.translate(`no ${dataError} ${this.dataSource && this.dataSource.limit === 0 ? 'requested' : 'available'}!`);
+            label = this.i18n.translateSignal(`no ${dataError} ${this.dataSource && this.dataSource.limit === 0 ? 'requested' : 'available'}!`)();
         }
 
         return label;

@@ -16,7 +16,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, Output, computed, signal, input } from '@angular/core';
 
 import { Xo } from '../../../../../api';
 import { XcI18nContextDirective, XcI18nPipe, XcI18nTranslateDirective } from '../../../../../i18n';
@@ -34,14 +34,19 @@ import { XoFormPanelDefinition } from '../../xo/containers.model';
 })
 export class XcFormGenericPanelComponent {
 
-    private _definition: XoFormPanelDefinition;
+    private readonly definitionState = signal<XoFormPanelDefinition | undefined>(undefined);
+    private readonly areaValueState = signal(false);
+    readonly toolTip = computed(() => this.areaValueState() ? 'maximize' : 'standard');
+    readonly classList = computed(() => {
+        const definition = this.definitionState();
+        return definition ? definition.style + (definition.compact ? ' compact' : '') : '';
+    });
 
-    toolTip = 'maximize';
-    areaValue = false;
-    classList: string;
+    get areaValue(): boolean {
+        return this.areaValueState();
+    }
 
-    @Input('xc-definition-data')
-    definitionData: Xo[];
+    readonly definitionData = input<Xo[]>(undefined, { alias: "xc-definition-data" });
 
     @Output()
     readonly closed = new EventEmitter<void>();
@@ -49,18 +54,15 @@ export class XcFormGenericPanelComponent {
 
     @Input('xc-definition')
     set definition(value: XoFormPanelDefinition) {
-        this._definition = value;
-        this.classList = this.definition.style + (this.definition.compact ? ' compact' : '');
+        this.definitionState.set(value);
     }
 
-
-    get definition(): XoFormPanelDefinition {
-        return this._definition;
+    get definition(): XoFormPanelDefinition | undefined {
+        return this.definitionState();
     }
 
 
     resize() {
-        this.toolTip = this.areaValue ? 'maximize' : 'standard';
-        this.areaValue = !this.areaValue;
+        this.areaValueState.update(value => !value);
     }
 }

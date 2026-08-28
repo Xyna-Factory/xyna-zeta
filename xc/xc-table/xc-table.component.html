@@ -40,7 +40,7 @@
     </td>
   </ng-container>
   <!-- Container template view of a table body row -->
-  @for (column of columns; let i = $index; track i) {
+  @for (column of columns; track column.path) {
     <ng-container [matColumnDef]="getColumnID(column)">
       <th mat-header-cell *matHeaderCellDef attr.aria-sort="{{getAriaSortForColumn(column)}}" scope="col">
         <span mat-sort-header [disabled]="column.disableSort">{{ getColumnLabel(column) || '&nbsp;'}}</span>
@@ -69,19 +69,19 @@
           <!-- ngIf = displays cellData xc-templates if it is an Array -->
           @if (cellData?.constructor?.name === 'Array') {
             <div class="template-container">
-              @for (template of cellData; let i = $index; track i) {
+              @for (template of cellData; track template) {
                 <xc-template [xc-template-instance]="template"></xc-template>
               }
             </div>
           } @else {
-            <span role="link" class="text-cell" [attr.lang]="column.pronunciationLang || null">{{ cellData }}</span>
+            <span role="link" class="text-cell" [attr.lang]="column.pronunciationLang || null">{{ resolveCellValue(cellData) }}</span>
           }
           <!-- ngElse = displays cellData as text -->
           <!-- ngIf = displays the action elements only in the last column -->
           @if (i === columns.length - 1) {
             <!-- action buttons in last column -->
             <div class="action-elements">
-              @for (actionElement of dataSource?.actionElements; let i = $index; track i) {
+              @for (actionElement of dataSource?.actionElements; track actionElement) {
                 <div>
                   <!-- chrome bugfix: "&& !actionElement.disabled" is sometimes necessary to prevent click -->
                   @if (actionElement.onShow && actionElement.onShow(row) || !actionElement.onShow) {

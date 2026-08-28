@@ -27,7 +27,7 @@
           matTreeNodeToggle
           [matTreeNodeToggleRecursive]="recursiveToggling"
           [xc-button-aria-label]="getExpandCollapseAriaLabel(node)"
-          [xc-tooltip]="i18n.translate('zeta.xc.tree.expand-collapse-tooltip')"
+          [xc-tooltip]="i18n.translateSignal('zeta.xc.tree.expand-collapse-tooltip')()"
           xc-tooltip-showdelay="1000"
         ></xc-icon-button>
       }
@@ -70,7 +70,7 @@
         }
 
         <!-- templates -->
-        @for (template of node.value; let i = $index; track i) {
+        @for (template of node.value; track template) {
           <xc-template
             [xc-template-instance]="template"
             [xc-template-readonly]="isNodeReadonly(node)"

@@ -1,10 +1,10 @@
 <button #button
   mat-button mat-ripple
   [disabled]="disabled"
-  [attr.type]="type"
+  [attr.type]="type()"
   [attr.aria-label]="ariaLabel"
   [attr.aria-disabled]="disabled"
-  [attr.tabindex]="tabDisabled ? '-1' : tabIndex"
+  [attr.tabindex]="tabDisabled ? '-1' : tabIndex()"
   [attr.cdkFocusInitial]="focusInitial || null"
   >
   <ng-content></ng-content>

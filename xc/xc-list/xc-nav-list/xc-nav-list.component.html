@@ -4,11 +4,11 @@
     <li>
       <xc-nav-list-item
         [item]="item"
-        [size]="size"
+        [size]="size()"
         [depth]="0"
         [color]="color"
         [shrink]="shrink"
-        [orientation]="orientation"
+        [orientation]="orientation()"
         (focusChange)="focusChange($event)"
       >{{item.name}}</xc-nav-list-item>
     </li>

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, computed, HostBinding, Input, signal } from '@angular/core';
+import { Component, computed, HostBinding, Input, signal, input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
@@ -56,8 +56,7 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
         return this.iconNameState();
     }
 
-    @Input('xc-icon-style')
-    iconStyle: string;
+    readonly iconStyle = input<string>(undefined, { alias: "xc-icon-style" });
 
     @HostBinding('attr.size')
     @Input('xc-icon-size')
@@ -66,6 +65,12 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
 
     get ariaLabel(): string {
         return this.iconAriaLabelTranslation();
+    }
+
+
+    @Input('xc-button-aria-label')
+    set ariaLabel(value: string) {
+        super.ariaLabel = value;
     }
 
 

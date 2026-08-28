@@ -141,10 +141,9 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-tooltip-controller')
-    controller: XcTooltipController = {
-        autoDelegate: false
-    };
+    readonly controller = input<XcTooltipController>({
+    autoDelegate: false
+}, { alias: "xc-tooltip-controller" });
 
 
     /* @Input check for backward compatibility */
@@ -315,7 +314,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
             // we need no auto delegation if element has a tab index of 0 or higher because it means
             // that the user of this directive made it accessable by pressing tab
-            if (this.controller && this.controller.autoDelegate && el.tabIndex < 0) {
+            const controller = this.controller();
+            if (controller && controller.autoDelegate && el.tabIndex < 0) {
                 // make sure that no result has an tabIndex of -1
                 const result = Array.from(retrieveFocusableElements(el)).filter(elem => elem.tabIndex >= 0);
                 if (result.length > 1) {
@@ -326,7 +326,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
                 }
             }
 
-            specifiedDelegateResult = this.controller.delegateFunction ? this.controller.delegateFunction(el) : null;
+            specifiedDelegateResult = controller.delegateFunction ? controller.delegateFunction(el) : null;
         }
 
         this.focusableElement = specifiedDelegateResult || autoDelegateResult || el;
@@ -517,7 +517,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
     private getCurrentTooltip(): string | TemplateRef<any> {
-        const tooltip = this.controller.tooltip || this.tooltip || '';
+        const tooltip = this.controller().tooltip || this.tooltip || '';
         return isSignal(tooltip) ? tooltip() : tooltip;
     }
 

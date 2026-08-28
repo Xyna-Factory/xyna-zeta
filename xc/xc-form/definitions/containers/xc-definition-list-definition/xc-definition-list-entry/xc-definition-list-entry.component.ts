@@ -15,11 +15,12 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, input } from '@angular/core';
 
 import { XcUnwrapDirective } from '../../../../../shared/xc-unwrap.directive';
 import { XcTemplate } from '../../../../../xc-template/xc-template';
 import { XcTemplateComponent } from '../../../../../xc-template/xc-template.component';
+
 
 @Component({
     selector: 'xc-definition-list-entry',
@@ -28,9 +29,15 @@ import { XcTemplateComponent } from '../../../../../xc-template/xc-template.comp
 })
 export class XcDefinitionListEntryComponent {
 
-    @Input()
-    definitionType = '';
+    readonly definitionTypeInput = input('', { alias: 'definitionType' });
+    readonly definitionDataInput = input<XcTemplate | string>('', { alias: 'definitionData' });
 
-    @Input()
-    definitionData: XcTemplate | string = '';
+    get definitionType(): string {
+        return this.definitionTypeInput();
+    }
+
+
+    get definitionData(): XcTemplate | string {
+        return this.definitionDataInput();
+    }
 }

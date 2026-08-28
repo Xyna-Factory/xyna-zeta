@@ -1,12 +1,9 @@
-import { Subscription } from 'rxjs';
-
-import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
+import { AfterContentInit, Component, computed, effect, ElementRef, EventEmitter, HostBinding, inject, Input, Output, signal } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 import { FloatLabelType } from '@angular/material/form-field';
 
 import { coerceBoolean } from '../../../base';
 import { I18nService, LocaleService } from '../../../i18n';
-import { ATTRIBUTE_ARIALABEL, ATTRIBUTE_ICONTOOLTIP, ATTRIBUTE_LABEL, ATTRIBUTE_PLACEHOLDER, KeyTranslationPair } from '../../../xc/shared/xc-i18n-attributes';
 import { xcFormTranslations_deDE } from '../locale/xc-translations.de-DE';
 import { xcFormTranslations_enUS } from '../locale/xc-translations.en-US';
 
@@ -16,72 +13,172 @@ export enum FloatStyle {
     always = 'always'
 }
 
+type ErrorMessageCase = 'none' | 'uppercase' | 'lowercase' | 'capitalize';
 
-@Component({ template: '' })
-export class XcFormComponent implements AfterContentInit, OnDestroy {
+
+const normalizeErrorMessageCase = (value: string): ErrorMessageCase => {
+    switch (value?.toLowerCase()) {
+        case 'uppercase':
+            return 'uppercase';
+        case 'lowercase':
+            return 'lowercase';
+        case 'capitalize':
+            return 'capitalize';
+        default:
+            return 'none';
+    }
+};
+
+
+@Component({
+    template: '',
+})
+export class XcFormComponent implements AfterContentInit {
     protected readonly element = inject<ElementRef<HTMLElement>>(ElementRef);
     protected readonly i18n = inject(I18nService);
+    protected readonly localeService = inject(LocaleService);
+    protected readonly compactState = signal(false);
+    protected readonly semiCompactState = signal(false);
+    protected readonly indicateChangesState = signal(false);
+    protected readonly readonlyState = signal(false);
+    private readonly labelState = signal('');
+    protected readonly floatLabelInputState = signal<FloatLabelType>('always');
+    protected readonly iconTooltipInputState = signal('');
+    protected readonly ariaLabelInputState = signal('');
+    protected readonly compactInputState = signal(false);
+    protected readonly indicateChangesInputState = signal(false);
+    protected readonly disabledInputState = signal(false);
+    protected readonly readonlyInputState = signal(false);
+    protected readonly placeholderInputState = signal('');
+    protected readonly tabIndexInputState = signal<number | undefined>(0);
+    protected readonly valueInputState = signal<any>(undefined);
+    protected readonly errorFuncInputState = signal<((key: string, data: any) => string) | undefined>(undefined);
+    protected readonly callbackInputState = signal<((component: any) => void) | undefined>(undefined);
 
+    protected readonly i18nContextState = signal<string | undefined>(undefined);
+    protected readonly labelTranslationState = computed(() => {
+        this.localeService.languageSignal();
+        return this.translateValue(this.labelState());
+    });
+    protected readonly iconTooltipTranslationState = computed(() => {
+        this.localeService.languageSignal();
+        return this.translateValue(this.iconTooltipInputState());
+    });
+    protected readonly ariaLabelTranslationState = computed(() => {
+        this.localeService.languageSignal();
+        return this.translateValue(this.ariaLabelInputState()) || this.labelTranslationState();
+    });
+    protected readonly placeholderTranslationState = computed(() => {
+        this.localeService.languageSignal();
+        return this.translateValue(this.placeholderInputState()) || ' ';
+    });
 
-    protected _compact = false;
-    protected _semiCompact = false;
-    protected _label: KeyTranslationPair = { key: '', translated: '' };
-    protected _iconTooltip: KeyTranslationPair = { key: '', translated: '' };
-    protected _ariaLabel: KeyTranslationPair = { key: '', translated: '' };
-
-    protected subs: Subscription[] = [];
-
-    @Input('xc-form-field-floatlabel')
-    floatLabel: FloatLabelType = 'always';
-
-    i18nContext: string;
-
-
-    @Input()
-    set label(value: string) {
-        this._label.key = value;
-        this.translate(ATTRIBUTE_LABEL);
+    get floatLabel(): FloatLabelType {
+        return this.floatLabelInputState();
     }
-
 
     get label(): string {
-        return this._label.translated;
+        return this.labelTranslationState();
     }
 
 
-    @Input()
-    set iconTooltip(value: string) {
-        this._iconTooltip.key = value;
-        this.translate(ATTRIBUTE_ICONTOOLTIP);
+    @Input('label')
+    set label(value: string) {
+        this.labelState.set(value || '');
     }
 
-
-    get iconTooltip(): string {
-        return this._iconTooltip.translated;
+    @Input('xc-form-field-floatlabel')
+    set floatLabelInput(value: FloatLabelType) {
+        this.floatLabelInputState.set(value || 'always');
     }
 
+    @Input('iconTooltip')
+    set iconTooltipInput(value: string) {
+        this.iconTooltipInputState.set(value || '');
+    }
 
     @Input('xc-form-field-aria-label')
-    set ariaLabel(value: string) {
-        this._ariaLabel.key = value;
-        this.translate(ATTRIBUTE_ARIALABEL);
+    set ariaLabelInput(value: string) {
+        this.ariaLabelInputState.set(value || '');
     }
 
+    @Input('xc-form-field-compact')
+    set compactInput(value: boolean) {
+        this.compactInputState.set(coerceBoolean(value));
+    }
+
+    @Input('xc-form-field-indicatechanges')
+    set indicateChangesInput(value: boolean) {
+        this.indicateChangesInputState.set(coerceBoolean(value));
+    }
+
+    @Input('disabled')
+    set disabledInput(value: boolean) {
+        this.disabledInputState.set(coerceBoolean(value));
+    }
+
+    @Input('readonly')
+    set readonlyInput(value: boolean) {
+        this.readonlyInputState.set(coerceBoolean(value));
+    }
+
+    @Input('placeholder')
+    set placeholderInput(value: string) {
+        this.placeholderInputState.set(value || '');
+    }
+
+    @Input('xc-form-field-tab-index')
+    set tabIndexInput(value: number | undefined) {
+        this.tabIndexInputState.set(value);
+    }
+
+    @Input('value')
+    set valueInput(value: any) {
+        this.valueInputState.set(value);
+    }
+
+    @Input('xc-form-field-errorfunc')
+    set errorFuncInput(value: ((key: string, data: any) => string) | undefined) {
+        this.errorFuncInputState.set(value);
+    }
+
+    @Input('xc-form-field-callback')
+    set callbackInput(value: ((component: any) => void) | undefined) {
+        this.callbackInputState.set(value);
+    }
+
+    get iconTooltip(): string {
+        return this.iconTooltipTranslationState();
+    }
 
     get ariaLabel(): string {
-        return this._ariaLabel.translated || this.label;
+        return this.ariaLabelTranslationState();
     }
-
 
     @HostBinding('class.compact')
-    @Input({ alias: 'xc-form-field-compact', transform: coerceBoolean })
-    set compact(value: boolean) {
-        this._compact = value;
+    get compact(): boolean {
+        return this.compactState();
     }
 
+    @HostBinding('class.semicompact')
+    get semiCompact(): boolean {
+        return this.semiCompactState();
+    }
 
-    get compact(): boolean {
-        return this._compact;
+    protected get indicateChanges(): boolean {
+        return this.indicateChangesState();
+    }
+
+    protected get readonly(): boolean {
+        return this.readonlyState();
+    }
+
+    get tabIndex(): number | undefined {
+        return this.tabIndexInputState();
+    }
+
+    get errorFunc(): ((key: string, data: any) => string) | undefined {
+        return this.errorFuncInputState();
     }
 
 
@@ -90,57 +187,75 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
         return !this.label;
     }
 
-    protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
-
-
-    ngOnDestroy(): void {
-        this.subs.forEach(sub => sub.unsubscribe());
-    }
-
 
     ngAfterContentInit() {
-        this.i18nContext = this.element.nativeElement.getAttribute('xc-i18n');
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._label.key) {
-                this.translate(ATTRIBUTE_LABEL);
-            }
-            if (this._ariaLabel.key) {
-                this.translate(ATTRIBUTE_ARIALABEL);
-            }
-            if (this._iconTooltip.key) {
-                this.translate(ATTRIBUTE_ICONTOOLTIP);
-            }
-        }));
+        this.i18nContextState.set(this.resolveI18nContext());
     }
 
 
-    protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
-            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
-        } else {
-            this[attribute]["translated"] = this[attribute]["key"];
+    private resolveI18nContext(): string {
+        const element = this.element.nativeElement;
+        const directContext = element.getAttribute('xc-i18n-context') ?? element.getAttribute('xc-i18n');
+        if (directContext !== null) {
+            return directContext;
         }
+
+        let currentElement = element.parentElement;
+        while (currentElement) {
+            const inheritedContext = currentElement.getAttribute('xc-i18n-context') ?? currentElement.getAttribute('xc-i18n');
+            if (inheritedContext !== null) {
+                return inheritedContext;
+            }
+            currentElement = currentElement.parentElement;
+        }
+
+        return undefined;
+    }
+
+
+    protected retranslateAll() {
+    }
+
+
+    protected translateValue(key: string): string {
+        if (!key) {
+            return key;
+        }
+
+        const i18nContext = this.i18nContextState();
+        const contextKey = i18nContext ? i18nContext + '.' + key : key;
+        const translation = this.i18n.getTranslation(contextKey);
+        if (translation?.value && translation.value !== contextKey) {
+            return translation.value;
+        }
+
+        const fallbackTranslation = this.i18n.getTranslation(key);
+        if (fallbackTranslation?.value && fallbackTranslation.value !== key) {
+            return fallbackTranslation.value;
+        }
+
+        return key;
     }
 }
 
 
-export type XcFormErrorMessageCase = 'default' | 'uppercase' | 'lowercase' | 'capitalize';
 
-function normalizeErrorMessageCase(value: XcFormErrorMessageCase | string): XcFormErrorMessageCase {
-    const normalizedValue = (value ?? '').toString().trim().toLowerCase();
-    return normalizedValue === 'uppercase' || normalizedValue === 'lowercase' || normalizedValue === 'capitalize' ? normalizedValue : 'default';
-}
-
-@Component({ template: '' })
+@Component({
+    template: '',
+})
 export class XcFormBaseComponent extends XcFormComponent implements AfterContentInit {
-
-    protected _indicateChanges = false;
-    protected _readonly = false;
-    protected _errorMessageCase: XcFormErrorMessageCase = 'default';
-    protected _errorMessageCaseExplicitlySet = false;
-    protected _placeholder: KeyTranslationPair = { key: '', translated: '' };
-
     readonly formControl = new FormControl();
+    private readonly explicitErrorMessageCaseState = signal<ErrorMessageCase>('none');
+    private readonly inheritedErrorMessageCaseState = signal<ErrorMessageCase>('none');
+    protected readonly errorMessageCaseState = computed(() => {
+        const explicitCase = this.explicitErrorMessageCaseState();
+        return explicitCase !== 'none' ? explicitCase : this.inheritedErrorMessageCaseState();
+    });
+
+    @Input('xc-form-field-error-message-case')
+    set errorMessageCaseInput(value: string) {
+        this.explicitErrorMessageCaseState.set(normalizeErrorMessageCase(value));
+    }
 
     @Output()
     readonly valueChange = this.formControl.valueChanges;
@@ -156,37 +271,9 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     readonly blur = new EventEmitter<FocusEvent>();
 
-    @Input('xc-form-field-errorfunc')
-    errorFunc: (key: string, data: any) => string;
-
-
-    @Input({alias: 'xc-form-field-error-message-case', transform: normalizeErrorMessageCase})
-    set errorMessageCase(value: XcFormErrorMessageCase) {
-        this._errorMessageCaseExplicitlySet = true;
-        this._errorMessageCase = value;
-    }
-
-
-    get errorMessageCase(): XcFormErrorMessageCase {
-        return this._errorMessageCase;
-    }
-
-
-    @Input('xc-form-field-callback')
-    set callback(callback: (component: this) => void) {
-        callback?.(this);
-    }
-
-
     @HostBinding('class.indicatechanges')
-    @Input({ alias: 'xc-form-field-indicatechanges', transform: coerceBoolean })
-    set indicateChanges(value: boolean) {
-        this._indicateChanges = value;
-    }
-
-
     get indicateChanges(): boolean {
-        return this._indicateChanges;
+        return super.indicateChanges;
     }
 
 
@@ -196,24 +283,13 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     }
 
 
-    @Input()
-    set value(value: any) {
-        this.formControl.setValue(value);
-    }
-
-
     get value(): any {
         return this.formControl.value;
     }
 
 
-    @Input({ transform: coerceBoolean })
-    set disabled(value: boolean) {
-        if (value) {
-            this.formControl.disable({ emitEvent: false });
-        } else {
-            this.formControl.enable({ emitEvent: false });
-        }
+    set value(value: any) {
+        this.formControl.setValue(value);
     }
 
 
@@ -222,27 +298,13 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     }
 
 
-    @Input({ transform: coerceBoolean })
-    set readonly(value: boolean) {
-        this._readonly = value;
-    }
-
-
     get readonly(): boolean {
-        return this._readonly;
-    }
-
-
-    @Input()
-    set placeholder(value: string) {
-        this._placeholder.key = value;
-        this.translate(ATTRIBUTE_PLACEHOLDER);
+        return super.readonly;
     }
 
 
     get placeholder(): string {
-        // space needed for style "align-items: baseline;" in class ".items-row" for proper alignment when text is missing
-        return this._placeholder.translated || ' ';
+        return this.placeholderTranslationState();
     }
 
 
@@ -254,18 +316,18 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     get errorContent(): string {
         const errorFunc = (key: string, data: any): string => {
             switch (key) {
-                case 'email': return this.i18n.translate('zeta.xc-form-base.email');
-                case 'max': return this.i18n.translate('zeta.xc-form-base.max') + data.max;
-                case 'min': return this.i18n.translate('zeta.xc-form-base.min') + data.min;
-                case 'maxlength': return this.i18n.translate('zeta.xc-form-base.maxlength') + data.requiredLength;
-                case 'minlength': return this.i18n.translate('zeta.xc-form-base.minlength') + data.requiredLength;
-                case 'number': return this.i18n.translate('zeta.xc-form-base.number', { key: '$0', value: (<string>data.format.toString()).toUpperCase() });
-                case 'required': return this.i18n.translate('zeta.xc-form-base.required');
-                case 'pattern': return this.i18n.translate('zeta.xc-form-base.pattern') + data.requiredPattern;
-                case 'ipv4': return this.i18n.translate('zeta.xc-form-base.ipv4');
-                case 'ipv6': return this.i18n.translate('zeta.xc-form-base.ipv6');
-                case 'ip': return this.i18n.translate('zeta.xc-form-base.ip');
-                case 'message': return data.message || this.i18n.translate('zeta.xc-form-base.message');
+                case 'email': return this.i18n.translateSignal('zeta.xc-form-base.email')();
+                case 'max': return this.i18n.translateSignal('zeta.xc-form-base.max')() + data.max;
+                case 'min': return this.i18n.translateSignal('zeta.xc-form-base.min')() + data.min;
+                case 'maxlength': return this.i18n.translateSignal('zeta.xc-form-base.maxlength')() + data.requiredLength;
+                case 'minlength': return this.i18n.translateSignal('zeta.xc-form-base.minlength')() + data.requiredLength;
+                case 'number': return this.i18n.translateSignal('zeta.xc-form-base.number', { key: '$0', value: (<string>data.format.toString()).toUpperCase() })();
+                case 'required': return this.i18n.translateSignal('zeta.xc-form-base.required')();
+                case 'pattern': return this.i18n.translateSignal('zeta.xc-form-base.pattern')() + data.requiredPattern;
+                case 'ipv4': return this.i18n.translateSignal('zeta.xc-form-base.ipv4')();
+                case 'ipv6': return this.i18n.translateSignal('zeta.xc-form-base.ipv6')();
+                case 'ip': return this.i18n.translateSignal('zeta.xc-form-base.ip')();
+                case 'message': return data.message || this.i18n.translateSignal('zeta.xc-form-base.message')();
                 default: return key;
             }
         };
@@ -279,26 +341,45 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         ).join(', ');
     }
 
-    @Input('xc-form-field-tab-index')
-    tabIndex?: number = 0;
-
     constructor() {
         super();
 
+        effect(() => {
+            this.localeService.languageSignal();
+            this.compactState.set(this.compactInputState());
+        });
+
+        effect(() => {
+            const value = this.valueInputState();
+            if (this.formControl.value !== value) {
+                this.formControl.setValue(value);
+            }
+            this.indicateChangesState.set(this.indicateChangesInputState());
+            this.readonlyState.set(this.readonlyInputState());
+            const disabled = this.disabledInputState();
+            if (disabled) {
+                this.formControl.disable({ emitEvent: false });
+            } else {
+                this.formControl.enable({ emitEvent: false });
+            }
+        });
+
+        effect(() => {
+            this.callbackInputState()?.(this);
+        });
+
         this.i18n.setTranslations(LocaleService.EN_US, xcFormTranslations_enUS);
         this.i18n.setTranslations(LocaleService.DE_DE, xcFormTranslations_deDE);
+        effect(() => {
+            this.localeService.languageSignal();
+            this.retranslateAll();
+        });
     }
 
 
     ngAfterContentInit() {
         super.ngAfterContentInit();
         this.applyInheritedErrorMessageCase();
-
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._placeholder.key) {
-                this.translate(ATTRIBUTE_PLACEHOLDER);
-            }
-        }));
     }
 
 
@@ -322,7 +403,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
             return message;
         }
 
-        switch (this.errorMessageCase) {
+        switch (this.errorMessageCaseState()) {
             case 'uppercase':
                 return message.toUpperCase();
             case 'lowercase':
@@ -338,11 +419,11 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
 
     protected applyInheritedErrorMessageCase(): void {
-        if (this._errorMessageCaseExplicitlySet) {
+        if (this.errorMessageCaseState() !== 'none') {
             return;
         }
         const inheritedErrorMessageCase = this.element.nativeElement.closest('[xc-form-field-error-message-case]')
             ?.getAttribute('xc-form-field-error-message-case');
-        this._errorMessageCase = normalizeErrorMessageCase(inheritedErrorMessageCase);
+        this.inheritedErrorMessageCaseState.set(normalizeErrorMessageCase(inheritedErrorMessageCase));
     }
 }

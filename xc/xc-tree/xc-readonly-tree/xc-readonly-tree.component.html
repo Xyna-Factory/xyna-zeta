@@ -1,4 +1,4 @@
-@for (node of dataSource.structureTreeData; let i = $index; track i) {
+@for (node of dataSource.structureTreeData; track node.field.path) {
   <xc-tree-item [node]="node"
     (expand)="expandNode($event)"
     [xc-tree-item-keep-breaks]="keepBreaks"

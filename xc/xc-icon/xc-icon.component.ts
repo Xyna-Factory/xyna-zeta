@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, computed, effect, ElementRef, HostBinding, inject, input, OnInit, signal } from '@angular/core';
+import { AfterContentInit, Component, computed, effect, ElementRef, HostBinding, inject, input, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { I18nService } from '@zeta/i18n';
 
@@ -29,7 +29,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
     styleUrls: ['./xc-icon.component.scss'],
     imports: [MatIcon]
 })
-export class XcIconComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
+export class XcIconComponent extends XcThemeableComponent implements AfterContentInit {
     protected elementRef = inject(ElementRef);
     protected readonly i18n = inject(I18nService);
 
@@ -114,14 +114,16 @@ export class XcIconComponent extends XcThemeableComponent implements OnInit, Aft
     }
 
 
-    ngOnInit() {
-        this.translateState.set(!!this.elementRef.nativeElement.textContent);
-    }
-
     ngAfterContentInit() {
         const el = this.elementRef.nativeElement.querySelector('span');
-        this.i18nContextState.set(this.elementRef.nativeElement.getAttribute('xc-i18n') ?? '');
-        this.projectedLabelState.set(el?.textContent ?? '');
+        const projectedLabel = (el?.textContent ?? '').trim();
+        this.i18nContextState.set(
+            this.elementRef.nativeElement.getAttribute('xc-i18n-context')
+            ?? this.elementRef.nativeElement.getAttribute('xc-i18n')
+            ?? ''
+        );
+        this.projectedLabelState.set(projectedLabel);
+        this.translateState.set(projectedLabel.length > 0);
     }
 }
 

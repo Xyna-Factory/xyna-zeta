@@ -18,7 +18,7 @@
 import { fromEvent, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, inject, Input, OnDestroy, Output, Renderer2 } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, inject, Input, OnDestroy, Output, Renderer2, input } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 
@@ -57,8 +57,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     protected readonly renderer = inject(Renderer2);
 
 
-    @Input('xc-resize')
-    enabled = true;
+    readonly enabled = input(true, { alias: "xc-resize" });
 
     private readonly _resizeOptions: XcResizeOptions = {};
 
@@ -122,7 +121,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        if (this.enabled) {
+        if (this.enabled()) {
             if (this.resizeOptions.south || this.resizeOptions.east || this.resizeOptions.southEast || this.resizeOptions.southWest || this.resizeOptions.west || this.resizeOptions.northWest || this.resizeOptions.north || this.resizeOptions.northEast) {
                 this.resizeOptions.all = false;
             }
@@ -191,7 +190,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     @HostListener('mousedown', ['$event'])
     @HostListener('touchstart', ['$event'])
     onMousedown(event: MouseEvent | TouchEvent) {
-        if (this.enabled) {
+        if (this.enabled()) {
             const classList = ((event.target) as HTMLElement).classList;
             const isSouth = classList.contains('resize-handle-s');
             const isEast = classList.contains('resize-handle-e');

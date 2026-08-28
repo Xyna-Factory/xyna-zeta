@@ -15,13 +15,11 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, inject } from '@angular/core';
-
+import { Component, inject, input } from '@angular/core';
 import { getBaseHref, isArray } from '@zeta/base';
 
-import { XcDialogService } from '../xc-dialog/xc-dialog.service';
-
 import packageInfo from '../../package.json';
+import { XcDialogService } from '../xc-dialog/xc-dialog.service';
 import { XcIconComponent } from '../xc-icon/xc-icon.component';
 
 
@@ -34,24 +32,42 @@ import { XcIconComponent } from '../xc-icon/xc-icon.component';
 export class XcTitleBarComponent {
     private readonly dialogService = inject(XcDialogService);
 
+    readonly applicationNameInput = input('', { alias: 'xc-title-bar-application-name' });
+    readonly applicationVersionsInput = input<string[]>([], { alias: 'xc-title-bar-application-versions' });
+    readonly iconNameInput = input('', { alias: 'xc-title-bar-icon-name' });
+    readonly iconStyleInput = input('', { alias: 'xc-title-bar-icon-style' });
+    readonly companyInput = input('', { alias: 'xc-title-bar-company' });
+    readonly yearInput = input('', { alias: 'xc-title-bar-year' });
 
-    @Input('xc-title-bar-application-name')
-    applicationName: string;
 
-    @Input('xc-title-bar-application-versions')
-    applicationVersions: string[];
+    get applicationName(): string {
+        return this.applicationNameInput();
+    }
 
-    @Input('xc-title-bar-icon-name')
-    iconName: string;
 
-    @Input('xc-title-bar-icon-style')
-    iconStyle: string;
+    get applicationVersions(): string[] {
+        return this.applicationVersionsInput();
+    }
 
-    @Input('xc-title-bar-company')
-    company: string;
 
-    @Input('xc-title-bar-year')
-    year: string;
+    get iconName(): string {
+        return this.iconNameInput();
+    }
+
+
+    get iconStyle(): string {
+        return this.iconStyleInput();
+    }
+
+
+    get company(): string {
+        return this.companyInput();
+    }
+
+
+    get year(): string {
+        return this.yearInput();
+    }
 
 
     private get copyright(): string {

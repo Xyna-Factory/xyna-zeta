@@ -352,7 +352,16 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             updateChildren(false);
         };
         // A11y
-        iconButtonTemplate.label = this.i18n?.translate('zeta.xc.tree.add-element') ?? 'Add Element';
+        if (this.i18n) {
+            const addElementLabel = this.i18n.translateSignal('zeta.xc.tree.add-element');
+            defineAccessorProperty<XcIconButtonTemplate, string>(
+                iconButtonTemplate,
+                'label',
+                () => addElementLabel()
+            );
+        } else {
+            iconButtonTemplate.label = 'Add Element';
+        }
         // disabled accessor
         defineAccessorProperty<XcIconButtonTemplate, boolean>(
             iconButtonTemplate,
@@ -440,7 +449,16 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 }
             };
             // A11y
-            deleteButtonTemplate.label = this.i18n?.translate('zeta.xc.tree.remove-element') ?? 'Remove Element';
+            if (this.i18n) {
+                const removeElementLabel = this.i18n.translateSignal('zeta.xc.tree.remove-element');
+                defineAccessorProperty<XcIconButtonTemplate, string>(
+                    deleteButtonTemplate,
+                    'label',
+                    () => removeElementLabel()
+                );
+            } else {
+                deleteButtonTemplate.label = 'Remove Element';
+            }
             // disabled accessor
             defineAccessorProperty<XcIconButtonTemplate, boolean>(
                 deleteButtonTemplate,
@@ -483,7 +501,16 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 this.triggerMarkForChange();
             }
             // A11y
-            copyButtonTemplate.label = this.i18n?.translate('zeta.xc.tree.copy-element') ?? 'Copy Element';
+            if (this.i18n) {
+                const copyElementLabel = this.i18n.translateSignal('zeta.xc.tree.copy-element');
+                defineAccessorProperty<XcIconButtonTemplate, string>(
+                    copyButtonTemplate,
+                    'label',
+                    () => copyElementLabel()
+                );
+            } else {
+                copyButtonTemplate.label = 'Copy Element';
+            }
             // disabled accessor
             defineAccessorProperty<XcIconButtonTemplate, boolean>(
                 copyButtonTemplate,
