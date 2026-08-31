@@ -78,10 +78,81 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private thead: HTMLTableSectionElement;
 
     private focusViaTabDetectionSubscription: Subscription;
-    private scrollTopBeforeKeyboardFocus: number | null = null;
+    private scrollPositionsBeforeTab: { element: HTMLElement; top: number; left: number }[] | null = null;
+    private tabFocusPending = false;
+
+    private clearTabScrollState() {
+        this.tabFocusPending = false;
+        this.scrollPositionsBeforeTab = null;
+    }
+
+    private getScrollableAncestors(from: HTMLElement): HTMLElement[] {
+        const ancestors: HTMLElement[] = [];
+        let element: HTMLElement | null = from;
+
+        while (element && element !== document.documentElement) {
+            const style = getComputedStyle(element);
+            const overflowY = style.overflowY;
+            const overflowX = style.overflowX;
+            const canScrollY = (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay')
+                && element.scrollHeight > element.clientHeight;
+            const canScrollX = (overflowX === 'auto' || overflowX === 'scroll' || overflowX === 'overlay')
+                && element.scrollWidth > element.clientWidth;
+
+            if (canScrollY || canScrollX) {
+                ancestors.push(element);
+            }
+            element = element.parentElement;
+        }
+
+        return ancestors;
+    }
+
+    private saveScrollPositions() {
+        this.scrollPositionsBeforeTab = this.getScrollableAncestors(this.elementRef.nativeElement).map(element => ({
+            element,
+            top: element.scrollTop,
+            left: element.scrollLeft
+        }));
+    }
+
+    private restoreScrollPositions() {
+        if (!this.scrollPositionsBeforeTab) {
+            return;
+        }
+        for (const position of this.scrollPositionsBeforeTab) {
+            position.element.scrollTop = position.top;
+            position.element.scrollLeft = position.left;
+        }
+    }
+
     private readonly onDocumentKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Tab') {
-            this.scrollTopBeforeKeyboardFocus = this.elementRef.nativeElement.scrollTop;
+            if (document.activeElement === this.tbody) {
+                this.clearTabScrollState();
+            } else {
+                // Tab may move focus onto tbody; browser scroll-into-view can move
+                // xc-table and/or parent scroll containers (e.g. section.scroll).
+                this.saveScrollPositions();
+                this.tabFocusPending = true;
+            }
+        } else if (event.key !== 'Shift') {
+            this.clearTabScrollState();
+        }
+    };
+
+    private readonly onDocumentMouseDown = () => {
+        this.clearTabScrollState();
+    };
+
+    private readonly onTableFocusIn = (event: FocusEvent) => {
+        if (!this.tabFocusPending || !this.scrollPositionsBeforeTab) {
+            return;
+        }
+
+        // Only undo scroll when focus actually lands on the focusable tbody.
+        if (event.target === this.tbody) {
+            this.restoreScrollPositions();
         }
     };
 
@@ -110,13 +181,18 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         this.tbody.onkeydown = this.keyDown.bind(this);
 
         document.addEventListener('keydown', this.onDocumentKeyDown, true);
+        document.addEventListener('mousedown', this.onDocumentMouseDown, true);
+        this.elementRef.nativeElement.addEventListener('focusin', this.onTableFocusIn, true);
 
         this.focusViaTabDetectionSubscription = this._a11y.emitElementFocusStateChange(this.tbody).subscribe(state => {
             if (state.type === 'focus' && state.achieved === 'keyboard') {
-                const parent = this.elementRef.nativeElement;
+                const tabIntoTable = this.tabFocusPending;
 
-                if (this.scrollTopBeforeKeyboardFocus !== null) {
-                    parent.scrollTop = this.scrollTopBeforeKeyboardFocus;
+                if (tabIntoTable) {
+                    // Undo browser scroll-into-view on tbody (and parent scrollers).
+                    // Do not call focusRowElement here — that is reserved for ArrowUp/ArrowDown
+                    // and would reintroduce a scroll jump on Tab / close-details focus restore.
+                    this.restoreScrollPositions();
                 }
 
                 let row = this.getFocusedRow();
@@ -133,11 +209,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                     }
                 }
 
-                if (rowEl) {
-                    this.focusRowElement(rowEl);
-                }
-
-                this.scrollTopBeforeKeyboardFocus = null;
+                this.clearTabScrollState();
             }
         });
     }
@@ -146,6 +218,8 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribeDataSource();
         document.removeEventListener('keydown', this.onDocumentKeyDown, true);
+        document.removeEventListener('mousedown', this.onDocumentMouseDown, true);
+        this.elementRef.nativeElement.removeEventListener('focusin', this.onTableFocusIn, true);
 
         if (this.focusViaTabDetectionSubscription) {
             this.focusViaTabDetectionSubscription.unsubscribe();
@@ -603,20 +677,28 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         }
     }
 
-    private getStickyHeaderBottomOffset(): number {
+    private getVisibleHeaderBottomOffset(): number {
         const parent = this.elementRef.nativeElement;
         const parentRect = parent.getBoundingClientRect();
-        const stickyRow = this.thead?.querySelector('.mat-mdc-header-row');
+        let visibleBottom = parentRect.top;
 
-        return stickyRow
-            ? stickyRow.getBoundingClientRect().bottom - parentRect.top
-            : 0;
+        if (this.thead) {
+            for (const row of Array.from(this.thead.querySelectorAll('tr'))) {
+                const rect = row.getBoundingClientRect();
+                if (rect.bottom > parentRect.top && rect.top < parentRect.bottom) {
+                    visibleBottom = Math.max(visibleBottom, rect.bottom);
+                }
+            }
+        }
+
+        return Math.max(0, visibleBottom - parentRect.top);
     }
+
 
 
     focusRowElement(element: HTMLTableRowElement) {
         const parent = this.elementRef.nativeElement;
-        const topOffset = this.getStickyHeaderBottomOffset();
+        const topOffset = this.getVisibleHeaderBottomOffset();
         const e = element.getBoundingClientRect();
         const p = parent.getBoundingClientRect();
         if (e.top < p.top + topOffset) {
