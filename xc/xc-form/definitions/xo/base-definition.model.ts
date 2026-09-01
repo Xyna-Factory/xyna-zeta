@@ -1,6 +1,3 @@
-import { BehaviorSubject, Observable, of, PartialObserver } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +15,10 @@ import { filter, map, tap } from 'rxjs/operators';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { BehaviorSubject, Observable, of, PartialObserver } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
+
 import { ValidatorFn } from '@angular/forms';
 import { pack } from '@zeta/base';
 

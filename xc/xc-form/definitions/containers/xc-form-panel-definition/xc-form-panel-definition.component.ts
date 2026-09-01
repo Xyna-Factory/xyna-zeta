@@ -1,5 +1,3 @@
-import { Subscription } from 'rxjs';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,6 +15,9 @@ import { Subscription } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { Subscription } from 'rxjs';
+
 import { Component, Input } from '@angular/core';
 
 import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';

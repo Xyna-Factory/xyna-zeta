@@ -15,9 +15,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { XcCanvasHelper } from '@zeta/xc/xc-canvas/xc-canvas-helper.class';
-
 import { Observable, Subscription } from 'rxjs';
+
+import { XcCanvasHelper } from '@zeta/xc/xc-canvas/xc-canvas-helper.class';
 
 import { XcPlotPointConnection } from '../sub-classes/basics';
 import { BezierSplineHelper, CurveControlPoints } from '../sub-classes/bezier-spline-helper.class';

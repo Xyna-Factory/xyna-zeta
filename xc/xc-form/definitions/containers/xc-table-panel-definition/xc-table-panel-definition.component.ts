@@ -1,6 +1,3 @@
-import { Subscription } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +15,10 @@ import { filter, first } from 'rxjs/operators';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { Subscription } from 'rxjs';
+import { filter, first } from 'rxjs/operators';
+
 import { Component, inject, Input, OnDestroy } from '@angular/core';
 import { pack } from '@zeta/base';
 

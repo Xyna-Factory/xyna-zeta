@@ -1,6 +1,4 @@
-import { Subscription } from 'rxjs';
 
-import { NgComponentOutlet } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +16,7 @@ import { NgComponentOutlet } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { NgComponentOutlet } from '@angular/common';
 import { Component, effect, HostBinding, HostListener, inject, Injector, input } from '@angular/core';
 
 import { coerceBoolean, templateClassType } from '../../base';

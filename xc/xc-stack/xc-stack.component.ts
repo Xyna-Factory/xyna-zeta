@@ -1,6 +1,3 @@
-import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
-import { filter, map, switchMapTo } from 'rxjs/operators';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +15,10 @@ import { filter, map, switchMapTo } from 'rxjs/operators';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
+import { filter, map, switchMapTo } from 'rxjs/operators';
+
 import { AfterViewInit, Component, effect, ElementRef, inject, Input, OnDestroy, viewChildren } from '@angular/core';
 import { coerceBoolean, retrieveFocusableElements, scrollToElement } from '@zeta/base';
 import { I18nService } from '@zeta/i18n';

@@ -1,4 +1,3 @@
-import { NgComponentOutlet } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,6 +15,8 @@ import { NgComponentOutlet } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { NgComponentOutlet } from '@angular/common';
 import { Component, inject } from '@angular/core';
 
 import { I18nService } from '../i18n';

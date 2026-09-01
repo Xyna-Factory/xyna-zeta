@@ -1,5 +1,3 @@
-import { Observable, Subscription } from 'rxjs';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,6 +15,9 @@ import { Observable, Subscription } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { Observable, Subscription } from 'rxjs';
+
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, InjectionToken, OnDestroy, signal } from '@angular/core';
 

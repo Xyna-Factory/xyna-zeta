@@ -1,6 +1,3 @@
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { Box2, BufferGeometry, Color, Mesh, Object3D, OrthographicCamera, RawShaderMaterial, Scene, Shape, Vector2, Vector3, WebGLRenderer } from 'three';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +15,10 @@ import { Box2, BufferGeometry, Color, Mesh, Object3D, OrthographicCamera, RawSha
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { Box2, BufferGeometry, Color, Mesh, Object3D, OrthographicCamera, RawShaderMaterial, Scene, Shape, Vector2, Vector3, WebGLRenderer } from 'three';
+
 import { Component, inject, Input, numberAttribute, output, viewChild } from '@angular/core';
 
 import { AuthService } from '../../auth/auth.service';

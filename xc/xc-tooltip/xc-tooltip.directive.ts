@@ -1,5 +1,3 @@
-import { Subscription } from 'rxjs';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,6 +15,9 @@ import { Subscription } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { Subscription } from 'rxjs';
+
 import { AfterViewInit, computed, Directive, ElementRef, inject, input, Input, isSignal, NgZone, numberAttribute, OnDestroy, OnInit, Signal, signal, TemplateRef, ViewContainerRef } from '@angular/core';
 
 import { A11yService, ScreenreaderPriority } from '../../a11y';

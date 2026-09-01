@@ -1,6 +1,3 @@
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +15,10 @@ import { catchError } from 'rxjs/operators';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
 import { Component, effect } from '@angular/core';
 import { ApiService, RuntimeContext } from '@zeta/api';
 

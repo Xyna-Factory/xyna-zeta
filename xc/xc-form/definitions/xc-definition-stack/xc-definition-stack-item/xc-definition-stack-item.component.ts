@@ -1,6 +1,3 @@
-import { Observable, of, Subscription, throwError } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +15,10 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { Observable, of, Subscription, throwError } from 'rxjs';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
+
 import { AfterViewInit, Component, inject, Injector, OnDestroy } from '@angular/core';
 import { ConfigService } from '@zeta/api/config.service';
 import { pack } from '@zeta/base';

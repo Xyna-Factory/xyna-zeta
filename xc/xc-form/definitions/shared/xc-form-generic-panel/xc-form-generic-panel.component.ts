@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,6 +15,8 @@ import { AsyncPipe } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { AsyncPipe } from '@angular/common';
 import { Component, computed, forwardRef, Input, input, output, signal } from '@angular/core';
 
 import { Xo } from '../../../../../api';

@@ -1,6 +1,3 @@
-import { Subscription } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +15,10 @@ import { map, tap } from 'rxjs/operators';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { Subscription } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+
 import { Component, inject, OnDestroy, signal, ViewChild } from '@angular/core';
 import { RuntimeContext } from '@zeta/api';
 

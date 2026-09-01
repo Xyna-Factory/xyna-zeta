@@ -1,6 +1,3 @@
-import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +15,10 @@ import { map } from 'rxjs/operators';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
 
 import { MouseEventType, XcCanvasMouseEventsOption } from '../xc-canvas/xc-canvas-helper.class';

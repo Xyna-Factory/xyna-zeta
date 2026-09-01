@@ -1,5 +1,3 @@
-import { filter, Subscription } from 'rxjs';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,6 +15,9 @@ import { filter, Subscription } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+
+import { filter, Subscription } from 'rxjs';
+
 import { Component, forwardRef, Input } from '@angular/core';
 import { XoArray } from '@zeta/api';
 

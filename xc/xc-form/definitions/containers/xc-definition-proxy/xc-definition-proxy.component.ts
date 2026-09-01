@@ -1,6 +1,3 @@
-import { first } from 'rxjs/operators';
-
-import { AsyncPipe } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -18,6 +15,9 @@ import { AsyncPipe } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { first } from 'rxjs/operators';
+
+import { AsyncPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 import { XcUnwrapDirective } from '../../../../shared/xc-unwrap.directive';
