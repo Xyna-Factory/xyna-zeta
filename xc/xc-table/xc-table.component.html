@@ -109,7 +109,7 @@
     <ng-container [matColumnDef]="actionsColumnId">
       <th mat-header-cell *matHeaderCellDef class="xc-table-actions-col" scope="col" [attr.id]="actionsColumnHeaderId"
           [attr.aria-label]="actionsColumnHeaderLabel">
-        <span mat-sort-header>{{ actionsColumnHeaderLabel || '&nbsp;' }}</span>
+        <span mat-sort-header [disabled]="true">{{ actionsColumnHeaderLabel || '&nbsp;' }}</span>
         <div class="filter-container">
           @if (allowFilter) {
             <div class="xc-table-actions-filter-placeholder" aria-hidden="true"></div>
@@ -129,7 +129,6 @@
                   [xc-icon-style]="actionElement.iconStyle"
                   [xc-button-aria-label]="actionElement.ariaLabel || actionElement.tooltip"
                   [xc-tooltip]="actionElement.tooltip"
-                  [xc-tooltip-disabled]="!!(actionElement.ariaLabel || actionElement.tooltip)"
                   xc-icon-size="small"
                 ></xc-icon-button>
               }
