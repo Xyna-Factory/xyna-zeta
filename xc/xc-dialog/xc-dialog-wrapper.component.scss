@@ -83,6 +83,10 @@ $resizable: var(--resizable);
             height: 100%;
             // max-height: unset;
             line-height: unset;
+            flex: 1 1 auto;
+            overflow: auto;
+            min-height: 0;
+            max-height: unset;
         }
 
         .mat-mdc-dialog-actions {
@@ -108,6 +112,8 @@ $resizable: var(--resizable);
 
     .dialog {
         box-shadow: $xc-dialog-box-shadow;
+        display: flex;
+        flex-direction: column;
 
         .header {
             display: flex;
@@ -152,6 +158,10 @@ $resizable: var(--resizable);
             display: flex;
             // max-height: unset;
             line-height: unset;
+            flex: 1 1 auto;
+            overflow: auto;
+            min-height: 0;
+            max-height: unset;
         }
 
         .mat-mdc-dialog-actions {
