@@ -682,19 +682,25 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     get noDataLabel(): string {
-        let label = this.dataSource ? this.dataSource.requestErrorMessage : undefined;
+        const requestErrorMessage = this.dataSource?.requestErrorMessage;
 
-        if (!label) {
-            let dataError = 'data';
-            if (this.noColumns && !this.noRows) {
-                dataError = 'columns';
-            }
-            if (this.noRows && !this.noColumns) {
-                dataError = 'rows';
-            }
-            label = this.i18n.translate(`no ${dataError} ${this.dataSource && this.dataSource.limit === 0 ? 'requested' : 'available'}!`);
+        if (requestErrorMessage) {
+            return this.i18n.translate(requestErrorMessage);
         }
 
-        return label;
+        let dataError = 'data';
+
+        if (this.noColumns && !this.noRows) {
+            dataError = 'columns';
+        }
+
+        if (this.noRows && !this.noColumns) {
+            dataError = 'rows';
+        }
+
+        const requestState = this.dataSource && this.dataSource.limit === 0 ? 'requested' : 'available';
+        const key = `no ${dataError} ${requestState}!`;
+
+        return this.i18n.translate(key);
     }
 }
