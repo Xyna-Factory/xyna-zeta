@@ -127,6 +127,6 @@
   +3, because there are three rows in the table header
   -->
 </table>
-@if (noData) {
-  <label class="no-data">{{noDataLabel}}</label>
+@if (noData && !refreshing) {
+    <label class="no-data">{{noDataLabel}}</label>
 }
