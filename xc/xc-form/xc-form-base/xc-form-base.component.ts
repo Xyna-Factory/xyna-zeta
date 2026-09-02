@@ -137,6 +137,14 @@ export class XcFormComponent implements AfterContentInit {
         this.valueInputState.set(value);
     }
 
+    get value(): any {
+        return this.valueInputState();
+    }
+
+    set value(value: any) {
+        this.valueInputState.set(value);
+    }
+
     @Input('xc-form-field-errorfunc')
     set errorFuncInput(value: ((key: string, data: any) => string) | undefined) {
         this.errorFuncInputState.set(value);
@@ -276,16 +284,13 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         return !this.errorVisible;
     }
 
-
     get value(): any {
         return this.formControl.value;
     }
 
-
     set value(value: any) {
         this.formControl.setValue(value);
     }
-
 
     get disabled(): boolean {
         return this.formControl.disabled;
@@ -337,6 +342,10 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     constructor() {
         super();
+
+        this.formControl.valueChanges.subscribe(value => {
+            this.valueChange.emit(value);
+        });
 
         effect(() => {
             this.localeService.languageSignal();
