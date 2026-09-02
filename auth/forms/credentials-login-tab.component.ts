@@ -15,8 +15,8 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, Injector } from '@angular/core';
-import { I18nService, XcI18nTranslateDirective } from '@zeta/i18n';
+import { Component } from '@angular/core';
+import { XcI18nTranslateDirective } from '@zeta/i18n';
 
 import { XcTabComponent } from '../../xc';
 import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
@@ -30,8 +30,6 @@ import { LoginComponentData } from '../login/auth-login.component';
     imports: [XcFormInputComponent, XcI18nTranslateDirective]
 })
 export class CredentialsLoginTabComponent extends XcTabComponent<void, LoginComponentData> {
-    readonly i18n = inject(I18nService);
-
 
     data: LoginComponentData = {
         username: '',
@@ -44,9 +42,8 @@ export class CredentialsLoginTabComponent extends XcTabComponent<void, LoginComp
     };
 
     constructor() {
-        const injector = inject(Injector);
+        super();
 
-        super(injector);
         this.data = this.injectedData;
     }
 }

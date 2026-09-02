@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, Injector } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 import { XcTabComponent } from '../../xc';
@@ -40,9 +40,8 @@ export class SmartCardLoginTabComponent extends XcTabComponent<void, LoginCompon
     };
 
     constructor() {
-        const injector = inject(Injector);
+        super();
 
-        super(injector);
         this.data = this.injectedData;
     }
 

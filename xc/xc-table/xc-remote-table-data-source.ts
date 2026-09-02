@@ -18,10 +18,11 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, finalize } from 'rxjs/operators';
 
+import { signal } from '@angular/core';
+
 import { ApiService, RuntimeContext, StartOrderOptionsBuilder, StartOrderResult, Xo, XoAccessor, XoAccessorMapPropertySeparator, XoArray, XoArrayClass, XoArrayClassInterface, XoObject, XoObjectClass, XoObjectClassInterface, XoProperty, XynaMonitoringLevel, XynaPriority } from '../../api';
 import { isObject, pack } from '../../base';
 import { I18nService } from '../../i18n';
-import { signal } from '@angular/core';
 import { XcDynamicString } from '../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString } from '../shared/xc-sort';
 import { XcTemplate } from '../xc-template/xc-template';

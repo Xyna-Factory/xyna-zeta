@@ -18,7 +18,7 @@
 import { Observable, Subject } from 'rxjs';
 
 import { ComponentType } from '@angular/cdk/portal';
-import { InjectionToken, Injector, Optional } from '@angular/core';
+import { inject, InjectionToken, Injector } from '@angular/core';
 
 import { XcMenuItem } from '../';
 import { XcDynamicDismissableComponent } from '../shared/xc-dynamic-dismissable.component';
@@ -111,13 +111,14 @@ export class XcTabRef<R = void> {
 
 
 export abstract class XcTabComponent<R = void, D = void> extends XcDynamicDismissableComponent<R, D> {
-
+    readonly injector = inject(Injector, { optional: true });
     private readonly tabRef: XcTabRef<R>;
 
 
-    constructor(@Optional() readonly injector: Injector) {
+    constructor() {
         super();
-        this.tabRef = injector.get<XcTabRef<R>>(XcTabRef);
+
+        this.tabRef = this.injector.get<XcTabRef<R>>(XcTabRef);
     }
 
 

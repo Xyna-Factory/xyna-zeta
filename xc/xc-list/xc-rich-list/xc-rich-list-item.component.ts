@@ -18,7 +18,7 @@
 import { Observable } from 'rxjs';
 
 import { ComponentType } from '@angular/cdk/portal';
-import { InjectionToken, Injector, Optional } from '@angular/core';
+import { inject, InjectionToken, Injector } from '@angular/core';
 
 import { XcDynamicDismissableComponent } from '../../shared/xc-dynamic-dismissable.component';
 import { XcItem } from '../../shared/xc-item';
@@ -54,13 +54,14 @@ export class XcRichListItemRef {
 
 
 export abstract class XcRichListItemComponent<R = void, D = void> extends XcDynamicDismissableComponent<R, D> {
+    readonly injector = inject(Injector, { optional: true });
 
     private readonly richListItemRef: XcRichListItemRef;
 
-
-    constructor(@Optional() readonly injector: Injector) {
+    constructor() {
         super();
-        this.richListItemRef = injector.get<XcRichListItemRef>(XcRichListItemRef);
+
+        this.richListItemRef = this.injector.get<XcRichListItemRef>(XcRichListItemRef);
     }
 
 
