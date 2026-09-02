@@ -685,7 +685,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         const requestErrorMessage = this.dataSource?.requestErrorMessage;
 
         if (requestErrorMessage) {
-            return this._i18n.translate(requestErrorMessage);
+            return this.i18n.translate(requestErrorMessage);
         }
 
         let dataError = 'data';
@@ -701,6 +701,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         const requestState = this.dataSource && this.dataSource.limit === 0 ? 'requested' : 'available';
         const key = `no ${dataError} ${requestState}!`;
 
-        return this._i18n.translate(key);
+        return this.i18n.translate(key);
     }
 }
