@@ -14,7 +14,7 @@
       [attr.aria-expanded]="multiSelectDropdown?.panelOpen || false"
       [attr.aria-haspopup]="'listbox'"
       role="combobox"
-      [tabIndex]="disabled ? -1 : 0"
+      [tabIndex]="(readonly || disabled) ? -1 : 0"
       class="multiselect-display-input">
 
     <!-- screen reader announcements -->
@@ -60,8 +60,11 @@
       (focus)="onfocus($event)"
       (blur)="onblur($event)"
       [readonly]="readonly"
-      [attr.aria-label]="ariaLabel"
-      [tabIndex]="disabled ? -1 : tabIndex"
+      [attr.aria-label]="ariaLabel || label"
+      [attr.aria-controls]="autocompleteId"
+      [attr.aria-expanded]="autocompleteOpened ? 'true' : 'false'"
+      [attr.aria-haspopup]="'listbox'"
+      [tabIndex]="(readonly || disabled) ? -1 : tabIndex"
       [required]="required">
 
     <!-- screen reader support -->
@@ -70,6 +73,7 @@
     </div>
 
     <mat-autocomplete class="zeta-scrollbar" #auto="matAutocomplete"
+      [id]="autocompleteId"
       (optionSelected)="optionSelected($event.option)"
       [displayWith]="optionName"
       (opened)="openedAutocomplete()"
