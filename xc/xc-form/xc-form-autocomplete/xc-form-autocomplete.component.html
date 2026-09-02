@@ -54,7 +54,6 @@
       [type]="type"
       [placeholder]="placeholder"
       [formControl]="formControl"
-      [errorStateMatcher]="errorStateMatcher"
       [matAutocomplete]="auto"
       (mousedown)="mousedown($event)"
       (focus)="onfocus($event)"
@@ -95,7 +94,7 @@
   }
 
   @if (errorVisible) {
-    <mat-error align="end" aria-live="off">{{errorContent}}</mat-error>
+    <mat-error align="end">{{errorContent}}</mat-error>
   }
 
   @if (suffixVisible && !readonly) {

@@ -16,8 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
-import { FormControl, FormGroupDirective, NgForm, ValidatorFn, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
 
@@ -32,19 +31,6 @@ export enum FloatStyle {
     never = 'never',
     auto = 'auto',
     always = 'always'
-}
-
-class XcFormErrorStateMatcher implements ErrorStateMatcher {
-
-    constructor(private readonly component: XcFormBaseComponent) {
-    }
-
-    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-        if (!control || this.component.readonly) {
-            return false;
-        }
-        return control.invalid && (control.dirty || control.touched || !!form?.submitted);
-    }
 }
 
 
@@ -172,7 +158,6 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     protected _placeholder: KeyTranslationPair = { key: '', translated: '' };
 
     readonly formControl = new FormControl();
-    readonly errorStateMatcher: ErrorStateMatcher = new XcFormErrorStateMatcher(this);
 
     @Output()
     readonly valueChange = this.formControl.valueChanges;
@@ -279,11 +264,15 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
 
     get errorVisible(): boolean {
-        return this.errorStateMatcher.isErrorState(this.formControl, null);
+        return this.formControl.errors !== null && this.formControl.touched && !this.readonly;
     }
 
 
-    get errorContent(): string {
+    /** Validator message without field name. */
+    get errorMessage(): string {
+        if (!this.formControl.errors) {
+            return '';
+        }
         const errorFunc = (key: string, data: any): string => {
             switch (key) {
                 case 'email': return this.i18n.translate('zeta.xc-form-base.email');
@@ -309,6 +298,21 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
                 return this.transformErrorMessageCase(message);
             }
         ).join(', ');
+    }
+
+
+    /** Field name + validator message for screen readers on blur. */
+    get errorContent(): string {
+        const message = this.errorMessage;
+        const fieldName = (this.ariaLabel || '').trim();
+        if (!message || !fieldName) {
+            return message;
+        }
+        return this.i18n.translate(
+            'zeta.xc-form-base.error-with-field',
+            { key: '$0', value: fieldName },
+            { key: '$1', value: message }
+        );
     }
 
     @Input('xc-form-field-tab-index')
