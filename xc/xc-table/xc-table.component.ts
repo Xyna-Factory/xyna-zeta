@@ -93,6 +93,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             if (!this.lazyUpdate) {
                 this.dataSource.refresh();
             }
+            this.updateHeaderScrollOffset();
         });
 
         // make table body focusable and set key listener
@@ -107,6 +108,8 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
         this.focusViaTabDetectionSubscription = this._a11y.emitElementFocusStateChange(this.tbody).subscribe(state => {
             if (state.type === 'focus' && state.achieved === 'keyboard') {
+                this.updateHeaderScrollOffset();
+
                 let row = this.getFocusedRow();
                 let rowEl = this.getFocusedRowElement();
                 const rowFound = row && rowEl;
@@ -587,13 +590,30 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
+    private updateHeaderScrollOffset() {
+        if (!this.thead || !this.tbody) {
+            return;
+        }
+        const headerHeight = this.thead.getBoundingClientRect().height;
+        const host: HTMLElement = this.elementRef.nativeElement;
+        host.style.scrollPaddingTop = headerHeight + 'px';
+        this.tbody.style.scrollMarginTop = headerHeight + 'px';
+    }
+
+
     focusRowElement(element: HTMLTableRowElement) {
+        if (!element || !this.thead) {
+            return;
+        }
         const parent = this.elementRef.nativeElement;
-        const topOffset = this.thead.getBoundingClientRect().height;
         const e = element.getBoundingClientRect();
         const p = parent.getBoundingClientRect();
-        if (e.top < p.top + topOffset) {
-            parent.scrollTop -= p.top - e.top + topOffset + 1;
+        const headerBottom = this.thead.getBoundingClientRect().bottom;
+        if (e.top >= headerBottom && e.bottom <= p.bottom) {
+            return;
+        }
+        if (e.top < headerBottom) {
+            parent.scrollTop -= headerBottom - e.top + 1;
         }
         if (e.bottom > p.bottom) {
             parent.scrollTop += e.bottom - p.bottom + 1;
