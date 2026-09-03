@@ -152,9 +152,11 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
             this.suffixToggledState.update(value => !value);
 
             if (this.suffix === 'clear') {
-                this.formControl.setValue('');
+                this.formControl.setValue('', { emitEvent: false });
+                this.valueChange.emit('');
             } else if (this.suffix === 'nullify') {
-                this.formControl.setValue(null);
+                this.formControl.setValue(null, { emitEvent: false });
+                this.valueChange.emit(null);
             } else if (this.suffix === 'password') {
                 this.typeState.set(this.suffixToggledState() ? 'text' : 'password');
             }
