@@ -33,10 +33,10 @@
         <ul [attr.id]="uniquePanelId" [attr.aria-label]="ariaLabel">
           @for (child of item.children; let i = $index; track child.link ? child.link : i) {
             <li>
-              <xc-nav-list-item [attr.id]="'xc-nav-list-item-depth-' + (depth+1) + '-' + i"
+              <xc-nav-list-item [attr.id]="'xc-nav-list-item-depth-' + (depth()+1) + '-' + i"
                 [item]="child"
                 [size]="size()"
-                [depth]="depth+1"
+                [depth]="depth()+1"
                 [orientation]="orientation()"
                 [color]="color"
                 (focusChange)="focusChange.emit($event)"

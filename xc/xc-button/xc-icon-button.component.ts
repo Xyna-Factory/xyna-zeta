@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, computed, HostBinding, Input, input, signal } from '@angular/core';
+import { Component, computed, effect, ElementRef, HostBinding, inject, Input, input, Renderer2, signal } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
@@ -35,6 +35,8 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
     private _iconMaterial = false;
     private _iconSvg = false;
     private readonly iconNameState = signal('');
+    private readonly renderer = inject(Renderer2);
+
     private readonly iconAriaLabelKey = computed(() => this.ariaLabelKeyState() || this.iconNameState());
     private readonly iconAriaLabelTranslationKey = computed(() => {
         const key = this.iconAriaLabelKey();
@@ -58,10 +60,14 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
 
     readonly iconStyle = input<string>(undefined, { alias: "xc-icon-style" });
 
-    @HostBinding('attr.size')
-    @Input('xc-icon-size')
-    iconSize: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
+    readonly iconSizeInput = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: "xc-icon-size" });
 
+    constructor() {
+        super();
+        effect(() => {
+            this.renderer.setAttribute(this.elementRef.nativeElement, 'size', this.iconSizeInput());
+        });
+    }
 
     get ariaLabel(): string {
         return this.iconAriaLabelTranslation();

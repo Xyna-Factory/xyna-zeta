@@ -46,9 +46,12 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
     readonly size = input<'small' | 'medium' | 'large' | 'extra-large'>('medium');
 
+    readonly depthInput = input<number>(undefined);
+
     @HostBinding('attr.depth')
-    @Input()
-    depth: number;
+    get depth(): number {
+        return this.depthInput();
+    }
 
     @Input({transform: coerceBoolean})
     set shrink(value: boolean) {

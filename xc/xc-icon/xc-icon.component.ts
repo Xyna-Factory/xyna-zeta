@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, computed, effect, ElementRef, HostBinding, inject, input, signal } from '@angular/core';
+import { AfterContentInit, Component, computed, effect, ElementRef, HostBinding, inject, input, Renderer2, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { I18nService } from '@zeta/i18n';
 
@@ -32,6 +32,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
 export class XcIconComponent extends XcThemeableComponent implements AfterContentInit {
     protected elementRef = inject(ElementRef);
     protected readonly i18n = inject(I18nService);
+    private readonly renderer = inject(Renderer2);
 
     private readonly translateState = signal(false);
     private readonly i18nContextState = signal('');
@@ -75,13 +76,11 @@ export class XcIconComponent extends XcThemeableComponent implements AfterConten
                 el.textContent = translated;
             }
         });
-    }
 
-    @HostBinding('attr.size')
-    get iconSize(): 'small' | 'medium' | 'large' | 'extra-large' {
-        return this.iconSizeInput();
+        effect(() => {
+            this.renderer.setAttribute(this.elementRef.nativeElement, 'size', this.iconSizeInput());
+        });
     }
-
 
     @HostBinding('class.reverse-direction')
     get reverseDirection(): boolean {
