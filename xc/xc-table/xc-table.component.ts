@@ -18,7 +18,7 @@
 import { Subscription } from 'rxjs';
 
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, effect, ElementRef, HostBinding, inject, input, OnDestroy, signal, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, effect, ElementRef, HostBinding, inject, input, OnDestroy, signal, viewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
@@ -52,7 +52,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private readonly elementRef = inject(ElementRef<HTMLElement>);
     private readonly _a11y = inject(A11yService);
     private readonly _i18n = inject(I18nService);
-
+    private readonly cdr = inject(ChangeDetectorRef);
 
     readonly dataSourceInput = input<XcTableDataSource<any> | undefined>(undefined, { alias: 'xc-table-datasource' });
     readonly allowSortInput = input(false, { alias: 'xc-table-allowsort', transform: coerceBoolean });
@@ -176,10 +176,15 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             this._dataSourceSubscriptions.push(
                 this.dataSource.sortChange.subscribe(() => this.updateMatSort())
             );
-            // subscribe to mark for changes
             // subscribe to data changes
             this._dataSourceSubscriptions.push(
                 this.dataSource.dataChange.subscribe(() => this.clearFilterTemplates())
+            );
+            // subscribe to mark for changes, so getters like "refreshing", "columns" and "rows"
+            // (used e. g. in @HostBinding) are re-evaluated even if this cycle isn't otherwise
+            // picked up by change detection (e. g. when the data source refreshes outside of Angular's zone)
+            this._dataSourceSubscriptions.push(
+                this.dataSource.markForChange.subscribe(() => this.cdr.markForCheck())
             );
             if (this.viewInitializedState() && !this.lazyUpdate) {
                 this.dataSource.refresh();
