@@ -664,7 +664,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     get noDataLabel(): string {
-        let label = this.dataSource ? this.dataSource.requestErrorMessage : undefined;
+        const requestErrorMessage = this.dataSource?.requestErrorMessage;
 
         if (!label) {
             let dataError = 'data';
@@ -677,6 +677,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             label = this.i18n.translateSignal(`no ${dataError} ${this.dataSource && this.dataSource.limit === 0 ? 'requested' : 'available'}!`)();
         }
 
-        return label;
+        const requestState = this.dataSource && this.dataSource.limit === 0 ? 'requested' : 'available';
+        const key = `no ${dataError} ${requestState}!`;
+
+        return this.i18n.translate(key);
     }
 }
