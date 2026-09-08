@@ -15,13 +15,14 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input } from '@angular/core';
 
 
 export type XcColor = 'normal' | 'invert' | 'primary' | 'accent' | 'warn' | 'black' | 'white';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: ''
 })
 export abstract class XcThemeableComponent {

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, Input, Output, ViewChild, inject, numberAttribute } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild, inject, numberAttribute } from '@angular/core';
 
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Box2, BufferGeometry, Color, Mesh, Object3D, OrthographicCamera, RawShaderMaterial, Scene, Shape, Vector2, Vector3, WebGLRenderer } from 'three';
@@ -1383,6 +1383,7 @@ export class XcGraphScene {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-graph',
     templateUrl: './xc-graph.component.html',
     styleUrls: ['./xc-graph.component.scss'],

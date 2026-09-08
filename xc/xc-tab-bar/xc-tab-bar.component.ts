@@ -21,7 +21,7 @@ import { concatMap, distinctUntilChanged, filter, map, tap } from 'rxjs/operator
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, EventEmitter, inject, Injector, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, AfterViewInit, ChangeDetectorRef, Component, ComponentRef, EventEmitter, inject, Injector, Input, OnDestroy, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { coerceBoolean } from '../../base';
@@ -40,6 +40,7 @@ import { XC_TAB_DATA, XcTabBarInterface, XcTabBarItem, XcTabComponent, XcTabCont
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-tab-bar',
     templateUrl: './xc-tab-bar.component.html',
     styleUrls: ['./xc-tab-bar.component.scss'],

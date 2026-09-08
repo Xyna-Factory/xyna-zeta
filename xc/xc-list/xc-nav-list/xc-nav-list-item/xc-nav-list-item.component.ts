@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NgClass } from '@angular/common';
-import { Component, EventEmitter, HostBinding, inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, inject, Input, OnInit, Output } from '@angular/core';
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, LocaleService } from '@zeta/i18n';
@@ -31,6 +31,7 @@ import { XcNavListItem, XcNavListOrientation } from '../xc-nav-list.types';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-nav-list-item',
     templateUrl: './xc-nav-list-item.component.html',
     styleUrls: ['./xc-nav-list-item.component.scss'],

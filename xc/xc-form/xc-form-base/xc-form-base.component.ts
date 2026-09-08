@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
@@ -34,7 +34,8 @@ export enum FloatStyle {
 }
 
 
-@Component({ template: '' })
+@Component({
+    changeDetection: ChangeDetectionStrategy.Eager, template: '' })
 export class XcFormComponent implements AfterContentInit, OnDestroy {
     protected readonly element = inject<ElementRef<HTMLElement>>(ElementRef);
     protected readonly i18n = inject(I18nService);
@@ -148,7 +149,8 @@ function normalizeErrorMessageCase(value: XcFormErrorMessageCase | string): XcFo
     return normalizedValue === 'uppercase' || normalizedValue === 'lowercase' || normalizedValue === 'capitalize' ? normalizedValue : 'default';
 }
 
-@Component({ template: '' })
+@Component({
+    changeDetection: ChangeDetectionStrategy.Eager, template: '' })
 export class XcFormBaseComponent extends XcFormComponent implements AfterContentInit {
 
     protected _indicateChanges = false;

@@ -15,13 +15,14 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, InjectionToken, Injector, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, InjectionToken, Injector, inject } from '@angular/core';
 
 
 export type XcDynamicComponentType<D> = new (...args: any[]) => XcDynamicComponent<D>;
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: ''
 })
 export abstract class XcDynamicComponent<D> {

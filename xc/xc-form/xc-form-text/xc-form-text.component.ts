@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, Input } from '@angular/core';
 import { MatLabel } from '@angular/material/form-field';
 
 import { ATTRIBUTE_VALUE } from '../../../xc/shared/xc-i18n-attributes';
@@ -23,6 +23,7 @@ import { XcFormComponent } from '../xc-form-base/xc-form-base.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-form-text',
     templateUrl: './xc-form-text.component.html',
     styleUrls: ['./xc-form-text.component.scss'],

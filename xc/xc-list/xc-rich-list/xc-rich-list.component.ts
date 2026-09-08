@@ -17,7 +17,7 @@
  */
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { Component, ComponentRef, Injector, Input, QueryList, ViewChildren, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ComponentRef, Injector, Input, QueryList, ViewChildren, inject } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
@@ -26,6 +26,7 @@ import { XC_RICH_LIST_ITEM_DATA, XcRichListInterface, XcRichListItem, XcRichList
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-rich-list',
     templateUrl: './xc-rich-list.component.html',
     styleUrls: ['./xc-rich-list.component.scss'],

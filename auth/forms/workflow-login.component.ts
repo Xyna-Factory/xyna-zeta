@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { LoginComponentData } from '../login/auth-login.component';
 import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
@@ -23,6 +23,7 @@ import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'workflow-login',
     templateUrl: './workflow-login.component.html',
     styleUrls: ['./workflow-login.component.scss'],

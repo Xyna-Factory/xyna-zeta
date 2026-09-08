@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, ContentChildren, ElementRef, HostBinding, HostListener, Input, QueryList, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChildren, ElementRef, HostBinding, HostListener, Input, QueryList, ViewChild } from '@angular/core';
 import { MatDrawerContainer, MatDrawerContent, MatDrawer } from '@angular/material/sidenav';
 
 import { coerceBoolean } from '../../base';
@@ -28,6 +28,7 @@ type XcMasterDetailPosition = 'start' | 'end';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-master-detail',
     templateUrl: './xc-master-detail.component.html',
     styleUrls: ['./xc-master-detail.component.scss'],

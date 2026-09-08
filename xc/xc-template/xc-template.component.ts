@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectorRef, Component, HostBinding, HostListener, Injector, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, HostListener, Injector, Input, inject } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
@@ -38,6 +38,7 @@ import { NgComponentOutlet } from '@angular/common';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-template',
     templateUrl: './xc-template.component.html',
     styleUrls: ['./xc-template.component.scss'],

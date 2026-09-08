@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
@@ -25,6 +25,7 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-button',
     templateUrl: './xc-button.component.html',
     styleUrls: ['./xc-button-base.component.scss', './xc-button.component.scss'],

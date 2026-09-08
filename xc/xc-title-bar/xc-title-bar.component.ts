@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 
 import { getBaseHref, isArray } from '@zeta/base';
 
@@ -26,6 +26,7 @@ import { XcIconComponent } from '../xc-icon/xc-icon.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-title-bar',
     templateUrl: './xc-title-bar.component.html',
     styleUrls: ['./xc-title-bar.component.scss'],

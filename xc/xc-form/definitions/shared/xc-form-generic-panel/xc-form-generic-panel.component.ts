@@ -16,7 +16,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 
 import { Xo } from '../../../../../api';
 import { XcI18nContextDirective, XcI18nPipe, XcI18nTranslateDirective } from '../../../../../i18n';
@@ -27,6 +27,7 @@ import { XcDefinitionProxyComponent } from '../../containers/xc-definition-proxy
 import { XoFormPanelDefinition } from '../../xo/containers.model';
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-form-generic-panel',
     templateUrl: './xc-form-generic-panel.component.html',
     styleUrls: ['./xc-form-generic-panel.component.scss'],

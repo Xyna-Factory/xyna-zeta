@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatNavList } from '@angular/material/list';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
 
@@ -39,6 +39,7 @@ interface TwoWayNavListItem {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-nav-list',
     templateUrl: './xc-nav-list.component.html',
     styleUrls: ['./xc-nav-list.component.scss'],

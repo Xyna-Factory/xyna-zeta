@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { ApiService, RuntimeContext } from '@zeta/api';
 
@@ -38,6 +38,7 @@ import { changePassword_translations_en_US } from './locale/change-password-tran
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './change-password-dialog.component.html',
     styleUrls: ['./change-password-dialog.component.scss'],
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcFormDirective, XcI18nTranslateDirective, XcFormInputComponent, XcFormValidatorRequiredDirective, XcFormValidatorCustomDirective, XcButtonComponent, XcI18nPipe]

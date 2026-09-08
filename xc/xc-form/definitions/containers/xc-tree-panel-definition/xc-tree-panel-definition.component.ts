@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, inject } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
@@ -29,6 +29,7 @@ import { XcTreeComponent } from '../../../../xc-tree/xc-tree.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-tree-panel-definition',
     templateUrl: './xc-tree-panel-definition.component.html',
     styleUrls: ['./xc-tree-panel-definition.component.scss'],

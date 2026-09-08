@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 
 import { pack } from '../../../../../base';
 
@@ -28,6 +28,7 @@ import { Subscription } from 'rxjs';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: '',
     styleUrls: ['./xc-base-definition.component.scss']
 })

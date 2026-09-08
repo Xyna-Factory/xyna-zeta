@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostListener, inject, InjectionToken, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, InjectionToken, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { XcDynamicDismissableComponent } from '../shared/xc-dynamic-dismissable.component';
@@ -26,6 +26,7 @@ import { XcDialogWrapperComponent } from './xc-dialog-wrapper.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: ''
 })
 

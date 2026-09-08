@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, InjectionToken, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, InjectionToken, Input } from '@angular/core';
 
 import { I18nService } from '../../i18n';
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n';
@@ -53,6 +53,7 @@ export interface XcPathBrowserTemplateData {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-path-browser',
     templateUrl: './xc-path-browser.component.html',
     styleUrls: ['./xc-path-browser.component.scss'],

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Injector, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, inject } from '@angular/core';
 
 import { I18nService } from '@zeta/i18n';
 
@@ -26,6 +26,7 @@ import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'workflow-login-tab',
     templateUrl: './workflow-login.component.html',
     styleUrls: ['./workflow-login.component.scss'],

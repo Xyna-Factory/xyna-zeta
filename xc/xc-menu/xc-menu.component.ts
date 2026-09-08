@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { Component, EventEmitter, forwardRef, inject, Input, numberAttribute, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, inject, Input, numberAttribute, Output, ViewChild } from '@angular/core';
 import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
@@ -28,6 +28,7 @@ import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPositio
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-menu',
     templateUrl: './xc-menu.component.html',
     styleUrls: ['./xc-menu.component.scss'],

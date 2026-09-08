@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, HostBinding, HostListener, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, HostBinding, HostListener, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatRipple } from '@angular/material/core';
 
 import { Subscription } from 'rxjs';
@@ -27,6 +27,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: ''
 })
 export class XcButtonBaseComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {

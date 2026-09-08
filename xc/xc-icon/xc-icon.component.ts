@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, HostBinding, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, HostBinding, Input, OnInit, inject } from '@angular/core';
 
 import { I18nService } from '@zeta/i18n';
 
@@ -25,6 +25,7 @@ import { MatIcon } from '@angular/material/icon';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-icon',
     templateUrl: './xc-icon.component.html',
     styleUrls: ['./xc-icon.component.scss'],

@@ -18,7 +18,7 @@
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, filter, finalize } from 'rxjs/operators';
 
-import { Component, effect, inject, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal, ViewChild } from '@angular/core';
 
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 import { I18nParam, I18nService } from '../../i18n/i18n.service';
@@ -66,6 +66,7 @@ interface LoginTabItem {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'auth-login',
     templateUrl: './auth-login.component.html',
     styleUrls: ['./auth-login.component.scss'],

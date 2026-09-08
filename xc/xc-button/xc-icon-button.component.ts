@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, Input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
@@ -27,6 +27,7 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-icon-button',
     templateUrl: './xc-icon-button.component.html',
     styleUrls: ['./xc-button-base.component.scss', './xc-icon-button.component.scss'],

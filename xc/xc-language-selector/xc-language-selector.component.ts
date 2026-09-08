@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 
-import { Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 
 import { SelectableLanguage } from '../../api';
 import { Comparable } from '../../base';
@@ -48,6 +48,7 @@ class ComparableLanguage extends Comparable implements SelectableLanguage {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-language-selector',
     templateUrl: './xc-language-selector.component.html',
     styleUrls: ['./xc-language-selector.component.scss'],

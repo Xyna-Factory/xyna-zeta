@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatLabel } from '@angular/material/form-field';
 
@@ -30,6 +30,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-checkbox',
     templateUrl: './xc-checkbox.component.html',
     styleUrls: ['./xc-checkbox.component.scss'],

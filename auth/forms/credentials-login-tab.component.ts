@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Injector } from '@angular/core';
 import { I18nService, XcI18nTranslateDirective } from '@zeta/i18n';
 
 import { XcTabComponent } from '../../xc';
@@ -24,6 +24,7 @@ import { LoginComponentData } from '../login/auth-login.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'credentials-login-tab',
     templateUrl: './credentials-login.component.html',
     styleUrls: ['./credentials-login.component.scss'],

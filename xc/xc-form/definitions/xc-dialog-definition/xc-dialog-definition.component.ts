@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Injector } from '@angular/core';
 
 import { ApiService, StartOrderOptionsBuilder, Xo, XoManagedFileID, XoXPRCRuntimeContext, XoXPRCRuntimeContextFromRuntimeContext } from '@zeta/api';
 import { pack } from '@zeta/base';
@@ -36,6 +36,7 @@ import { ConfigService } from '@zeta/api/config.service';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './xc-dialog-definition.component.html',
     styleUrls: ['./xc-dialog-definition.component.scss'],
     imports: [XcDialogWrapperComponent, XcFormDirective, XcI18nContextDirective, XcI18nTranslateDirective, XcDefinitionProxyComponent, XcButtonComponent]

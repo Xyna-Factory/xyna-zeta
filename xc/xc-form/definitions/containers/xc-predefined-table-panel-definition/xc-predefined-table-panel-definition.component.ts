@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 
 import { Xo, XoArray, XoObject } from '../../../../../api';
 import { pack } from '../../../../../base';
@@ -33,6 +33,7 @@ import { XcTableComponent } from '../../../../xc-table/xc-table.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-predefined-table-panel-definition',
     templateUrl: './xc-predefined-table-panel-definition.component.html',
     styleUrls: ['./xc-predefined-table-panel-definition.component.scss'],

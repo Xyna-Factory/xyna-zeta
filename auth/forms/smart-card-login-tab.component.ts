@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Injector, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, inject } from '@angular/core';
 
 import { XcTabComponent } from '../../xc';
 import { LoginComponentData } from '../login/auth-login.component';
@@ -25,6 +25,7 @@ import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'smart-card-login-tab',
     templateUrl: './smart-card-login.component.html',
     styleUrls: ['./smart-card-login.component.scss'],

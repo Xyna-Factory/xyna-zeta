@@ -1,6 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, Output, Renderer2, ViewChild } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 import { coerceBoolean } from '../../base';
@@ -28,6 +28,7 @@ export interface XcDialogOptions {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-dialog-wrapper',
     templateUrl: './xc-dialog-wrapper.component.html',
     styleUrls: ['./xc-dialog-wrapper.component.scss'],

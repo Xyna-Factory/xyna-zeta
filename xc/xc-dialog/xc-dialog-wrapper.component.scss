@@ -13,6 +13,22 @@ $resizable: var(--resizable);
     .mdc-dialog__surface {
         box-shadow: $xc-dialog-box-shadow;
         border: none;
+        scrollbar-color: $xc-scrollbar-color $xc-scrollbar-background-color;
+        scrollbar-width: thin;
+
+        &::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+            background-color: $xc-scrollbar-background-color;
+        }
+
+        &::-webkit-scrollbar-corner {
+            background-color: $xc-scrollbar-background-color;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: $xc-scrollbar-color;
+        }
 
         &::before {
             display: none;

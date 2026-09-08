@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { XoFormPanelDefinition } from '../../xo/containers.model';
 import { XcFormDefinitionComponent } from '../xc-form-definition/xc-form-definition.component';
@@ -24,6 +24,7 @@ import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-form-panel-definition',
     templateUrl: './xc-form-panel-definition.component.html',
     styleUrls: ['./xc-form-panel-definition.component.scss'],

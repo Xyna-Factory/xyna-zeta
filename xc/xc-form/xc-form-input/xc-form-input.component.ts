@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
@@ -29,6 +29,7 @@ import { XcFormBaseInputComponent } from '../xc-form-base/xc-form-baseinput.comp
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-form-input',
     templateUrl: './xc-form-input.component.html',
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-input.component.scss'],

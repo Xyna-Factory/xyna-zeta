@@ -15,14 +15,15 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, Input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input, ViewChild } from '@angular/core';
 import { ValidatorFn, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 
 import { XcFormBaseComponent } from './xc-form-base.component';
 
 
-@Component({ 
+@Component({
+    changeDetection: ChangeDetectionStrategy.Eager, 
     template: ''
 })
 export class XcFormBaseInputComponent extends XcFormBaseComponent {

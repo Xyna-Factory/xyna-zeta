@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -27,6 +27,7 @@ import { XcPlotDataSource } from './xc-plot-data-source';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-plot',
     templateUrl: './xc-plot.component.html',
     styleUrls: ['./xc-plot.component.scss'],

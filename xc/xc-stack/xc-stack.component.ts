@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, QueryList, ViewChildren, inject } from '@angular/core';
+import { ChangeDetectionStrategy, AfterViewInit, Component, ElementRef, Input, OnDestroy, QueryList, ViewChildren, inject } from '@angular/core';
 
 import { coerceBoolean, retrieveFocusableElements, scrollToElement } from '@zeta/base';
 import { I18nService } from '@zeta/i18n';
@@ -39,6 +39,7 @@ export interface XcStackInterface {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-stack',
     templateUrl: './xc-stack.component.html',
     styleUrls: ['./xc-stack.component.scss'],

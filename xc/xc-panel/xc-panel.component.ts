@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
@@ -26,6 +26,7 @@ import { xcPanelTranslations_enUS } from './locale/xc-panel-translations.en-US';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-panel',
     templateUrl: './xc-panel.component.html',
     styleUrls: ['./xc-panel.component.scss'],
