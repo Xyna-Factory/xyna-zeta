@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, inject, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { I18nService, XcI18nTranslateDirective } from '@zeta/i18n';
 
 import { XcTabComponent } from '../../xc';
@@ -45,9 +45,8 @@ export class CredentialsLoginTabComponent extends XcTabComponent<void, LoginComp
     };
 
     constructor() {
-        const injector = inject(Injector);
+        super();
 
-        super(injector);
         this.data = this.injectedData;
     }
 }

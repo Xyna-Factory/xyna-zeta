@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,9 +18,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { ComponentType } from '@angular/cdk/portal';
-import { InjectionToken, Injector, Optional } from '@angular/core';
-
-import { Observable } from 'rxjs';
+import { inject, InjectionToken, Injector, Optional } from '@angular/core';
 
 import { XcDynamicDismissableComponent } from '../../shared/xc-dynamic-dismissable.component';
 import { XcItem } from '../../shared/xc-item';
@@ -55,12 +55,12 @@ export class XcRichListItemRef {
 
 export abstract class XcRichListItemComponent<R = void, D = void> extends XcDynamicDismissableComponent<R, D> {
 
-    private readonly richListItemRef: XcRichListItemRef;
+    private readonly richListItemRef = inject(XcRichListItemRef, {
+        optional: true
+    });
 
-
-    constructor(@Optional() readonly injector: Injector) {
+    constructor() {
         super();
-        this.richListItemRef = injector.get<XcRichListItemRef>(XcRichListItemRef);
     }
 
 

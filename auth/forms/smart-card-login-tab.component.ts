@@ -15,13 +15,13 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, Injector, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { XcTabComponent } from '../../xc';
-import { LoginComponentData } from '../login/auth-login.component';
-import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
-import { XcFormAutocompleteComponent } from '../../xc/xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
+import { XcTabComponent } from '../../xc';
+import { XcFormAutocompleteComponent } from '../../xc/xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
+import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
+import { LoginComponentData } from '../login/auth-login.component';
 
 
 @Component({
@@ -41,10 +41,8 @@ export class SmartCardLoginTabComponent extends XcTabComponent<void, LoginCompon
     };
 
     constructor() {
-        const injector = inject(Injector);
+        super();
 
-        super(injector);
         this.data = this.injectedData;
     }
-
 }

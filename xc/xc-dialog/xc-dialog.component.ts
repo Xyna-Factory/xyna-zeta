@@ -39,10 +39,6 @@ export abstract class XcDialogComponent<R = void, D = void>
 
     protected _maximized = false;
 
-    constructor() {
-        super();
-    }
-
 
     ngAfterViewInit() {
         const wrapper = this.wrapper();
