@@ -1,4 +1,4 @@
-import { AsyncPipe, NgStyle } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -34,7 +34,7 @@ import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.compone
     templateUrl: './xc-tree-item.component.html',
     styleUrls: ['./xc-tree-item.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgStyle, XcIconButtonComponent, XcTooltipDirective, AsyncPipe]
+    imports: [XcIconButtonComponent, XcTooltipDirective, AsyncPipe]
 })
 export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterViewInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
