@@ -15,14 +15,13 @@
        />
     </ng-container>
     <section additionalContentItems class="stretch-full-height scroll">
-      <xc-table
-        [xc-table-datasource]="dataSource"
+      <xc-table [xc-table-datasource]="dataSource"
         xc-table-allowsort
         xc-table-allowfilter
         xc-table-allowselect
         xc-table-multiselect
         xc-table-lazyupdate
-      ></xc-table>
+       />
     </section>
     <label additionalFooterItems>{{tableCounts?.displayedCount}}/{{tableCounts?.totalCount}}</label>
   </xc-form-generic-panel>

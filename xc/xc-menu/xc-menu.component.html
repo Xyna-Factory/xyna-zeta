@@ -9,20 +9,20 @@
         <button mat-menu-item role="menuitem" [attr.aria-haspopup]="'true'" (click)="clickItem(item)" [disabled]="item.disabled" [xc-menu-trigger]="childMenu"
           [class.separator-below]="item.separator==='below'" [class.separator-above]="item.separator==='above'"
           >
-          <ng-container [ngTemplateOutlet]="content"></ng-container>
+          <ng-container [ngTemplateOutlet]="content" />
         </button>
       } @else {
         <button mat-menu-item role="menuitem" (click)="clickItem(item)" [disabled]="item.disabled" class="item"
           [class.separator-below]="item.separator==='below'" [class.separator-above]="item.separator==='above'"
           >
-          <ng-container [ngTemplateOutlet]="content"></ng-container>
+          <ng-container [ngTemplateOutlet]="content" />
         </button>
       }
       <ng-template #template>
         <button mat-menu-item role="menuitem" (click)="clickItem(item)" [disabled]="item.disabled" class="item"
           [class.separator-below]="item.separator==='below'" [class.separator-above]="item.separator==='above'"
           >
-          <ng-container [ngTemplateOutlet]="content"></ng-container>
+          <ng-container [ngTemplateOutlet]="content" />
         </button>
       </ng-template>
       <!-- content of a mat-menu-item button -->

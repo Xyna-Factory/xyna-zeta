@@ -1,8 +1,7 @@
 <div class="stack-items" >
   @for (stackItem of dataSource.stackItems; track stackItem) {
     <div class="item" #items>
-      <xc-template [xc-template-instance]="stackItem.getTemplate()">
-      </xc-template>
+      <xc-template [xc-template-instance]="stackItem.getTemplate()" />
     </div>
   }
 </div>
