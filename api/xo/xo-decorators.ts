@@ -133,25 +133,25 @@ export function XoProperty(propertyClass?: XoObjectClassInterface | XoArrayClass
             Object.defineProperty(target, key, {
                 enumerable: true,
                 get: wrapper
-                    ? function() {
+                    ? function (this: XoObject) {
                         return wrapper.wrap(this.data[sanitizedKey]);
                     }
-                    : function() {
+                    : function (this: XoObject) {
                         return this.data[sanitizedKey];
                     },
                 set: target.readonlyProperties.has(key)
-                    ? function() {}
+                    ? function (this: XoObject) {}
                     : observable
-                        ? function(value) {
+                        ? function (this: XoObject, value) {
                             if (value == null || enumValues.has(value)) {
                                 this.data[sanitizedKey] = value;
                             }
                         }
                         : wrapper
-                            ? function(value) {
+                            ? function (this: XoObject, value) {
                                 this.data[sanitizedKey] = wrapper.unwrap(value);
                             }
-                            : function(value) {
+                            : function (this: XoObject, value) {
                                 this.data[sanitizedKey] = value;
                             }
             });
