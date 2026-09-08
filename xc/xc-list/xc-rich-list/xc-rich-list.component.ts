@@ -20,7 +20,7 @@ import { Subject } from 'rxjs';
 
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { Component, ComponentRef, inject, Injector, input, QueryList, ViewChildren } from '@angular/core';
+import { Component, ComponentRef, inject, Injector, input, QueryList, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
 
 import { XcThemeableComponent } from '../../shared/xc-themeable.component';
 import { XC_RICH_LIST_ITEM_DATA, XcRichListInterface, XcRichListItem, XcRichListItemComponent, XcRichListItemRef } from './xc-rich-list-item.component';
@@ -30,6 +30,7 @@ import { XC_RICH_LIST_ITEM_DATA, XcRichListInterface, XcRichListItem, XcRichList
     selector: 'xc-rich-list',
     templateUrl: './xc-rich-list.component.html',
     styleUrls: ['./xc-rich-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [NgComponentOutlet]
 })
 export class XcRichListComponent extends XcThemeableComponent implements XcRichListInterface {
@@ -55,6 +56,8 @@ export class XcRichListComponent extends XcThemeableComponent implements XcRichL
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChildren(NgComponentOutlet)
     set componentOutlets(value: QueryList<NgComponentOutlet>) {
         const completeItems = new Array<XcRichListItem>();

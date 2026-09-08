@@ -61,6 +61,8 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
 
     private readonly _resizeOptions: XcResizeOptions = {};
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-resize-options')
     set resizeOptions(value: XcResizeOptions) {
         this._resizeOptions.all = coerceBoolean(value?.all) || true;

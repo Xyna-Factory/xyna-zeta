@@ -48,6 +48,8 @@ export class XcFormDirective implements OnDestroy {
      * 1) if a single component has more than one XcFormValidatorBaseDirective, the QueryList will only contain the first one
      * This may be a change of the Ivy Engine
      */
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ContentChildren(XcFormValidatorBaseDirective, { descendants: true })
     set validators(value: QueryList<XcFormValidatorBaseDirective>) {
         this._validators = value;

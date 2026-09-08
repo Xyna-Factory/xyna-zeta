@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, AfterViewInit, Component, ElementRef, HostBinding, inject, Input, OnDestroy, output, viewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, HostBinding, inject, Input, OnDestroy, output, viewChild, ChangeDetectionStrategy } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
@@ -29,6 +29,7 @@ import { xcPanelTranslations_enUS } from './locale/xc-panel-translations.en-US';
     selector: 'xc-panel',
     templateUrl: './xc-panel.component.html',
     styleUrls: ['./xc-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcIconButtonComponent, XcTooltipDirective]
 })
 export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDestroy {
@@ -115,6 +116,8 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-panel-aria-label')
     set ariaLabel(ariaLabel: string) {
         this._ariaLabel = ariaLabel;
@@ -131,6 +134,8 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
         return this._ariaLabel;
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @HostBinding('class.collapsable')
     @Input({alias: 'xc-panel-collapsable', transform: coerceBoolean})
     set collapsable(value: boolean) {
@@ -163,6 +168,8 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @HostBinding('class.collapsed')
     @Input({alias: 'xc-panel-collapsed', transform: coerceBoolean})
     set collapsed(value: boolean) {

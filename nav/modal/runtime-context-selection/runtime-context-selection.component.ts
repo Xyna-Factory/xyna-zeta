@@ -16,10 +16,9 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 
-import { Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { Component, inject, OnDestroy, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal, ViewChild } from '@angular/core';
 import { RuntimeContext } from '@zeta/api';
 
 import { ApiService, RuntimeContextSelectionSettings } from '../../../api/api.service';
@@ -39,6 +38,7 @@ import { runtimeContextSelection_translations_en_US } from './locale/runtime-con
 @Component({
     templateUrl: './runtime-context-selection.component.html',
     styleUrls: ['./runtime-context-selection.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcFormAutocompleteComponent, XcFormValidatorRequiredDirective, XcButtonComponent]
 })
 export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeContext, RuntimeContextSelectionSettings> implements OnDestroy {
@@ -85,6 +85,8 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChild('rtcAutocomplete', {static: false, read: XcFormAutocompleteComponent})
     set rtcAutocomplete(value: XcFormAutocompleteComponent) {
         this.subscription = value?.focus.subscribe(() => this.refresh());

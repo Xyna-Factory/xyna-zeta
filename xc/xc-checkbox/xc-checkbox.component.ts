@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, computed, ElementRef, HostBinding, inject, Input, OnInit, output, signal } from '@angular/core';
+import { AfterContentInit, Component, computed, ElementRef, HostBinding, inject, Input, OnInit, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatLabel } from '@angular/material/form-field';
 import { XcI18nTranslateDirective } from '@zeta/i18n/i18n.directive';
@@ -30,6 +30,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
     templateUrl: './xc-checkbox.component.html',
     styleUrls: ['./xc-checkbox.component.scss'],
     providers: [XcI18nTranslateDirective],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatCheckbox, MatLabel]
 })
 export class XcCheckboxComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
@@ -57,6 +58,8 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     });
     protected readonly labelTranslation = this.i18n.translateSignal(this.labelTranslationKey);
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input()
     set label(value: string) {
         this.labelKeyState.set(value || '');
@@ -96,6 +99,8 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({ transform: coerceBoolean })
     set checked(value: boolean) {
         if (this._checked !== value) {
@@ -109,6 +114,8 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({ transform: coerceBoolean })
     @HostBinding('class.disabled')
     set disabled(value: boolean) {
@@ -121,6 +128,8 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({ transform: coerceBoolean })
     @HostBinding('class.readonly')
     set readonly(value: boolean) {
@@ -133,6 +142,8 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({ transform: coerceBoolean })
     set indeterminate(value: boolean) {
         this._indeterminate = value;

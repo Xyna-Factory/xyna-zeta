@@ -18,7 +18,7 @@
 
 import { Subscription } from 'rxjs';
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/xc-form-generic-panel.component';
 import { XoFormPanelDefinition } from '../../xo/containers.model';
@@ -29,12 +29,15 @@ import { XcFormDefinitionComponent } from '../xc-form-definition/xc-form-definit
     selector: 'xc-form-panel-definition',
     templateUrl: './xc-form-panel-definition.component.html',
     styleUrls: ['./xc-form-panel-definition.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcFormGenericPanelComponent]
 })
 export class XcFormPanelDefinitionComponent extends XcFormDefinitionComponent {
 
     private closeEventSubscription: Subscription;
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-panel-definition')
     set panelDefinition(value: XoFormPanelDefinition) {
         this.definition = value;

@@ -18,7 +18,7 @@
 
 import { filter, Subscription } from 'rxjs';
 
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, ChangeDetectionStrategy } from '@angular/core';
 import { XoArray } from '@zeta/api';
 
 import { XcBaseDefinitionComponent } from '../../shared/xc-base-definition/xc-base-definition.component';
@@ -31,11 +31,14 @@ import { XcDefinitionProxyComponent } from '../xc-definition-proxy/xc-definition
     selector: 'xc-form-definition',
     templateUrl: './xc-form-definition.component.html',
     styleUrls: ['./xc-form-definition.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [forwardRef(() => XcDefinitionProxyComponent)]
 })
 export class XcFormDefinitionComponent extends XcBaseDefinitionComponent {
     private changeChildrenEventSubscription: Subscription;
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-definition')
     set formDefinition(value: XoFormDefinition) {
         this.definition = value;

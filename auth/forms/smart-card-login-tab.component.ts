@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 import { XcTabComponent } from '../../xc';
@@ -28,6 +28,7 @@ import { LoginComponentData } from '../login/auth-login.component';
     selector: 'smart-card-login-tab',
     templateUrl: './smart-card-login.component.html',
     styleUrls: ['./smart-card-login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcFormInputComponent, XcFormAutocompleteComponent, XcI18nTranslateDirective]
 })
 export class SmartCardLoginTabComponent extends XcTabComponent<void, LoginComponentData> {
@@ -44,5 +45,4 @@ export class SmartCardLoginTabComponent extends XcTabComponent<void, LoginCompon
 
         this.data = this.injectedData;
     }
-
 }

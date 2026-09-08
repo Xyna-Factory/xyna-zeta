@@ -20,7 +20,7 @@ import { filter } from 'rxjs/operators';
 
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { NgClass } from '@angular/common';
-import { Component, HostBinding, inject, Input, input, NgZone, OnDestroy, signal } from '@angular/core';
+import { Component, HostBinding, inject, Input, input, NgZone, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MatNestedTreeNode, MatTree, MatTreeNodeDef, MatTreeNodeOutlet, MatTreeNodeToggle } from '@angular/material/tree';
 
 import { coerceBoolean } from '../../base';
@@ -78,6 +78,7 @@ export interface XcTreeObserver {
     selector: 'xc-tree',
     templateUrl: './xc-tree.component.html',
     styleUrls: ['./xc-tree.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatTree, XcI18nContextDirective, XcI18nPipe, MatTreeNodeDef, MatNestedTreeNode, XcIconButtonComponent, MatTreeNodeToggle, XcTooltipDirective, NgClass, XcTemplateComponent, MatTreeNodeOutlet]
 })
 export class XcTreeComponent implements OnDestroy {
@@ -156,6 +157,8 @@ export class XcTreeComponent implements OnDestroy {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @HostBinding('class.allowselect')
     @Input({alias: 'xc-tree-allowselect', transform: coerceBoolean})
     set allowSelect(value: boolean) {
@@ -168,6 +171,8 @@ export class XcTreeComponent implements OnDestroy {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tree-multiselect', transform: coerceBoolean})
     set multiSelect(value: boolean) {
         this._multiSelect = value;
@@ -179,6 +184,8 @@ export class XcTreeComponent implements OnDestroy {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-tree-datasource')
     set dataSource(value: XcTreeDataSource<any>) {
         this.unsubscribeDataSource();

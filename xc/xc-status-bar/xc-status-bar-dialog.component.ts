@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { I18nService, LocaleService, XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n';
 import { XcSortDirection } from '../shared/xc-sort';
@@ -38,6 +38,7 @@ export interface XcStatusBarDialogData {
 @Component({
     templateUrl: './xc-status-bar-dialog.component.html',
     styleUrls: ['./xc-status-bar-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcButtonComponent, XcIconComponent, XcTableComponent]
 })
 export class XcStatusBarDialogComponent extends XcDialogComponent<boolean, XcStatusBarDialogData> {

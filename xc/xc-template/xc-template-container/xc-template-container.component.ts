@@ -19,7 +19,7 @@
 import { Observable, Subscription } from 'rxjs';
 
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, InjectionToken, OnDestroy, signal } from '@angular/core';
+import { Component, inject, InjectionToken, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { XcDynamicComponent } from '../../shared/xc-dynamic.component';
 import { XcPanelComponent } from '../../xc-panel/xc-panel.component';
@@ -32,6 +32,7 @@ import { XoTemplateDefinedBase } from './template-container-base.model';
     selector: 'xc-template-container',
     templateUrl: './xc-template-container.component.html',
     styleUrls: ['./xc-template-container.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcPanelComponent, XcTemplateComponent, AsyncPipe]
 })
 export class XcTemplateContainerComponent extends XcDynamicComponent<XoTemplateDefinedBase> implements OnDestroy {

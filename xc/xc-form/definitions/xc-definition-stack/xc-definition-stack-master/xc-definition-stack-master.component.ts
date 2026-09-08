@@ -19,7 +19,7 @@
 import { Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from '@zeta/api/config.service';
 
@@ -37,6 +37,7 @@ import { DefinitionStackItemComponentData, XcDefinitionStackItemComponent } from
     selector: 'xc-definition-stack-master',
     templateUrl: './xc-definition-stack-master.component.html',
     styleUrls: ['./xc-definition-stack-master.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcStackComponent]
 })
 export class XcDefinitionStackMasterComponent extends RouteComponent implements OnDestroy {

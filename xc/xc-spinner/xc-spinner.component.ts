@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
@@ -25,6 +25,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
     selector: 'xc-spinner',
     templateUrl: './xc-spinner.component.html',
     styleUrls: ['./xc-spinner.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatProgressSpinner]
 })
 export class XcSpinnerComponent extends XcThemeableComponent {

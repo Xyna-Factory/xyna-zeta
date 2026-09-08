@@ -17,7 +17,7 @@
  */
 
 import { NgComponentOutlet } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { I18nService } from '../i18n';
 import { AuthBackgroundComponent } from './background/auth-background.component';
@@ -27,6 +27,7 @@ import { authTranslations_enUS } from './locale/auth-translations.en-US';
 
 @Component({
     templateUrl: './auth.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [NgComponentOutlet]
 })
 export class AuthComponent {

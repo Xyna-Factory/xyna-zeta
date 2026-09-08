@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, Input, signal, output } from '@angular/core';
+import { Component, inject, Input, signal, output, ChangeDetectionStrategy } from '@angular/core';
 
 import { pack } from '../../../../../base';
 
@@ -29,6 +29,7 @@ import { Subscription } from 'rxjs';
 
 @Component({
     template: '',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./xc-base-definition.component.scss']
 })
 export class XcBaseDefinitionComponent {
@@ -106,6 +107,8 @@ export class XcBaseDefinitionComponent {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-base-definition-data')
     set definitionDataUnpacked(value: Xo[] | Xo) {
         this.definitionDataState.set(pack(value));
@@ -118,6 +121,8 @@ export class XcBaseDefinitionComponent {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-definition-observer')
     set definitionObserver(value: XoDefinitionObserver) {
         this.definitionObserverState.set(value);

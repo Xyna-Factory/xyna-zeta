@@ -17,7 +17,7 @@
  */
 import { Subscription } from 'rxjs';
 
-import { Component, HostBinding, HostListener, inject, Input, input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, HostListener, inject, Input, input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatNavList } from '@angular/material/list';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
 import { coerceBoolean } from '@zeta/base';
@@ -41,6 +41,7 @@ interface TwoWayNavListItem {
     selector: 'xc-nav-list',
     templateUrl: './xc-nav-list.component.html',
     styleUrls: ['./xc-nav-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatNavList, XcNavListItemComponent]
 })
 export class XcNavListComponent extends XcThemeableComponent implements OnInit, OnDestroy {
@@ -58,6 +59,8 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
     /**
      * If set, only the selected item (and its parents) are expanded, the rest will be collapsed automatically
      */
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-nav-list-autocollapse', transform: coerceBoolean})
     set autocollapse(value: boolean) {
         this._autocollapse = value;
@@ -67,6 +70,8 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
     /**
      * If set, nav-list shrinks to icons-only if mouse is not over it
      */
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-nav-list-shrinkable', transform: coerceBoolean})
     set shrinkable(value: boolean) {
         this._shrinkable = value;
@@ -119,6 +124,8 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-nav-list-items')
     set items(value: XcNavListItem[]) {
         this._items = value;

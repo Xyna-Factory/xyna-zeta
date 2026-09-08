@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import { AsyncPipe } from '@angular/common';
-import { AfterViewInit, Component, computed, ElementRef, inject, Input, input, OnDestroy, output, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, inject, Input, input, OnDestroy, output, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 
 import { coerceBoolean } from '../../../../base';
 import { I18nService } from '../../../../i18n';
@@ -33,6 +33,7 @@ import { ResizeEvent, XcTreeNodeComponent } from '../shared/xc-tree-node.compone
     selector: 'xc-tree-item',
     templateUrl: './xc-tree-item.component.html',
     styleUrls: ['./xc-tree-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcIconButtonComponent, XcTooltipDirective, AsyncPipe]
 })
 export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode> implements AfterViewInit, OnDestroy {
@@ -124,6 +125,8 @@ export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input()
     set node(value: XcStructureTreeNode) {
         this.subscription?.unsubscribe();
@@ -145,6 +148,8 @@ export class XcTreeItemComponent extends XcTreeNodeComponent<XcStructureTreeNode
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({ alias: 'xc-tree-item-keep-breaks', transform: coerceBoolean })
     set keepBreaks(value: boolean) {
         this._keepBreaks = value;

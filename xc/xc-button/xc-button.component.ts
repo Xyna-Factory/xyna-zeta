@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentChecked, Component, computed, effect, OnInit, signal } from '@angular/core';
+import { AfterContentChecked, Component, computed, effect, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
@@ -27,6 +27,7 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
     selector: 'xc-button',
     templateUrl: './xc-button.component.html',
     styleUrls: ['./xc-button-base.component.scss', './xc-button.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatButton, MatRipple, XcProgressBarComponent]
 })
 export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, AfterContentChecked {

@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { Component, effect, forwardRef, input, numberAttribute } from '@angular/core';
+import { Component, effect, forwardRef, input, numberAttribute, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -30,6 +30,7 @@ import { XcFormBaseComponent } from '../xc-form-base/xc-form-base.component';
     templateUrl: './xc-form-textarea.component.html',
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-textarea.component.scss'],
     providers: [{ provide: XcFormBaseComponent, useExisting: forwardRef(() => XcFormTextareaComponent) }],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, CdkTextareaAutosize, MatError]
 })
 export class XcFormTextareaComponent extends XcFormBaseComponent {

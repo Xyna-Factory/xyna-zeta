@@ -55,6 +55,8 @@ export class XcI18nContextDirective extends XcI18nBase implements OnInit {
 
     private context: string;
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-i18n-context')
     set i18nContext(value: string) {
         this.context = value;

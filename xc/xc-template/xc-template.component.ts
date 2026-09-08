@@ -17,7 +17,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NgComponentOutlet } from '@angular/common';
-import { Component, effect, HostBinding, HostListener, inject, Injector, input } from '@angular/core';
+import { Component, effect, HostBinding, HostListener, inject, Injector, input, ChangeDetectionStrategy } from '@angular/core';
 
 import { coerceBoolean, templateClassType } from '../../base';
 import { XcDataWrapper } from '../shared/xc-data-wrapper';
@@ -40,6 +40,7 @@ import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
     selector: 'xc-template',
     templateUrl: './xc-template.component.html',
     styleUrls: ['./xc-template.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcFormTextComponent, XcTooltipDirective, XcDefinitionListEntryComponent, XcUnwrapDirective, XcFormAutocompleteComponent, XcFormValidatorsDirective, XcFormValidatorRequiredDirective, XcFormInputComponent, XcFormTextareaComponent, XcCheckboxComponent, XcButtonComponent, XcIconComponent, XcIconButtonComponent, NgComponentOutlet]
 })
 export class XcTemplateComponent {

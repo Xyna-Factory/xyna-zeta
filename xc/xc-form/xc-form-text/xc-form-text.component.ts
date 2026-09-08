@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatLabel } from '@angular/material/form-field';
 
 import { XcFormComponent } from '../xc-form-base/xc-form-base.component';
@@ -25,6 +25,7 @@ import { XcFormComponent } from '../xc-form-base/xc-form-base.component';
     selector: 'xc-form-text',
     templateUrl: './xc-form-text.component.html',
     styleUrls: ['./xc-form-text.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatLabel]
 })
 export class XcFormTextComponent extends XcFormComponent {

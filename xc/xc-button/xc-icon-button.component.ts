@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, computed, effect, ElementRef, HostBinding, inject, Input, input, Renderer2, signal } from '@angular/core';
+import { Component, computed, effect, ElementRef, HostBinding, inject, Input, input, Renderer2, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
@@ -29,6 +29,7 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
     selector: 'xc-icon-button',
     templateUrl: './xc-icon-button.component.html',
     styleUrls: ['./xc-button-base.component.scss', './xc-icon-button.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatIconButton, MatRipple, XcIconComponent, XcProgressBarComponent]
 })
 export class XcIconButtonComponent extends XcButtonBaseComponent {
@@ -49,6 +50,8 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
     });
     private readonly iconAriaLabelTranslation = this.i18n.translateSignal(this.iconAriaLabelTranslationKey);
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-icon-name')
     set iconName(value: string) {
         this.iconNameState.set(value || '');
@@ -74,12 +77,16 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-button-aria-label')
     set ariaLabel(value: string) {
         super.ariaLabel = value;
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-icon-material', transform: coerceBoolean})
     set iconMaterial(value: boolean) {
         this._iconMaterial = value;
@@ -91,6 +98,8 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-icon-svg', transform: coerceBoolean})
     set iconSvg(value: boolean) {
         this._iconSvg = value;

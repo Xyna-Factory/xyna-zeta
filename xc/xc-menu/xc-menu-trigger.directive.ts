@@ -36,6 +36,8 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
     readonly xcMenuTriggerEmitter = output({ alias: 'xc-menu-trigger' });
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-menu-trigger')
     set xcMenuTrigger(value: XcMenuComponentInterface) {
         this.menu = value?.menu;

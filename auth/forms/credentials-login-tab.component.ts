@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { XcI18nTranslateDirective } from '@zeta/i18n';
 
 import { XcTabComponent } from '../../xc';
@@ -27,6 +27,7 @@ import { LoginComponentData } from '../login/auth-login.component';
     selector: 'credentials-login-tab',
     templateUrl: './credentials-login.component.html',
     styleUrls: ['./credentials-login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcFormInputComponent, XcI18nTranslateDirective]
 })
 export class CredentialsLoginTabComponent extends XcTabComponent<void, LoginComponentData> {

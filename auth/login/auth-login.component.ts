@@ -18,7 +18,7 @@
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, filter, finalize } from 'rxjs/operators';
 
-import { Component, effect, inject, signal, viewChild } from '@angular/core';
+import { Component, effect, inject, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ConfigService } from '@zeta/api/config.service';
 
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
@@ -66,6 +66,7 @@ interface LoginTabItem extends XcTabBarItem<LoginComponentData> {
     selector: 'auth-login',
     templateUrl: './auth-login.component.html',
     styleUrls: ['./auth-login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcPanelComponent, XcI18nContextDirective, XcIconComponent, XcI18nTranslateDirective, XcLanguageSelectorComponent, XcTabBarComponent, SmartCardLoginComponent, CredentialsLoginComponent, WorkflowLoginComponent, XcButtonComponent]
 })
 export class AuthLoginComponent {

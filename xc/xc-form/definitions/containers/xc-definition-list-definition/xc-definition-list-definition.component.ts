@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, effect, forwardRef, input } from '@angular/core';
+import { Component, effect, forwardRef, input, ChangeDetectionStrategy } from '@angular/core';
 
 import { XoDefinitionListDefinition } from '../../xo/containers.model';
 import { XcDefinitionProxyComponent } from '../xc-definition-proxy/xc-definition-proxy.component';
@@ -27,6 +27,7 @@ import { XcDefinitionListUnwrapDirective } from './xc-dl-unwrap.directive';
     selector: 'xc-definition-list-definition',
     templateUrl: './xc-definition-list-definition.component.html',
     styleUrls: ['./xc-definition-list-definition.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [forwardRef(() => XcDefinitionProxyComponent), XcDefinitionListUnwrapDirective]
 })
 export class XcDefinitionListDefinitionComponent extends XcFormDefinitionComponent {

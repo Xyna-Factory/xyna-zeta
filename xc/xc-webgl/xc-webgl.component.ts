@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Component, ElementRef, HostBinding, HostListener, inject, NgZone, OnDestroy, input, output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, HostListener, inject, NgZone, OnDestroy, input, output, ChangeDetectionStrategy } from '@angular/core';
 
 import { downloadFile, MimeTypes, NOP } from '@zeta/base';
 
@@ -43,6 +43,7 @@ export interface XcWebGLInteraction {
 @Component({
     selector: 'xc-webgl',
     templateUrl: './xc-webgl.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./xc-webgl.component.scss'],
 })
 export class XcWebGLComponent implements AfterViewInit, OnDestroy {

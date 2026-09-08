@@ -19,7 +19,7 @@
 import { Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 
-import { Component, inject, Input, OnDestroy } from '@angular/core';
+import { Component, inject, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { pack } from '@zeta/base';
 
 import { ApiService, XynaMonitoringLevel, XynaPriority } from '../../../../../api';
@@ -39,6 +39,7 @@ import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-f
     selector: 'xc-table-panel-definition',
     templateUrl: './xc-table-panel-definition.component.html',
     styleUrls: ['./xc-table-panel-definition.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcFormGenericPanelComponent, XcButtonComponent, XcIconButtonComponent, XcTooltipDirective, XcTableComponent, XcI18nPipe]
 })
 export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionComponent implements OnDestroy {
@@ -62,6 +63,8 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-table-definition')
     set tableDefinition(value: XoTablePanelDefinition) {
         this.definition = value;

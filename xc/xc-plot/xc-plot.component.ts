@@ -19,7 +19,7 @@
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 
 import { MouseEventType, XcCanvasMouseEventsOption } from '../xc-canvas/xc-canvas-helper.class';
 import { XcCanvasComponent, XcCanvasController, XcCanvasObserver } from '../xc-canvas/xc-canvas.component';
@@ -31,6 +31,7 @@ import { XcPlotDataSource } from './xc-plot-data-source';
     selector: 'xc-plot',
     templateUrl: './xc-plot.component.html',
     styleUrls: ['./xc-plot.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcCanvasComponent]
 })
 export class XcPlotComponent implements OnDestroy, XcCanvasController, XcCanvasObserver {
@@ -42,6 +43,8 @@ export class XcPlotComponent implements OnDestroy, XcCanvasController, XcCanvasO
 
     stepEveryXFrame = 0;
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChild(XcCanvasComponent, {static: true})
     set canvasComponent(value: XcCanvasComponent) {
         this._canvasComponent = value;
@@ -61,6 +64,8 @@ export class XcPlotComponent implements OnDestroy, XcCanvasController, XcCanvasO
     /**
      * @deprecated - use dataSourceContainer instead
      */
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input()
     set dataSource(value: XcPlotDataSource) {
         this.dataSourceContainerChangeSubject.next([value]);
@@ -80,6 +85,8 @@ export class XcPlotComponent implements OnDestroy, XcCanvasController, XcCanvasO
         return this.dataSourceContainerChangeSubject.asObservable().pipe(map(container => container?.[0]));
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input()
     set dataSourceContainer(value: XcPlotDataSource[]) {
         this.dataSourceContainerChangeSubject.next(value);

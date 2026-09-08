@@ -19,7 +19,7 @@
 import { BehaviorSubject, combineLatest, Observable, of, Subscription } from 'rxjs';
 import { filter, map, switchMapTo } from 'rxjs/operators';
 
-import { AfterViewInit, Component, effect, ElementRef, inject, Input, OnDestroy, viewChildren } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, inject, Input, OnDestroy, viewChildren, ChangeDetectionStrategy } from '@angular/core';
 import { coerceBoolean, retrieveFocusableElements, scrollToElement } from '@zeta/base';
 import { I18nService } from '@zeta/i18n';
 
@@ -42,6 +42,7 @@ export interface XcStackInterface {
     selector: 'xc-stack',
     templateUrl: './xc-stack.component.html',
     styleUrls: ['./xc-stack.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcTemplateComponent, XcButtonComponent, XcTooltipDirective]
 })
 export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDestroy {
@@ -76,6 +77,8 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-stack-items')
     set dataSource(values: XcStackDataSource) {
         this.dataSourceSubscription?.unsubscribe();
@@ -109,6 +112,8 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-stack-active', transform: coerceBoolean})
     set active(value: boolean) {
         this._activeSubject.next(value);

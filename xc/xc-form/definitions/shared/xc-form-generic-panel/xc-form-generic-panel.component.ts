@@ -17,7 +17,7 @@
  */
 
 import { AsyncPipe } from '@angular/common';
-import { Component, computed, forwardRef, Input, input, output, signal } from '@angular/core';
+import { Component, computed, forwardRef, Input, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { Xo } from '../../../../../api';
 import { XcI18nPipe } from '../../../../../i18n';
@@ -32,6 +32,7 @@ import { XoFormPanelDefinition } from '../../xo/containers.model';
     selector: 'xc-form-generic-panel',
     templateUrl: './xc-form-generic-panel.component.html',
     styleUrls: ['./xc-form-generic-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcPanelComponent, forwardRef(() => XcDefinitionProxyComponent), XcIconButtonComponent, XcTooltipDirective, AsyncPipe, XcI18nPipe]
 })
 export class XcFormGenericPanelComponent {
@@ -53,6 +54,8 @@ export class XcFormGenericPanelComponent {
     readonly closed = output<void>();
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-definition')
     set definition(value: XoFormPanelDefinition) {
         this.definitionState.set(value);

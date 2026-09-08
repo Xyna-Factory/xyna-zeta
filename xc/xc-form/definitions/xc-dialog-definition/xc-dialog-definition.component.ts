@@ -17,7 +17,7 @@
  */
 import { filter, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
-import { Component, inject, Injector, signal } from '@angular/core';
+import { Component, inject, Injector, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ApiService, StartOrderOptionsBuilder, Xo, XoManagedFileID, XoXPRCRuntimeContext, XoXPRCRuntimeContextFromRuntimeContext } from '@zeta/api';
 import { ConfigService } from '@zeta/api/config.service';
 import { pack } from '@zeta/base';
@@ -37,6 +37,7 @@ import { XoStartOrderButtonDefinition } from '../xo/item-definition.model';
 @Component({
     templateUrl: './xc-dialog-definition.component.html',
     styleUrls: ['./xc-dialog-definition.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcDialogWrapperComponent, XcFormDirective, XcI18nContextDirective, XcI18nTranslateDirective, XcDefinitionProxyComponent, XcButtonComponent]
 })
 export class XcDialogDefinitionComponent extends XcDialogComponent<Xo[], XoDefinitionBundle> implements XoDefinitionObserver {

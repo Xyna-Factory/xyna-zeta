@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 import { XcTabComponent } from '../../xc';
@@ -27,6 +27,7 @@ import { LoginComponentData } from '../login/auth-login.component';
     selector: 'workflow-login-tab',
     templateUrl: './workflow-login.component.html',
     styleUrls: ['./workflow-login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcFormInputComponent, XcI18nTranslateDirective]
 })
 export class WorkflowLoginTabComponent extends XcTabComponent<void, LoginComponentData> {

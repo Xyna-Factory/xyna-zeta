@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
@@ -33,6 +33,7 @@ import { XcFormBaseInputComponent } from '../xc-form-base/xc-form-baseinput.comp
     templateUrl: './xc-form-input.component.html',
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-input.component.scss'],
     providers: [{ provide: XcFormBaseComponent, useExisting: forwardRef(() => XcFormInputComponent) }],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatFormField, XcI18nContextDirective, XcI18nPipe, MatLabel, MatInput, ReactiveFormsModule, MatError, MatIconButton, MatSuffix, XcTooltipDirective, MatIcon]
 })
 export class XcFormInputComponent extends XcFormBaseInputComponent {

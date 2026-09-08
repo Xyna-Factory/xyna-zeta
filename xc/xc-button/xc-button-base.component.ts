@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, computed, ElementRef, HostBinding, HostListener, inject, Input, OnInit, signal, input, viewChild } from '@angular/core';
+import { AfterContentInit, Component, computed, ElementRef, HostBinding, HostListener, inject, Input, OnInit, signal, input, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatRipple } from '@angular/material/core';
 
 import { coerceBoolean } from '../../base';
@@ -24,6 +24,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
 
 
 @Component({ 
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: ''
 })
 export class XcButtonBaseComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
@@ -91,6 +92,8 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({transform: coerceBoolean})
     set tabDisabled(value: boolean) {
         this.tabDisabledState.set(value);
@@ -102,6 +105,8 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @HostBinding('class.disabled')
     @Input({transform: coerceBoolean})
     set disabled(value: boolean) {
@@ -114,6 +119,8 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @HostBinding('class.busy')
     @Input({transform: coerceBoolean})
     set busy(value: boolean) {
@@ -131,12 +138,16 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-focus-initial', transform: coerceBoolean})
     set focusInitial(value: boolean) {
         this.focusInitialState.set(value);
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-button-aria-label')
     set ariaLabel(value: string) {
         this.setAriaLabel(value);

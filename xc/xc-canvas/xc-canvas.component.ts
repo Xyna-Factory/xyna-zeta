@@ -17,7 +17,7 @@
  */
 import { Observable, Subject, Subscription } from 'rxjs';
 
-import { Component, ElementRef, inject, Input, NgZone, OnDestroy, OnInit, input, output } from '@angular/core';
+import { Component, ElementRef, inject, Input, NgZone, OnDestroy, OnInit, input, output, ChangeDetectionStrategy } from '@angular/core';
 
 import { coerceBoolean, isNumber, timeString } from '../../base';
 import { CanvasHelperRecording, MouseEventType, ScreenInfo, XcCanvasHelper, XcCanvasMouseEventsOption } from './xc-canvas-helper.class';
@@ -116,6 +116,7 @@ export interface XcCanvasObserver {
 @Component({
     selector: 'xc-canvas',
     templateUrl: './xc-canvas.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./xc-canvas.component.scss']
 })
 export class XcCanvasComponent implements OnInit, OnDestroy {
@@ -196,6 +197,8 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
 }, { alias: "xc-canvas-mouseeventsoption" });
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-canvas-fitting', transform: coerceBoolean})
     set fitting(value: boolean) {
         this._fittingToParent = value;

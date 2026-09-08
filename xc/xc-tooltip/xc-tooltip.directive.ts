@@ -125,6 +125,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
         return this.resolvedTooltip();
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tooltip-islabel', transform: coerceBoolean})
     set tooltipIsLabel(value: boolean) {
         this._isLabel = value;
@@ -136,6 +138,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
      * in some widgets (like <xc-tree>) the tooltip is only spoken out if the source element is focused before
      * the tooltip appears, which is not the case. xc-tooltip-impolite rea
      */
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tooltip-impolite', transform: coerceBoolean})
     set impolite(value: boolean) {
         this._impolite = value;
@@ -148,6 +152,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
     /* @Input check for backward compatibility */
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-tooltip-position')
     set _xc_position(value: (XcPreviousTooltipPosition | XcTooltipPosition) | (XcPreviousTooltipPosition | XcTooltipPosition)[]) {
         if (isArray(value)) {
@@ -169,21 +175,29 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tooltip-disabled', transform: coerceBoolean})
     set _xc_disabled(value: boolean) {
         this._disabled = value;
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tooltip-showdelay', transform: numberAttribute})
     set _xc_showDelay(value: number) {
         this._showDelay = value;
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tooltip-hidedelay', transform: numberAttribute})
     set _xc_hideDelay(value: number) {
         this._hideDelay = value;
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-tooltip-class')
     set _xc_tooltipClass(value: string | string[] | Set<string> | { [key: string]: any }) {
         let classes: string[] = [];

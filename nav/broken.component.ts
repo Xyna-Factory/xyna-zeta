@@ -15,11 +15,12 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 
 @Component({
     templateUrl: './broken.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./broken.component.scss']
 })
 export class BrokenComponent {

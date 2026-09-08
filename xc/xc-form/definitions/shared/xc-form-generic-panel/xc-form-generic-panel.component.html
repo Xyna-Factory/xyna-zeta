@@ -1,4 +1,4 @@
-<xc-panel [xc-panel-collapsable]="definition?.collapsable" [xc-panel-collapsed]="definition?.collapsed"
+<xc-panel [xc-panel-collapsable]="$safeNavigationMigration(definition?.collapsable)" [xc-panel-collapsed]="$safeNavigationMigration(definition?.collapsed)"
   class="{{classList()}}" [class.maximize]="areaValue">
   <header>
     @if (definition?.label) {
@@ -7,32 +7,32 @@
 
     @switch (definition.headersize) {
     @case (1) {
-    <h1 class="items-left items-selectable" tabindex="0">{{definition?.translate(definition?.label) | async}}</h1>
+    <h1 class="items-left items-selectable" tabindex="0">{{$safeNavigationMigration(definition?.translate($safeNavigationMigration(definition?.label))) | async}}</h1>
     }
     @case (2) {
-    <h2 class="items-left items-selectable" tabindex="0">{{definition?.translate(definition?.label) | async}}</h2>
+    <h2 class="items-left items-selectable" tabindex="0">{{$safeNavigationMigration(definition?.translate($safeNavigationMigration(definition?.label))) | async}}</h2>
     }
     @case (3) {
-    <h3 class="items-left items-selectable" tabindex="0">{{definition?.translate(definition?.label) | async}}</h3>
+    <h3 class="items-left items-selectable" tabindex="0">{{$safeNavigationMigration(definition?.translate($safeNavigationMigration(definition?.label))) | async}}</h3>
     }
     @case (4) {
-    <h4 class="items-left items-selectable" tabindex="0">{{definition?.translate(definition?.label) | async}}</h4>
+    <h4 class="items-left items-selectable" tabindex="0">{{$safeNavigationMigration(definition?.translate($safeNavigationMigration(definition?.label))) | async}}</h4>
     }
     @case (5) {
-    <h5 class="items-left items-selectable" tabindex="0">{{definition?.translate(definition?.label) | async}}</h5>
+    <h5 class="items-left items-selectable" tabindex="0">{{$safeNavigationMigration(definition?.translate($safeNavigationMigration(definition?.label))) | async}}</h5>
     }
     @case (6) {
-    <h6 class="items-left items-selectable" tabindex="0">{{definition?.translate(definition?.label) | async}}</h6>
+    <h6 class="items-left items-selectable" tabindex="0">{{$safeNavigationMigration(definition?.translate($safeNavigationMigration(definition?.label))) | async}}</h6>
     }
     }
 
     } @else {
 
     @if (!definition?.getParent()) {
-    <h1 class="items-left items-selectable" tabindex="0">{{definition?.translate(definition?.label) | async}}</h1>
+    <h1 class="items-left items-selectable" tabindex="0">{{$safeNavigationMigration(definition?.translate($safeNavigationMigration(definition?.label))) | async}}</h1>
     }
     @if (definition?.getParent()) {
-    <h2 class="items-left items-selectable" tabindex="0">{{definition?.translate(definition?.label) | async}}</h2>
+    <h2 class="items-left items-selectable" tabindex="0">{{$safeNavigationMigration(definition?.translate($safeNavigationMigration(definition?.label))) | async}}</h2>
     }
 
     }

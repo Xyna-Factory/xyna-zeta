@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, Input, effect, signal, viewChild } from '@angular/core';
+import { Component, HostBinding, Input, effect, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ValidatorFn, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 
@@ -23,6 +23,7 @@ import { XcFormBaseComponent } from './xc-form-base.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: '',
 })
 export class XcFormBaseInputComponent extends XcFormBaseComponent {
@@ -41,16 +42,22 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
     readonly input = viewChild(MatInput);
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-field-suffix')
     set suffixInput(value: 'clear' | 'nullify' | 'password' | 'dropdown' | undefined) {
         this.suffixInputState.set(value);
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('type')
     set typeInput(value: string) {
         this.typeInputState.set(value || 'text');
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-field-tab-index-suffix')
     set tabIndexSuffixInput(value: number | undefined) {
         this.tabIndexSuffixInputState.set(value);

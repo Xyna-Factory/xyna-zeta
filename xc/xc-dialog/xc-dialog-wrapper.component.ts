@@ -1,6 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, Output, Renderer2, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, Output, Renderer2, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 import { coerceBoolean } from '../../base';
@@ -31,6 +31,7 @@ export interface XcDialogOptions {
     selector: 'xc-dialog-wrapper',
     templateUrl: './xc-dialog-wrapper.component.html',
     styleUrls: ['./xc-dialog-wrapper.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [NgClass, XcResizeDirective, XcDragDirective, MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, XcIconButtonComponent]
 })
 export class XcDialogWrapperComponent implements AfterViewInit {
@@ -44,6 +45,8 @@ export class XcDialogWrapperComponent implements AfterViewInit {
     private readonly maximizableState = signal(false);
     private readonly dialogOptionsState = signal<XcDialogOptions>({});
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({transform: coerceBoolean})
     set draggable(value: boolean) {
         this.draggableState.set(value);
@@ -53,6 +56,8 @@ export class XcDialogWrapperComponent implements AfterViewInit {
         return this.draggableState();
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({transform: coerceBoolean})
     set resizable(value: boolean) {
         this.resizableState.set(value);
@@ -63,6 +68,8 @@ export class XcDialogWrapperComponent implements AfterViewInit {
         return this.resizableState();
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({transform: coerceBoolean})
     set maximized(value: boolean) {
         this.maximizedState.set(value);
@@ -78,6 +85,8 @@ export class XcDialogWrapperComponent implements AfterViewInit {
         return this.maximizedState();
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({transform: coerceBoolean})
     set maximizable(value: boolean) {
         this.maximizableState.set(value);
@@ -87,6 +96,8 @@ export class XcDialogWrapperComponent implements AfterViewInit {
         return this.maximizableState();
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-dialog-options')
     set dialogOptions(value: XcDialogOptions) {
         if (value) {

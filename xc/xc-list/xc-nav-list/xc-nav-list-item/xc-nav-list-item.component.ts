@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NgClass } from '@angular/common';
-import { Component, computed, HostBinding, inject, Input, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, HostBinding, inject, Input, input, OnInit, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, LocaleService } from '@zeta/i18n';
@@ -35,6 +35,7 @@ import { XcNavListItem, XcNavListOrientation } from '../xc-nav-list.types';
     selector: 'xc-nav-list-item',
     templateUrl: './xc-nav-list-item.component.html',
     styleUrls: ['./xc-nav-list-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatListItem, NgClass, XcIconComponent, RouterLinkActive, RouterLink, XcTooltipDirective]
 })
 export class XcNavListItemComponent extends XcThemeableComponent implements OnInit {
@@ -53,6 +54,8 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
         return this.depthInput();
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({transform: coerceBoolean})
     set shrink(value: boolean) {
         this._shrink = value;
@@ -82,6 +85,8 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input()
     set item(value: XcNavListItem) {
         this.itemState.set(value);

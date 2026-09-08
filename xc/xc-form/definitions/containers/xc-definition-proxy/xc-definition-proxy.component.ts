@@ -18,7 +18,7 @@
 import { first } from 'rxjs/operators';
 
 import { AsyncPipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { XcUnwrapDirective } from '../../../../shared/xc-unwrap.directive';
 import { XcTemplate } from '../../../../xc-template/xc-template';
@@ -38,6 +38,7 @@ import { XcTreePanelDefinitionComponent } from '../xc-tree-panel-definition/xc-t
     selector: 'xc-definition-proxy',
     templateUrl: './xc-definition-proxy.component.html',
     styleUrls: ['./xc-definition-proxy.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcPredefinedTablePanelDefinitionComponent, XcTablePanelDefinitionComponent, XcTreePanelDefinitionComponent, XcFormPanelDefinitionComponent, XcDefinitionListDefinitionComponent, XcFormDefinitionComponent, XcTemplateComponent, XcUnwrapDirective, AsyncPipe]
 })
 export class XcDefinitionProxyComponent extends XcBaseDefinitionComponent {
@@ -62,6 +63,8 @@ export class XcDefinitionProxyComponent extends XcBaseDefinitionComponent {
     ];
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-base-definition')
     set baseDefinition(value: XoBaseDefinition) {
         this.definition = value;

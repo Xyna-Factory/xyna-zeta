@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, forwardRef, inject, Input, input, numberAttribute, output, ViewChild } from '@angular/core';
+import { Component, forwardRef, inject, Input, input, numberAttribute, output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
@@ -32,6 +32,7 @@ import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPositio
     selector: 'xc-menu',
     templateUrl: './xc-menu.component.html',
     styleUrls: ['./xc-menu.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, XcI18nPipe, forwardRef(() => XcMenuComponent)],
 })
 export class XcMenuComponent {
@@ -47,6 +48,8 @@ export class XcMenuComponent {
     private _menu: XcMenu;
     readonly options: XcMenuOptions = XcMenuOptionsDefault();
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChild('matMenu', { static: true, read: MatMenu })
     set menu(value: XcMenu) {
         this._menu = value;
@@ -91,6 +94,8 @@ export class XcMenuComponent {
         return '';
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-menu-x-nextto-trigger', transform: coerceBoolean})
     set xNexttoTrigger(value: boolean) {
         this.options.xNexttoTrigger = value;
@@ -99,6 +104,8 @@ export class XcMenuComponent {
         }
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-menu-y-nextto-trigger', transform: coerceBoolean})
     set yNexttoTrigger(value: boolean) {
         this.options.yNexttoTrigger = value;
@@ -107,6 +114,8 @@ export class XcMenuComponent {
         }
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-menu-with-arrow', transform: coerceBoolean})
     set withArrow(value: boolean) {
         this.options.withArrow = value;
@@ -115,6 +124,8 @@ export class XcMenuComponent {
         }
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-menu-x-offset', transform: numberAttribute})
     set xOffset(value: number) {
         this.options.xOffset = value;
@@ -123,6 +134,8 @@ export class XcMenuComponent {
         }
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-menu-y-offset', transform: numberAttribute})
     set yOffset(value: number) {
         this.options.yOffset = value;
@@ -131,12 +144,16 @@ export class XcMenuComponent {
         }
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-menu-x-position')
     set xPosition(value: XcMenuXPosition) {
         this.options.xPosition = value;
         // no need to set value to menu, since it is via setPositionClasses
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-menu-y-position')
     set yPosition(value: XcMenuYPosition) {
         this.options.yPosition = value;

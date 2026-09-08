@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { ConfigService } from '@zeta/api/config.service';
 
 import { SelectableLanguage } from '../../api';
@@ -51,6 +51,7 @@ class ComparableLanguage extends Comparable implements SelectableLanguage {
     selector: 'xc-language-selector',
     templateUrl: './xc-language-selector.component.html',
     styleUrls: ['./xc-language-selector.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcFormAutocompleteComponent, XcI18nTranslateDirective]
 })
 export class XcLanguageSelectorComponent {

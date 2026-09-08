@@ -18,7 +18,7 @@
 
 import { Subscription } from 'rxjs';
 
-import { Component, inject, Input, OnDestroy, viewChildren } from '@angular/core';
+import { Component, inject, Input, OnDestroy, viewChildren, ChangeDetectionStrategy } from '@angular/core';
 
 import { XoDescriber, XoStructureArray, XoStructureObject } from '../../../api';
 import { coerceBoolean } from '../../../base';
@@ -34,6 +34,7 @@ import { XcTreeItemComponent } from './xc-tree-item/xc-tree-item.component';
     selector: 'xc-readonly-tree',
     templateUrl: './xc-readonly-tree.component.html',
     styleUrls: ['./xc-readonly-tree.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcTreeItemComponent]
 })
 export class XcReadonlyTreeComponent extends XcTreeNodeComponent<XcStructureTreeNode> implements OnDestroy {
@@ -90,6 +91,8 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent<XcStructureTree
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-tree-datasource')
     set dataSource(value: XcReadonlyStructureTreeDataSource) {
         this._subscription?.unsubscribe();
@@ -103,6 +106,8 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent<XcStructureTree
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({ alias: 'xc-tree-keep-breaks', transform: coerceBoolean })
     set keepBreaks(value: boolean) {
         this._keepBreaks = value;

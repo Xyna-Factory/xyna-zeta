@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, computed, effect, ElementRef, HostBinding, inject, Input, signal, output } from '@angular/core';
+import { AfterContentInit, Component, computed, effect, ElementRef, HostBinding, inject, Input, signal, output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 import { FloatLabelType } from '@angular/material/form-field';
 
@@ -31,6 +31,7 @@ const normalizeErrorMessageCase = (value: string): ErrorMessageCase => {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: '',
 })
 export class XcFormComponent implements AfterContentInit {
@@ -82,66 +83,92 @@ export class XcFormComponent implements AfterContentInit {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('label')
     set label(value: string) {
         this.labelState.set(value || '');
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-field-floatlabel')
     set floatLabelInput(value: FloatLabelType) {
         this.floatLabelInputState.set(value || 'always');
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('iconTooltip')
     set iconTooltipInput(value: string) {
         this.iconTooltipInputState.set(value || '');
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-field-aria-label')
     set ariaLabelInput(value: string) {
         this.ariaLabelInputState.set(value || '');
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-field-compact')
     set compactInput(value: boolean) {
         this.compactInputState.set(coerceBoolean(value));
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-field-indicatechanges')
     set indicateChangesInput(value: boolean) {
         this.indicateChangesInputState.set(coerceBoolean(value));
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('disabled')
     set disabledInput(value: boolean) {
         this.disabledInputState.set(coerceBoolean(value));
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('readonly')
     set readonlyInput(value: boolean) {
         this.readonlyInputState.set(coerceBoolean(value));
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('placeholder')
     set placeholderInput(value: string) {
         this.placeholderInputState.set(value || '');
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-field-tab-index')
     set tabIndexInput(value: number | undefined) {
         this.tabIndexInputState.set(value);
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('value')
     set valueInput(value: any) {
         this.valueInputState.set(value);
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-field-errorfunc')
     set errorFuncInput(value: ((key: string, data: any) => string) | undefined) {
         this.errorFuncInputState.set(value);
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-field-callback')
     set callbackInput(value: ((component: any) => void) | undefined) {
         this.callbackInputState.set(value);
@@ -241,6 +268,7 @@ export class XcFormComponent implements AfterContentInit {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: '',
 })
 export class XcFormBaseComponent extends XcFormComponent implements AfterContentInit {
@@ -252,6 +280,8 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         return explicitCase !== 'none' ? explicitCase : this.inheritedErrorMessageCaseState();
     });
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-form-field-error-message-case')
     set errorMessageCaseInput(value: string) {
         this.explicitErrorMessageCaseState.set(normalizeErrorMessageCase(value));
@@ -276,6 +306,8 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         return !this.errorVisible;
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('value')
     set valueInput(value: any) {
         this.valueInputState.set(value);

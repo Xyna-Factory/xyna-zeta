@@ -54,6 +54,8 @@ export class XcContentEditableDirective {
     readonly textChange = output<string>({ alias: 'xc-content-editable-textChange' });
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-content-editable')
     set contentEditable(mode: XcContentEditableMode) {
         this._mode = mode || 'none';
@@ -65,6 +67,8 @@ export class XcContentEditableDirective {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-content-editable-multiline', transform: coerceBoolean})
     set multiline(value: boolean) {
         this._multiline = value;
@@ -76,6 +80,8 @@ export class XcContentEditableDirective {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-content-editable-text')
     set text(value: string) {
         this.elementRef.nativeElement.textContent = value || '';

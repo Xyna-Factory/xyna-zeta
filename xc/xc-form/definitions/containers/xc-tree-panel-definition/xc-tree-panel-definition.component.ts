@@ -18,7 +18,7 @@
 
 import { Subscription } from 'rxjs';
 
-import { Component, inject, Input, OnDestroy } from '@angular/core';
+import { Component, inject, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 
 import { ApiService, RuntimeContext } from '../../../../../api';
 import { I18nService } from '../../../../../i18n';
@@ -33,6 +33,7 @@ import { XcFormPanelDefinitionComponent } from '../xc-form-panel-definition/xc-f
     selector: 'xc-tree-panel-definition',
     templateUrl: './xc-tree-panel-definition.component.html',
     styleUrls: ['./xc-tree-panel-definition.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcFormGenericPanelComponent, XcTreeComponent]
 })
 export class XcTreePanelDefinitionComponent extends XcFormPanelDefinitionComponent implements OnDestroy {
@@ -51,6 +52,8 @@ export class XcTreePanelDefinitionComponent extends XcFormPanelDefinitionCompone
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-tree-definition')
     set treeDefinition(value: XoTreePanelDefinition) {
         this.definition = value;

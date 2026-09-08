@@ -21,7 +21,7 @@ import { concatMap, distinctUntilChanged, filter, map, tap } from 'rxjs/operator
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, inject, Injector, Input, OnDestroy, output, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, inject, Injector, Input, OnDestroy, output, QueryList, signal, ViewChild, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { coerceBoolean } from '../../base';
@@ -44,6 +44,7 @@ import { XC_TAB_DATA, XcTabBarInterface, XcTabBarItem, XcTabComponent, XcTabCont
     selector: 'xc-tab-bar',
     templateUrl: './xc-tab-bar.component.html',
     styleUrls: ['./xc-tab-bar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatTabGroup, MatTab, MatTabLabel, XcIconComponent, XcTooltipDirective, XcIconButtonComponent, NgComponentOutlet, XcSpinnerComponent, XcI18nPipe, CdkDrag, CdkDropList, XcContextMenuTriggerDirective
     ]
 })
@@ -67,6 +68,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     private _reorderable = false;
     private _contextMenu = false;
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-tab-bar-items')
     set items(value: XcTabBarItem[]) {
 
@@ -83,6 +86,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         return this._items;
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tab-bar-reorderable', transform: coerceBoolean})
     set reorderable(value: boolean) {
         this._reorderable = value;
@@ -92,6 +97,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         return this._reorderable;
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tab-bar-contextmenu', transform: coerceBoolean})
     set contextMenu(value: boolean) {
         this._contextMenu = value;
@@ -175,6 +182,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-tab-bar-selection')
     set selection(value: XcTabBarItem) {
         const idx = this.items.indexOf(value);
@@ -194,6 +203,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tab-bar-showtooltips', transform: coerceBoolean})
     set showTooltips(value: boolean) {
         this._showTooltips = value;
@@ -205,6 +216,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({transform: coerceBoolean})
     set busy(value: boolean) {
         this._busySubject.next(value);
@@ -216,6 +229,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChild(MatTabGroup, { static: true })
     get tabGroup(): MatTabGroup {
         return this._tabGroup;
@@ -248,6 +263,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChildren(NgComponentOutlet)
     set componentOutlets(value: QueryList<NgComponentOutlet>) {
         const completeItems = new Array<XcTabBarItem>();

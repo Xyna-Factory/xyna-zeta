@@ -18,7 +18,7 @@
  */
 import { Observable } from 'rxjs';
 
-import { Component, DestroyRef, HostListener, inject, InjectionToken, signal, viewChild } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, InjectionToken, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
@@ -27,6 +27,7 @@ import { XcDialogWrapperComponent } from './xc-dialog-wrapper.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: '',
 })
 

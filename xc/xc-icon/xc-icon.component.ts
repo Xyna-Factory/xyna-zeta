@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, computed, effect, ElementRef, HostBinding, inject, input, Renderer2, signal } from '@angular/core';
+import { AfterContentInit, Component, computed, effect, ElementRef, HostBinding, inject, input, Renderer2, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { I18nService } from '@zeta/i18n';
 
@@ -27,6 +27,7 @@ import { XcThemeableComponent } from '../shared/xc-themeable.component';
     selector: 'xc-icon',
     templateUrl: './xc-icon.component.html',
     styleUrls: ['./xc-icon.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatIcon]
 })
 export class XcIconComponent extends XcThemeableComponent implements AfterContentInit {

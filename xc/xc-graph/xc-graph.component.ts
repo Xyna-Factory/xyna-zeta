@@ -19,7 +19,7 @@
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Box2, BufferGeometry, Color, Mesh, Object3D, OrthographicCamera, RawShaderMaterial, Scene, Shape, Vector2, Vector3, WebGLRenderer } from 'three';
 
-import { Component, inject, Input, numberAttribute, output, viewChild } from '@angular/core';
+import { Component, inject, Input, numberAttribute, output, viewChild, ChangeDetectionStrategy } from '@angular/core';
 
 import { AuthService } from '../../auth/auth.service';
 import { ceilBase, Constructor, dateString, dateTimeString, days, digits, downloadFile, factorMultiplicity, floorBase, fpint, MimeTypes, minutes, NOP, seconds, timeString } from '../../base';
@@ -1387,6 +1387,7 @@ export class XcGraphScene {
     selector: 'xc-graph',
     templateUrl: './xc-graph.component.html',
     styleUrls: ['./xc-graph.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcWebGLComponent]
 })
 export class XcGraphComponent {
@@ -1557,6 +1558,8 @@ export class XcGraphComponent {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-graph-datasources')
     set dataSources(value: XcGraphDataSource[]) {
         this.graphScenes.forEach(graphScene => graphScene.destroy());
@@ -1574,6 +1577,8 @@ export class XcGraphComponent {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-graph-columns', transform: numberAttribute})
     set columns(value: number) {
         this._columns = value || 1;

@@ -18,7 +18,7 @@
 import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
 import { debounceTime, map, startWith, tap } from 'rxjs/operators';
 
-import { AfterViewInit, Component, computed, effect, ElementRef, forwardRef, HostBinding, inject, input, NgZone, OnDestroy, output, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, forwardRef, HostBinding, inject, input, NgZone, OnDestroy, output, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
@@ -180,6 +180,7 @@ interface XcOptionInternalAutocompleteItem extends XcOptionItem {
     templateUrl: './xc-form-autocomplete.component.html',
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-autocomplete.component.scss'],
     providers: [{ provide: XcFormBaseComponent, useExisting: forwardRef(() => XcFormAutocompleteComponent) }],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatFormField, MatLabel, MatInput, ReactiveFormsModule, MatAutocompleteTrigger, MatAutocomplete, MatOption, XcTooltipDirective, XcIconComponent, MatError, MatIconButton, MatSuffix, MatIcon, XcI18nPipe, MatSelect]
 })
 export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implements AfterViewInit, OnDestroy {

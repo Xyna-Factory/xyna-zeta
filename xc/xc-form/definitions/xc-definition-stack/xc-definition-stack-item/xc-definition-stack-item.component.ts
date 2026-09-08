@@ -19,7 +19,7 @@
 import { Observable, of, Subscription, throwError } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 
-import { AfterViewInit, Component, inject, Injector, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, inject, Injector, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ConfigService } from '@zeta/api/config.service';
 import { pack } from '@zeta/base';
 
@@ -51,6 +51,7 @@ interface DefinitionStackItem {
 @Component({
     templateUrl: './xc-definition-stack-item.component.html',
     styleUrls: ['./xc-definition-stack-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcDefinitionProxyComponent]
 })
 export class XcDefinitionStackItemComponent extends XcStackItemComponent<DefinitionStackItemComponentData> implements XoDefinitionObserver, AfterViewInit, OnDestroy {

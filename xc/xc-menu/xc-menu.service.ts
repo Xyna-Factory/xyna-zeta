@@ -83,6 +83,8 @@ export class XcMenuServiceDirective implements OnDestroy {
         this.viewContainerRef.clear();
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-menu-service')
     set value(visible: boolean) {
         if (visible) {

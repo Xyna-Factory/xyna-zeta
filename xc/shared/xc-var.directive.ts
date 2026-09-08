@@ -37,6 +37,8 @@ export class XcVarDirective implements OnDestroy {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-var')
     set var(context: any) {
         this.context.$implicit = context;

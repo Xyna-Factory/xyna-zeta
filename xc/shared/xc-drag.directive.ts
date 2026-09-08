@@ -41,6 +41,8 @@ export class XcDragDirective implements OnChanges, OnDestroy {
 
     private readonly _dragOptions: XcDragOptions = {};
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-drag-options')
     set dragOptions(value: XcDragOptions) {
         this._dragOptions.dragX = coerceBoolean(value?.dragX) || true;

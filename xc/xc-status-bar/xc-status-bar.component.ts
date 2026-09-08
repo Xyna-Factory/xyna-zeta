@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, inject, signal } from '@angular/core';
+import { Component, HostBinding, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcDialogService } from '../xc-dialog/xc-dialog.service';
@@ -27,6 +27,7 @@ import { XcStatusBarEntry, XcStatusBarEntryType, XcStatusBarService } from './xc
     selector: 'xc-status-bar',
     templateUrl: './xc-status-bar.component.html',
     styleUrls: ['./xc-status-bar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [XcIconButtonComponent]
 })
 export class XcStatusBarComponent {
