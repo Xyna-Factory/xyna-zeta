@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, HostBinding, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, Input, input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
@@ -40,11 +40,9 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
     private _iconMaterial = false;
     private _iconSvg = false;
 
-    @Input('xc-icon-name')
-    iconName: string;
+    readonly iconName = input<string>(undefined, { alias: "xc-icon-name" });
 
-    @Input('xc-icon-style')
-    iconStyle: string;
+    readonly iconStyle = input<string>(undefined, { alias: "xc-icon-style" });
 
     @HostBinding('attr.size')
     @Input('xc-icon-size')
@@ -52,7 +50,8 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
 
 
     protected setAriaLabel(value: string) {
-        super.setAriaLabel(value || (this.iconName ? this.i18nService.translate(this.iconName) : ''));
+        const iconName = this.iconName();
+        super.setAriaLabel(value || (iconName ? this.i18nService.translate(iconName) : ''));
     }
 
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, HostListener, Injector, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, HostListener, Injector, Input, inject, input } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
@@ -67,8 +67,7 @@ export class XcTemplateComponent {
     private _disabled = false;
     private _markForCheckSubscription: Subscription;
 
-    @Input('xc-template-aria-label')
-    ariaLabel = '';
+    readonly ariaLabel = input('', { alias: "xc-template-aria-label" });
 
 
     @Input('xc-template-instance')

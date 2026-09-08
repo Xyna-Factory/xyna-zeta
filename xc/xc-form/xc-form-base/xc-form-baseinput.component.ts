@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, HostBinding, Input, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input, viewChild, input } from '@angular/core';
 import { ValidatorFn, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 
@@ -42,8 +42,7 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
     required = false;
 
-    @Input('xc-form-field-tab-index-suffix')
-    tabIndexSuffix?: number = -1;
+    readonly tabIndexSuffix = input<number>(-1, { alias: "xc-form-field-tab-index-suffix" });
 
     constructor() {
         super();

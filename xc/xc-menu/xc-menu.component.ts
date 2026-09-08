@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, inject, Input, numberAttribute, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, inject, Input, numberAttribute, Output, ViewChild, input } from '@angular/core';
 import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
@@ -142,8 +142,7 @@ export class XcMenuComponent {
         // no need to set value to menu, since it is via setPositionClasses
     }
 
-    @Input('xc-menu-items')
-    items = new Array<XcMenuItem>();
+    readonly items = input(new Array<XcMenuItem>(), { alias: "xc-menu-items" });
 
     @Output('xc-menu-item-select')
     readonly select = new EventEmitter<XcMenuItem>();

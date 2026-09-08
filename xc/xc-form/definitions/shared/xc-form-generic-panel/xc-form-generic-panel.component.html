@@ -41,13 +41,13 @@
     }
     <div class="items-left">
       @for (child of definition?.header?.leftArea?.children; track child ? child.stringify() : '') {
-      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
+      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData()"
         [xc-definition-observer]="definition.observer" />
       }
     </div>
     <div class="items-right">
       @for (child of definition?.header?.rightArea?.children; track child ? child.stringify() : '') {
-      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
+      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData()"
         [xc-definition-observer]="definition.observer" />
       }
       <ng-content select="[additionalHeaderItems]" />
@@ -65,7 +65,7 @@
   @if (definition?.children?.length > 0) {
   <section class="stretch scroll">
     @for (child of definition?.children; track child ? child.stringify() : '') {
-    <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
+    <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData()"
       [xc-definition-observer]="definition.observer" />
     }
   </section>
@@ -75,7 +75,7 @@
     @if (definition?.footer?.leftArea?.children) {
     <div class="items-left">
       @for (child of definition?.footer?.leftArea?.children; track child ? child.stringify() : '') {
-      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
+      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData()"
         [xc-definition-observer]="definition.observer" />
       }
     </div>
@@ -84,7 +84,7 @@
     @if (definition?.footer?.rightArea?.children) {
     <div class="items-right">
       @for (child of definition?.footer?.rightArea?.children; track child ? child.stringify() : '') {
-      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData"
+      <xc-definition-proxy [xc-base-definition]="child" [xc-base-definition-data]="definitionData()"
         [xc-definition-observer]="definition.observer" />
       }
     </div>

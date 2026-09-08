@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output, input } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
@@ -49,8 +49,7 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 
     protected subs: Subscription[] = [];
 
-    @Input('xc-form-field-floatlabel')
-    floatLabel: FloatStyle = FloatStyle.always;
+    readonly floatLabel = input<FloatStyle>(FloatStyle.always, { alias: "xc-form-field-floatlabel" });
 
     i18nContext: string;
 
@@ -105,7 +104,7 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 
     @HostBinding('class.nolabel')
     protected get _xc_nolabel(): boolean {
-        return !this.label || this.floatLabel === FloatStyle.never;
+        return !this.label || this.floatLabel() === FloatStyle.never;
     }
 
     protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
@@ -175,8 +174,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     readonly blur = new EventEmitter<FocusEvent>();
 
-    @Input('xc-form-field-errorfunc')
-    errorFunc: (key: string, data: any) => string;
+    readonly errorFunc = input<(key: string, data: any) => string>(undefined, { alias: "xc-form-field-errorfunc" });
 
 
     @Input({alias: 'xc-form-field-error-message-case', transform: normalizeErrorMessageCase})
@@ -291,15 +289,15 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         return Object.keys(this.formControl.errors).map(
             key => {
                 const data = this.formControl.errors[key];
-                const error = this.errorFunc ? this.errorFunc(key, data) : null;
+                const errorFuncValue = this.errorFunc();
+                const error = errorFuncValue ? errorFuncValue(key, data) : null;
                 const message = error || errorFunc(key, data);
                 return this.transformErrorMessageCase(message);
             }
         ).join(', ');
     }
 
-    @Input('xc-form-field-tab-index')
-    tabIndex?: number = 0;
+    readonly tabIndex = input<number>(0, { alias: "xc-form-field-tab-index" });
 
     constructor() {
         super();

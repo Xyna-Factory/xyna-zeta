@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, ElementRef, inject, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, inject, Input, OnInit, input } from '@angular/core';
 
 
 export interface XcMasterDetailFocusCandidateObserver {
@@ -40,11 +40,9 @@ export class XcMasterDetailFocusCandidateDirective implements OnInit {
     // the preexisting value of the referee should not cause the directive to focus on the element
     private _beforeInit = false;
 
-    @Input('xc-master-detail-focus-candidate')
-    moment: 'close' | 'open' | 'none' = 'none';
+    readonly moment = input<'close' | 'open' | 'none'>('none', { alias: "xc-master-detail-focus-candidate" });
 
-    @Input('xc-master-detail-focus-candidate-observer')
-    observer: XcMasterDetailFocusCandidateObserver;
+    readonly observer = input<XcMasterDetailFocusCandidateObserver>(undefined, { alias: "xc-master-detail-focus-candidate-observer" });
 
     @Input('xc-master-detail-focus-candidate-valuereferee')
     set valueReferee(value: any) {
@@ -64,15 +62,17 @@ export class XcMasterDetailFocusCandidateDirective implements OnInit {
         if (this.elementRef) {
             element = this.elementRef.nativeElement;
             if (element) {
-                element = this.observer && this.observer.delegateFocus ? this.observer.delegateFocus(element) : element;
+                const observer = this.observer();
+                element = observer && observer.delegateFocus ? observer.delegateFocus(element) : element;
                 if (element.focus) {
                     const tabIndexBackup = element.tabIndex;
                     element.tabIndex = 0;
                     element.focus();
                     element.tabIndex = tabIndexBackup;
 
-                    if (this.observer && this.observer.afterFocus) {
-                        this.observer.afterFocus(element);
+                    const observerValue = this.observer();
+                    if (observerValue && observerValue.afterFocus) {
+                        observerValue.afterFocus(element);
                     }
                 }
             }

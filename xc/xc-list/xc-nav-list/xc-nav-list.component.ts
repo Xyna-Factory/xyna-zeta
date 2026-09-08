@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit, input } from '@angular/core';
 import { MatNavList } from '@angular/material/list';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
 
@@ -53,11 +53,9 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
     private _items: XcNavListItem[];
     private _navigationSubscription: Subscription;
 
-    @Input('xc-nav-list-orientation')
-    orientation = XcNavListOrientation.TOP;
+    readonly orientation = input(XcNavListOrientation.TOP, { alias: "xc-nav-list-orientation" });
 
-    @Input('xc-nav-list-size')
-    size: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
+    readonly size = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: "xc-nav-list-size" });
 
     /**
      * If set, only the selected item (and its parents) are expanded, the rest will be collapsed automatically
@@ -137,7 +135,7 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
 
     @HostBinding('attr.orientation')
     get orientationName(): string {
-        return XcNavListOrientation[this.orientation];
+        return XcNavListOrientation[this.orientation()];
     }
 
 

@@ -1,6 +1,6 @@
 <div class="wrapper">
   @if (applicationName || iconName) {
-  <xc-icon [xc-icon-name]="iconName" [xc-icon-style]="iconStyle" xc-icon-size="large"
+  <xc-icon [xc-icon-name]="iconName" [xc-icon-style]="iconStyle()" xc-icon-size="large"
     class="title">{{applicationName}}</xc-icon>
   }
   <div class="content zeta-scrollbar">

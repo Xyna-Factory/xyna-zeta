@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, inject, Input, NgZone, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, inject, NgZone, OnDestroy, Output, input } from '@angular/core';
 
 import { downloadFile, MimeTypes, NOP } from '@zeta/base';
 
@@ -61,11 +61,9 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
     private _width: number;
     private _height: number;
 
-    @Input('xc-webgl-init')
-    init = () => {};
+    readonly init = input(() => { }, { alias: "xc-webgl-init" });
 
-    @Input('xc-webgl-destroy')
-    destroy = () => {};
+    readonly destroy = input(() => { }, { alias: "xc-webgl-destroy" });
 
     @Output('xc-webgl-resize')
     private readonly resizeEmitter = new EventEmitter<void>();
@@ -86,13 +84,13 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
         this.renderer.setClearColor(new Color(0), 1);
 
         this.elementRef.nativeElement.appendChild(this.renderer.domElement);
-        this.init();
+        this.init()();
         this.updateSize();
     }
 
 
     ngOnDestroy() {
-        this.destroy();
+        this.destroy()();
         this.elementRef.nativeElement.removeChild(this.renderer.domElement);
         this.renderer.forceContextLoss();
         this.renderer.dispose();

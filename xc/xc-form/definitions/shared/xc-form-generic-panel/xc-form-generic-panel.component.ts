@@ -16,7 +16,7 @@ import { AsyncPipe } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, Output, input } from '@angular/core';
 
 import { Xo } from '../../../../../api';
 import { XcI18nContextDirective, XcI18nPipe, XcI18nTranslateDirective } from '../../../../../i18n';
@@ -41,8 +41,7 @@ export class XcFormGenericPanelComponent {
     areaValue = false;
     classList: string;
 
-    @Input('xc-definition-data')
-    definitionData: Xo[];
+    readonly definitionData = input<Xo[]>(undefined, { alias: "xc-definition-data" });
 
     @Output()
     readonly closed = new EventEmitter<void>();

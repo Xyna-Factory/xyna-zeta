@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject, input } from '@angular/core';
 
 import { getBaseHref, isArray } from '@zeta/base';
 
@@ -39,25 +39,21 @@ export class XcTitleBarComponent {
     @Input('xc-title-bar-application-name')
     applicationName: string;
 
-    @Input('xc-title-bar-application-versions')
-    applicationVersions: string[];
+    readonly applicationVersions = input<string[]>(undefined, { alias: "xc-title-bar-application-versions" });
 
     @Input('xc-title-bar-icon-name')
     iconName: string;
 
-    @Input('xc-title-bar-icon-style')
-    iconStyle: string;
+    readonly iconStyle = input<string>(undefined, { alias: "xc-title-bar-icon-style" });
 
-    @Input('xc-title-bar-company')
-    company: string;
+    readonly company = input<string>(undefined, { alias: "xc-title-bar-company" });
 
-    @Input('xc-title-bar-year')
-    year: string;
+    readonly year = input<string>(undefined, { alias: "xc-title-bar-year" });
 
 
     private get copyright(): string {
-        const company = this.company || '';
-        const year = this.year || '';
+        const company = this.company() || '';
+        const year = this.year() || '';
         if (company || year) {
             return 'Copyright: ' + company + (company && year ? ', ' + year : '');
         }
@@ -66,8 +62,9 @@ export class XcTitleBarComponent {
 
 
     private get versions(): string {
+        const applicationVersions = this.applicationVersions();
         return 'Xyna Zeta: ' + packageInfo.version +
-               (isArray(this.applicationVersions) ? '\n\n' + this.applicationVersions.join('\n') : '');
+               (isArray(applicationVersions) ? '\n\n' + applicationVersions.join('\n') : '');
     }
 
 

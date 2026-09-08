@@ -1,9 +1,9 @@
-<mat-form-field [floatLabel]="floatLabel" xc-i18n-context="zeta.xc-form-input">
+<mat-form-field [floatLabel]="floatLabel()" xc-i18n-context="zeta.xc-form-input">
   <mat-label>{{label}}</mat-label>
 
   <input matInput autocomplete="off" [type]="type" [placeholder]="placeholder" [formControl]="formControl"
     (focus)="focus.emit($event)" (blur)="blur.emit($event)" (keydown)="onkeydown($event)"
-    [tabIndex]="disabled ? -1 : tabIndex" [attr.aria-label]="ariaLabel" [readonly]="readonly"
+    [tabIndex]="disabled ? -1 : tabIndex()" [attr.aria-label]="ariaLabel" [readonly]="readonly"
     [required]="required">
 
   @if (errorVisible) {
@@ -12,7 +12,7 @@
 
 
   @if (suffixVisible) {
-  <button type="button" mat-icon-button matSuffix [tabIndex]="(readonly || disabled) ? -1 : tabIndexSuffix"
+  <button type="button" mat-icon-button matSuffix [tabIndex]="(readonly || disabled) ? -1 : tabIndexSuffix()"
     (mousedown)="suffixMouseDown($event)" (click)="suffixClick($event)" [attr.aria-label]="iconTooltip || suffixContent"
     xc-tooltip="{{iconTooltip || (suffixContent | xcI18n)}}" [disabled]="readonly || disabled">
     <mat-icon>{{suffixContent}}</mat-icon>

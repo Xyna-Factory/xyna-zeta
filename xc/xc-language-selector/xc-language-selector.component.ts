@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 
 import { SelectableLanguage } from '../../api';
 import { Comparable } from '../../base';
@@ -59,7 +59,7 @@ export class XcLanguageSelectorComponent {
     readonly locale = inject(LocaleService);
     readonly configService = inject(ConfigService);
 
-    @Input() tabIndex?: number = 0;
+    readonly tabIndex = input<number>(0);
 
     selectLanguageDataWrapper: XcAutocompleteDataWrapper;
     hasLanguages: boolean;

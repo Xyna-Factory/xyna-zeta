@@ -1,4 +1,4 @@
-<mat-form-field [floatLabel]="floatLabel" hideRequiredMarker>
+<mat-form-field [floatLabel]="floatLabel()" hideRequiredMarker>
   <mat-label>{{label}}</mat-label>
 
   @if (multiSelect) {
@@ -63,7 +63,7 @@
       [attr.aria-controls]="autocompleteId"
       [attr.aria-expanded]="autocompleteOpened ? 'true' : 'false'"
       [attr.aria-haspopup]="'listbox'"
-      [tabIndex]="(readonly || disabled) ? -1 : tabIndex"
+      [tabIndex]="(readonly || disabled) ? -1 : tabIndex()"
       [required]="required">
 
     <!-- screen reader support -->
@@ -101,7 +101,7 @@
     <button type="button" mat-icon-button matSuffix
       (mousedown)="suffixMouseDown($event)"
       (click)="suffixClick($event)"
-      [tabIndex]="(readonly || disabled) ? -1 : tabIndexSuffix"
+      [tabIndex]="(readonly || disabled) ? -1 : tabIndexSuffix()"
       [attr.aria-label]="iconTooltip || suffixContent"
       xc-tooltip="{{iconTooltip || (suffixContent | xcI18n)}}"
       [disabled]="readonly || disabled">

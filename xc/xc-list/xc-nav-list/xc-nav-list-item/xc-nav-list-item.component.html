@@ -26,7 +26,7 @@
           xc-icon-size="small"
          />
       }
-      <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" [xc-icon-size]="size">{{shrink ? '' : item.name}}</xc-icon>
+      <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" [xc-icon-size]="size()">{{shrink ? '' : item.name}}</xc-icon>
     </a>
     @if (!shrink) {
       @if (!collapsed) {
@@ -35,9 +35,9 @@
             <li>
               <xc-nav-list-item [attr.id]="'xc-nav-list-item-depth-' + (depth+1) + '-' + i"
                 [item]="child"
-                [size]="size"
+                [size]="size()"
                 [depth]="depth+1"
-                [orientation]="orientation"
+                [orientation]="orientation()"
                 [color]="color"
                 (focusChange)="focusChange.emit($event)"
                />
@@ -60,7 +60,7 @@
     (focus)="focusChange.emit(item)"
     (blur)="focusChange.emit()"
     >
-    <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" [xc-icon-size]="size">{{shrink ? '' : item.name}}</xc-icon>
+    <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" [xc-icon-size]="size()">{{shrink ? '' : item.name}}</xc-icon>
   </a>
 }
 <!-- Case 2: It's a leaf -- ergo NO children and NO sub navigation items -->
@@ -77,6 +77,6 @@
     (focus)="focusChange.emit(item)"
     (blur)="focusChange.emit()"
     >
-    <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" [xc-icon-size]="size">{{shrink ? '' : item.name}}</xc-icon>
+    <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" [xc-icon-size]="size()">{{shrink ? '' : item.name}}</xc-icon>
   </a>
 </ng-template>

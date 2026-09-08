@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-0" #col0 [style]="{'min-width.px': firstColumnWidth, 'padding-left.px': indentation}">
+  <div class="col-0" #col0 [style]="{'min-width.px': firstColumnWidth(), 'padding-left.px': indentation}">
     @if (node.expandable) {
       <xc-icon-button class="toggle"
         color="color-black"
@@ -23,7 +23,7 @@
     <xc-tree-item [node]="childNode"
       (expand)="expand.emit($event)"
       [xc-tree-item-keep-breaks]="keepBreaks"
-      [firstColumnWidth]="firstColumnWidth"
+      [firstColumnWidth]="firstColumnWidth()"
       (widthChange)="childWidthChange($event)"
      />
   }

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, HostBinding, HostListener, inject, Input, OnDestroy, OnInit, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, HostBinding, HostListener, inject, Input, OnDestroy, OnInit, viewChild, input } from '@angular/core';
 import { MatRipple } from '@angular/material/core';
 
 import { Subscription } from 'rxjs';
@@ -43,8 +43,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
     protected subs: Subscription[] = [];
 
-    @Input()
-    type = 'button';
+    readonly type = input('button');
 
     readonly buttonElementRef = viewChild('button', { read: ElementRef });
 
@@ -161,8 +160,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
         return this._ariaLabel.translated;
     }
 
-    @Input('xc-button-tab-index')
-    tabIndex?: number = 0;
+    readonly tabIndex = input<number>(0, { alias: "xc-button-tab-index" });
 
 
     @HostListener('keydown.enter')

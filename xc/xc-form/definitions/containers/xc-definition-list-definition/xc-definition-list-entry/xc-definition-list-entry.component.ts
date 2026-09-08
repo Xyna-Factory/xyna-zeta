@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, forwardRef, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input } from '@angular/core';
 
 import { XcUnwrapDirective } from '../../../../../shared/xc-unwrap.directive';
 import { XcTemplate } from '../../../../../xc-template/xc-template';
@@ -29,9 +29,7 @@ import { XcTemplateComponent } from '../../../../../xc-template/xc-template.comp
 })
 export class XcDefinitionListEntryComponent {
 
-    @Input()
-    definitionType = '';
+    readonly definitionType = input('');
 
-    @Input()
-    definitionData: XcTemplate | string = '';
+    readonly definitionData = input<XcTemplate | string>('');
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, forwardRef, HostBinding, Input } from '@angular/core';
+import { Directive, forwardRef, HostBinding, Input, input } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 import { coerceBoolean } from '../../../base';
@@ -36,11 +36,10 @@ function isEmptyInputValue(value: any): boolean {
 })
 export class XcFormValidatorsDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
-        return this.validators;
+        return this.validators();
     }
 
-    @Input('xc-form-validators')
-    validators: ValidatorFn[];
+    readonly validators = input<ValidatorFn[]>(undefined, { alias: "xc-form-validators" });
 }
 
 
@@ -67,11 +66,10 @@ export const XcFormValidatorMaxValue = (maxValue: number): ValidatorFn => Valida
 })
 export class XcFormValidatorMaxValueDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
-        return [XcFormValidatorMaxValue(this.maxValue)];
+        return [XcFormValidatorMaxValue(this.maxValue())];
     }
 
-    @Input('xc-form-validator-maxvalue')
-    maxValue: number;
+    readonly maxValue = input<number>(undefined, { alias: "xc-form-validator-maxvalue" });
 }
 
 
@@ -84,11 +82,10 @@ export const XcFormValidatorMinValue = (minValue: number): ValidatorFn => Valida
 })
 export class XcFormValidatorMinValueDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
-        return [XcFormValidatorMinValue(this.minValue)];
+        return [XcFormValidatorMinValue(this.minValue())];
     }
 
-    @Input('xc-form-validator-minvalue')
-    minValue: number;
+    readonly minValue = input<number>(undefined, { alias: "xc-form-validator-minvalue" });
 }
 
 
@@ -101,11 +98,10 @@ export const XcFormValidatorMaxLength = (maxLength: number): ValidatorFn => Vali
 })
 export class XcFormValidatorMaxLengthDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
-        return [XcFormValidatorMaxLength(this.maxLength)];
+        return [XcFormValidatorMaxLength(this.maxLength())];
     }
 
-    @Input('xc-form-validator-maxlength')
-    maxLength: number;
+    readonly maxLength = input<number>(undefined, { alias: "xc-form-validator-maxlength" });
 }
 
 
@@ -118,11 +114,10 @@ export const XcFormValidatorMinLength = (minLength: number): ValidatorFn => Vali
 })
 export class XcFormValidatorMinLengthDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
-        return [XcFormValidatorMinLength(this.minLength)];
+        return [XcFormValidatorMinLength(this.minLength())];
     }
 
-    @Input('xc-form-validator-minlength')
-    minLength: number;
+    readonly minLength = input<number>(undefined, { alias: "xc-form-validator-minlength" });
 }
 
 
@@ -150,11 +145,10 @@ export const XcFormValidatorNumber = (format = 'decimal'): ValidatorFn => {
 })
 export class XcFormValidatorNumberDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
-        return [XcFormValidatorNumber(this.number || undefined)];
+        return [XcFormValidatorNumber(this.number() || undefined)];
     }
 
-    @Input('xc-form-validator-number')
-    number: 'hexadecimal' | 'decimal' | 'binary' | 'float';
+    readonly number = input<'hexadecimal' | 'decimal' | 'binary' | 'float'>(undefined, { alias: "xc-form-validator-number" });
 }
 
 
@@ -193,11 +187,10 @@ export const XcFormValidatorPattern = (pattern: string | RegExp): ValidatorFn =>
 })
 export class XcFormValidatorPatternDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
-        return [XcFormValidatorPattern(this.pattern)];
+        return [XcFormValidatorPattern(this.pattern())];
     }
 
-    @Input('xc-form-validator-pattern')
-    pattern: string | RegExp;
+    readonly pattern = input<string | RegExp>(undefined, { alias: "xc-form-validator-pattern" });
 }
 
 
@@ -276,12 +269,10 @@ export const XcFormValidatorCustom = (valFunction: XcCustomValidatorFunction, ar
 })
 export class XcFormValidatorCustomDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
-        return [XcFormValidatorCustom(this.validatorFunction, this.args)];
+        return [XcFormValidatorCustom(this.validatorFunction(), this.args())];
     }
 
-    @Input('xc-form-validator-custom')
-    validatorFunction: XcCustomValidatorFunction;
+    readonly validatorFunction = input<XcCustomValidatorFunction>(undefined, { alias: "xc-form-validator-custom" });
 
-    @Input('xc-form-validator-custom-arguments')
-    args: any[];
+    readonly args = input<any[]>(undefined, { alias: "xc-form-validator-custom-arguments" });
 }

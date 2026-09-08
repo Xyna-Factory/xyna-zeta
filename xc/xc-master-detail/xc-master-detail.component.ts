@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, HostListener, Input, viewChild, contentChildren } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, HostListener, Input, viewChild, contentChildren, input } from '@angular/core';
 import { MatDrawerContainer, MatDrawerContent, MatDrawer } from '@angular/material/sidenav';
 
 import { coerceBoolean } from '../../base';
@@ -50,8 +50,7 @@ export class XcMasterDetailComponent {
     @HostBinding('attr.detail-mode')
     mode: XcMasterDetailMode = 'side';
 
-    @Input('xc-master-detail-position')
-    position: XcMasterDetailPosition = 'end';
+    readonly position = input<XcMasterDetailPosition>('end', { alias: "xc-master-detail-position" });
 
 
     @Input('xc-master-detail-opened')
@@ -106,12 +105,12 @@ export class XcMasterDetailComponent {
         }
 
         if (event) {
-            const open = this.focusCandidates().find(can => can.moment === 'open');
+            const open = this.focusCandidates().find(can => can.moment() === 'open');
             if (open) {
                 open.focus();
             }
         } else {
-            const close = this.focusCandidates().find(can => can.moment === 'close');
+            const close = this.focusCandidates().find(can => can.moment() === 'close');
             if (close) {
                 close.focus();
             }

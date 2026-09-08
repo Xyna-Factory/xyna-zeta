@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AsyncPipe } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, HostBinding, inject, Input, NgZone, OnDestroy, Output, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, HostBinding, inject, Input, NgZone, OnDestroy, Output, viewChild, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { MatIconButton } from '@angular/material/button';
@@ -258,8 +258,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     /** Reference to multiselect input for focus management */
     readonly multiSelectInput = viewChild<ElementRef<HTMLInputElement>>('multiSelectInput');
 
-    @Input('xc-form-autocomplete-a11yfocusline')
-    readonly a11yFocusLine: string;
+    readonly a11yFocusLine = input<string>(undefined, { alias: "xc-form-autocomplete-a11yfocusline" });
 
     @Output('xc-form-autocomplete-optionChange')
     readonly optionChange = new EventEmitter<XcOptionItem>();
@@ -584,7 +583,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
         // TODO FIXME - it must be possible to prevent the MatAutocompleteTrigger's auto opening of the panel on focus
         // if so, we could get rid of the following a11y service method
-        const txt = this.a11yFocusLine || (this.label + ' '
+        const txt = this.a11yFocusLine() || (this.label + ' '
             + this.i18nService.translate(this.asDropdown
                 ? XcFormAutocompleteComponent.globalDropdownA11yFocusLine
                 : XcFormAutocompleteComponent.globalAutocompleteA11yFocusLine));
