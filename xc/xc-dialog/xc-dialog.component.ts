@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, HostListener, inject, InjectionToken, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, InjectionToken, viewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { XcDynamicDismissableComponent } from '../shared/xc-dynamic-dismissable.component';
@@ -35,8 +35,7 @@ export abstract class XcDialogComponent<R = void, D = void>
 
     private readonly dialogRef = inject(MatDialogRef<any>);
 
-    @ViewChild(XcDialogWrapperComponent)
-    private wrapper: XcDialogWrapperComponent;
+    private readonly wrapper = viewChild(XcDialogWrapperComponent);
 
     protected _maximized = false;
 
@@ -46,8 +45,9 @@ export abstract class XcDialogComponent<R = void, D = void>
 
 
     ngAfterViewInit() {
-        if (this.wrapper) {
-            this.wrapper.maximizedChange.subscribe(value => {
+        const wrapper = this.wrapper();
+        if (wrapper) {
+            wrapper.maximizedChange.subscribe(value => {
                 this._maximized = value;
             });
         }
@@ -70,8 +70,9 @@ export abstract class XcDialogComponent<R = void, D = void>
     toggleMaximize(event: Event) {
         this._maximized = !this._maximized;
 
-        if (this.wrapper) {
-            this.wrapper.maximized = this._maximized;
+        const wrapper = this.wrapper();
+        if (wrapper) {
+            wrapper.maximized = this._maximized;
         }
 
         event.preventDefault();

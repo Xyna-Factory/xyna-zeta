@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, ContentChildren, ElementRef, HostBinding, HostListener, Input, QueryList, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, HostListener, Input, viewChild, contentChildren } from '@angular/core';
 import { MatDrawerContainer, MatDrawerContent, MatDrawer } from '@angular/material/sidenav';
 
 import { coerceBoolean } from '../../base';
@@ -36,18 +36,15 @@ type XcMasterDetailPosition = 'start' | 'end';
 })
 export class XcMasterDetailComponent {
 
-    @ViewChild(MatDrawerContainer, { static: false })
-    private readonly _drawerContainer: MatDrawerContainer;
+    private readonly _drawerContainer = viewChild(MatDrawerContainer);
 
-    @ViewChild(MatDrawerContent, { read: ElementRef, static: false })
-    private readonly _drawerContentEl: ElementRef<HTMLElement>;
+    private readonly _drawerContentEl = viewChild(MatDrawerContent, { read: ElementRef });
 
     private _opened = false;
     private _escapable = false;
     private _sideAreaSize: XcMasterDetailSideAreaSize = 'golden';
 
-    @ContentChildren(XcMasterDetailFocusCandidateDirective, { descendants: true })
-    focusCandidates = new QueryList<XcMasterDetailFocusCandidateDirective>();
+    readonly focusCandidates = contentChildren(XcMasterDetailFocusCandidateDirective, { descendants: true });
 
     @Input('xc-master-detail-mode')
     @HostBinding('attr.detail-mode')
@@ -99,21 +96,22 @@ export class XcMasterDetailComponent {
 
     openedChange(event: boolean) {
 
-        if (this._drawerContentEl) {
+        const _drawerContentEl = this._drawerContentEl();
+        if (_drawerContentEl) {
             if (event && this.sideAreaSize === 'full') {
-                this._drawerContentEl.nativeElement.setAttribute('inert', '');
+                _drawerContentEl.nativeElement.setAttribute('inert', '');
             } else {
-                this._drawerContentEl.nativeElement.removeAttribute('inert');
+                _drawerContentEl.nativeElement.removeAttribute('inert');
             }
         }
 
         if (event) {
-            const open = this.focusCandidates.find(can => can.moment === 'open');
+            const open = this.focusCandidates().find(can => can.moment === 'open');
             if (open) {
                 open.focus();
             }
         } else {
-            const close = this.focusCandidates.find(can => can.moment === 'close');
+            const close = this.focusCandidates().find(can => can.moment === 'close');
             if (close) {
                 close.focus();
             }
@@ -124,10 +122,11 @@ export class XcMasterDetailComponent {
     resize() {
         // autosize feature of MatDrawContainer can badly effect the overall performance
         // so it is only true until the next change detection, which is triggered by setTimeout
-        if (this._drawerContainer) {
-            this._drawerContainer.autosize = true;
+        const _drawerContainer = this._drawerContainer();
+        if (_drawerContainer) {
+            _drawerContainer.autosize = true;
             // Promise.resolve().then(() => this._drawerContainer.autosize = false);
-            window.setTimeout(() => this._drawerContainer.autosize = false, 0);
+            window.setTimeout(() => this._drawerContainer().autosize = false, 0);
         }
     }
 }

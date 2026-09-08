@@ -16,7 +16,7 @@ import { AsyncPipe } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, inject, viewChild } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
@@ -46,8 +46,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
     private _node: XcStructureTreeNode;
     private _keepBreaks = false;
 
-    @ViewChild('col0')
-    column0: ElementRef;
+    readonly column0 = viewChild<ElementRef>('col0');
 
     @Output()
     readonly expand = new EventEmitter<XcStructureTreeNode>();
@@ -65,7 +64,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
 
     ngAfterViewInit() {
         // FIXME: This call is very expensive for many items
-        this.initialWidth = this.column0.nativeElement.offsetWidth;
+        this.initialWidth = this.column0().nativeElement.offsetWidth;
         this.widthChange.emit({ node: this.node, width: this.initialWidth });
     }
 

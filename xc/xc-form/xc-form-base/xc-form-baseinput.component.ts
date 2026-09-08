@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, HostBinding, Input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, Input, viewChild } from '@angular/core';
 import { ValidatorFn, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 
@@ -35,8 +35,7 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
     @Input('xc-form-field-suffix')
     suffix?: 'clear' | 'nullify' | 'password' | 'dropdown';
 
-    @ViewChild(MatInput, { static: false })
-    input: MatInput;
+    readonly input = viewChild(MatInput);
 
     @Input()
     type = 'text';
@@ -91,12 +90,12 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
 
     protected suffixClickChangedValue(unfocusedInput: boolean) {
-        this.input.focus();
+        this.input().focus();
     }
 
 
     suffixMouseDown(event: MouseEvent) {
-        this.suffixUnfocusedInput = this.input.focused;
+        this.suffixUnfocusedInput = this.input().focused;
     }
 
 
@@ -122,7 +121,7 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
 
     setFocus() {
-        this.input?.focus();
+        this.input()?.focus();
     }
 
 

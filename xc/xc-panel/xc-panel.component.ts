@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output, viewChild } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
@@ -38,7 +38,7 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
     private readonly i18n = inject(I18nService);
 
 
-    @ViewChild('toggle', { read: ElementRef }) toggleButtonRef?: ElementRef<HTMLElement>;
+    readonly toggleButtonRef = viewChild('toggle', { read: ElementRef });
 
     private static readonly headerQuerySelector = 'header';
     private static readonly headerLabelQuerySelector = XcPanelComponent.headerQuerySelector + ' > label';
@@ -92,7 +92,7 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
 
 
     ngAfterViewInit() {
-        this._toggleButtonElement = this.toggleButtonRef?.nativeElement;
+        this._toggleButtonElement = this.toggleButtonRef()?.nativeElement;
         if (this._toggleButtonElement) {
             this._toggleButtonElement.parentElement?.removeChild(this._toggleButtonElement);
         }
