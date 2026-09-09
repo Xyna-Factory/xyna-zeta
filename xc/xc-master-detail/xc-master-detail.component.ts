@@ -15,8 +15,8 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, HostListener, Input, viewChild, contentChildren, input } from '@angular/core';
-import { MatDrawerContainer, MatDrawerContent, MatDrawer } from '@angular/material/sidenav';
+import { ChangeDetectionStrategy, Component, contentChildren, ElementRef, HostBinding, HostListener, Input, input, viewChild } from '@angular/core';
+import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 
 import { coerceBoolean } from '../../base';
 import { XcMasterDetailFocusCandidateDirective } from './xc-master-detail-focuscandidate.directive';
@@ -46,9 +46,8 @@ export class XcMasterDetailComponent {
 
     readonly focusCandidates = contentChildren(XcMasterDetailFocusCandidateDirective, { descendants: true });
 
-    @Input('xc-master-detail-mode')
     @HostBinding('attr.detail-mode')
-    mode: XcMasterDetailMode = 'side';
+    readonly mode = input<XcMasterDetailMode>('side', { alias: "xc-master-detail-mode" });
 
     readonly position = input<XcMasterDetailPosition>('end', { alias: "xc-master-detail-position" });
 

@@ -16,9 +16,9 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
-import { MatProgressBar } from '@angular/material/progress-bar';
 
 
 @Component({
@@ -31,6 +31,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 export class XcProgressBarComponent extends XcThemeableComponent {
     constructor() {
         super();
-        this.color = 'primary';
+        this.defaultColor.set('primary');
     }
 }

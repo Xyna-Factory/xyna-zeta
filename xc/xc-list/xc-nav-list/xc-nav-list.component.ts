@@ -15,14 +15,13 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit, input } from '@angular/core';
+import { Subscription } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, HostBinding, HostListener, inject, Input, input, OnDestroy, OnInit } from '@angular/core';
 import { MatNavList } from '@angular/material/list';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
-
 import { coerceBoolean } from '@zeta/base';
 import { I18nService, LocaleService } from '@zeta/i18n';
-
-import { Subscription } from 'rxjs';
 
 import { XcThemeableComponent } from '../../shared/xc-themeable.component';
 import { xcNavListTranslations_deDE } from './locale/xc-nav-list-translations.de-DE';
@@ -92,7 +91,7 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
 
     constructor() {
         super();
-        this.color = 'primary';
+        this.defaultColor.set('primary');
         this.i18n.setTranslations(LocaleService.EN_US, xcNavListTranslations_enUS);
         this.i18n.setTranslations(LocaleService.DE_DE, xcNavListTranslations_deDE);
     }

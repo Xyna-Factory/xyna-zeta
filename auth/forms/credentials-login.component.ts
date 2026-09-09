@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { LoginComponentData } from '../login/auth-login.component';
 import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
@@ -31,6 +31,5 @@ import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 })
 export class CredentialsLoginComponent {
 
-    @Input()
-    data: LoginComponentData;
+    readonly data = input<LoginComponentData>(undefined);
 }

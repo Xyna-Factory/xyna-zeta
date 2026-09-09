@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 import { XcTabComponent } from '../../xc';
@@ -33,16 +33,5 @@ import { LoginComponentData } from '../login/auth-login.component';
 })
 export class SmartCardLoginTabComponent extends XcTabComponent<void, LoginComponentData> {
 
-    data: LoginComponentData = {
-        username: '',
-        onEnter: () => { },
-        usernameTabIndex: 1,
-        usernameSuffixTabIndex: 4,
-    };
-
-    constructor() {
-        super();
-
-        this.data = this.injectedData;
-    }
+    readonly data = signal<LoginComponentData>(this.injectedData);
 }

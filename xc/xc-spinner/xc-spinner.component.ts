@@ -16,9 +16,9 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 
 @Component({
@@ -31,6 +31,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 export class XcSpinnerComponent extends XcThemeableComponent {
     constructor() {
         super();
-        this.color = 'primary';
+        this.defaultColor.set('primary');
     }
 }

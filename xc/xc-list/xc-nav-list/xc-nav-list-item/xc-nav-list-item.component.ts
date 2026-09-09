@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, inject, Input, OnInit, Output, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, inject, Input, input, OnInit, Output } from '@angular/core';
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, LocaleService } from '@zeta/i18n';
@@ -70,7 +70,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
     constructor() {
         super();
-        this.color = 'primary';
+        this.defaultColor.set('primary');
         this.i18n.setTranslations(LocaleService.EN_US, xcNavListTranslations_enUS);
         this.i18n.setTranslations(LocaleService.DE_DE, xcNavListTranslations_deDE);
     }
