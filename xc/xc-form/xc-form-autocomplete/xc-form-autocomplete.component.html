@@ -1,4 +1,4 @@
-<mat-form-field [floatLabel]="floatLabel()" hideRequiredMarker>
+<mat-form-field [floatLabel]="floatLabel()" hideRequiredMarker xc-i18n-context="zeta.xc-form-input">
   <mat-label>{{label}}</mat-label>
 
   @if (multiSelect) {
@@ -102,8 +102,8 @@
       (mousedown)="suffixMouseDown($event)"
       (click)="suffixClick($event)"
       [tabIndex]="(readonly || disabled) ? -1 : tabIndexSuffix()"
-      [attr.aria-label]="iconTooltip || suffixContent"
-      xc-tooltip="{{iconTooltip || (suffixContent | xcI18n)}}"
+      [attr.aria-label]="suffixTooltip"
+      [xc-tooltip]="suffixTooltip"
       [disabled]="readonly || disabled">
       <mat-icon>{{suffixContent}}</mat-icon>
     </button>

@@ -91,6 +91,10 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
         return undefined;
     }
 
+    get suffixTooltip(): string {
+        return this.iconTooltip || this.i18n.translateSignal(`zeta.xc-form-input.${this.suffixContent}`)();
+    }
+
 
     protected suffixClickChangedValue(unfocusedInput: boolean) {
         this.input().focus();
