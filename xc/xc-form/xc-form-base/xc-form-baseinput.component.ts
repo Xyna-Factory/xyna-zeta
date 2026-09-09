@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, HostBinding, Input, viewChild, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, input, linkedSignal, viewChild } from '@angular/core';
 import { ValidatorFn, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 
@@ -31,14 +31,16 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
     private suffixToggled = false;
     private suffixUnfocusedInput = false;
 
+    readonly suffixInput = input<'clear' | 'nullify' | 'password' | 'dropdown'>(undefined, { alias: "xc-form-field-suffix" });
+
     @HostBinding('attr.suffix')
-    @Input('xc-form-field-suffix')
-    suffix?: 'clear' | 'nullify' | 'password' | 'dropdown';
+    readonly suffix = linkedSignal(() => this.suffixInput());
 
     readonly input = viewChild(MatInput);
 
-    @Input()
-    type = 'text';
+    readonly typeInput = input('text');
+
+    readonly type = linkedSignal(() => this.typeInput());
 
     required = false;
 
@@ -55,16 +57,17 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
         if (this.disabled) {
             return false;
         }
-        if (this.suffix === 'clear') {
+        const suffix = this.suffix();
+        if (suffix === 'clear') {
             return !!this.value;
         }
-        if (this.suffix === 'nullify') {
+        if (suffix === 'nullify') {
             return this.value != null;
         }
-        if (this.suffix === 'password') {
+        if (suffix === 'password') {
             return true;
         }
-        if (this.suffix === 'dropdown') {
+        if (suffix === 'dropdown') {
             return true;
         }
         return false;
@@ -72,16 +75,17 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
 
     get suffixContent(): string {
-        if (this.suffix === 'clear') {
+        const suffix = this.suffix();
+        if (suffix === 'clear') {
             return 'clear';
         }
-        if (this.suffix === 'nullify') {
+        if (suffix === 'nullify') {
             return 'clear';
         }
-        if (this.suffix === 'password') {
+        if (suffix === 'password') {
             return this.suffixToggled ? 'visibility_off' : 'visibility';
         }
-        if (this.suffix === 'dropdown') {
+        if (suffix === 'dropdown') {
             return 'expand_more';
         }
         return undefined;
@@ -103,14 +107,15 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
         if (!this.disabled && !this.readonly) {
             this.suffixToggled = !this.suffixToggled;
 
-            if (this.suffix === 'clear') {
+            const suffix = this.suffix();
+            if (suffix === 'clear') {
                 this.formControl.setValue('');
-            } else if (this.suffix === 'nullify') {
+            } else if (suffix === 'nullify') {
                 this.formControl.setValue(null);
-            } else if (this.suffix === 'password') {
-                this.type = this.suffixToggled ? 'text' : 'password';
+            } else if (suffix === 'password') {
+                this.type.set(this.suffixToggled ? 'text' : 'password');
             }
-            if (this.suffix === 'clear' || this.suffix === 'nullify') {
+            if (suffix === 'clear' || suffix === 'nullify') {
                 this.formControl.markAsDirty();
                 this.suffixClickChangedValue(this.suffixUnfocusedInput);
             }

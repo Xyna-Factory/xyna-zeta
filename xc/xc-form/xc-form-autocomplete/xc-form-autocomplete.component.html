@@ -51,7 +51,7 @@
   } @else {
     <!-- single-select mode: standard autocomplete -->
     <input matInput autocomplete="off"
-      [type]="type"
+      [type]="type()"
       [placeholder]="placeholder"
       [formControl]="formControl"
       [matAutocomplete]="auto"

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, HostBinding, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, HostBinding, Input, OnInit, inject, input } from '@angular/core';
 
 import { I18nService } from '@zeta/i18n';
 
@@ -46,9 +46,12 @@ export class XcIconComponent extends XcThemeableComponent implements OnInit, Aft
 
     i18nContext: string;
 
+    readonly iconSize = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: "xc-icon-size" });
+
     @HostBinding('attr.size')
-    @Input('xc-icon-size')
-    iconSize: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
+    get hostIconSize(): string {
+        return this.iconSize();
+    }
 
 
     @HostBinding('class.reverse-direction')

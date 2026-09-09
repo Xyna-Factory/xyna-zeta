@@ -46,8 +46,12 @@ export class XcMasterDetailComponent {
 
     readonly focusCandidates = contentChildren(XcMasterDetailFocusCandidateDirective, { descendants: true });
 
-    @HostBinding('attr.detail-mode')
     readonly mode = input<XcMasterDetailMode>('side', { alias: "xc-master-detail-mode" });
+
+    @HostBinding('attr.detail-mode')
+    get hostMode(): XcMasterDetailMode {
+        return this.mode();
+    }
 
     readonly position = input<XcMasterDetailPosition>('end', { alias: "xc-master-detail-position" });
 

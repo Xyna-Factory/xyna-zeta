@@ -44,9 +44,12 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
 
     readonly iconStyle = input<string>(undefined, { alias: "xc-icon-style" });
 
+    readonly iconSize = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: "xc-icon-size" });
+
     @HostBinding('attr.size')
-    @Input('xc-icon-size')
-    iconSize: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
+    get hostIconSize(): string {
+        return this.iconSize();
+    }
 
 
     protected setAriaLabel(value: string) {

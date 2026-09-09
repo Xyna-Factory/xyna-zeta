@@ -280,7 +280,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         if (this._multiSelect) {
             this.initMultiSelectOptions();
             // Set dropdown suffix icon so clicking the arrow opens the panel
-            this.suffix = 'dropdown';
+            this.suffix.set('dropdown');
         }
     }
     get multiSelect(): boolean {
@@ -630,7 +630,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     set asDropdown(value: boolean) {
         this._asDropdown = value;
         if (this.asDropdown) {
-            this.suffix = 'dropdown';
+            this.suffix.set('dropdown');
         }
     }
 

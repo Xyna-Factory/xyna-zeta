@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, Input, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 
 import { getBaseHref, isArray } from '@zeta/base';
 
@@ -36,13 +36,11 @@ export class XcTitleBarComponent {
     private readonly dialogService = inject(XcDialogService);
 
 
-    @Input('xc-title-bar-application-name')
-    applicationName: string;
+    readonly applicationName = input<string>(undefined, { alias: "xc-title-bar-application-name" });
 
     readonly applicationVersions = input<string[]>(undefined, { alias: "xc-title-bar-application-versions" });
 
-    @Input('xc-title-bar-icon-name')
-    iconName: string;
+    readonly iconName = input<string>(undefined, { alias: "xc-title-bar-icon-name" });
 
     readonly iconStyle = input<string>(undefined, { alias: "xc-title-bar-icon-style" });
 
@@ -70,7 +68,7 @@ export class XcTitleBarComponent {
 
     showAbout() {
         this.dialogService.about(
-            this.applicationName || 'Info',
+            this.applicationName() || 'Info',
             this.copyright,
             this.versions,
             getBaseHref() + '3rdpartylicenses.txt'
