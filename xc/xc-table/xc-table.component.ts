@@ -18,7 +18,7 @@
 import { Subscription } from 'rxjs';
 
 import { NgClass } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, OutputRefSubscription, ViewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
@@ -72,7 +72,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         template: XcFormTemplate<any, any>;
         component?: XcFormBaseComponent
     }>();
-    private readonly filterTemplateSubscriptions: Subscription[] = [];
+    private readonly filterTemplateSubscriptions: OutputRefSubscription[] = [];
 
     private tbody: HTMLTableSectionElement;
     private thead: HTMLTableSectionElement;

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, viewChild, output } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
@@ -74,8 +74,7 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
     };
 
 
-    @Output('xc-panel-collapsedChange')
-    readonly collapsedChange = new EventEmitter<boolean>();
+    readonly collapsedChange = output<boolean>({ alias: 'xc-panel-collapsedChange' });
 
 
     constructor() {

@@ -1,6 +1,6 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, Output, Renderer2, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, AfterViewInit, Component, ElementRef, inject, Input, Renderer2, viewChild, output } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 import { coerceBoolean } from '../../base';
@@ -123,8 +123,7 @@ export class XcDialogWrapperComponent implements AfterViewInit {
         return this._dialogOptions;
     }
 
-    @Output()
-    maximizedChange = new EventEmitter<boolean>();
+    readonly maximizedChange = output<boolean>();
 
 
     readonly dialogRoot = viewChild<ElementRef>('dialogRoot');

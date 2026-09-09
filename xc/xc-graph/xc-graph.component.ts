@@ -1,3 +1,6 @@
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { Box2, BufferGeometry, Color, Mesh, Object3D, OrthographicCamera, RawShaderMaterial, Scene, Shape, Vector2, Vector3, WebGLRenderer } from 'three';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,10 +18,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject, numberAttribute, viewChild } from '@angular/core';
-
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { Box2, BufferGeometry, Color, Mesh, Object3D, OrthographicCamera, RawShaderMaterial, Scene, Shape, Vector2, Vector3, WebGLRenderer } from 'three';
+import { ChangeDetectionStrategy, Component, inject, Input, numberAttribute, output, viewChild } from '@angular/core';
 
 import { AuthService } from '../../auth/auth.service';
 import { ceilBase, Constructor, dateString, dateTimeString, days, digits, downloadFile, factorMultiplicity, floorBase, fpint, MimeTypes, minutes, NOP, seconds, timeString } from '../../base';
@@ -1407,8 +1407,7 @@ export class XcGraphComponent {
 
     readonly webGL = viewChild(XcWebGLComponent);
 
-    @Output('xc-graph-resize')
-    readonly resizeEmitter = new EventEmitter<any>();
+    readonly resizeEmitter = output<any>({ alias: 'xc-graph-resize' });
 
     initFunction = this.init.bind(this);
     destroyFunction = this.destroy.bind(this);
@@ -1468,7 +1467,7 @@ export class XcGraphComponent {
                 graphScene.resize(x, y, colWidth, rowHeight);
             });
 
-            this.resizeEmitter.emit();
+            this.resizeEmitter.emit(undefined);
         }
     }
 

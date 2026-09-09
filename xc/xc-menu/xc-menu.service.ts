@@ -15,9 +15,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, Injectable, Input, OnDestroy, TemplateRef, ViewContainerRef, inject } from '@angular/core';
+import { Directive, Injectable, Input, OnDestroy, OutputRefSubscription, TemplateRef, ViewContainerRef, inject } from '@angular/core';
 
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { XcMenuComponentInterface, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault } from './xc-menu.types';
 
@@ -28,7 +28,7 @@ export class XcMenuService {
     private _component: XcMenuComponentInterface;
     private _items: XcMenuItem[];
     private _options: XcMenuOptions;
-    private readonly subscriptions = new Array<Subscription>();
+    private readonly subscriptions = new Array<OutputRefSubscription>();
     private readonly selectItem = new Subject<XcMenuItem>();
 
     constructor() {

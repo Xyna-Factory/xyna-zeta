@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,10 +17,8 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output, input } from '@angular/core';
+import { AfterContentInit, ChangeDetectionStrategy, Component, ElementRef, HostBinding, inject, Input, input, OnDestroy, output, Output } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
-
-import { Subscription } from 'rxjs';
 
 import { coerceBoolean } from '../../../base';
 import { I18nService, LocaleService } from '../../../i18n';
@@ -163,16 +163,11 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     @Output()
     readonly valueChange = this.formControl.valueChanges;
 
-    @Output()
-    readonly valueKeydown = new EventEmitter<KeyboardEvent>();
+    readonly valueKeydown = output<KeyboardEvent>();
 
-    @Output()
+    readonly focus = output<FocusEvent>();
 
-    readonly focus = new EventEmitter<FocusEvent>();
-
-    @Output()
-
-    readonly blur = new EventEmitter<FocusEvent>();
+    readonly blur = output<FocusEvent>();
 
     readonly errorFunc = input<(key: string, data: any) => string>(undefined, { alias: "xc-form-field-errorfunc" });
 

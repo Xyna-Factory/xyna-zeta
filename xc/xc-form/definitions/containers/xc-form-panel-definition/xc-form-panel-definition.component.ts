@@ -41,7 +41,7 @@ export class XcFormPanelDefinitionComponent extends XcFormDefinitionComponent {
         this.closeEventSubscription?.unsubscribe();
         if (this.panelDefinition?.closable && this.panelDefinition.triggerClose?.eventId) {
             this.closeEventSubscription = this.eventService.getDefinitionEventPayloadById(this.panelDefinition.triggerClose.eventId).subscribe(
-                () => this.closed.emit()
+                () => this.closed.emit({ definition: this.panelDefinition, data: [] })
             );
         }
     }

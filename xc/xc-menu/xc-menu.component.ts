@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, inject, Input, numberAttribute, Output, ViewChild, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, inject, Input, numberAttribute, ViewChild, input, output } from '@angular/core';
 import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
@@ -144,8 +144,7 @@ export class XcMenuComponent {
 
     readonly items = input(new Array<XcMenuItem>(), { alias: "xc-menu-items" });
 
-    @Output('xc-menu-item-select')
-    readonly select = new EventEmitter<XcMenuItem>();
+    readonly select = output<XcMenuItem>({ alias: 'xc-menu-item-select' });
 
     selectItem(item: XcMenuItem) {
         this.select.emit(item);

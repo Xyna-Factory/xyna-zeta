@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, Output, Renderer2, inject, input } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, HostListener, Input, OnDestroy, Renderer2, inject, input, output } from '@angular/core';
 
 import { fromEvent, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -87,9 +87,9 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
         return this._resizeOptions;
     }
 
-    @Output() readonly resizeBegin: EventEmitter<any> = new EventEmitter();
-    @Output() readonly resizing: EventEmitter<ResizableEvent> = new EventEmitter();
-    @Output() readonly resizeEnd: EventEmitter<ResizableEvent> = new EventEmitter();
+    readonly resizeBegin = output<any>();
+    readonly resizing = output<ResizableEvent>();
+    readonly resizeEnd = output<ResizableEvent>();
 
     element: HTMLElement;
     private subscription: Subscription;
@@ -362,7 +362,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
         this.newLeft = this.element.clientLeft;
         this.newTop = this.element.clientTop;
         event.stopPropagation();
-        this.resizeBegin.emit();
+        this.resizeBegin.emit(undefined);
     }
 
     endResize(event: MouseEvent | TouchEvent) {

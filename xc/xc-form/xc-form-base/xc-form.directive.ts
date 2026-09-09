@@ -1,3 +1,5 @@
+import { merge, Observable, Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,10 +17,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectorRef, ContentChildren, Directive, EventEmitter, OnDestroy, Output, QueryList, inject, contentChildren } from '@angular/core';
+import { ChangeDetectorRef, ContentChildren, contentChildren, Directive, inject, OnDestroy, output, QueryList } from '@angular/core';
+import { outputToObservable } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
-
-import { merge, Observable, Subscription } from 'rxjs';
 
 import { XcFormBaseComponent } from './xc-form-base.component';
 import { XcFormValidatorBaseDirective } from './xc-form-validator-base.directive';
@@ -37,8 +38,7 @@ export class XcFormDirective implements OnDestroy {
     private readonly _formControlInvalidMap = new Map<FormControl, boolean>();
     private _formControlStateChangeSubscription;
 
-    @Output('xc-form-validity-change')
-    private readonly validityChangeEmitter = new EventEmitter<XcFormDirective>();
+    readonly validityChangeEmitter = output<XcFormDirective>({ alias: 'xc-form-validity-change' });
 
     /**
      * Query all XcFormBaseComponents; No matter if they have a validator attached or not.
@@ -142,7 +142,7 @@ export class XcFormDirective implements OnDestroy {
 
 
     get validityChange(): Observable<XcFormDirective> {
-        return this.validityChangeEmitter.asObservable();
+        return outputToObservable(this.validityChangeEmitter);
     }
 
 

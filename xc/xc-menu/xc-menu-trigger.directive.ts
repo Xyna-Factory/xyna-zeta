@@ -18,7 +18,7 @@
 import { take } from 'rxjs';
 
 import { FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
-import { Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
+import { Directive, ElementRef, HostBinding, HostListener, Input, output } from '@angular/core';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 
 import { XcMenu, XcMenuComponentInterface } from './xc-menu.types';
@@ -33,8 +33,7 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
     @HostBinding('attr.aria-haspopup')
     readonly ariaHasPopup = true;
 
-    @Output('xc-menu-trigger')
-    readonly xcMenuTriggerEmitter = new EventEmitter();
+    readonly xcMenuTriggerEmitter = output({ alias: 'xc-menu-trigger' });
 
 
     @Input('xc-menu-trigger')
