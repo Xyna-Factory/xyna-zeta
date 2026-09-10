@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { XcItem } from '../../../xc/shared/xc-item';
+import { XcDynamicString, XcItem } from '../../../xc/shared/xc-item';
 
 
 export enum XcNavListOrientation {
@@ -30,5 +30,5 @@ export interface XcNavListItem extends XcItem {
     class?: string;
     children?: this[];
     collapsed?: boolean;
-    tooltip?: string;
+    tooltip?: XcDynamicString;
 }

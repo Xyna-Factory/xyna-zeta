@@ -1,3 +1,5 @@
+
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,11 +17,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, OutputRefSubscription, ViewChild } from '@angular/core';
-
-import { RuntimeContext } from '@zeta/api';
-
 import { map, tap } from 'rxjs/operators';
+
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, OutputRefSubscription, signal, ViewChild } from '@angular/core';
+import { RuntimeContext } from '@zeta/api';
 
 import { ApiService, RuntimeContextSelectionSettings } from '../../../api/api.service';
 import { XoApplication, XoApplicationArray, XoWorkspace, XoWorkspaceArray } from '../../../api/xo/xo-runtime-context';
@@ -107,7 +108,7 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
                 }
             }),
             // convert remaining runtime contexts to option items
-            map(rtcs => rtcs.map(rtc => <XcOptionItem>{name: rtc.uniqueKey.replace(RuntimeContext.SEPARATOR, ' '), value: rtc}))
+            map(rtcs => rtcs.map(rtc => <XcOptionItem>{name: signal(rtc.uniqueKey.replace(RuntimeContext.SEPARATOR, ' ')), value: rtc}))
         ).subscribe(options => {
             this.runtimeContextDataWrapper.values = options;
             this.cdr.markForCheck();

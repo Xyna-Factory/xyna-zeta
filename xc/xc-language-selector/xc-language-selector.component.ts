@@ -17,15 +17,15 @@
  */
 
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ConfigService } from '@zeta/api/config.service';
 
 import { SelectableLanguage } from '../../api';
 import { Comparable } from '../../base';
+import { LocaleService, XcI18nTranslateDirective } from '../../i18n';
 import { I18nService } from '../../i18n/i18n.service';
 import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { xcLanguageSelectorTranslations_deDE } from './locale/xc-language-selector-translations.de-DE';
 import { xcLanguageSelectorTranslations_enUS } from './locale/xc-language-selector-translations.en-US';
-import { LocaleService, XcI18nTranslateDirective } from '../../i18n';
-import { ConfigService } from '@zeta/api/config.service';
 
 
 class ComparableLanguage extends Comparable implements SelectableLanguage {
@@ -89,10 +89,10 @@ export class XcLanguageSelectorComponent {
                     }
                 }
             );
-            const mapped = languages.map(value => {
-                value.label = this.i18n.translate(value.label);
-                return { name: value.label, value: new ComparableLanguage(value) };
-            });
+            const mapped = languages.map(value => ({
+                name: this.i18n.translateSignal(value.label),
+                value: new ComparableLanguage(value)
+            }));
             this.selectLanguageDataWrapper.values = mapped;
         }
     }
