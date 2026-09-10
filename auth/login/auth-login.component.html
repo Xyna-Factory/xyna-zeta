@@ -44,9 +44,9 @@
   <footer>
     @if (privacyLinkDefined) {
       <xc-button class="items-left" (click)="openPrivacyLink()"
-      xc-i18n>privacy-button</xc-button>
+      >{{"privacy-button" | xcI18n}}</xc-button>
     }
     <xc-button class="login-button items-right" color="primary" [busy]="pending" [disabled]="pending" (click)="login()" [xc-button-tab-index]="3"
-    xc-i18n>login-button</xc-button>
+    >{{"login-button" | xcI18n}}</xc-button>
   </footer>
 </xc-panel>
