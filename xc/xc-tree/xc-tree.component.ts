@@ -165,9 +165,9 @@ export class XcTreeComponent implements OnDestroy {
 
 
     @HostBinding('class.allowselect')
-    @Input('xc-tree-allowselect')
+    @Input({alias: 'xc-tree-allowselect', transform: coerceBoolean})
     set allowSelect(value: boolean) {
-        this._allowSelect = coerceBoolean(value);
+        this._allowSelect = value;
     }
 
 
@@ -176,9 +176,9 @@ export class XcTreeComponent implements OnDestroy {
     }
 
 
-    @Input('xc-tree-multiselect')
+    @Input({alias: 'xc-tree-multiselect', transform: coerceBoolean})
     set multiSelect(value: boolean) {
-        this._multiSelect = coerceBoolean(value);
+        this._multiSelect = value;
     }
 
 

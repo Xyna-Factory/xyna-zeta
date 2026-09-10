@@ -50,11 +50,47 @@ export class XcContextMenuTriggerDirective {
         event.preventDefault();
         event.stopPropagation();
 
+        this.openMenu(event.clientX, event.clientY);
+    }
+
+
+
+    @HostListener('document:keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent): void {
+
+        const isContextMenuKey =
+            event.key === 'ContextMenu'
+            || (event.shiftKey && event.key === 'F10');
+
+        if (!isContextMenuKey || this.disabled) {
+            return;
+        }
+
+        const activeElement = document.activeElement as HTMLElement;
+
+        if (!activeElement?.closest('.mdc-tab')) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const rect = activeElement.getBoundingClientRect();
+
+        this.openMenu(rect.left, rect.bottom);
+    }
+
+
+
+    private openMenu(x: number, y: number): void {
+
         const trigger = this.contextMenuService.trigger;
 
         const open = () => {
             if (this.contextMenuItems) {
-                const items = Array.isArray(this.contextMenuItems) ? this.contextMenuItems : this.contextMenuItems?.();
+                const items = Array.isArray(this.contextMenuItems)
+                    ? this.contextMenuItems
+                    : this.contextMenuItems();
 
                 if (items) {
                     this.menuService.set(items);
@@ -64,20 +100,18 @@ export class XcContextMenuTriggerDirective {
             this.beforeOpen.emit();
 
             queueMicrotask(() => {
-                trigger?.openAt(event.clientX, event.clientY);
+                trigger?.openAt(x, y);
             });
         };
 
         if (trigger?.menuOpen) {
 
-            // Reopen the menu at the new position once the previous instance
-            // has been completely closed.
             trigger.menuClosed.pipe(take(1)).subscribe(() => open());
 
             trigger.closeMenu();
-            return;
         } else {
             open();
         }
     }
+
 }

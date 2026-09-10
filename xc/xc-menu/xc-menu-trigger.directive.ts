@@ -28,6 +28,7 @@ import { XcMenu, XcMenuComponentInterface } from './xc-menu.types';
 export class XcMenuTriggerDirective extends MatMenuTrigger {
 
     private outsideClickListener?: EventListener;
+    private previousFocusedElement?: HTMLElement;
 
     @HostBinding('attr.aria-haspopup')
     readonly ariaHasPopup = true;
@@ -134,6 +135,9 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
 
     openAt(x: number, y: number): void {
 
+        this.restoreFocus = false;
+        this.previousFocusedElement = document.activeElement as HTMLElement;
+
         const element = (this['_element'] as ElementRef).nativeElement as HTMLElement;
 
         // Move the hidden trigger element to the requested screen position.
@@ -175,6 +179,10 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
                 document.removeEventListener('mousedown', this.outsideClickListener, true);
 
                 this.outsideClickListener = undefined;
+            }
+
+            if (this.previousFocusedElement?.isConnected) {
+                this.previousFocusedElement.focus();
             }
         });
 

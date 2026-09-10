@@ -37,11 +37,13 @@ export enum XcTabMenuEntry {
 
     Pin,
 
-    ActivateLeft,
-    ActivateRight,
+    ActivateStart,
+    ActivateEnd,
 
     MoveActions,
 
+    ActivateLeft,
+    ActivateRight,
     MoveLeft,
     MoveRight,
     MoveToStart,
