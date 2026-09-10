@@ -27,7 +27,7 @@ import { XoObject } from '../../api';
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
 import { XcIdentityDataWrapper } from '../shared/xc-data-wrapper';
-import { XcOptionItemString } from '../shared/xc-item';
+import { XcDynamicString, XcOptionItemString } from '../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString, XcSortDirectionToLabel } from '../shared/xc-sort';
 import { XcVarDirective } from '../shared/xc-var.directive';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
@@ -187,7 +187,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @ViewChild(MatSort, {static: false})
+    @ViewChild(MatSort, { static: false })
     set matSort(value: MatSort) {
         this._matSort = value;
         this.matSort.sortChange.subscribe(() => this.updateDataSourceSort());
@@ -232,7 +232,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input({alias: 'xc-table-allowsort', transform: coerceBoolean})
+    @Input({ alias: 'xc-table-allowsort', transform: coerceBoolean })
     set allowSort(value: boolean) {
         this._allowSort = value;
     }
@@ -243,7 +243,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input({alias: 'xc-table-allowfilter', transform: coerceBoolean})
+    @Input({ alias: 'xc-table-allowfilter', transform: coerceBoolean })
     set allowFilter(value: boolean) {
         this._allowFilter = value;
     }
@@ -254,7 +254,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input({alias: 'xc-table-allowactivate', transform: coerceBoolean})
+    @Input({ alias: 'xc-table-allowactivate', transform: coerceBoolean })
     set allowActivate(value: boolean) {
         this._allowActivate = value;
     }
@@ -266,7 +266,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     @HostBinding('class.allowselect')
-    @Input({alias: 'xc-table-allowselect', transform: coerceBoolean})
+    @Input({ alias: 'xc-table-allowselect', transform: coerceBoolean })
     set allowSelect(value: boolean) {
         this._allowSelect = value;
     }
@@ -277,7 +277,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input({alias: 'xc-table-multiselect', transform: coerceBoolean})
+    @Input({ alias: 'xc-table-multiselect', transform: coerceBoolean })
     set multiSelect(value: boolean) {
         this._multiSelect = value;
     }
@@ -289,7 +289,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     @HostBinding('class.cellselect')
-    @Input({alias: 'xc-table-cellselect', transform: coerceBoolean})
+    @Input({ alias: 'xc-table-cellselect', transform: coerceBoolean })
     set cellSelect(value: boolean) {
         this._cellSelect = value;
     }
@@ -300,7 +300,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input({alias: 'xc-table-lazyupdate', transform: coerceBoolean})
+    @Input({ alias: 'xc-table-lazyupdate', transform: coerceBoolean })
     set lazyUpdate(value: boolean) {
         this._lazyUpdate = value;
     }
@@ -311,7 +311,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input({alias: 'xc-table-visibleactions', transform: coerceBoolean})
+    @Input({ alias: 'xc-table-visibleactions', transform: coerceBoolean })
     set visibleActions(value: boolean) {
         this._visibleActions = value;
     }
@@ -346,7 +346,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     get columnNames(): string[] {
-        return this.columns.map(column => column.name);
+        return this.columns.map(column => this.resolveDynamicString(column.name));
     }
 
 
@@ -361,7 +361,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getAriaSortForColumn(column: XcTableColumn): string {
-        if(this.dataSource.getSortPath() ===  column.path) {
+        if (this.dataSource.getSortPath() === column.path) {
             const sortDirection = this.dataSource.getSortDirection();
             return XcSortDirectionToLabel(sortDirection);
         }
@@ -374,6 +374,17 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             key: '$0',
             value: this.i18n.translate(name || 'this column')
         });
+    }
+
+    getColumnLabel(column: XcTableColumn): string {
+        const name = this.resolveDynamicString(column.name) || '';
+        return this.translateLabels ? this.i18n.translateSignal(name)() : name;
+    }
+
+    protected resolveDynamicString(value?: XcDynamicString | string): string {
+        return typeof value === 'function'
+            ? value()
+            : value ?? '';
     }
 
 
@@ -390,7 +401,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             let filter = this.filterTemplates.get(path);
             // create new template
             if (!filter) {
-                filter = {template: undefined};
+                filter = { template: undefined };
                 const filterEnum = this.dataSource.filterEnums.get(path);
                 if (filterEnum) {
                     // autocomplete template
@@ -425,7 +436,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                 }
                 filter.template.disabled = column.disableFilter;
                 filter.template.compact = true;
-                filter.template.tooltip = column.filterTooltip;
+                filter.template.tooltip = this.resolveDynamicString(column.filterTooltip);
                 filter.template.callback = component => {
                     filter.component = component;
                     // set value and option of component because the datawrapper resets unknown options when autocomplete is used as input
@@ -453,6 +464,13 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         return this.dataSource
             ? this.dataSource.resolve(row, path)
             : undefined;
+    }
+
+
+    resolveCellValue(value: XcTemplate[] | any): any {
+        return typeof value === 'function'
+            ? value()
+            : value;
     }
 
 
@@ -581,7 +599,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             // TODO - if a column.path resolves to XcTemplate it returns the template instead of a primitive
             // Possible Solution: If it resolves to XcTemplate, then it could call toString()
             // it's up to the developer that toString() returns a string with the essential information
-            const colTexts = this.columns.map<string>(column => this.i18n.translate(column.name) + ' : ' + row.resolve(column.path));
+            const colTexts = this.columns.map<string>(column => this.getColumnLabel(column) + ' : ' + this.resolveCellValue(row.resolve(column.path)));
             this._a11y.screenreaderSpeak(colTexts.join(', '), ScreenreaderPriority.Assertive);
         }
     }
@@ -685,7 +703,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         const requestErrorMessage = this.dataSource?.requestErrorMessage;
 
         if (requestErrorMessage) {
-            return this.i18n.translate(requestErrorMessage);
+            return this.i18n.translateSignal(requestErrorMessage)();
         }
 
         let dataError = 'data';
@@ -701,6 +719,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         const requestState = this.dataSource && this.dataSource.limit === 0 ? 'requested' : 'available';
         const key = `no ${dataError} ${requestState}!`;
 
-        return this.i18n.translate(key);
+        return this.i18n.translateSignal(key)();
     }
 }

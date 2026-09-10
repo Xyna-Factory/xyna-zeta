@@ -20,11 +20,12 @@ import { filter } from 'rxjs/operators';
 
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, inject, Input, NgZone, OnDestroy, input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, inject, Input, input, NgZone, OnDestroy } from '@angular/core';
 import { MatNestedTreeNode, MatTree, MatTreeNodeDef, MatTreeNodeOutlet, MatTreeNodeToggle } from '@angular/material/tree';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService, XcI18nContextDirective, XcI18nPipe } from '../../i18n';
+import { XcDynamicString } from '../shared/xc-item';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcTemplateComponent } from '../xc-template/xc-template.component';
 import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
@@ -85,6 +86,7 @@ export class XcTreeComponent implements OnDestroy {
     private readonly _i18n = inject(I18nService);
     private readonly zone = inject(NgZone);
 
+    protected readonly resolveDynamicString = (value: XcDynamicString) => value();
 
     private _allowSelect = false;
     private _multiSelect = false;
@@ -241,7 +243,7 @@ export class XcTreeComponent implements OnDestroy {
 
 
     getTemplateAriaLabelByNode(node: XcTreeNode): string {
-        return this.i18n.translate(node.name);
+        return this.i18n.translateSignal(node.name)();
     }
 
 
@@ -333,7 +335,7 @@ export class XcTreeComponent implements OnDestroy {
 
 
     getTooltip(node: XcTreeNode): string {
-        return node.tooltip || '';
+        return this.resolveDynamicString(node.tooltip) || '';
     }
 
 

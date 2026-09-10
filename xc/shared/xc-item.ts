@@ -15,12 +15,16 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { signal, Signal } from '@angular/core';
+
 import { Comparable } from '../../base';
 import { I18nService } from '../../i18n';
 
 
+export type XcDynamicString = Signal<string>;
+
 export interface XcItem {
-    name?: string;
+    name?: XcDynamicString;
     icon?: string;
     iconStyle?: string;
     disabled?: boolean;
@@ -32,9 +36,9 @@ export interface XcOptionItem<V = XcOptionItemValueType> extends XcItem {
     value: V;
 }
 
-export const XcOptionItemString    = (string = '', disabled?: boolean): XcOptionItem<string> => ({name: string, value: string, disabled});
-export const XcOptionItemUndefined = (string = '', disabled?: boolean): XcOptionItem => ({name: string, value: undefined, disabled});
-export const XcOptionItemTranslate = (i18n: I18nService, string = '', disabled?: boolean): XcOptionItem<string> => ({name: i18n.translate(string), value: string, disabled});
+export const XcOptionItemUndefined = (string = '', disabled?: boolean): XcOptionItem => ({name: signal(string), value: undefined, disabled});
+export const XcOptionItemString    = (string = '', disabled?: boolean): XcOptionItem<string> => ({name: signal(string), value: string, disabled});
+export const XcOptionItemTranslate = (i18n: I18nService, string = '', disabled?: boolean): XcOptionItem<string> => ({name: i18n.translateSignal(string), value: string, disabled});
 
 export function XcOptionItemStringOrUndefined(string?: string, disabled?: boolean): XcOptionItem<string> | undefined {
     return string !== undefined

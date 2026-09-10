@@ -29,7 +29,7 @@
                         [class.xc-tab-pinned]="item.pinned"
                     >
                         @if (!item.pinned) {
-                            {{ item.name }}
+                            {{ item.name() }}
                         }
                     </xc-icon>
                     @if (item.closable && !item.pinned) {
@@ -37,7 +37,7 @@
                             xc-tooltip="{{
                                 item.closeTooltip ||
                                     ('zeta.xc-tab-bar.close-tooltip'
-                                        | xcI18n: item.name)
+                                        | xcI18n: item.name())
                             }}"
                             xc-icon-name="close"
                             xc-icon-size="small"

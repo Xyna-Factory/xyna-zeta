@@ -33,7 +33,7 @@
       @for (option of filteredMultiSelectOptions; track option.value) {
         <mat-option [value]="option.value"
           [attr.aria-label]="getMultiSelectOptionAriaLabel(option)">
-          {{ option.name }}
+          {{ option.name() }}
         </mat-option>
       }
       <!-- action buttons in mat-select-footer -->
@@ -68,7 +68,7 @@
 
     <!-- screen reader support -->
     <div class="hidden-field" aria-live="polite" role="none">
-      {{activeOption ? activeOption.name : ''}}
+      {{activeOption ? activeOption.name() : ''}}
     </div>
 
     <mat-autocomplete class="zeta-scrollbar" #auto="matAutocomplete"
@@ -81,12 +81,12 @@
         <mat-option tabindex="0"
           [value]="option"
           [disabled]="option.disabled || readonly"
-          [xc-tooltip]="option.showTooltip ? option.name : ''"
+          [xc-tooltip]="option.showTooltip ? option.name() : ''"
           [xc-tooltip-position]="['bottom-right', 'bottom-left', 'top-right', 'top-left']">
           @if (option.icon) {
-            <xc-icon [xc-icon-name]="option.icon" xc-icon-size="small">{{option.name}}</xc-icon>
+            <xc-icon [xc-icon-name]="option.icon" xc-icon-size="small">{{option.name()}}</xc-icon>
           } @else {
-            {{option.name}}
+            {{option.name()}}
           }
         </mat-option>
       }

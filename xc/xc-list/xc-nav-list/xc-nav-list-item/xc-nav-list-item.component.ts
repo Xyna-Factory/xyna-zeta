@@ -123,13 +123,13 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     }
 
 
-    get tooltipPosition(): string {
+    get tooltipPosition(): XcTooltipPosition {
         switch (this.orientation()) {
             case XcNavListOrientation.TOP: return XcTooltipPosition.bottom;
             case XcNavListOrientation.RIGHT: return XcTooltipPosition.left;
             case XcNavListOrientation.BOTTOM: return XcTooltipPosition.top;
             case XcNavListOrientation.LEFT: return XcTooltipPosition.right;
-            default: return undefined;
+            default: return XcTooltipPosition.bottom;
         }
     }
 
