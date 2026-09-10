@@ -30,7 +30,7 @@ export class XcTemplateFactory {
     static readonly PLACEHOLDER_FALSE = 'false';
 
 
-    static createTemplates(field: XoStructureField, instance: Xo, readonly = false, autocompleteValuesChange?: () => void): XcTemplate[] {
+    static createTemplates(field: XoStructureField, instance: Xo, readonly = false, autocompleteValuesChange?: () => void, booleanAsDropdown = false): XcTemplate[] {
         const create = (getter: () => any, setter: (value: any) => void, nullable: boolean): XcTemplate[] => {
             const templates: XcTemplate[] = [];
 
@@ -53,25 +53,31 @@ export class XcTemplateFactory {
                     [{name: false.toString(), value: false}, {name: true.toString(), value: true}],
                     nullable
                 );
-                // create checkbox template
-                const checkboxTemplate = new XcCheckboxTemplate(new XcIdentityDataWrapper(
-                    getter,
-                    value => {
-                        setter(value);
-                        // update datawrapper, since it can't recognize underlying model changes
-                        autocompleteDataWrapper.update();
+                if (booleanAsDropdown) {
+                    const autocomplete = new XcFormAutocompleteTemplate(autocompleteDataWrapper);
+                    autocomplete.asDropdown = true;
+                    templates.push(autocomplete);
+                } else {
+                    // create checkbox template
+                    const checkboxTemplate = new XcCheckboxTemplate(new XcIdentityDataWrapper(
+                        getter,
+                        value => {
+                            setter(value);
+                            // update datawrapper, since it can't recognize underlying model changes
+                            autocompleteDataWrapper.update();
+                        }
+                    ));
+                    // specify indeterminate accessor for checkbox template
+                    if (nullable) {
+                        defineAccessorProperty<XcCheckboxTemplate, boolean>(
+                            checkboxTemplate,
+                            'indeterminate',
+                            () => getter() == null
+                        );
                     }
-                ));
-                // specify indeterminate accessor for checkbox template
-                if (nullable) {
-                    defineAccessorProperty<XcCheckboxTemplate, boolean>(
-                        checkboxTemplate,
-                        'indeterminate',
-                        () => getter() == null
-                    );
+                    templates.push(checkboxTemplate);
+                    templates.push(new XcFormAutocompleteTemplate(autocompleteDataWrapper));
                 }
-                templates.push(checkboxTemplate);
-                templates.push(new XcFormAutocompleteTemplate(autocompleteDataWrapper));
             } else if (field.typeFqn.stringLike) {
                 // --< STRING >--
                 templates.push(new XcFormInputTemplate(new XcIdentityDataWrapper(getter, setter)));

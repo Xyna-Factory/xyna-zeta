@@ -30,7 +30,6 @@ import { XcTemplateComponent } from '../xc-template/xc-template.component';
 import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 import { xcTreeTranslations_deDE } from './locale/xc-translations.de-DE';
 import { xcTreeTranslations_enUS } from './locale/xc-translations.en-US';
-import { XcStructureTreeDataSource } from './xc-structure-tree-data-source';
 import { XcTreeDataSource, XcTreeNode } from './xc-tree-data-source';
 
 
@@ -89,7 +88,6 @@ export class XcTreeComponent implements OnDestroy {
 
     private _allowSelect = false;
     private _multiSelect = false;
-    private _booleanAsDropdown = false;
     private _controlPressed = false;
     private _dataSource: XcTreeDataSource<XcTreeNode>;
     private _dataSourceSubscriptions = new Array<Subscription>();
@@ -187,22 +185,6 @@ export class XcTreeComponent implements OnDestroy {
     }
 
 
-    /**
-     * When true, boolean primitives in structure trees are rendered as a dropdown
-     * instead of checkbox + autocomplete overlay. Default false preserves legacy behavior.
-     */
-    @Input('xc-tree-boolean-as-dropdown')
-    set booleanAsDropdown(value: boolean) {
-        this._booleanAsDropdown = coerceBoolean(value);
-        this.applyBooleanAsDropdownToDataSource();
-    }
-
-
-    get booleanAsDropdown(): boolean {
-        return this._booleanAsDropdown;
-    }
-
-
     @Input('xc-tree-datasource')
     set dataSource(value: XcTreeDataSource<any>) {
         this.unsubscribeDataSource();
@@ -234,23 +216,12 @@ export class XcTreeComponent implements OnDestroy {
                     })
                 )
             );
-            this.applyBooleanAsDropdownToDataSource();
         }
     }
 
 
     get dataSource(): XcTreeDataSource<any> {
         return this._dataSource;
-    }
-
-
-    private applyBooleanAsDropdownToDataSource() {
-        if (this._dataSource instanceof XcStructureTreeDataSource) {
-            if (this._dataSource.booleanAsDropdown !== this._booleanAsDropdown) {
-                this._dataSource.booleanAsDropdown = this._booleanAsDropdown;
-                this._dataSource.refresh();
-            }
-        }
     }
 
 
