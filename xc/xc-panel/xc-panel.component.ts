@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, viewChild, output } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, Signal, viewChild, output } from '@angular/core';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
@@ -53,7 +53,7 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
     private _collapsable = false;
     private _mouseDown = false;
 
-    tooltip: string;
+    readonly tooltip: Signal<string>;
 
 
     private readonly _targetIsSelectable = (target: EventTarget) =>
@@ -81,7 +81,7 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
         this.i18n.setTranslations(LocaleService.DE_DE, xcPanelTranslations_deDE);
         this.i18n.setTranslations(LocaleService.EN_US, xcPanelTranslations_enUS);
 
-        this.tooltip = this.i18n.translate('zeta.xc-panel.collapse-toggle');
+        this.tooltip = this.i18n.translateSignal('zeta.xc-panel.collapse-toggle');
     }
 
     ngAfterContentInit(): void {
