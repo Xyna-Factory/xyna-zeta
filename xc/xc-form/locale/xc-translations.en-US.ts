@@ -49,6 +49,7 @@ export const xcFormTranslations_enUS: I18nTranslation[] = [
     { key: 'zeta.xc-form-base.ipv6', value: 'VALUE IS NOT AN IPV6 ADDRESS' },
     { key: 'zeta.xc-form-base.ip', value: 'VALUE IS NOT AN IP ADDRESS' },
     { key: 'zeta.xc-form-base.message', value: 'NO MESSAGE DEFINED' },
+    { key: 'zeta.xc-form-base.error-with-field', value: '$0: $1' },
 
     // multiselect autocomplete translations
     { key: 'zeta.xc-form.autocomplete.cancel', value: 'Cancel' },
