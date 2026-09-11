@@ -239,7 +239,6 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     }
 
 
-    @Input()
     @Input({transform: coerceBoolean})
     set readonly(value: boolean) {
         this._readonly = value;

@@ -59,6 +59,12 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
      */
     complexTypesReadonly = false;
 
+    /**
+     * When true, boolean primitives are rendered as a dropdown instead of
+     * checkbox + autocomplete overlay. Default false preserves legacy behavior.
+     */
+    booleanAsDropdown: boolean;
+
     private readonly _contentChangeSubject = new Subject<void>();
 
 
@@ -106,7 +112,8 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             this.container,
             this.readonlyMode,
             // mark for a change, which eventually updates the autocomplete component
-            () => this.triggerMarkForChange()
+            () => this.triggerMarkForChange(),
+            this.booleanAsDropdown
         );
         templates.filter(template => template instanceof XcFormTemplate).forEach(template => {
             template.floatLabel = FloatStyle.always;
