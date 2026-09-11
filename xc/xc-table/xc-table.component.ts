@@ -64,6 +64,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private _cellSelect = false;
     private _lazyUpdate = false;
     private _visibleActions = false;
+    private _leadingActions = false;
     private _dataSource: XcTableDataSource<any>;
     private _dataSourceSubscriptions = new Array<Subscription>();
     private _matSort: MatSort;
@@ -322,6 +323,18 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
+    /** Render row actions in a leading Actions column (default: false). */
+    @Input({alias: 'xc-table-leading-actions', transform: coerceBoolean})
+    set leadingActions(value: boolean) {
+        this._leadingActions = value;
+    }
+
+
+    get leadingActions(): boolean {
+        return this._leadingActions;
+    }
+
+
     @HostBinding('class.refreshing')
     get refreshing(): boolean {
         return this.dataSource && this.dataSource.refreshing;
@@ -329,9 +342,13 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     get columns(): XcTableColumn[] {
-        return this.dataSource
-            ? this.dataSource.columns
-            : [];
+        if (!this.dataSource) {
+            return [];
+        }
+        if (!this.leadingActions) {
+            return this.dataSource.columns;
+        }
+        return [this.getLeadingActionColumn(), ...this.dataSource.columns];
     }
 
 
@@ -347,6 +364,21 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     get columnNames(): string[] {
         return this.columns.map(column => column.name);
+    }
+
+
+    private get actionColumnPath(): string {
+        return '__leading_actions__';
+    }
+
+
+    getLeadingActionColumn(): XcTableColumn {
+        return <XcTableColumn>{
+            path: this.actionColumnPath,
+            name: 'xcTable.actionsColumnHeader',
+            disableSort: true,
+            disableFilter: true
+        };
     }
 
 
@@ -450,6 +482,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getCellData(row: any, path: string): XcTemplate[] | any {
+        if (this.leadingActions && path === this.actionColumnPath) {
+            return '';
+        }
         return this.dataSource
             ? this.dataSource.resolve(row, path)
             : undefined;

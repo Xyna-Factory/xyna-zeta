@@ -78,7 +78,7 @@
           }
           <!-- ngElse = displays cellData as text -->
           <!-- ngIf = displays the action elements only in the last column -->
-          @if (i === columns.length - 1) {
+          @if (!leadingActions && i === columns.length - 1 || leadingActions && i === 0) {
             <!-- action buttons in last column -->
             <div class="action-elements">
               @for (actionElement of dataSource?.actionElements; let i = $index; track i) {
