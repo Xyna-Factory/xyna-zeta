@@ -717,8 +717,10 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         option.deselect();
     }
 
-
+    autocompleteOpened = false;
+    autocompleteId = 'xc-autocomplete-' + Math.random().toString(36).slice(2);
     openedAutocomplete() {
+        this.autocompleteOpened = true;
         // listen to scroll events to close the options and avoiding that the autocomplete scrolls away
         window.addEventListener('scroll', this.onScrollIfAutocompleteIsOpen, true);
         // restore active item to previously selected item
@@ -786,6 +788,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
 
     closedAutocomplete() {
+        this.autocompleteOpened = false;
         // do not listen anymore, because the listener is expensive
         window.removeEventListener('scroll', this.onScrollIfAutocompleteIsOpen, true);
         // emit event
