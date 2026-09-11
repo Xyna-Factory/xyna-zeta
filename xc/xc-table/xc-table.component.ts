@@ -34,13 +34,12 @@ import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { XcFormBaseComponent } from '../xc-form/xc-form-base/xc-form-base.component';
 import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
-import { XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTemplate, XcIconButtonTemplate, XcTemplate } from '../xc-template/xc-template';
+import { XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTemplate, XcTemplate } from '../xc-template/xc-template';
 import { XcTemplateComponent } from '../xc-template/xc-template.component';
 import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 import { xcTableTranslations_deDE } from './locale/xc-translations.de-DE';
 import { xcTableTranslations_enUS } from './locale/xc-translations.en-US';
 import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
-import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
 
 
 @Component({
@@ -372,6 +371,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         return '__leading_actions__';
     }
 
+
     getLeadingActionColumn(): XcTableColumn {
         return <XcTableColumn>{
             path: this.actionColumnPath,
@@ -381,20 +381,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         };
     }
 
-    buildActionButtonTemplates(row: any): XcTemplate[] {
-        return this.dataSource?.actionElements?.
-            filter(actionElement => !actionElement.onShow || !actionElement.onShow(row)).
-            map(actionElement => {
-                const iconButton = new XcIconButtonTemplate();
-                iconButton.iconName = actionElement.iconName;
-                iconButton.iconStyle = actionElement.iconStyle;
-                iconButton.disabled = actionElement.disabled;
-                iconButton.tooltip = actionElement.tooltip;
-                iconButton.iconSize = 'small';
-                iconButton.action = () => actionElement.onAction(row);
-                return iconButton;
-            }) || [];
-    }
 
     getPathFromId(id: string) {
         return id.substring(0, id.indexOf('\0'));
@@ -497,7 +483,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     getCellData(row: any, path: string): XcTemplate[] | any {
         if (this.leadingActions && path === this.actionColumnPath) {
-            return this.buildActionButtonTemplates(row);
+            return '';
         }
         return this.dataSource
             ? this.dataSource.resolve(row, path)
