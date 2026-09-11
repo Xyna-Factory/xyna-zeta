@@ -78,6 +78,90 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private thead: HTMLTableSectionElement;
 
     private focusViaTabDetectionSubscription: Subscription;
+    private scrollPositionsBeforeTab: { element: HTMLElement; top: number; left: number }[] | null = null;
+    private tabFocusPending = false;
+
+    private clearTabScrollState() {
+        this.tabFocusPending = false;
+        this.scrollPositionsBeforeTab = null;
+    }
+
+    private getScrollableAncestors(from: HTMLElement): HTMLElement[] {
+        const ancestors: HTMLElement[] = [];
+        let element: HTMLElement | null = from;
+
+        while (element && element !== document.documentElement) {
+            const style = getComputedStyle(element);
+            const overflowY = style.overflowY;
+            const overflowX = style.overflowX;
+            const canScrollY = (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay')
+                && element.scrollHeight > element.clientHeight;
+            const canScrollX = (overflowX === 'auto' || overflowX === 'scroll' || overflowX === 'overlay')
+                && element.scrollWidth > element.clientWidth;
+
+            if (canScrollY || canScrollX) {
+                ancestors.push(element);
+            }
+            element = element.parentElement;
+        }
+
+        return ancestors;
+    }
+
+    private saveScrollPositions() {
+        this.scrollPositionsBeforeTab = this.getScrollableAncestors(this.elementRef.nativeElement).map(element => ({
+            element,
+            top: element.scrollTop,
+            left: element.scrollLeft
+        }));
+    }
+
+    private restoreScrollPositions() {
+        if (!this.scrollPositionsBeforeTab) {
+            return;
+        }
+        for (const position of this.scrollPositionsBeforeTab) {
+            position.element.scrollTop = position.top;
+            position.element.scrollLeft = position.left;
+        }
+    }
+
+    private readonly onDocumentKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Tab') {
+            if (document.activeElement === this.tbody) {
+                this.clearTabScrollState();
+            } else {
+                // Tab may move focus onto tbody; browser scroll-into-view can move
+                // xc-table and/or parent scroll containers (e.g. section.scroll).
+                this.saveScrollPositions();
+                this.tabFocusPending = true;
+            }
+        } else if (event.key !== 'Shift') {
+            this.clearTabScrollState();
+        }
+    };
+
+    private readonly onDocumentMouseDown = () => {
+        this.clearTabScrollState();
+    };
+
+    private readonly onTableFocusIn = (event: FocusEvent) => {
+        if (event.target === this.tbody) {
+            if (this.tabFocusPending && this.scrollPositionsBeforeTab) {
+                this.restoreScrollPositions();
+            }
+            return;
+        }
+
+        const target = event.target as HTMLElement;
+        const rowEl = target.closest('tr') as HTMLTableRowElement | null;
+        if (rowEl && this.tbody?.contains(rowEl)) {
+            // defer: let any pending expansion/CD settle before we measure/scroll
+            requestAnimationFrame(() => this.focusRowElement(rowEl));
+        }
+
+        this.clearTabScrollState();
+    };
 
 
     constructor() {
@@ -104,24 +188,33 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         this.tbody.setAttribute('tabindex', '0');
         this.tbody.onkeydown = this.keyDown.bind(this);
 
+        document.addEventListener('keydown', this.onDocumentKeyDown, true);
+        document.addEventListener('mousedown', this.onDocumentMouseDown, true);
+        this.elementRef.nativeElement.addEventListener('focusin', this.onTableFocusIn, true);
 
         this.focusViaTabDetectionSubscription = this._a11y.emitElementFocusStateChange(this.tbody).subscribe(state => {
             if (state.type === 'focus' && state.achieved === 'keyboard') {
+                const tabIntoTable = this.tabFocusPending;
+
+                if (tabIntoTable) {
+                    this.restoreScrollPositions();
+                }
+
                 let row = this.getFocusedRow();
                 let rowEl = this.getFocusedRowElement();
-                const rowFound = row && rowEl;
 
-                if (!rowFound && this.tbody) {
+                if ((!row || !rowEl) && this.tbody) {
                     // focus the first row
                     row = this.dataSource.rows[0];
                     rowEl = this.tbody.querySelector('tr');
 
                     if (row && rowEl) {
                         this.focusRow(row);
-                        this.focusRowElement(rowEl);
                         this.cdRef.detectChanges();
                     }
                 }
+
+                this.clearTabScrollState();
             }
         });
     }
@@ -129,6 +222,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.unsubscribeDataSource();
+        document.removeEventListener('keydown', this.onDocumentKeyDown, true);
+        document.removeEventListener('mousedown', this.onDocumentMouseDown, true);
+        this.elementRef.nativeElement.removeEventListener('focusin', this.onTableFocusIn, true);
 
         if (this.focusViaTabDetectionSubscription) {
             this.focusViaTabDetectionSubscription.unsubscribe();
@@ -476,13 +572,25 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         const row = this.getFocusedRow();
         const rowEl = this.getFocusedRowElement();
         if (event.key === 'ArrowUp' || event.key === 'Up') {
+            const wrapped = this.getRowIndex(row) === 0;
             this.focusRow(this.getPrevRow(row));
-            this.focusRowElement(this.getPrevRowElement(rowEl));
+            this.cdRef.detectChanges();
+            if (wrapped) {
+                this.scrollToBottom();
+            } else {
+                this.focusRowElement(this.getPrevRowElement(rowEl));
+            }
             event.preventDefault();
         }
         if (event.key === 'ArrowDown' || event.key === 'Down') {
+            const wrapped = this.getRowIndex(row) === this.dataSource.rows.length - 1;
             this.focusRow(this.getNextRow(row));
-            this.focusRowElement(this.getNextRowElement(rowEl));
+            this.cdRef.detectChanges();
+            if (wrapped) {
+                this.scrollToTop();
+            } else {
+                this.focusRowElement(this.getNextRowElement(rowEl));
+            }
             event.preventDefault();
         }
         if (event.key === 'Enter' || event.key === ' ') {
@@ -504,6 +612,14 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         }
     }
 
+    private scrollToTop() {
+        this.elementRef.nativeElement.scrollTop = 0;
+    }
+
+    private scrollToBottom() {
+        const parent = this.elementRef.nativeElement;
+        parent.scrollTop = parent.scrollHeight;
+    }
 
     getRowIndex(row: any): number {
         return this.dataSource
@@ -586,17 +702,38 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         }
     }
 
+    private getVisibleHeaderBottomOffset(): number {
+        const parent = this.elementRef.nativeElement;
+        const parentRect = parent.getBoundingClientRect();
+        let visibleBottom = parentRect.top;
+
+        if (this.thead) {
+            for (const row of Array.from(this.thead.querySelectorAll('tr'))) {
+                const rect = row.getBoundingClientRect();
+                if (rect.bottom > parentRect.top && rect.top < parentRect.bottom) {
+                    visibleBottom = Math.max(visibleBottom, rect.bottom);
+                }
+            }
+        }
+
+        return Math.max(0, visibleBottom - parentRect.top);
+    }
+
+
 
     focusRowElement(element: HTMLTableRowElement) {
         const parent = this.elementRef.nativeElement;
-        const topOffset = this.thead.getBoundingClientRect().height;
-        const e = element.getBoundingClientRect();
-        const p = parent.getBoundingClientRect();
-        if (e.top < p.top + topOffset) {
-            parent.scrollTop -= p.top - e.top + topOffset + 1;
-        }
-        if (e.bottom > p.bottom) {
-            parent.scrollTop += e.bottom - p.bottom + 1;
+        const topOffset = this.getVisibleHeaderBottomOffset();
+
+        const elementTop = element.offsetTop;
+        const elementBottom = elementTop + element.offsetHeight;
+        const viewTop = parent.scrollTop + topOffset;
+        const viewBottom = parent.scrollTop + parent.clientHeight;
+
+        if (elementTop < viewTop) {
+            parent.scrollTop = elementTop - topOffset;
+        } else if (elementBottom > viewBottom) {
+            parent.scrollTop = elementBottom - parent.clientHeight;
         }
     }
 
