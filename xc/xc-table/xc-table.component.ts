@@ -65,7 +65,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private _cellSelect = false;
     private _lazyUpdate = false;
     private _visibleActions = false;
-    private _leadingActions = true;
+    private _leadingActions = false;
     private _dataSource: XcTableDataSource<any>;
     private _dataSourceSubscriptions = new Array<Subscription>();
     private _matSort: MatSort;
