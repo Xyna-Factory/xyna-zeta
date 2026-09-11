@@ -35,7 +35,7 @@ export class XcDragDirective implements OnChanges, OnDestroy {
     protected readonly renderer = inject(Renderer2);
 
 
-    readonly enabled = input(true, { alias: "xc-drag" });
+    readonly enabled = input(true, { alias: "xc-drag", transform: coerceBoolean });
 
     readonly dragEventTarget = input<MouseEvent | TouchEvent>(undefined, { alias: "xc-drag-event-target" });
 

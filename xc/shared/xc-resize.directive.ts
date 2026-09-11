@@ -57,7 +57,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     protected readonly renderer = inject(Renderer2);
 
 
-    readonly enabled = input(true, { alias: "xc-resize" });
+    readonly enabled = input(true, { alias: "xc-resize", transform: coerceBoolean });
 
     private readonly _resizeOptions: XcResizeOptions = {};
 

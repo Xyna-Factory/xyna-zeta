@@ -19,6 +19,8 @@ import { take } from 'rxjs';
 
 import { Directive, HostListener, inject, input, output } from '@angular/core';
 
+import { coerceBoolean } from '@zeta/base';
+
 import { XcContextMenuService } from './xc-context-menu.service';
 import { XcMenuService } from './xc-menu.service';
 import { XcMenuItem } from './xc-menu.types';
@@ -33,7 +35,7 @@ export class XcContextMenuTriggerDirective {
 
     readonly contextMenuItems = input<XcMenuItem[] | (() => XcMenuItem[])>(undefined, { alias: "xc-context-menu-items" });
 
-    readonly disabled = input(false);
+    readonly disabled = input(false, { transform: coerceBoolean });
 
     readonly beforeOpen = output<void>();
 
