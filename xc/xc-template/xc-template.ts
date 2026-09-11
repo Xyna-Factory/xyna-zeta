@@ -122,6 +122,7 @@ export class XcButtonBaseTemplate extends XcTemplate {
     iconName = '';
     iconStyle = '';
     iconSize = 'medium';
+    tooltip = '';
     busy = false;
     action = () => {
         // no default implementation

@@ -34,12 +34,13 @@ import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcAutocompleteDataWrapper, XcFormAutocompleteComponent } from '../xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { XcFormBaseComponent } from '../xc-form/xc-form-base/xc-form-base.component';
 import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
-import { XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTemplate, XcTemplate } from '../xc-template/xc-template';
+import { XcFormAutocompleteTemplate, XcFormInputTemplate, XcFormTemplate, XcIconButtonTemplate, XcTemplate } from '../xc-template/xc-template';
 import { XcTemplateComponent } from '../xc-template/xc-template.component';
 import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 import { xcTableTranslations_deDE } from './locale/xc-translations.de-DE';
 import { xcTableTranslations_enUS } from './locale/xc-translations.en-US';
 import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
+import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
 
 
 @Component({
@@ -56,12 +57,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private readonly _i18n = inject(I18nService);
 
 
-    private static actionsHeaderIdSeq = 0;
-
-    readonly actionsColumnId = '$actions';
-
-    readonly actionsColumnHeaderId = `xc-table-actions-col-${XcTableComponent.actionsHeaderIdSeq++}`;
-
     private _allowSort = false;
     private _allowFilter = false;
     private _allowSelect = false;
@@ -70,7 +65,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private _cellSelect = false;
     private _lazyUpdate = false;
     private _visibleActions = false;
-    private _leadingActions = false;
+    private _leadingActions = true;
     private _dataSource: XcTableDataSource<any>;
     private _dataSourceSubscriptions = new Array<Subscription>();
     private _matSort: MatSort;
@@ -151,11 +146,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     private updateDataSourceSort() {
         if (this.matSort && this.dataSource) {
-            if (this.matSort.active === this.actionsColumnId) {
-                this.updateMatSort();
-                this.cdRef.markForCheck();
-                return;
-            }
             this.dataSource.setSortPathAndDirection(
                 this.getPathFromId(this.matSort.active),
                 XcSortDirectionFromString(this.matSort.direction)
@@ -335,7 +325,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     /** Render row actions in a leading Actions column (default: false). */
-    @Input('xc-table-leading-actions')
     @Input({alias: 'xc-table-leading-actions', transform: coerceBoolean})
     set leadingActions(value: boolean) {
         this._leadingActions = value;
@@ -354,9 +343,13 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     get columns(): XcTableColumn[] {
-        return this.dataSource
-            ? this.dataSource.columns
-            : [];
+        if (!this.dataSource) {
+            return [];
+        }
+        if (!this.leadingActions) {
+            return this.dataSource.columns;
+        }
+        return [this.getLeadingActionColumn(), ...this.dataSource.columns];
     }
 
 
@@ -365,26 +358,8 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    /** Built-in xc-table keys are on zeta `_i18n` only; `dataSource.i18n` may not define them. */
-    get actionsColumnHeaderLabel(): string {
-        const t = this._i18n.translate('xcTable.actionsColumnHeader');
-        return t?.trim() ? t : 'Actions';
-    }
-
-
-    private includeLeadingActionsColumn(): boolean {
-        return this.leadingActions && this.columns.length > 0;
-    }
-
-
-    get headerFullWidthColspan(): number {
-        return this.columns.length + (this.includeLeadingActionsColumn() ? 1 : 0);
-    }
-
-
     get columnIds(): string[] {
-        const ids = this.columns.map(column => this.getColumnID(column));
-        return this.includeLeadingActionsColumn() ? [this.actionsColumnId, ...ids] : ids;
+        return this.columns.map(column => this.getColumnID(column));
     }
 
 
@@ -392,6 +367,34 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         return this.columns.map(column => column.name);
     }
 
+
+    private get actionColumnPath(): string {
+        return '__leading_actions__';
+    }
+
+    getLeadingActionColumn(): XcTableColumn {
+        return <XcTableColumn>{
+            path: this.actionColumnPath,
+            name: 'xcTable.actionsColumnHeader',
+            disableSort: true,
+            disableFilter: true
+        };
+    }
+
+    buildActionButtonTemplates(row: any): XcTemplate[] {
+        return this.dataSource?.actionElements?.
+            filter(actionElement => !actionElement.onShow || !actionElement.onShow(row)).
+            map(actionElement => {
+                const iconButton = new XcIconButtonTemplate();
+                iconButton.iconName = actionElement.iconName;
+                iconButton.iconStyle = actionElement.iconStyle;
+                iconButton.disabled = actionElement.disabled;
+                iconButton.tooltip = actionElement.tooltip;
+                iconButton.iconSize = 'small';
+                iconButton.action = () => actionElement.onAction(row);
+                return iconButton;
+            }) || [];
+    }
 
     getPathFromId(id: string) {
         return id.substring(0, id.indexOf('\0'));
@@ -493,6 +496,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getCellData(row: any, path: string): XcTemplate[] | any {
+        if (this.leadingActions && path === this.actionColumnPath) {
+            return this.buildActionButtonTemplates(row);
+        }
         return this.dataSource
             ? this.dataSource.resolve(row, path)
             : undefined;
