@@ -64,5 +64,13 @@ export const xcDialogTranslations_deDE: I18nTranslation[] = [
     {
         key: 'zeta.xc-dialog.confirm-dialog.yes-button',
         value: 'Ja'
+    },
+    {
+        key: 'zeta.xc-dialog.maximize-tooltip',
+        value: 'Maximieren'
+    },
+    {
+        key: 'zeta.xc-dialog.minimize-tooltip',
+        value: 'Minimieren'
     }
 ];

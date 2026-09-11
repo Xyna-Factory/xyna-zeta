@@ -1,12 +1,14 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, inject, Input, OnDestroy, Output, output, Renderer2, ViewChild, viewChild } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 
 import { coerceBoolean } from '../../base';
+import { XcI18nPipe } from '../../i18n/i18n.pipe';
 import { XcDragDirective, XcDragOptions } from '../shared/xc-drag.directive';
 import { XcResizeDirective, XcResizeOptions } from '../shared/xc-resize.directive';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 
 
 export enum XcDialogPositions {
@@ -31,9 +33,9 @@ export interface XcDialogOptions {
     selector: 'xc-dialog-wrapper',
     templateUrl: './xc-dialog-wrapper.component.html',
     styleUrls: ['./xc-dialog-wrapper.component.scss'],
-    imports: [NgClass, XcResizeDirective, XcDragDirective, MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, XcIconButtonComponent]
+    imports: [NgClass, XcResizeDirective, XcDragDirective, MatDialogTitle, CdkScrollable, MatDialogContent, MatDialogActions, XcIconButtonComponent, XcTooltipDirective, XcI18nPipe]
 })
-export class XcDialogWrapperComponent implements AfterViewInit {
+export class XcDialogWrapperComponent implements AfterViewInit, OnDestroy {
     protected readonly renderer = inject(Renderer2);
     private readonly element = inject(ElementRef);
 
@@ -129,17 +131,33 @@ export class XcDialogWrapperComponent implements AfterViewInit {
     @ViewChild('dialogRoot', { static: false }) dialogRoot: ElementRef;
 
     dragEventTarget: MouseEvent | TouchEvent;
+    private resizeObserver: ResizeObserver;
+    private positionLocked = false;
 
     constructor() {
         this.element.nativeElement.style.setProperty('--resizable', this.resizable);
     }
 
     ngAfterViewInit() {
+        const dialogRoot = this.dialogRoot();
+        if (dialogRoot) {
+            this.resizeObserver = new ResizeObserver(() => {
+                if (!this.positionLocked && !this._maximized) {
+                    this.setPosition();
+                }
+            });
+            this.resizeObserver.observe(dialogRoot.nativeElement);
+        }
+
         this.center();
 
         if (this._maximized) {
             this.applyMaximizedState();
         }
+    }
+
+    ngOnDestroy() {
+        this.resizeObserver?.disconnect();
     }
 
     private _preMaximize = {
@@ -198,6 +216,11 @@ export class XcDialogWrapperComponent implements AfterViewInit {
 
     initDrag(event: MouseEvent | TouchEvent) {
         this.dragEventTarget = event;
+    }
+
+    lockPosition() {
+        this.positionLocked = true;
+        this.resizeObserver?.disconnect();
     }
 
 
