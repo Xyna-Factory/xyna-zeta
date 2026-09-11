@@ -15,11 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, ElementRef, inject, Input, OnDestroy, OnInit } from '@angular/core';
-
-import { KeyTranslationPair } from '@zeta/xc/shared/xc-i18n-attributes';
-
-import { Subscription } from 'rxjs';
+import { Directive, effect, ElementRef, inject, Injector, input, OnInit } from '@angular/core';
 
 import { I18nService } from './i18n.service';
 import { LocaleService } from './locale.service';
@@ -49,39 +45,40 @@ export abstract class XcI18nBase {
 
 
 @Directive({ selector: '[xc-i18n-context]' })
-export class XcI18nContextDirective extends XcI18nBase implements OnInit {
+export class XcI18nContextDirective extends XcI18nBase {
+
     private readonly elementRef = inject(ElementRef<HTMLElement>);
 
+    readonly i18nContext = input<string>('', {
+        alias: 'xc-i18n-context'
+    });
 
-    private context: string;
+    constructor() {
+        super();
 
-    @Input('xc-i18n-context')
-    set i18nContext(value: string) {
-        this.context = value;
-        this.evaluateContext();
-    }
+        effect(() => {
+            const context = this.i18nContext();
+            const generatedContext = this.getContext(this.elementRef.nativeElement);
 
-    ngOnInit() {
-        this.evaluateContext();
-    }
-
-    private evaluateContext() {
-        const generatedContext = this.getContext(this.elementRef.nativeElement);
-        this.elementRef.nativeElement.setAttribute(this.attributeName, generatedContext ? generatedContext + '.' + this.context : this.context);
+            this.elementRef.nativeElement.setAttribute(
+                this.attributeName,
+                generatedContext ? `${generatedContext}.${context}` : context
+            );
+        });
     }
 }
 
 
 
 @Directive({ selector: '[xc-i18n]' })
-export class XcI18nTranslateDirective extends XcI18nBase implements OnInit, OnDestroy {
+export class XcI18nTranslateDirective extends XcI18nBase implements OnInit {
     private readonly i18n = inject(I18nService);
+    private readonly injector = inject(Injector);
 
 
     private _context: string;
-    private content: KeyTranslationPair = {key: '', translated: ''};
-    private subs: Subscription[] = [];
-
+    private contentKey = '';
+    private translatedContent = '';
     readonly element: HTMLElement;
 
     private readonly localService: LocaleService = inject<LocaleService>(LocaleService);
@@ -94,10 +91,6 @@ export class XcI18nTranslateDirective extends XcI18nBase implements OnInit, OnDe
         this.element = elementRef.nativeElement;
     }
 
-    ngOnDestroy(): void {
-        this.subs.forEach(sub => sub.unsubscribe());
-    }
-
     ngOnInit() {
         this._context = this.getContext(this.element);
         this.element.setAttribute('xc-i18n', this._context ?? '');
@@ -107,18 +100,19 @@ export class XcI18nTranslateDirective extends XcI18nBase implements OnInit, OnDe
         const cont = this.element.textContent?.trim();
 
         if (cont && !isXc) {
-            this.subs.push(this.localService.languageChange.subscribe(() => {
-                if (this.content.translated !== cont) {
-                    this.content.key = cont;
+            effect(() => {
+                this.localService.languageSignal();
+                if (this.translatedContent !== cont) {
+                    this.contentKey = cont;
                 }
-                const translation = this.i18n.getTranslation(this._context ? this._context + '.' + this.content.key : this.content.key);
+                const translation = this.i18n.getTranslation(this._context ? this._context + '.' + this.contentKey : this.contentKey);
                 this.element.textContent = translation?.value;
+                this.translatedContent = translation?.value ?? '';
 
                 if (translation?.pronunciationLanguage) {
                     this.element.setAttribute('lang', translation.pronunciationLanguage);
                 }
-            }));
+            }, { injector: this.injector });
         }
     }
 }
-

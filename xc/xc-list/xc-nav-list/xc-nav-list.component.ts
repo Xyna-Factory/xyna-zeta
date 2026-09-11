@@ -98,7 +98,7 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
 
 
     get ariaLabel(): string {
-        return this.i18n.translate('menu_with_elements', { key: '$0', value: this.items.length.toString() });
+        return this.i18n.translateInstant('menu_with_elements', { key: '$0', value: this.items.length.toString() });
     }
 
 

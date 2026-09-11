@@ -126,7 +126,7 @@ export class XcIconComponent extends XcThemeableComponent implements OnInit, Aft
             const el = this.elementRef.nativeElement.querySelector('span');
             this.i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');
             if (el && this.i18nContext != null) {
-                el.textContent = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + el.textContent : el.textContent);
+                el.textContent = this.i18n.translateInstant(this.i18nContext ? this.i18nContext + '.' + el.textContent : el.textContent);
             }
         }
     }

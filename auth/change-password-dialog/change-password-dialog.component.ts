@@ -15,12 +15,11 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-
-import { ApiService, RuntimeContext } from '@zeta/api';
-
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ApiService, RuntimeContext } from '@zeta/api';
 
 import { I18nService, LocaleService } from '../../i18n';
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
@@ -110,8 +109,8 @@ export class ChangePasswordDialogComponent extends XcDialogComponent {
             }
         });
 
-        this.newPasswordValidator.errorText = this.i18n.translateSignal('dialog.changePassword.newPassword.error');
-        this.confirmPasswordValidator.errorText = this.i18n.translateSignal('dialog.changePassword.confirmPassword.error');
+        this.newPasswordValidator.errorText = this.i18n.translateSignal('dialog.changePassword.newPassword.error')();
+        this.confirmPasswordValidator.errorText = this.i18n.translateSignal('dialog.changePassword.confirmPassword.error')();
     }
 
 

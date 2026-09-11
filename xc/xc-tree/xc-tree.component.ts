@@ -86,7 +86,7 @@ export class XcTreeComponent implements OnDestroy {
     private readonly _i18n = inject(I18nService);
     private readonly zone = inject(NgZone);
 
-    protected readonly resolveDynamicString = (value: XcDynamicString) => value();
+    protected readonly resolveDynamicString = (value?: XcDynamicString) => value?.() ?? '';
 
     private _allowSelect = false;
     private _multiSelect = false;

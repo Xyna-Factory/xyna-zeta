@@ -99,7 +99,7 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
             this.detailsItem = { item: new XcStackItem(), definition: definition };
             this.detailsItem.item.addItemObserver(<XcStackItemObserver>{
                 beforeClose: () => this.detailsItem.definition.hasDataChanges()
-                    ? this.dialogs.confirm(this.i18n.translate('Confirm Close'), this.i18n.translate('There are unsaved changes. Close anyway and discard changes?')).afterDismiss()
+                    ? this.dialogs.confirm(this.i18n.translateInstant('Confirm Close'), this.i18n.translateInstant('There are unsaved changes. Close anyway and discard changes?')).afterDismiss()
                     : of(true),
                 afterClose: () => {
                     this.detailsItem = null;

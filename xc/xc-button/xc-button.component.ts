@@ -15,11 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, AfterContentInit, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, effect, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
-import { ATTRIBUTE_LABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
 import { XcProgressBarComponent } from '../xc-progress-bar/xc-progress-bar.component';
 import { XcButtonBaseComponent } from './xc-button-base.component';
 
@@ -34,7 +33,7 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
 export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, AfterContentInit {
 
     private _translate: boolean;
-    private _label: KeyTranslationPair = { key: '', translated: ''};
+    private _labelKey = '';
 
     private element: HTMLElement;
 
@@ -42,18 +41,20 @@ export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, 
         super.ngOnInit();
         this.element = this.elementRef.nativeElement.querySelector('.mdc-button__label');
         this._translate = Array.from(this.element.childNodes).some(childNode => childNode.nodeType === Node.TEXT_NODE);
+        if (this._translate) {
+            this._labelKey = this.element.textContent?.trim() ?? '';
+        }
     }
 
     ngAfterContentInit() {
         super.ngAfterContentInit();
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._translate && this.element && this.i18nContext !== undefined && this.i18nContext !== null) {
-                if (this._label.translated !== this.element.textContent) {
-                    this._label.key = this.element.textContent;
+        effect(() => {
+            this.localeService.languageSignal();
+            queueMicrotask(() => {
+                if (this._translate && this.element && this.i18nContext !== undefined && this.i18nContext !== null) {
+                    this.element.textContent = this.i18n.translateSignal(this.i18nContext + '.' + this._labelKey)();
                 }
-                this.translate(ATTRIBUTE_LABEL);
-                this.element.textContent = this._label.translated;
-            }
-        }));
+            });
+        }, { injector: this.injector });
     }
 }

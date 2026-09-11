@@ -255,7 +255,7 @@ export class AuthLoginComponent {
 
 
     defaultErrorHandler(): Observable<void> {
-        return this.dialogService.info(this.i18n.translate('zeta.auth-login.error'), this.i18n.translate('zeta.auth-login.authentication-failed')).afterDismiss();
+        return this.dialogService.info(this.i18n.translateInstant('zeta.auth-login.error'), this.i18n.translateInstant('zeta.auth-login.authentication-failed')).afterDismiss();
     }
 
 
@@ -274,8 +274,8 @@ export class AuthLoginComponent {
                     const errorCode = filterError.error.error ? filterError.error.error.errorCode : (filterError.error as any).errorCode;
                     if (errorCode === H5FilterErrorCodes.SESSION_EXISTS) {
                         this.dialogService.confirm(
-                            this.i18n.translate('zeta.auth-login.error-header'),
-                            this.i18n.translate('zeta.auth-login.error-message', <I18nParam>{ key: '$0', value: this.smartCardTabItem.data.username })
+                            this.i18n.translateInstant('zeta.auth-login.error-header'),
+                            this.i18n.translateInstant('zeta.auth-login.error-message', <I18nParam>{ key: '$0', value: this.smartCardTabItem.data.username })
                         ).afterDismissResult(true).subscribe(() =>
                             this.smartCardLogin(true)
                         );
@@ -300,8 +300,8 @@ export class AuthLoginComponent {
                     const errorCode = filterError.error.error ? filterError.error.error.errorCode : (filterError.error as any).errorCode;
                     if (errorCode === H5FilterErrorCodes.SESSION_EXISTS) {
                         this.dialogService.confirm(
-                            this.i18n.translate('zeta.auth-login.duplicate-session-header'),
-                            this.i18n.translate('zeta.auth-login.duplicate-session-message', <I18nParam>{ key: '$username', value: this.credentialsTabItem.data.username })
+                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-header'),
+                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-message', <I18nParam>{ key: '$username', value: this.credentialsTabItem.data.username })
                         ).afterDismissResult(true).subscribe(() =>
                             // login again with force
                             this.credentialsLogin(true)
@@ -326,8 +326,8 @@ export class AuthLoginComponent {
                     const errorCode = filterError.error.error ? filterError.error.error.errorCode : (filterError.error as any).errorCode;
                     if (errorCode === H5FilterErrorCodes.SESSION_EXISTS) {
                         this.dialogService.confirm(
-                            this.i18n.translate('zeta.auth-login.duplicate-session-header'),
-                            this.i18n.translate('zeta.auth-login.duplicate-session-message', <I18nParam>{ key: '$username', value: this.workflowTabItem.data.username })
+                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-header'),
+                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-message', <I18nParam>{ key: '$username', value: this.workflowTabItem.data.username })
                         ).afterDismissResult(true).subscribe(() =>
                             // login again with force
                             this.workflowLogin(true)

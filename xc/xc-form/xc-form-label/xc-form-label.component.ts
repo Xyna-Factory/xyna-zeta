@@ -36,7 +36,7 @@ export class XcFormLabelComponent implements AfterContentInit {
 
         const el = this.elementRef.nativeElement;
         if (el && i18nContext !== undefined && i18nContext !== null) {
-            el.textContent = this.i18n.translate(i18nContext ? i18nContext + '.' + el.textContent : el.textContent);
+            el.textContent = this.i18n.translateInstant(i18nContext ? i18nContext + '.' + el.textContent : el.textContent);
         }
     }
 }

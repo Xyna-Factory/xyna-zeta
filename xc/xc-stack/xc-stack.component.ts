@@ -102,7 +102,7 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
                 item.setStack(this);
 
                 this.breadcrumbSubscriptons.push(item.getBreadcrumbLabel().subscribe(label =>
-                    this.breadcrumbLabels.set(item, label || this.i18n.translate('Item') + ' ' + (index + 1))
+                    this.breadcrumbLabels.set(item, label || this.i18n.translateInstant('Item') + ' ' + (index + 1))
                 ));
             });
         });
@@ -188,6 +188,6 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
 
 
     ariaBreadcrumbLabel(stackItem: XcStackItemInterface): string {
-        return this.i18n.translate('Select breadcrumb for $0', { key: '$0', value: this.breadcrumbLabels.get(stackItem) });
+        return this.i18n.translateInstant('Select breadcrumb for $0', { key: '$0', value: this.breadcrumbLabels.get(stackItem) });
     }
 }

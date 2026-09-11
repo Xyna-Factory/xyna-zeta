@@ -66,14 +66,14 @@
         >
         <ng-container *xc-var="getCellData(row, column.path); let cellData">
           <!-- ngIf = displays cellData xc-templates if it is an Array -->
-          @if (cellData?.constructor?.name === 'Array') {
+          @if (resolveCellValue(cellData)?.constructor?.name === 'Array') {
             <div class="template-container">
-              @for (template of cellData; let i = $index; track i) {
+              @for (template of resolveCellValue(cellData); let i = $index; track i) {
                 <xc-template [xc-template-instance]="template" />
               }
             </div>
           } @else {
-            <span role="link" class="text-cell" [attr.lang]="column.pronunciationLang || null">{{ cellData }}</span>
+            <span role="link" class="text-cell" [attr.lang]="column.pronunciationLang || null">{{ resolveCellValue(cellData) }}</span>
           }
           <!-- ngElse = displays cellData as text -->
           <!-- ngIf = displays the action elements only in the last column -->
@@ -87,7 +87,7 @@
                     <xc-icon-button (click)="actionElement.onAction && !actionElement.disabled && actionElement.onAction(row)"
                       [class]="actionElement.class"
                       [disabled]="actionElement.disabled"
-                      [xc-tooltip]="actionElement.tooltip"
+                      [xc-tooltip]="resolveDynamicString(actionElement.tooltip)"
                       [xc-icon-name]="actionElement.iconName"
                       [xc-icon-style]="actionElement.iconStyle"
                       [xc-button-aria-label]="actionElement.ariaLabel ? actionElement.ariaLabel() : undefined"

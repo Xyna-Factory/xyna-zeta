@@ -22,6 +22,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, LocaleService } from '@zeta/i18n';
 
 import { coerceBoolean, isBoolean } from '../../../../base';
+import { XcDynamicString } from '../../../shared/xc-item';
 import { XcThemeableComponent } from '../../../shared/xc-themeable.component';
 import { XcIconComponent } from '../../../xc-icon/xc-icon.component';
 import { XcTooltipDirective, XcTooltipPosition } from '../../../xc-tooltip/xc-tooltip.directive';
@@ -66,6 +67,8 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
     readonly focusChange = output<XcNavListItem>();
 
+    protected readonly resolveDynamicString = (value?: XcDynamicString) => value?.() ?? '';
+
 
     private readonly i18n = inject<I18nService>(I18nService);
 
@@ -78,7 +81,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
 
     get ariaLabel(): string {
-        return this.i18n.translate('menu_with_elements', { key: '$0', value: this.item().children.length.toString() });
+        return this.i18n.translateInstant('menu_with_elements', { key: '$0', value: this.item().children.length.toString() });
     }
 
 

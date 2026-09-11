@@ -6,8 +6,8 @@
         [class.rotated]="expanded"
         xc-icon-name="accordion"
         xc-icon-size="small"
-        [xc-button-aria-label]="i18n.translate('zeta.xc.tree.expand-collapse-arialabel') + ' ' + i18n.translate(node.name)"
-        [xc-tooltip]="i18n.translate('zeta.xc.tree.expand-collapse-tooltip')"
+        [xc-button-aria-label]="i18n.translateSignal('zeta.xc.tree.expand-collapse-arialabel')() + ' ' + i18n.translateSignal(node.name)()"
+        [xc-tooltip]="i18n.translateSignal('zeta.xc.tree.expand-collapse-tooltip')()"
         xc-tooltip-showdelay="500"
         (click)="toggle($event)"
        />

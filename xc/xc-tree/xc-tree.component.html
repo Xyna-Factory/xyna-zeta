@@ -25,8 +25,8 @@
           xc-icon-size="small"
           matTreeNodeToggle
           [matTreeNodeToggleRecursive]="recursiveToggling"
-          [xc-button-aria-label]="i18n.translate('zeta.xc.tree.expand-collapse-arialabel') + ' ' + (translateLabels ? i18n.translate(node.name) : node.name)"
-          [xc-tooltip]="i18n.translate('zeta.xc.tree.expand-collapse-tooltip')"
+          [xc-button-aria-label]="i18n.translateSignal('zeta.xc.tree.expand-collapse-arialabel')() + ' ' + (translateLabels ? i18n.translateSignal(node.name)() : node.name)"
+          [xc-tooltip]="i18n.translateSignal('zeta.xc.tree.expand-collapse-tooltip')()"
           xc-tooltip-showdelay="1000"
          />
       }
@@ -35,7 +35,7 @@
           [color]="readonlyMode ? 'invert' : 'normal'"
           xc-icon-name="accordion"
           xc-icon-size="small"
-          [xc-button-aria-label]="i18n.translate('shows') + ' ' + (translateLabels ? i18n.translate(node.name) : node.name)"
+          [xc-button-aria-label]="i18n.translateSignal('shows')() + ' ' + (translateLabels ? i18n.translateSignal(node.name)() : node.name)"
           xc-tooltip="{{'tooltip-show' | xcI18n}}"
           xc-tooltip-showdelay="500"
          />
@@ -43,13 +43,13 @@
       <div class="child" [ngClass]="node.classes || []" [class.fixed]="node.fixed">
         <!-- label -->
         <label [class.disabled]="isNodeDisabled(node)" [class.readonly]="isNodeReadonly(node)" [class.truncated]="!!node.value">
-          <span>{{translateLabels ? i18n.translate(node.name) : node.name}}</span>
+          <span>{{translateLabels ? i18n.translateSignal(node.name)() : node.name}}</span>
         </label>
 
         <!-- tooltip icon or padding -->
-        @if (!!node.tooltip) {
+        @if (resolveDynamicString(node.tooltip)) {
           <xc-icon-button class="tooltip"
-            [xc-tooltip]="node.tooltip"
+            [xc-tooltip]="resolveDynamicString(node.tooltip)"
             xc-tooltip-position="before"
             [xc-tooltip-controller]="{autoDelegate: false}"
             xc-tooltip-islabel
@@ -59,7 +59,7 @@
             disabled tabindex="0"
            />
         }
-        @if (!node.tooltip && !readonlyMode) {
+        @if (!resolveDynamicString(node.tooltip) && !readonlyMode) {
           <div
             class="padding"
           ></div>

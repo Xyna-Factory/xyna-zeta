@@ -578,7 +578,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         // TODO FIXME - it must be possible to prevent the MatAutocompleteTrigger's auto opening of the panel on focus
         // if so, we could get rid of the following a11y service method
         const txt = this.a11yFocusLine() || (this.label + ' '
-            + this.i18nService.translate(this.asDropdown
+            + this.i18nService.translateInstant(this.asDropdown
                 ? XcFormAutocompleteComponent.globalDropdownA11yFocusLine
                 : XcFormAutocompleteComponent.globalAutocompleteA11yFocusLine));
         this.a11yService.screenreaderSpeak(txt);
@@ -929,7 +929,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                 const stateKey = isNowSelected
                     ? 'zeta.xc-form.autocomplete.selected'
                     : 'zeta.xc-form.autocomplete.not-selected';
-                const state = this.i18nService.translate(stateKey);
+                const state = this.i18nService.translateInstant(stateKey);
                 // Clear first, then set in microtask to ensure aria-live re-announces
                 this.multiSelectA11yAnnouncement = '';
                 this.cdRef.detectChanges();
@@ -952,7 +952,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         const stateKey = isSelected
             ? 'zeta.xc-form.autocomplete.selected'
             : 'zeta.xc-form.autocomplete.not-selected';
-        const state = this.i18nService.translate(stateKey);
+        const state = this.i18nService.translateInstant(stateKey);
         return `${this.optionName(option)}, ${state}`;
     }
 

@@ -54,7 +54,7 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
 
     protected setAriaLabel(value: string) {
         const iconName = this.iconName();
-        super.setAriaLabel(value || (iconName ? this.i18nService.translate(iconName) : ''));
+        super.setAriaLabel(value || (iconName ? this.i18nService.translateInstant(iconName) : ''));
     }
 
 

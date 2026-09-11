@@ -352,7 +352,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             updateChildren(false);
         };
         // A11y
-        iconButtonTemplate.label = this.i18n?.translate('zeta.xc.tree.add-element') ?? 'Add Element';
+        iconButtonTemplate.label = this.i18n?.translateInstant('zeta.xc.tree.add-element') ?? 'Add Element';
         // disabled accessor
         defineAccessorProperty<XcIconButtonTemplate, boolean>(
             iconButtonTemplate,
@@ -440,7 +440,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 }
             };
             // A11y
-            deleteButtonTemplate.label = this.i18n?.translate('zeta.xc.tree.remove-element') ?? 'Remove Element';
+            deleteButtonTemplate.label = this.i18n?.translateInstant('zeta.xc.tree.remove-element') ?? 'Remove Element';
             // disabled accessor
             defineAccessorProperty<XcIconButtonTemplate, boolean>(
                 deleteButtonTemplate,
@@ -483,7 +483,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 this.triggerMarkForChange();
             }
             // A11y
-            copyButtonTemplate.label = this.i18n?.translate('zeta.xc.tree.copy-element') ?? 'Copy Element';
+            copyButtonTemplate.label = this.i18n?.translateInstant('zeta.xc.tree.copy-element') ?? 'Copy Element';
             // disabled accessor
             defineAccessorProperty<XcIconButtonTemplate, boolean>(
                 copyButtonTemplate,

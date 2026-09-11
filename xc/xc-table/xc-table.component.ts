@@ -370,9 +370,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getColumnFilterAriaLabel(name: string): string {
-        return this.i18n.translate('Input field for filtering of $0', {
+        return this.i18n.translateInstant('Input field for filtering of $0', {
             key: '$0',
-            value: this.i18n.translate(name || 'this column')
+            value: this.i18n.translateInstant(name || 'this column')
         });
     }
 

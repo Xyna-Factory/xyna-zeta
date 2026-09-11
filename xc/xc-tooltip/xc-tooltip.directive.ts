@@ -1,5 +1,3 @@
-import { Subscription } from 'rxjs';
-
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -17,18 +15,22 @@ import { Subscription } from 'rxjs';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, ElementRef, inject, Input, NgZone, numberAttribute, OnDestroy, OnInit, TemplateRef, ViewContainerRef, input } from '@angular/core';
+
+import { Subscription } from 'rxjs';
+
+import { AfterViewInit, computed, Directive, ElementRef, inject, input, Input, isSignal, NgZone, numberAttribute, OnDestroy, OnInit, Signal, signal, TemplateRef, ViewContainerRef } from '@angular/core';
 
 import { A11yService, ScreenreaderPriority } from '../../a11y';
 import { coerceBoolean, isArray, isObject, isString, retrieveFocusableElements } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
-import { ATTRIBUTE_TOOLTIP } from '../shared/xc-i18n-attributes';
 
+
+type XcTooltipValue = string | Signal<string> | TemplateRef<any>;
 
 export interface XcTooltipController {
     delegateFunction?: (element: HTMLElement) => HTMLElement;
     autoDelegate?: boolean;
-    tooltip?: string | TemplateRef<any>;
+    tooltip?: XcTooltipValue;
 }
 
 export enum XcTooltipPosition {
@@ -43,6 +45,7 @@ export enum XcTooltipPosition {
 }
 
 type XcPreviousTooltipPosition = 'left' | 'right' | 'above' | 'below' | 'before' | 'after';
+type XcTooltipPositionValue = XcPreviousTooltipPosition | XcTooltipPosition | `${XcTooltipPosition}`;
 
 
 @Directive({ selector: '[xc-tooltip]' })
@@ -54,10 +57,6 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
     private observer: MutationObserver;
-
-    protected _tooltip: { key: string | TemplateRef<any>, translated: string } = { key: '', translated: '' };
-
-    protected subs: Subscription[] = [];
 
     private static activeTooltip: XcTooltipDirective;
 
@@ -112,16 +111,21 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     private preferedPosition: XcTooltipPosition[];
 
-    @Input('xc-tooltip')
-    set tooltip(value: string | TemplateRef<any>) {
-        this._tooltip.key = value;
-        this.translate(ATTRIBUTE_TOOLTIP);
-    }
+    readonly tooltipInput = input<XcTooltipValue>('', { alias: 'xc-tooltip' });
+
+    private readonly tooltipContext = signal<string | undefined>(undefined);
+
+    private readonly resolvedTooltip = computed<string | TemplateRef<any>>(() => {
+        this.localeService.languageSignal();
+        return this.resolveTooltip(this.tooltipInput(), this.tooltipContext());
+    });
 
     get tooltip(): string | TemplateRef<any> {
-        return isString(this._tooltip.key) ? this._tooltip.translated : this._tooltip.key;
+        return this.resolvedTooltip();
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tooltip-islabel', transform: coerceBoolean})
     set tooltipIsLabel(value: boolean) {
         this._isLabel = value;
@@ -133,6 +137,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
      * in some widgets (like <xc-tree>) the tooltip is only spoken out if the source element is focused before
      * the tooltip appears, which is not the case. xc-tooltip-impolite rea
      */
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tooltip-impolite', transform: coerceBoolean})
     set impolite(value: boolean) {
         this._impolite = value;
@@ -145,16 +151,18 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
     /* @Input check for backward compatibility */
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-tooltip-position')
-    set _xc_position(value: (XcPreviousTooltipPosition | XcTooltipPosition) | (XcPreviousTooltipPosition | XcTooltipPosition)[]) {
+    set _xc_position(value: XcTooltipPositionValue | XcTooltipPositionValue[]) {
         if (isArray(value)) {
-            this.preferedPosition = (value as XcTooltipPosition[]).map<XcTooltipPosition>(str => XcTooltipDirective.getXcTooltipPosition(str));
+            this.preferedPosition = (value as XcTooltipPositionValue[]).map<XcTooltipPosition>(str => XcTooltipDirective.getXcTooltipPosition(str));
         } else {
             this.preferedPosition = [XcTooltipDirective.getXcTooltipPosition(value)];
         }
     }
 
-    private static getXcTooltipPosition(value: (XcPreviousTooltipPosition | XcTooltipPosition)): XcTooltipPosition {
+    private static getXcTooltipPosition(value: XcTooltipPositionValue): XcTooltipPosition {
         switch (value) {
             case 'left': return XcTooltipPosition.left;
             case 'right': return XcTooltipPosition.right;
@@ -162,25 +170,41 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
             case 'below': return XcTooltipPosition.bottom;
             case 'before': return XcTooltipPosition.left;
             case 'after': return XcTooltipPosition.right;
-            default: return value;
+            case XcTooltipPosition.top: return XcTooltipPosition.top;
+            case XcTooltipPosition.topRight: return XcTooltipPosition.topRight;
+            case XcTooltipPosition.right: return XcTooltipPosition.right;
+            case XcTooltipPosition.bottomRight: return XcTooltipPosition.bottomRight;
+            case XcTooltipPosition.bottom: return XcTooltipPosition.bottom;
+            case XcTooltipPosition.bottomLeft: return XcTooltipPosition.bottomLeft;
+            case XcTooltipPosition.left: return XcTooltipPosition.left;
+            case XcTooltipPosition.topLeft: return XcTooltipPosition.topLeft;
+            default: return XcTooltipPosition.bottom;
         }
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tooltip-disabled', transform: coerceBoolean})
     set _xc_disabled(value: boolean) {
         this._disabled = value;
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tooltip-showdelay', transform: numberAttribute})
     set _xc_showDelay(value: number) {
         this._showDelay = value;
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input({alias: 'xc-tooltip-hidedelay', transform: numberAttribute})
     set _xc_hideDelay(value: number) {
         this._hideDelay = value;
     }
 
+    // TODO: Skipped for migration because:
+    //  Accessor inputs cannot be migrated as they are too complex.
     @Input('xc-tooltip-class')
     set _xc_tooltipClass(value: string | string[] | Set<string> | { [key: string]: any }) {
         let classes: string[] = [];
@@ -198,7 +222,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     private readonly viewContainerRef: ViewContainerRef;
 
-    i18nContext: string;
+    i18nContext: string | undefined;
 
     protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
@@ -231,12 +255,28 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     }
 
 
-    protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
-            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
-        } else {
-            this[attribute]["translated"] = this[attribute]["key"];
+    private resolveTooltip(value: XcTooltipValue, context: string | undefined): string | TemplateRef<any> {
+        if (value instanceof TemplateRef) {
+            return value;
         }
+
+        const rawValue = isSignal(value) ? value() : value;
+        if (!rawValue) {
+            return rawValue;
+        }
+
+        const contextKey = context ? context + '.' + rawValue : rawValue;
+        const contextTranslation = this.i18n.getTranslation(contextKey);
+        if (contextTranslation?.value && contextTranslation.value !== contextKey) {
+            return contextTranslation.value;
+        }
+
+        const plainTranslation = this.i18n.getTranslation(rawValue);
+        if (plainTranslation?.value && plainTranslation.value !== rawValue) {
+            return plainTranslation.value;
+        }
+
+        return rawValue;
     }
 
 
@@ -249,28 +289,15 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         const el = this.elementRef.nativeElement;
 
-        this.i18nContext = el.getAttribute('xc-i18n');
-
-        // Übersetzung, falls Tooltip bereits gesetzt ist
-        if (this._tooltip.key) {
-            this.translate(ATTRIBUTE_TOOLTIP);
-        }
-
-        // Subscription für Sprachwechsel
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._tooltip.key) {
-                this.translate(ATTRIBUTE_TOOLTIP);
-            }
-        }));
+        this.i18nContext = el.getAttribute('xc-i18n') || undefined;
+        this.tooltipContext.set(this.i18nContext);
 
         // MutationObserver erstellen
         this.observer = new MutationObserver(() => {
             const newContext = el.getAttribute('xc-i18n');
             if (newContext !== this.i18nContext) {
-                this.i18nContext = newContext;
-                if (this._tooltip.key) {
-                    this.translate(ATTRIBUTE_TOOLTIP);
-                }
+                this.i18nContext = newContext || undefined;
+                this.tooltipContext.set(this.i18nContext);
             }
         });
 
@@ -357,8 +384,6 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
             this.focusableElement.removeEventListener('mouseleave', this.mouseleaveFn);
             this.hide();
         }
-
-        this.subs.forEach(sub => sub.unsubscribe());
     }
 
 
@@ -512,7 +537,8 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
 
     private getCurrentTooltip(): string | TemplateRef<any> {
-        return this.controller().tooltip || this.tooltip || '';
+        const tooltip = this.controller().tooltip || this.tooltip || '';
+        return isSignal(tooltip) ? tooltip() : tooltip;
     }
 
 
