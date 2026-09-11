@@ -146,15 +146,23 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     };
 
     private readonly onTableFocusIn = (event: FocusEvent) => {
-        if (!this.tabFocusPending || !this.scrollPositionsBeforeTab) {
+        if (event.target === this.tbody) {
+            if (this.tabFocusPending && this.scrollPositionsBeforeTab) {
+                this.restoreScrollPositions();
+            }
             return;
         }
 
-        // Only undo scroll when focus actually lands on the focusable tbody.
-        if (event.target === this.tbody) {
-            this.restoreScrollPositions();
+        const target = event.target as HTMLElement;
+        const rowEl = target.closest('tr') as HTMLTableRowElement | null;
+        if (rowEl && this.tbody?.contains(rowEl)) {
+            // defer: let any pending expansion/CD settle before we measure/scroll
+            requestAnimationFrame(() => this.focusRowElement(rowEl));
         }
+
+        this.clearTabScrollState();
     };
+
 
     constructor() {
         const _i18n = this._i18n;
@@ -189,9 +197,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                 const tabIntoTable = this.tabFocusPending;
 
                 if (tabIntoTable) {
-                    // Undo browser scroll-into-view on tbody (and parent scrollers).
-                    // Do not call focusRowElement here — that is reserved for ArrowUp/ArrowDown
-                    // and would reintroduce a scroll jump on Tab / close-details focus restore.
                     this.restoreScrollPositions();
                 }
 
@@ -567,13 +572,25 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         const row = this.getFocusedRow();
         const rowEl = this.getFocusedRowElement();
         if (event.key === 'ArrowUp' || event.key === 'Up') {
+            const wrapped = this.getRowIndex(row) === 0;
             this.focusRow(this.getPrevRow(row));
-            this.focusRowElement(this.getPrevRowElement(rowEl));
+            this.cdRef.detectChanges();
+            if (wrapped) {
+                this.scrollToBottom();
+            } else {
+                this.focusRowElement(this.getPrevRowElement(rowEl));
+            }
             event.preventDefault();
         }
         if (event.key === 'ArrowDown' || event.key === 'Down') {
+            const wrapped = this.getRowIndex(row) === this.dataSource.rows.length - 1;
             this.focusRow(this.getNextRow(row));
-            this.focusRowElement(this.getNextRowElement(rowEl));
+            this.cdRef.detectChanges();
+            if (wrapped) {
+                this.scrollToTop();
+            } else {
+                this.focusRowElement(this.getNextRowElement(rowEl));
+            }
             event.preventDefault();
         }
         if (event.key === 'Enter' || event.key === ' ') {
@@ -595,6 +612,14 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         }
     }
 
+    private scrollToTop() {
+        this.elementRef.nativeElement.scrollTop = 0;
+    }
+
+    private scrollToBottom() {
+        const parent = this.elementRef.nativeElement;
+        parent.scrollTop = parent.scrollHeight;
+    }
 
     getRowIndex(row: any): number {
         return this.dataSource
@@ -699,13 +724,16 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     focusRowElement(element: HTMLTableRowElement) {
         const parent = this.elementRef.nativeElement;
         const topOffset = this.getVisibleHeaderBottomOffset();
-        const e = element.getBoundingClientRect();
-        const p = parent.getBoundingClientRect();
-        if (e.top < p.top + topOffset) {
-            parent.scrollTop -= p.top - e.top + topOffset + 1;
-        }
-        if (e.bottom > p.bottom) {
-            parent.scrollTop += e.bottom - p.bottom + 1;
+
+        const elementTop = element.offsetTop;
+        const elementBottom = elementTop + element.offsetHeight;
+        const viewTop = parent.scrollTop + topOffset;
+        const viewBottom = parent.scrollTop + parent.clientHeight;
+
+        if (elementTop < viewTop) {
+            parent.scrollTop = elementTop - topOffset;
+        } else if (elementBottom > viewBottom) {
+            parent.scrollTop = elementBottom - parent.clientHeight;
         }
     }
 
