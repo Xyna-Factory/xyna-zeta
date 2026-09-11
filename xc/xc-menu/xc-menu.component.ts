@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { Component, EventEmitter, forwardRef, inject, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, forwardRef, inject, Input, numberAttribute, Output, ViewChild } from '@angular/core';
 import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
@@ -89,31 +89,31 @@ export class XcMenuComponent {
         return '';
     }
 
-    @Input('xc-menu-x-nextto-trigger')
+    @Input({alias: 'xc-menu-x-nextto-trigger', transform: coerceBoolean})
     set xNexttoTrigger(value: boolean) {
-        this.options.xNexttoTrigger = coerceBoolean(value);
+        this.options.xNexttoTrigger = value;
         if (this.menu) {
             this.menu.xNexttoTrigger = this.options.xNexttoTrigger;
         }
     }
 
-    @Input('xc-menu-y-nextto-trigger')
+    @Input({alias: 'xc-menu-y-nextto-trigger', transform: coerceBoolean})
     set yNexttoTrigger(value: boolean) {
-        this.options.yNexttoTrigger = coerceBoolean(value);
+        this.options.yNexttoTrigger = value;
         if (this.menu) {
             this.menu.yNexttoTrigger = this.options.yNexttoTrigger;
         }
     }
 
-    @Input('xc-menu-with-arrow')
+    @Input({alias: 'xc-menu-with-arrow', transform: coerceBoolean})
     set withArrow(value: boolean) {
-        this.options.withArrow = coerceBoolean(value);
+        this.options.withArrow = value;
         if (this.menu) {
             this.menu.withArrow = this.options.withArrow;
         }
     }
 
-    @Input('xc-menu-x-offset')
+    @Input({alias: 'xc-menu-x-offset', transform: numberAttribute})
     set xOffset(value: number) {
         this.options.xOffset = value;
         if (this.menu) {
@@ -121,7 +121,7 @@ export class XcMenuComponent {
         }
     }
 
-    @Input('xc-menu-y-offset')
+    @Input({alias: 'xc-menu-y-offset', transform: numberAttribute})
     set yOffset(value: number) {
         this.options.yOffset = value;
         if (this.menu) {

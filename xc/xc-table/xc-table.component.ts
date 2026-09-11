@@ -323,9 +323,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-allowsort')
+    @Input({alias: 'xc-table-allowsort', transform: coerceBoolean})
     set allowSort(value: boolean) {
-        this._allowSort = coerceBoolean(value);
+        this._allowSort = value;
     }
 
 
@@ -334,9 +334,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-allowfilter')
+    @Input({alias: 'xc-table-allowfilter', transform: coerceBoolean})
     set allowFilter(value: boolean) {
-        this._allowFilter = coerceBoolean(value);
+        this._allowFilter = value;
     }
 
 
@@ -345,9 +345,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-allowactivate')
+    @Input({alias: 'xc-table-allowactivate', transform: coerceBoolean})
     set allowActivate(value: boolean) {
-        this._allowActivate = coerceBoolean(value);
+        this._allowActivate = value;
     }
 
 
@@ -357,9 +357,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     @HostBinding('class.allowselect')
-    @Input('xc-table-allowselect')
+    @Input({alias: 'xc-table-allowselect', transform: coerceBoolean})
     set allowSelect(value: boolean) {
-        this._allowSelect = coerceBoolean(value);
+        this._allowSelect = value;
     }
 
 
@@ -368,9 +368,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-multiselect')
+    @Input({alias: 'xc-table-multiselect', transform: coerceBoolean})
     set multiSelect(value: boolean) {
-        this._multiSelect = coerceBoolean(value);
+        this._multiSelect = value;
     }
 
 
@@ -380,9 +380,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     @HostBinding('class.cellselect')
-    @Input('xc-table-cellselect')
+    @Input({alias: 'xc-table-cellselect', transform: coerceBoolean})
     set cellSelect(value: boolean) {
-        this._cellSelect = coerceBoolean(value);
+        this._cellSelect = value;
     }
 
 
@@ -391,9 +391,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-lazyupdate')
+    @Input({alias: 'xc-table-lazyupdate', transform: coerceBoolean})
     set lazyUpdate(value: boolean) {
-        this._lazyUpdate = coerceBoolean(value);
+        this._lazyUpdate = value;
     }
 
 
@@ -402,9 +402,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    @Input('xc-table-visibleactions')
+    @Input({alias: 'xc-table-visibleactions', transform: coerceBoolean})
     set visibleActions(value: boolean) {
-        this._visibleActions = coerceBoolean(value);
+        this._visibleActions = value;
     }
 
 
@@ -494,15 +494,15 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
                         if (this.dataSource.filterEnumsAsInput.has(path)) {
                             filter.template.asInput = true;
                             filter.template.suffix = 'clear';
+                        } else if (this.dataSource.filterEnumsAsMultiselect.has(path) || column.filterMultiselect) {
+                            filter.template.asDropdown = true;
+                            filter.template.asMultiselect = true;
+                            filter.template.multiSelectCallback = (value: string) => {
+                                this.dataSource.setFilter(path, value);
+                                this.dataSource.applyFilters();
+                            };
                         } else {
                             filter.template.asDropdown = true;
-                            if (column.filterMultiselect) {
-                                filter.template.asMultiselect = true;
-                                filter.template.multiSelectCallback = (value: string) => {
-                                    this.dataSource.setFilter(path, value);
-                                    this.dataSource.applyFilters();
-                                };
-                            }
                         }
                     }
                 } else {
@@ -791,19 +791,25 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     get noDataLabel(): string {
-        let label = this.dataSource ? this.dataSource.requestErrorMessage : undefined;
+        const requestErrorMessage = this.dataSource?.requestErrorMessage;
 
-        if (!label) {
-            let dataError = 'data';
-            if (this.noColumns && !this.noRows) {
-                dataError = 'columns';
-            }
-            if (this.noRows && !this.noColumns) {
-                dataError = 'rows';
-            }
-            label = this.i18n.translate(`no ${dataError} ${this.dataSource && this.dataSource.limit === 0 ? 'requested' : 'available'}!`);
+        if (requestErrorMessage) {
+            return this.i18n.translate(requestErrorMessage);
         }
 
-        return label;
+        let dataError = 'data';
+
+        if (this.noColumns && !this.noRows) {
+            dataError = 'columns';
+        }
+
+        if (this.noRows && !this.noColumns) {
+            dataError = 'rows';
+        }
+
+        const requestState = this.dataSource && this.dataSource.limit === 0 ? 'requested' : 'available';
+        const key = `no ${dataError} ${requestState}!`;
+
+        return this.i18n.translate(key);
     }
 }

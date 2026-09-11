@@ -91,9 +91,9 @@ export class XcTemplateComponent {
     }
 
 
-    @Input('xc-template-readonly')
+    @Input({alias: 'xc-template-readonly', transform: coerceBoolean})
     set readonly(value: boolean) {
-        this._readonly = coerceBoolean(value);
+        this._readonly = value;
     }
 
     get readonly(): boolean {
@@ -101,9 +101,9 @@ export class XcTemplateComponent {
     }
 
 
-    @Input('xc-template-disabled')
+    @Input({alias: 'xc-template-disabled', transform: coerceBoolean})
     set disabled(value: boolean) {
-        this._disabled = coerceBoolean(value);
+        this._disabled = value;
     }
 
 
