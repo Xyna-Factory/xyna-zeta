@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -16,10 +15,11 @@ import { AsyncPipe } from '@angular/common';
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, inject, viewChild, input, output } from '@angular/core';
-
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
+
+import { AsyncPipe } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, Input, input, OnDestroy, output, viewChild } from '@angular/core';
 
 import { coerceBoolean } from '../../../../base';
 import { I18nService } from '../../../../i18n';
@@ -140,7 +140,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
     }
 
 
-    @Input({alias: 'xc-tree-item-keep-breaks', transform: coerceBoolean})
+    @Input({ alias: 'xc-tree-item-keep-breaks', transform: coerceBoolean })
     set keepBreaks(value: boolean) {
         this._keepBreaks = value;
     }
