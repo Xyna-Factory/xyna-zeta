@@ -31,4 +31,5 @@ export interface XcNavListItem extends XcItem {
     children?: this[];
     collapsed?: boolean;
     tooltip?: XcDynamicString;
+    ariaLabel?: string;
 }

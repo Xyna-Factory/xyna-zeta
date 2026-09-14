@@ -19,5 +19,5 @@ import { I18nTranslation } from '@zeta/i18n';
 
 
 export const xcTableTranslations_enUS: I18nTranslation[] = [
-
+    { key: 'xcTable.actionsColumnHeader', value: 'Actions' }
 ];
