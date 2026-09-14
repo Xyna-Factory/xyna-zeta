@@ -23,7 +23,7 @@ import { XcFormBaseComponent } from './xc-form-base.component';
 
 
 @Component({
-    changeDetection: ChangeDetectionStrategy.Eager, 
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: ''
 })
 export class XcFormBaseInputComponent extends XcFormBaseComponent {
@@ -38,7 +38,7 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
     readonly input = viewChild(MatInput);
 
-    readonly typeInput = input('text');
+    readonly typeInput = input('text', { alias: 'type' });
 
     readonly type = linkedSignal(() => this.typeInput());
 
