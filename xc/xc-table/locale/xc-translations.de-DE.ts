@@ -28,5 +28,5 @@ export const xcTableTranslations_deDE: I18nTranslation[] = [
     { key: 'no rows requested!', value: 'Keine Einträge angefordert!' },
     { key: 'no columns available!', value: 'Keine Spalten verfügbar!' },
     { key: 'no columns requested!', value: 'Keine Spalten angefordert!' },
-    { key: 'xcTable.actionsColumnHeader', value: 'Aktionen' }
+    { key: 'actionsColumnHeader', value: 'Aktionen' }
 ];

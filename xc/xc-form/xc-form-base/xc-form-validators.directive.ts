@@ -148,7 +148,7 @@ export class XcFormValidatorNumberDirective extends XcFormValidatorBaseDirective
         return [XcFormValidatorNumber(this.number() || undefined)];
     }
 
-    readonly number = input<'hexadecimal' | 'decimal' | 'binary' | 'float'>(undefined, { alias: "xc-form-validator-number" });
+    readonly number = input<'hexadecimal' | 'decimal' | 'binary' | 'float' | ''>(undefined, { alias: "xc-form-validator-number" });
 }
 
 
