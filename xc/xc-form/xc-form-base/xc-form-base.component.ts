@@ -268,7 +268,11 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     }
 
 
-    get errorContent(): string {
+    /** Validator message without field name. */
+    get errorMessage(): string {
+        if (!this.formControl.errors) {
+            return '';
+        }
         const errorFunc = (key: string, data: any): string => {
             switch (key) {
                 case 'email': return this.i18n.translate('zeta.xc-form-base.email');
@@ -294,6 +298,21 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
                 return this.transformErrorMessageCase(message);
             }
         ).join(', ');
+    }
+
+
+    /** Field name + validator message for screen readers on blur. */
+    get errorContent(): string {
+        const message = this.errorMessage;
+        const fieldName = (this.ariaLabel || '').trim();
+        if (!message || !fieldName) {
+            return message;
+        }
+        return this.i18n.translate(
+            'zeta.xc-form-base.error-with-field',
+            { key: '$0', value: fieldName },
+            { key: '$1', value: message }
+        );
     }
 
     @Input('xc-form-field-tab-index')
