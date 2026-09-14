@@ -40,7 +40,7 @@
     </td>
   </ng-container>
   <!-- Container template view of a table body row -->
-  @for (column of columns; track column.path) {
+  @for (column of columns; let i = $index; track column.path) {
     <ng-container [matColumnDef]="getColumnID(column)">
       <th mat-header-cell *matHeaderCellDef attr.aria-sort="{{getAriaSortForColumn(column)}}" scope="col">
         <span mat-sort-header [disabled]="column.disableSort">{{ getColumnLabel(column) || '&nbsp;'}}</span>
@@ -77,7 +77,7 @@
           }
           <!-- ngElse = displays cellData as text -->
           <!-- ngIf = displays the action elements only in the last column -->
-          @if (i === columns.length - 1) {
+          @if (!leadingActions && i === columns.length - 1 || leadingActions && i === 0) {
             <!-- action buttons in last column -->
             <div class="action-elements">
               @for (actionElement of dataSource?.actionElements; track actionElement) {

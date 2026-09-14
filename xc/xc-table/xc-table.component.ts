@@ -18,7 +18,7 @@
 import { Subscription } from 'rxjs';
 
 import { NgClass } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, effect, ElementRef, HostBinding, inject, input, OnDestroy, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, HostBinding, inject, input, OnDestroy, signal, viewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
@@ -62,6 +62,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     readonly allowSelectInput = input(false, { alias: 'xc-table-allowselect', transform: coerceBoolean });
     readonly multiSelectInput = input(false, { alias: 'xc-table-multiselect', transform: coerceBoolean });
     readonly cellSelectInput = input(false, { alias: 'xc-table-cellselect', transform: coerceBoolean });
+    readonly leadingActionsInput = input(false, { alias: 'xc-table-leading-actions', transform: coerceBoolean });
     readonly lazyUpdateInput = input(false, { alias: 'xc-table-lazyupdate', transform: coerceBoolean });
     readonly visibleActionsInput = input(false, { alias: 'xc-table-visibleactions', transform: coerceBoolean });
 
@@ -291,6 +292,12 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
+    /** Render row actions in a leading Actions column (default: false). */
+    get leadingActions(): boolean {
+        return this.leadingActionsInput();
+    }
+
+
     @HostBinding('class.refreshing')
     get refreshing(): boolean {
         return this.dataSource && this.dataSource.refreshing;
@@ -298,9 +305,13 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     get columns(): XcTableColumn[] {
-        return this.dataSource
-            ? this.dataSource.columns
-            : [];
+        if (!this.dataSource) {
+            return [];
+        }
+        if (!this.leadingActions) {
+            return this.dataSource.columns;
+        }
+        return [this.getLeadingActionColumn(), ...this.dataSource.columns];
     }
 
 
@@ -316,6 +327,21 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     get columnNames(): string[] {
         return this.columns.map(column => this.resolveDynamicString(column.name));
+    }
+
+
+    private get actionColumnPath(): string {
+        return '__leading_actions__';
+    }
+
+
+    getLeadingActionColumn(): XcTableColumn {
+        return <XcTableColumn>{
+            path: this.actionColumnPath,
+            name: signal('xcTable.actionsColumnHeader'),
+            disableSort: true,
+            disableFilter: true
+        };
     }
 
 
@@ -430,6 +456,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
 
     getCellData(row: any, path: string): XcTemplate[] | any {
+        if (this.leadingActions && path === this.actionColumnPath) {
+            return '';
+        }
         return this.dataSource
             ? this.dataSource.resolve(row, path)
             : undefined;
