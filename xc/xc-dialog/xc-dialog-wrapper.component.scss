@@ -182,3 +182,37 @@ $resizable: var(--resizable);
         }
     }
 }
+@media (forced-colors: active) {
+    :host .resizable-dialog,
+    :host .dialog {
+        outline: 2px solid CanvasText !important;
+        outline-offset: -2px;
+    }
+
+    :host .resizable-dialog .header,
+    :host .dialog .header {
+        border-bottom: 1px solid CanvasText !important;
+    }
+
+    :host .resizable-dialog .mat-mdc-dialog-content,
+    :host .dialog .mat-mdc-dialog-content {
+        border-bottom: 1px solid CanvasText !important;
+    }
+
+    ::ng-deep mat-dialog-actions.mat-mdc-dialog-actions,
+    ::ng-deep .mat-mdc-dialog-actions,
+    ::ng-deep .mdc-dialog__actions {
+        border-top: 1px solid CanvasText !important;
+        outline: 2px solid CanvasText !important;
+        outline-offset: -2px;
+        min-height: 48px;
+    }
+    ::ng-deep .mat-mdc-tooltip,
+    ::ng-deep .mdc-tooltip,
+    ::ng-deep .mdc-tooltip__surface {
+        border: 1px solid CanvasText !important;
+        outline: 1px solid CanvasText !important;
+        background: Canvas !important;
+        color: CanvasText !important;
+    }
+}

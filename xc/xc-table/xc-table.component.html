@@ -74,7 +74,9 @@
               }
             </div>
           } @else {
-            <span role="link" class="text-cell" [attr.lang]="column.pronunciationLang || null">{{ cellData }}</span>
+<span role="link" tabindex="0" class="text-cell" [attr.lang]="column.pronunciationLang || null" (keydown.enter)="doubleClickRow(row); $event.preventDefault(); $event.stopPropagation()">
+  {{cellData}}
+</span>
           }
           <!-- ngElse = displays cellData as text -->
           <!-- ngIf = displays the action elements only in the last column -->
