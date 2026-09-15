@@ -128,14 +128,8 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     private readonly onDocumentKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Tab') {
-            if (document.activeElement === this.tbody) {
-                this.clearTabScrollState();
-            } else {
-                // Tab may move focus onto tbody; browser scroll-into-view can move
-                // xc-table and/or parent scroll containers (e.g. section.scroll).
-                this.saveScrollPositions();
-                this.tabFocusPending = true;
-            }
+            this.saveScrollPositions();
+            this.tabFocusPending = true;
         } else if (event.key !== 'Shift') {
             this.clearTabScrollState();
         }
@@ -148,7 +142,14 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     private readonly onTableFocusIn = (event: FocusEvent) => {
         if (event.target === this.tbody) {
             if (this.tabFocusPending && this.scrollPositionsBeforeTab) {
+                const snapshot = this.scrollPositionsBeforeTab;
                 this.restoreScrollPositions();
+                requestAnimationFrame(() => {
+                    for (const position of snapshot) {
+                        position.element.scrollTop = position.top;
+                        position.element.scrollLeft = position.left;
+                    }
+                });
             }
             return;
         }
@@ -156,13 +157,11 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         const target = event.target as HTMLElement;
         const rowEl = target.closest('tr') as HTMLTableRowElement | null;
         if (rowEl && this.tbody?.contains(rowEl)) {
-            // defer: let any pending expansion/CD settle before we measure/scroll
             requestAnimationFrame(() => this.focusRowElement(rowEl));
         }
 
         this.clearTabScrollState();
     };
-
 
     constructor() {
         const _i18n = this._i18n;
