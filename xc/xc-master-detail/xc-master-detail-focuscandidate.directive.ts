@@ -68,7 +68,7 @@ export class XcMasterDetailFocusCandidateDirective implements OnInit {
                 if (element.focus) {
                     const tabIndexBackup = element.tabIndex;
                     element.tabIndex = 0;
-                    element.focus();
+                    element.focus({ preventScroll: true });
                     element.tabIndex = tabIndexBackup;
 
                     if (this.observer && this.observer.afterFocus) {
