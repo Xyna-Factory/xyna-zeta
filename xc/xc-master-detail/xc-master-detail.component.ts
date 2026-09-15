@@ -56,7 +56,7 @@ export class XcMasterDetailComponent {
     readonly position = input<XcMasterDetailPosition>('end', { alias: "xc-master-detail-position" });
 
 
-    @Input('xc-master-detail-opened')
+    @Input({alias: 'xc-master-detail-opened', transform: coerceBoolean})
     set opened(value: boolean) {
         this._opened = value;
     }
