@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 
 import { Xo } from '../../api';
 import { Comparable } from '../../base';
+import { XcDynamicString } from '../shared/xc-item';
 import { XcSortPredicate } from '../shared/xc-sort';
 import { XcTemplate } from '../xc-template/xc-template';
 import { MULTISELECT_FILTER_SEPARATOR, XcTableData, XcTableDataFilter, XcTableDataRequestOptions, XcTableDataSort, XcTableDataSource } from './xc-table-data-source';
@@ -133,7 +134,7 @@ export class XcLocalTableDataSource<T extends Comparable = Comparable> extends X
 
 
     // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-    resolve(row: T, path: string): XcTemplate[] | Object {
+    resolve(row: T, path: string): XcTemplate[] | XcDynamicString | Object {
         return row instanceof Xo
             ? this.resolveXo(row, path)
             : row[path];

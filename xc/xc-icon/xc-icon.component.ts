@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, HostBinding, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, HostBinding, Input, OnInit, inject, input } from '@angular/core';
 
 import { I18nService } from '@zeta/i18n';
 
@@ -25,6 +25,7 @@ import { MatIcon } from '@angular/material/icon';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-icon',
     templateUrl: './xc-icon.component.html',
     styleUrls: ['./xc-icon.component.scss'],
@@ -45,9 +46,12 @@ export class XcIconComponent extends XcThemeableComponent implements OnInit, Aft
 
     i18nContext: string;
 
+    readonly iconSize = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: "xc-icon-size" });
+
     @HostBinding('attr.size')
-    @Input('xc-icon-size')
-    iconSize: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
+    get hostIconSize(): string {
+        return this.iconSize();
+    }
 
 
     @HostBinding('class.reverse-direction')
@@ -122,7 +126,7 @@ export class XcIconComponent extends XcThemeableComponent implements OnInit, Aft
             const el = this.elementRef.nativeElement.querySelector('span');
             this.i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');
             if (el && this.i18nContext != null) {
-                el.textContent = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + el.textContent : el.textContent);
+                el.textContent = this.i18n.translateInstant(this.i18nContext ? this.i18nContext + '.' + el.textContent : el.textContent);
             }
         }
     }

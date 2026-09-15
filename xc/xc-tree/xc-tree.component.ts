@@ -20,11 +20,12 @@ import { filter } from 'rxjs/operators';
 
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, inject, Input, NgZone, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, inject, Input, input, NgZone, OnDestroy } from '@angular/core';
 import { MatNestedTreeNode, MatTree, MatTreeNodeDef, MatTreeNodeOutlet, MatTreeNodeToggle } from '@angular/material/tree';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService, XcI18nContextDirective, XcI18nPipe } from '../../i18n';
+import { XcDynamicString } from '../shared/xc-item';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcTemplateComponent } from '../xc-template/xc-template.component';
 import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
@@ -85,6 +86,7 @@ export class XcTreeComponent implements OnDestroy {
     private readonly _i18n = inject(I18nService);
     private readonly zone = inject(NgZone);
 
+    protected readonly resolveDynamicString = (value?: XcDynamicString) => value?.() ?? '';
 
     private _allowSelect = false;
     private _multiSelect = false;
@@ -107,11 +109,9 @@ export class XcTreeComponent implements OnDestroy {
         }
     };
 
-    @Input('xc-tree-observer')
-    observer: XcTreeObserver;
+    readonly observer = input<XcTreeObserver>(undefined, { alias: "xc-tree-observer" });
 
-    @Input('xc-tree-autoexpand')
-    autoExpand: 'first' | 'all';
+    readonly autoExpand = input<'first' | 'all'>(undefined, { alias: "xc-tree-autoexpand" });
 
 
     constructor() {
@@ -199,12 +199,13 @@ export class XcTreeComponent implements OnDestroy {
             // subscribe to data changes
             this._dataSourceSubscriptions.push(
                 this.dataSource.dataChange.pipe<XcTreeNode[]>(
-                    filter(nodes => this.autoExpand && nodes.length > 0)
+                    filter(nodes => this.autoExpand() && nodes.length > 0)
                 ).subscribe(nodes =>
                     nodes.forEach(node => {
-                        if (this.autoExpand === 'first') {
+                        const autoExpand = this.autoExpand();
+                        if (autoExpand === 'first') {
                             this.treeControl.expand(node);
-                        } else if (this.autoExpand === 'all') {
+                        } else if (autoExpand === 'all') {
                             const expandChildren = (parentNode: XcTreeNode) => {
                                 this.treeControl.expand(parentNode);
                                 this._dataSourceSubscriptions.push(parentNode.children.pipe(filter(children => children.length > 0)).subscribe(children =>
@@ -242,18 +243,20 @@ export class XcTreeComponent implements OnDestroy {
 
 
     getTemplateAriaLabelByNode(node: XcTreeNode): string {
-        return this.i18n.translate(node.name);
+        return this.i18n.translateSignal(node.name)();
     }
 
 
     isNodeReadonly(node: XcTreeNode): boolean {
         const readonly = node.readonly && !this.readonlyMode;
-        return readonly || this.observer && this.observer.readonlyNode && this.observer.readonlyNode(node, readonly);
+        const observer = this.observer();
+        return readonly || observer && observer.readonlyNode && observer.readonlyNode(node, readonly);
     }
 
     isNodeDisabled(node: XcTreeNode): boolean {
         const disabled = node.disabled && !this.readonlyMode;
-        return disabled || this.observer && this.observer.disableNode && this.observer.disableNode(node, disabled);
+        const observer = this.observer();
+        return disabled || observer && observer.disableNode && observer.disableNode(node, disabled);
     }
 
 
@@ -268,16 +271,18 @@ export class XcTreeComponent implements OnDestroy {
         const hidden = readonlyHidden && (node.readonly || parentHidden);
 
         // observer can overwrite the default visibility
-        if (this.observer && this.observer.hideNode) {
-            return this.observer.hideNode(node, hidden);
+        const observer = this.observer();
+        if (observer && observer.hideNode) {
+            return observer.hideNode(node, hidden);
         }
         return hidden;
     }
 
 
     visitNode(node: XcTreeNode) {
-        if (this.observer && this.observer.visitNode) {
-            return this.observer.visitNode(node);
+        const observer = this.observer();
+        if (observer && observer.visitNode) {
+            return observer.visitNode(node);
         }
     }
 
@@ -288,7 +293,8 @@ export class XcTreeComponent implements OnDestroy {
 
 
     isNodeExpandable(node: XcTreeNode): boolean {
-        if (!node.fixed && (!this.observer || !this.observer.disableExpandability || !this.observer.disableExpandability(node))) {
+        const observer = this.observer();
+        if (!node.fixed && (!observer || !observer.disableExpandability || !observer.disableExpandability(node))) {
             const children = node.children ? node.children.getValue() : [];
             return children.some(child => this.isNodeVisible(child));
         }
@@ -329,7 +335,7 @@ export class XcTreeComponent implements OnDestroy {
 
 
     getTooltip(node: XcTreeNode): string {
-        return node.tooltip || '';
+        return this.resolveDynamicString(node.tooltip) || '';
     }
 
 

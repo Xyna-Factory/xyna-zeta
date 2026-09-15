@@ -15,16 +15,17 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Injector, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
-import { XcTabComponent } from '../../xc';
-import { LoginComponentData } from '../login/auth-login.component';
-import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
-import { XcFormAutocompleteComponent } from '../../xc/xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
+import { XcTabComponent } from '../../xc';
+import { XcFormAutocompleteComponent } from '../../xc/xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
+import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
+import { LoginComponentData } from '../login/auth-login.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'smart-card-login-tab',
     templateUrl: './smart-card-login.component.html',
     styleUrls: ['./smart-card-login.component.scss'],
@@ -32,18 +33,5 @@ import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 })
 export class SmartCardLoginTabComponent extends XcTabComponent<void, LoginComponentData> {
 
-    data: LoginComponentData = {
-        username: '',
-        onEnter: () => { },
-        usernameTabIndex: 1,
-        usernameSuffixTabIndex: 4,
-    };
-
-    constructor() {
-        const injector = inject(Injector);
-
-        super(injector);
-        this.data = this.injectedData;
-    }
-
+    readonly data = signal<LoginComponentData>(this.injectedData);
 }

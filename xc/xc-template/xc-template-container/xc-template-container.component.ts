@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, InjectionToken, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, InjectionToken, OnDestroy } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
 
@@ -28,6 +28,7 @@ import { XoTemplateDefinedBase } from './template-container-base.model';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-template-container',
     templateUrl: './xc-template-container.component.html',
     styleUrls: ['./xc-template-container.component.scss'],

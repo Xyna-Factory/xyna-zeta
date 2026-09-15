@@ -15,31 +15,35 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatLabel } from '@angular/material/form-field';
 
-import { ATTRIBUTE_VALUE } from '../../../xc/shared/xc-i18n-attributes';
 import { XcFormComponent } from '../xc-form-base/xc-form-base.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-form-text',
     templateUrl: './xc-form-text.component.html',
     styleUrls: ['./xc-form-text.component.scss'],
     imports: [MatLabel]
 })
-export class XcFormTextComponent extends XcFormComponent implements AfterContentInit {
+export class XcFormTextComponent extends XcFormComponent {
 
-    protected _value: {key: any, translated: string} = {key: '', translated : ''}
+    protected _value: any = '';
 
     @Input()
     set value(value: any) {
-        this._value.key = value;
-        this.translate(ATTRIBUTE_VALUE);
+        this._value = value;
     }
 
     get value(): any {
-        return this._value.translated || this._value.key;
+        if (!this._value) {
+            return this._value;
+        }
+        return this.i18nContext
+            ? this.i18n.translateSignal(this.i18nContext + '.' + this._value)()
+            : this._value;
     }
 
     constructor() {
@@ -47,13 +51,4 @@ export class XcFormTextComponent extends XcFormComponent implements AfterContent
     }
 
 
-    ngAfterContentInit() {
-        super.ngAfterContentInit();
-
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._value.key) {
-                this.translate(ATTRIBUTE_VALUE);
-            }
-        }));
-    }
 }

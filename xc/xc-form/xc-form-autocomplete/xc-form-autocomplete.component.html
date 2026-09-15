@@ -1,4 +1,4 @@
-<mat-form-field [floatLabel]="floatLabel" hideRequiredMarker>
+<mat-form-field [floatLabel]="floatLabel()" hideRequiredMarker xc-i18n-context="zeta.xc-form-input">
   <mat-label>{{label}}</mat-label>
 
   @if (multiSelect) {
@@ -33,7 +33,7 @@
       @for (option of filteredMultiSelectOptions; track option.value) {
         <mat-option [value]="option.value"
           [attr.aria-label]="getMultiSelectOptionAriaLabel(option)">
-          {{ option.name }}
+          {{ option.name() }}
         </mat-option>
       }
       <!-- action buttons in mat-select-footer -->
@@ -51,7 +51,7 @@
   } @else {
     <!-- single-select mode: standard autocomplete -->
     <input matInput autocomplete="off"
-      [type]="type"
+      [type]="type()"
       [placeholder]="placeholder"
       [formControl]="formControl"
       [matAutocomplete]="auto"
@@ -63,12 +63,12 @@
       [attr.aria-controls]="autocompleteId"
       [attr.aria-expanded]="autocompleteOpened ? 'true' : 'false'"
       [attr.aria-haspopup]="'listbox'"
-      [tabIndex]="(readonly || disabled) ? -1 : tabIndex"
+      [tabIndex]="(readonly || disabled) ? -1 : tabIndex()"
       [required]="required">
 
     <!-- screen reader support -->
     <div class="hidden-field" aria-live="polite" role="none">
-      {{activeOption ? activeOption.name : ''}}
+      {{activeOption ? activeOption.name() : ''}}
     </div>
 
     <mat-autocomplete class="zeta-scrollbar" #auto="matAutocomplete"
@@ -81,12 +81,12 @@
         <mat-option tabindex="0"
           [value]="option"
           [disabled]="option.disabled || readonly"
-          [xc-tooltip]="option.showTooltip ? option.name : ''"
+          [xc-tooltip]="option.showTooltip ? option.name() : ''"
           [xc-tooltip-position]="['bottom-right', 'bottom-left', 'top-right', 'top-left']">
           @if (option.icon) {
-            <xc-icon [xc-icon-name]="option.icon" xc-icon-size="small">{{option.name}}</xc-icon>
+            <xc-icon [xc-icon-name]="option.icon" xc-icon-size="small">{{option.name()}}</xc-icon>
           } @else {
-            {{option.name}}
+            {{option.name()}}
           }
         </mat-option>
       }
@@ -101,9 +101,9 @@
     <button type="button" mat-icon-button matSuffix
       (mousedown)="suffixMouseDown($event)"
       (click)="suffixClick($event)"
-      [tabIndex]="(readonly || disabled) ? -1 : tabIndexSuffix"
-      [attr.aria-label]="iconTooltip || suffixContent"
-      xc-tooltip="{{iconTooltip || (suffixContent | xcI18n)}}"
+      [tabIndex]="(readonly || disabled) ? -1 : tabIndexSuffix()"
+      [attr.aria-label]="suffixTooltip"
+      [xc-tooltip]="suffixTooltip"
       [disabled]="readonly || disabled">
       <mat-icon>{{suffixContent}}</mat-icon>
     </button>

@@ -17,7 +17,9 @@
  */
 import { take } from 'rxjs';
 
-import { Directive, EventEmitter, HostListener, inject, Input, Output } from '@angular/core';
+import { Directive, HostListener, inject, input, output } from '@angular/core';
+
+import { coerceBoolean } from '@zeta/base';
 
 import { XcContextMenuService } from './xc-context-menu.service';
 import { XcMenuService } from './xc-menu.service';
@@ -31,19 +33,16 @@ export class XcContextMenuTriggerDirective {
     private readonly menuService = inject(XcMenuService);
     private readonly contextMenuService = inject(XcContextMenuService);
 
-    @Input('xc-context-menu-items')
-    contextMenuItems: XcMenuItem[] | (() => XcMenuItem[]);
+    readonly contextMenuItems = input<XcMenuItem[] | (() => XcMenuItem[])>(undefined, { alias: "xc-context-menu-items" });
 
-    @Input()
-    disabled = false;
+    readonly disabled = input(false, { transform: coerceBoolean });
 
-    @Output()
-    readonly beforeOpen = new EventEmitter<void>();
+    readonly beforeOpen = output<void>();
 
     @HostListener('contextmenu', ['$event'])
     onContextMenu(event: MouseEvent): void {
 
-        if (this.disabled) {
+        if (this.disabled()) {
             return;
         }
 
@@ -62,7 +61,7 @@ export class XcContextMenuTriggerDirective {
             event.key === 'ContextMenu'
             || (event.shiftKey && event.key === 'F10');
 
-        if (!isContextMenuKey || this.disabled) {
+        if (!isContextMenuKey || this.disabled()) {
             return;
         }
 
@@ -87,10 +86,11 @@ export class XcContextMenuTriggerDirective {
         const trigger = this.contextMenuService.trigger;
 
         const open = () => {
-            if (this.contextMenuItems) {
-                const items = Array.isArray(this.contextMenuItems)
-                    ? this.contextMenuItems
-                    : this.contextMenuItems();
+            const contextMenuItems = this.contextMenuItems();
+            if (contextMenuItems) {
+                const items = Array.isArray(contextMenuItems)
+                    ? contextMenuItems
+                    : contextMenuItems();
 
                 if (items) {
                     this.menuService.set(items);

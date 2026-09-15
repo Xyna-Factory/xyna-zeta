@@ -15,16 +15,16 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { HttpBackend, HttpClient } from '@angular/common/http';
-import { inject, Injectable, Injector, PLATFORM_ID } from '@angular/core';
-
 import escapeStringRegexp from 'escape-string-regexp';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
+import { isPlatformBrowser } from '@angular/common';
+import { HttpBackend, HttpClient } from '@angular/common/http';
+import { computed, inject, Injectable, Injector, isSignal, PLATFORM_ID, Signal } from '@angular/core';
+
 import { isString } from '../base';
 import { LocaleService } from './locale.service';
-import { isPlatformBrowser } from '@angular/common';
 
 
 export interface I18nTranslation {
@@ -60,10 +60,18 @@ interface I18nJsonSchemaTranslation {
     translations: I18nTranslation[];
 }
 
+export type I18nSignalInput<T> = T | Signal<T>;
+
+export type I18nParamValue = string | number | boolean;
+
 export interface I18nParam {
     key: string;
-    value: string;
+    value: I18nSignalInput<I18nParamValue>;
     translate?: boolean;
+}
+
+export function resolveSignalInput<T>(value: Signal<T>): T {
+    return value();
 }
 
 export enum NoI18nTranslationFoundBehavior {
@@ -87,14 +95,13 @@ export enum I18N_TYPES {
 @Injectable({ providedIn: 'root' })
 export class I18nService {
     private readonly injector = inject(Injector);
-
+    private readonly platformId = inject(PLATFORM_ID);
+    private readonly http = inject(HttpClient);
+    private readonly localeService = inject(LocaleService);
 
     /** translation map: language -> (key -> value) */
     private readonly _translations = new Map<string, Map<string, I18nTranslation>>();
     private readonly _cache = new Map<string, Map<string, I18nCachedTranslation>>();
-
-    /** currently selected language */
-    private _language: string;
 
     private readonly _errorCodeRegEx = /(EC-[\da-z.]+)[\wQ#.,:;\-_ +*"´`'~!?=E]*/;
 
@@ -104,14 +111,13 @@ export class I18nService {
     contextDismantlingSearch = true;
 
 
-    BUTTON = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.button + ':' + key, ...params) };
-    INPUT = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.input + ':' + key, ...params) };
-    CHECKBOX = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.checkbox + ':' + key, ...params) };
-    AUTOCOMPLETE = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.autocomplete + ':' + key, ...params) };
-    TABLE = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.table + ':' + key, ...params) };
+    BUTTON = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.button + ':' + key, ...params) };
+    INPUT = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.input + ':' + key, ...params) };
+    CHECKBOX = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.checkbox + ':' + key, ...params) };
+    AUTOCOMPLETE = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.autocomplete + ':' + key, ...params) };
+    TABLE = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.table + ':' + key, ...params) };
     // xc-form-label
-    LABEL = { translate: (key: string, ...params: I18nParam[]): string => this.translate(I18N_TYPES.label + ':' + key, ...params) };
-
+    LABEL = { translate: (key: string, ...params: I18nParam[]): string => this.translateInstant(I18N_TYPES.label + ':' + key, ...params) };
 
     static i18nTypeForTagName = (tagName: string): string => {
         switch (tagName.toUpperCase()) {
@@ -126,14 +132,6 @@ export class I18nService {
     };
 
 
-    constructor() {
-        const injector = this.injector;
-
-        const localeService = injector.get(LocaleService);
-        localeService.languageChange.subscribe(lang => this.language = lang);
-    }
-
-
     /**
      * Cuts out the *nested* error code in a string with optional parameters
      * @param msg - error message as a string
@@ -142,7 +140,7 @@ export class I18nService {
      * @example
      * I18nService.translateErrorCode("Java threw an error: EC-xfm.xtf.tproj.03#Alfred#Berta - stacktrace can be found in the server log");
      * // same as:
-     * I18nService.translate('EC-xfm.xtf.tproj.03', {key: '{0}', value: I18nService.translate('Alfred')}, {key: '{1}', value: I18nService.translate('Berta')});
+     * I18nService.translateInstant('EC-xfm.xtf.tproj.03', {key: '{0}', value: I18nService.translateInstant('Alfred')}, {key: '{1}', value: I18nService.translateInstant('Berta')});
      */
     translateErrorCode(msg: string, customRegEx?: RegExp, customArgumentPrefix?: string): string {
         const res = (customRegEx || this._errorCodeRegEx).exec(msg);
@@ -152,11 +150,11 @@ export class I18nService {
             const args = argString.split(customArgumentPrefix || '#');
             args.splice(0, 1); // String.split() will create a the first array element empty
             const params: I18nParam[] =
-                args.map((key: string, index: number) => ({ key: '{' + index + '}', value: this.translate(key) }));
-            return this.translate(errorCode, ...params);
+                args.map((key: string, index: number) => ({ key: '{' + index + '}', value: this.translateInstant(key) }));
+            return this.translateInstant(errorCode, ...params);
         }
         console.warn('cannot find error code in \'' + msg + '\'');
-        return this.translate(msg);
+        return this.translateInstant(msg);
     }
 
 
@@ -265,12 +263,38 @@ export class I18nService {
     }
 
 
+    private resolveInput<T>(value: I18nSignalInput<T>): T {
+        return isSignal(value) ? resolveSignalInput(value) : value;
+    }
+
+
+    private resolveParam(param: I18nSignalInput<I18nParam>): { key: string; value: string; translate?: boolean } {
+        const resolvedParam = this.resolveInput(param);
+        const resolvedValue = this.resolveInput(resolvedParam.value);
+
+        return {
+            ...resolvedParam,
+            value: resolvedValue != undefined ? String(resolvedValue) : ''
+        };
+    }
+
+
     /**
      * @param key Fully qualified key with optional type, optional context and key
      * @returns translated *key* including replaced *params*
      */
-    translate(key: string, ...params: I18nParam[]): string {
+    translateInstant(key: string, ...params: I18nParam[]): string {
         return this.getTranslation(key, ...params).value;
+    }
+
+
+    translateSignal(key: I18nSignalInput<string>, ...params: I18nSignalInput<I18nParam>[]): Signal<string> {
+        return computed(() => {
+            this.localeService.languageSignal();
+            const resolvedKey = this.resolveInput(key);
+            const resolvedParams = params?.map(param => this.resolveParam(param)) ?? [];
+            return this.translateInstant(resolvedKey, ...resolvedParams);
+        });
     }
 
 
@@ -279,11 +303,13 @@ export class I18nService {
 
         // replace params
         if (params?.length > 0) {
+            const resolvedParams = params.map(param => this.resolveParam(param));
+
             // make a clone to not changing the translation object inside the cache
             const tmp = <I18nTranslation>{};
             Object.assign(tmp, translation);
             translation = tmp;
-            params.forEach(param => translation.value = translation.value.replace(new RegExp(escapeStringRegexp(param.key), 'g'), param.value));
+            resolvedParams.forEach(param => translation.value = translation.value.replace(new RegExp(escapeStringRegexp(param.key), 'g'), param.value));
         }
 
         return translation;
@@ -296,6 +322,7 @@ export class I18nService {
             item.key = (item.type ? item.type + ':' : '') + (item.context ? item.context + '.' : '') + item.key;
             translationMap.set(item.key, item);
         });
+        this._cache.delete(language);
     }
 
 
@@ -306,20 +333,13 @@ export class I18nService {
      * Check and modify the "angular.json" accordingly
      */
     readTranslations(language: string, file: string): Observable<I18nTranslation[]> {
-        // Verwende functional injection (Angular 14+)
-        const injector = inject(Injector);
-        const platformId = inject(PLATFORM_ID);
-
-        if (isPlatformBrowser(platformId)) {
-            // Im Browser: Verwende normalen HttpClient (mit Interceptors)
-            const http = inject(HttpClient);
-            return http.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
+        if (isPlatformBrowser(this.platformId)) {
+            return this.http.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
                 tap(translation => this.setTranslations(language, translation.translations)),
                 map(translation => translation.translations)
             );
         } else {
-            // Server-side: Erstelle HttpClient ohne Interceptors
-            const httpBackend = injector.get(HttpBackend);
+            const httpBackend = this.injector.get(HttpBackend);
             const nonInterceptedJSONHTTPClient = new HttpClient(httpBackend);
             return nonInterceptedJSONHTTPClient.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
                 tap(translation => this.setTranslations(language, translation.translations)),
@@ -346,11 +366,6 @@ export class I18nService {
 
 
     get language(): string {
-        return this._language;
-    }
-
-
-    set language(value: string) {
-        this._language = value;
+        return this.localeService.languageSignal();
     }
 }

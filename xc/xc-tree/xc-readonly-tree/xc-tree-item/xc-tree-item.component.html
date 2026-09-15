@@ -1,17 +1,16 @@
 <div class="row">
-  <div class="col-0" #col0 [ngStyle]="{'min-width.px': firstColumnWidth, 'padding-left.px': indentation}">
+  <div class="col-0" #col0 [style.min-width.px]="firstColumnWidth()" [style.padding-left.px]="indentation">
     @if (node.expandable) {
-      <xc-icon-button
-        class="toggle"
-        color="color-black"
+      <xc-icon-button class="toggle"
+        color="black"
         [class.rotated]="expanded"
         xc-icon-name="accordion"
         xc-icon-size="small"
-        [xc-button-aria-label]="i18n.translate('zeta.xc.tree.expand-collapse-arialabel') + ' ' + i18n.translate(node.name)"
-        [xc-tooltip]="i18n.translate('zeta.xc.tree.expand-collapse-tooltip')"
+        [xc-button-aria-label]="i18n.translateSignal('zeta.xc.tree.expand-collapse-arialabel')() + ' ' + i18n.translateSignal(node.name)()"
+        [xc-tooltip]="i18n.translateSignal('zeta.xc.tree.expand-collapse-tooltip')()"
         xc-tooltip-showdelay="500"
         (click)="toggle($event)"
-      ></xc-icon-button>
+       />
     }
     <label class="label">{{node.name}}</label>
   </div>
@@ -24,7 +23,7 @@
     <xc-tree-item [node]="childNode"
       (expand)="expand.emit($event)"
       [xc-tree-item-keep-breaks]="keepBreaks"
-      [firstColumnWidth]="firstColumnWidth"
+      [firstColumnWidth]="firstColumnWidth()"
       (widthChange)="childWidthChange($event)"
      />
   }

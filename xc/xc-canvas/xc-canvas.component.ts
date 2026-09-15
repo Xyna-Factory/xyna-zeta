@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, inject, input, output } from '@angular/core';
 
 import { Observable, Subject, Subscription } from 'rxjs';
 
@@ -187,18 +187,15 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
         return this._context;
     }
 
-    @Input('xc-canvas-controller')
-    controller: XcCanvasController = {};
+    readonly controller = input<XcCanvasController>({}, { alias: "xc-canvas-controller" });
 
 
-    @Input('xc-canvas-observer')
-    observer: XcCanvasObserver = {};
+    readonly observer = input<XcCanvasObserver>({}, { alias: "xc-canvas-observer" });
 
 
-    @Input('xc-canvas-mouseeventsoption')
-    mouseEventsOption: XcCanvasMouseEventsOption = {
-        eventsListenTo: Object.keys(MouseEventType).map<MouseEventType>(key => MouseEventType[key])
-    };
+    readonly mouseEventsOption = input<XcCanvasMouseEventsOption>({
+    eventsListenTo: Object.keys(MouseEventType).map<MouseEventType>(key => MouseEventType[key])
+}, { alias: "xc-canvas-mouseeventsoption" });
 
 
     @Input({alias: 'xc-canvas-fitting', transform: coerceBoolean})
@@ -209,12 +206,10 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
     /**
      * Is triggerd if the canvas is resized.
      */
-    @Output()
-    readonly resizeChange = new EventEmitter<ScreenInfo>(false);
+    readonly resizeChange = output<ScreenInfo>();
 
 
-    @Output()
-    readonly parentSizeChange = new EventEmitter<ScreenInfo>(false);
+    readonly parentSizeChange = output<ScreenInfo>();
 
 
     get width(): number {
@@ -320,28 +315,30 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
             this.checkParent();
         }
 
-        processInFrame = !isNumber(this.controller.keyboardInputEveryXFrame)
-            || (this.controller.keyboardInputEveryXFrame && this._frameCount % this.controller.keyboardInputEveryXFrame === 0);
-        if (this.controller.keyboardInput && processInFrame) {
+        const controller = this.controller();
+        processInFrame = !isNumber(controller.keyboardInputEveryXFrame)
+            || (controller.keyboardInputEveryXFrame && this._frameCount % controller.keyboardInputEveryXFrame === 0);
+        const controllerValue = this.controller();
+        if (controllerValue.keyboardInput && processInFrame) {
             deltaTimestamp = this._lastKeyboardInputTimestamp ? currentTimestamp - this._lastKeyboardInputTimestamp : 0;
-            this.controller.keyboardInput(deltaTimestamp, this._keyboardEvent, this._keyCodeSet);
+            controllerValue.keyboardInput(deltaTimestamp, this._keyboardEvent, this._keyCodeSet);
             this._lastKeyboardInputTimestamp = currentTimestamp;
         }
 
 
-        processInFrame = !isNumber(this.controller.stepEveryXFrame)
-            || (this.controller.stepEveryXFrame && this._frameCount % this.controller.stepEveryXFrame === 0);
-        if (this.controller.step && processInFrame) {
+        processInFrame = !isNumber(controllerValue.stepEveryXFrame)
+            || (controllerValue.stepEveryXFrame && this._frameCount % controllerValue.stepEveryXFrame === 0);
+        if (controllerValue.step && processInFrame) {
             deltaTimestamp = this._lastStepTimestamp ? currentTimestamp - this._lastStepTimestamp : 0;
-            this.controller.step(deltaTimestamp);
+            controllerValue.step(deltaTimestamp);
             this._lastStepTimestamp = currentTimestamp;
         }
 
-        processInFrame = !isNumber(this.controller.drawEveryXFrame)
-            || (this.controller.drawEveryXFrame && this._frameCount % this.controller.drawEveryXFrame === 0);
-        if (this.controller.draw && processInFrame) {
+        processInFrame = !isNumber(controllerValue.drawEveryXFrame)
+            || (controllerValue.drawEveryXFrame && this._frameCount % controllerValue.drawEveryXFrame === 0);
+        if (controllerValue.draw && processInFrame) {
             deltaTimestamp = this._lastDrawTimestamp ? currentTimestamp - this._lastDrawTimestamp : 0;
-            this.controller.draw(this.context, deltaTimestamp);
+            controllerValue.draw(this.context, deltaTimestamp);
             this._lastDrawTimestamp = currentTimestamp;
         }
 
@@ -354,7 +351,7 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
                 this.resizeToParent();
                 this._oldParentSize.width = rect.width;
                 this._oldParentSize.height = rect.height;
-                this.parentSizeChange.next(<ScreenInfo>{
+                this.parentSizeChange.emit(<ScreenInfo>{
                     width: rect.width,
                     height: rect.height,
                     aspect: rect.width / rect.height
@@ -389,8 +386,9 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
         if (height > 0 && width >= 0) {
             this.canvas.width = width;
             this.canvas.height = height;
-            if (this.observer.resize) {
-                this.observer.resize();
+            const observer = this.observer();
+            if (observer.resize) {
+                observer.resize();
             }
         }
     }
@@ -398,8 +396,9 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
     resizeToParent() {
         const rect = this.getParentFitSize();
         this.resize(rect.width, rect.height);
-        if (this.observer.fit) {
-            this.observer.fit(this._parent);
+        const observer = this.observer();
+        if (observer.fit) {
+            observer.fit(this._parent);
         }
     }
 
@@ -537,8 +536,9 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
                 this._keyboardEvent = e;
                 this._keyCodeSet.add(e.code).add(e.key);
 
-                if (e.type === 'keydown' && this.observer.keydown) {
-                    this.observer.keydown(e);
+                const observer = this.observer();
+                if (e.type === 'keydown' && observer.keydown) {
+                    observer.keydown(e);
                 }
 
                 e.preventDefault();
@@ -547,16 +547,17 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
 
             this.mouseEventHandler = (e: Event) => {
 
-                if (e.type !== MouseEventType.wheel && this.observer.mouse) {
-                    this.observer.mouse(e as MouseEvent);
+                const observer = this.observer();
+                if (e.type !== MouseEventType.wheel && observer.mouse) {
+                    observer.mouse(e as MouseEvent);
 
                     if (e.type === MouseEventType.contextmenu) {
                         e.preventDefault();
                     }
                 }
 
-                if (e.type === MouseEventType.wheel && this.observer.mouse) {
-                    this.observer.wheel(e as WheelEvent);
+                if (e.type === MouseEventType.wheel && observer.mouse) {
+                    observer.wheel(e as WheelEvent);
                 }
 
             };
@@ -582,14 +583,15 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
                     this._keyboardEvent = null;
                     this._keyCodeSet.delete(event.key);
                     this._keyCodeSet.delete(event.code);
-                    if (event.type === 'keyup' && this.observer.keyup) {
-                        this.observer.keyup(event);
+                    const observer = this.observer();
+                    if (event.type === 'keyup' && observer.keyup) {
+                        observer.keyup(event);
                     }
                 }
             };
 
             this.canvas.addEventListener('keydown', this.keyboardEventSetter);
-            this.mouseEventsOption.eventsListenTo.forEach(key => {
+            this.mouseEventsOption().eventsListenTo.forEach(key => {
                 this.canvas.addEventListener(MouseEventType[key], this.mouseEventHandler);
             });
             document.addEventListener('visibilitychange', this.eventKiller);

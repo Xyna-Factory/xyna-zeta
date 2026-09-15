@@ -18,9 +18,12 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, finalize } from 'rxjs/operators';
 
+import { signal } from '@angular/core';
+
 import { ApiService, RuntimeContext, StartOrderOptionsBuilder, StartOrderResult, Xo, XoAccessor, XoAccessorMapPropertySeparator, XoArray, XoArrayClass, XoArrayClassInterface, XoObject, XoObjectClass, XoObjectClassInterface, XoProperty, XynaMonitoringLevel, XynaPriority } from '../../api';
 import { isObject, pack } from '../../base';
 import { I18nService } from '../../i18n';
+import { XcDynamicString } from '../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString } from '../shared/xc-sort';
 import { XcTemplate } from '../xc-template/xc-template';
 import { XcTableColumn, XcTableDataRequestOptions, XcTableDataSource } from './xc-table-data-source';
@@ -70,14 +73,14 @@ export class XoTableColumn extends XoObject {
 
     get asXcTableColumn(): XcTableColumn {
         return {
-            name: this.name,
+            name: signal(this.name),
             path: this.path,
             disableSort: this.disableSort,
             disableFilter: this.disableFilter,
             shrink: this.shrink,
             break: this.break,
             pre: this.pre,
-            filterTooltip: this.filterTooltip,
+            filterTooltip: this.filterTooltip ? signal(this.filterTooltip) : undefined,
             filterMultiselect: this.filterMultiselect,
             pronunciationLang: this.pronunciationLang,
             align: this.align
@@ -458,7 +461,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
 
 
     // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-    resolve(row: T, path: string): XcTemplate[] | Object {
+    resolve(row: T, path: string): XcTemplate[] | XcDynamicString | Object {
         return this.resolveXo(row, path);
     }
 

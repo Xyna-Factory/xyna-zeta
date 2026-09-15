@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, QueryList, ViewChildren, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, inject, viewChildren } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
@@ -45,8 +45,7 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent implements OnDe
     private _subscription: Subscription;
     private _keepBreaks = false;
 
-    @ViewChildren(XcTreeItemComponent)
-    items: QueryList<XcTreeItemComponent>;
+    readonly items = viewChildren(XcTreeItemComponent);
 
     firstColumnWidth = 100;
     changeWidthTimer = undefined;

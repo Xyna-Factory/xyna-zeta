@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { XoFormPanelDefinition } from '../../xo/containers.model';
 import { XcFormDefinitionComponent } from '../xc-form-definition/xc-form-definition.component';
@@ -24,6 +24,7 @@ import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-form-panel-definition',
     templateUrl: './xc-form-panel-definition.component.html',
     styleUrls: ['./xc-form-panel-definition.component.scss'],
@@ -40,7 +41,7 @@ export class XcFormPanelDefinitionComponent extends XcFormDefinitionComponent {
         this.closeEventSubscription?.unsubscribe();
         if (this.panelDefinition?.closable && this.panelDefinition.triggerClose?.eventId) {
             this.closeEventSubscription = this.eventService.getDefinitionEventPayloadById(this.panelDefinition.triggerClose.eventId).subscribe(
-                () => this.closed.emit()
+                () => this.closed.emit({ definition: this.panelDefinition, data: [] })
             );
         }
     }

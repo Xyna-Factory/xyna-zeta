@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, inject } from '@angular/core';
 
 import { pack } from '@zeta/base';
 
@@ -37,6 +37,7 @@ import { XcI18nPipe } from '../../../../../i18n';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-table-panel-definition',
     templateUrl: './xc-table-panel-definition.component.html',
     styleUrls: ['./xc-table-panel-definition.component.scss'],
