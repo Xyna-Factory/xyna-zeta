@@ -46,6 +46,8 @@ export class XcMenuComponent {
     private _menu: XcMenu;
     readonly options: XcMenuOptions = XcMenuOptionsDefault();
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChild('matMenu', { static: true, read: MatMenu })
     set menu(value: XcMenu) {
         this._menu = value;

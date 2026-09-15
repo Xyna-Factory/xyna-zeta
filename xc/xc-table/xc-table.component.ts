@@ -188,6 +188,8 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChild(MatSort, { static: false })
     set matSort(value: MatSort) {
         this._matSort = value;

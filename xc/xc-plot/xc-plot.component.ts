@@ -42,6 +42,8 @@ export class XcPlotComponent implements OnDestroy, XcCanvasController, XcCanvasO
 
     stepEveryXFrame = 0;
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChild(XcCanvasComponent, {static: true})
     set canvasComponent(value: XcCanvasComponent) {
         this._canvasComponent = value;

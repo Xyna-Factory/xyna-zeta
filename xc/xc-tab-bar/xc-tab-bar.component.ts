@@ -15,13 +15,13 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { BehaviorSubject, combineLatest, from, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, of, Subject } from 'rxjs';
 import { concatMap, distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, computed, inject, Injector, Input, OnDestroy, output, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, computed, effect, inject, Injector, Input, OnDestroy, output, QueryList, viewChild, ViewChildren } from '@angular/core';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { coerceBoolean } from '../../base';
@@ -56,7 +56,6 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
     protected readonly resolveDynamicString = (value: XcDynamicString) => value();
 
-    private _tabGroup: MatTabGroup;
     private _componentOutlets: QueryList<NgComponentOutlet>;
     private readonly _componentInjectors = new Map<XcTabBarItem, Injector>();
     private readonly _componentSubjects = new Map<XcTabBarItem, Subject<XcTabComponent>>();
@@ -64,7 +63,6 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     private _focusedIndex = -1;
     private _showTooltips = false;
     private _busySubject = new BehaviorSubject<boolean>(false);
-    private subscription: Subscription;
     private _items: XcTabBarItem[] = [];
     private _tabIdCounter = 1;
     private _reorderable = false;
@@ -110,14 +108,30 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
     constructor() {
         super();
+
         this.i18n.setTranslations(LocaleService.DE_DE, xcTabBarTranslations_deDE);
         this.i18n.setTranslations(LocaleService.EN_US, xcTabBarTranslations_enUS);
         this.defaultColor.set('primary');
+
+        effect((onCleanup) => {
+            const tabGroup = this.tabGroup();
+
+            const subscription = combineLatest([
+                tabGroup.selectedIndexChange,
+                this.busyObservable
+            ]).pipe(
+                filter(([index, busy]) => !busy),
+                map(([index]) => index),
+                distinctUntilChanged()
+            ).subscribe(index => this.selectedIndexChange(index));
+
+            onCleanup(() => subscription.unsubscribe());
+        });
     }
 
 
+
     ngOnDestroy(): void {
-        this.subscription?.unsubscribe();
         this._busySubject.complete();
     }
 
@@ -183,7 +197,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         // select tab idx
         if (idx >= 0) {
             const uninitialized = !this._componentInitialized.has(value);
-            this.tabGroup.selectedIndex = idx;
+            this.tabGroup().selectedIndex = idx;
+
             if (uninitialized) {
                 this.activate(value, idx);
             }
@@ -192,7 +207,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     get selection(): XcTabBarItem {
-        return this.items[this.tabGroup.selectedIndex];
+        return this.items[this.tabGroup().selectedIndex];
     }
 
 
@@ -218,25 +233,14 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     }
 
 
-    @ViewChild(MatTabGroup, { static: true })
-    get tabGroup(): MatTabGroup {
-        return this._tabGroup;
-    }
+    readonly tabGroup = viewChild.required(MatTabGroup);
+
 
     private get busyObservable(): Observable<boolean> {
         return this._busySubject.asObservable().pipe(distinctUntilChanged());
     }
 
 
-    set tabGroup(value: MatTabGroup) {
-        this._tabGroup = value;
-        this.subscription?.unsubscribe();
-        this.subscription = combineLatest([this.tabGroup.selectedIndexChange, this.busyObservable]).pipe(
-            filter(([index, busy]) => !busy),
-            map(([index, busy]) => index),
-            distinctUntilChanged()
-        ).subscribe(index => this.selectedIndexChange(index));
-    }
 
 
     private selectedIndexChange(index: number) {
@@ -250,6 +254,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChildren(NgComponentOutlet)
     set componentOutlets(value: QueryList<NgComponentOutlet>) {
         const completeItems = new Array<XcTabBarItem>();
@@ -342,7 +348,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
             // necessary to counter-act angular material bugfix:
             // "maintain selected tab when new tabs are added or removed"
             // see: https://github.com/angular/material2/pull/9132/files
-            this.tabGroup._tabs.forEach(tab => tab.isActive = false);
+            this.tabGroup()._tabs.forEach(tab => tab.isActive = false);
             // switch to new item
             this.selection = item;
         }
@@ -385,7 +391,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
                 // Aktuelle Werte merken
                 const closedIdx = this.items.indexOf(item);
-                const selectedIdx = this.tabGroup.selectedIndex;
+                const selectedIdx = this.tabGroup().selectedIndex;
 
                 // Tab entfernen
                 this.items = this.items.filter(tab => tab !== item);
@@ -401,9 +407,9 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
                 if (this.items.length === 0) {
                     this._focusedIndex = -1;
-                    this.tabGroup.selectedIndex = -1;
+                    this.tabGroup().selectedIndex = -1;
                 } else {
-                    this.tabGroup.selectedIndex = Math.max(0, selectIdx);
+                    this.tabGroup().selectedIndex = Math.max(0, selectIdx);
                 }
 
                 if (selectedIdx === closedIdx && selectedIdx === selectIdx) {
@@ -474,7 +480,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         [this.items[idx - 1], this.items[idx]] =
             [this.items[idx], this.items[idx - 1]];
 
-        this.tabGroup.selectedIndex = idx - 1;
+        this.tabGroup().selectedIndex = idx - 1;
 
         this.refreshAfterMenuAction();
     }
@@ -491,7 +497,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         [this.items[idx], this.items[idx + 1]] =
             [this.items[idx + 1], this.items[idx]];
 
-        this.tabGroup.selectedIndex = idx + 1;
+        this.tabGroup().selectedIndex = idx + 1;
 
         this.refreshAfterMenuAction();
     }
@@ -623,7 +629,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     initialized(): boolean {
-        return !!this.tabGroup._tabs;
+        return !!this.tabGroup()._tabs;
     }
 
     onBeforeOpen(item: XcTabBarItem): void {

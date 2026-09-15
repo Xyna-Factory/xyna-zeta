@@ -15,19 +15,18 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, AfterViewInit, Component, ElementRef, Input, OnDestroy, QueryList, ViewChildren, inject } from '@angular/core';
-
-import { coerceBoolean, retrieveFocusableElements, scrollToElement } from '@zeta/base';
-import { I18nService } from '@zeta/i18n';
-
 import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs';
 import { filter, map, switchMapTo } from 'rxjs/operators';
 
+import { ChangeDetectionStrategy, Component, effect, ElementRef, inject, Input, OnDestroy, viewChildren } from '@angular/core';
+import { coerceBoolean, retrieveFocusableElements, scrollToElement } from '@zeta/base';
+import { I18nService } from '@zeta/i18n';
+
+import { XcButtonComponent } from '../xc-button/xc-button.component';
+import { XcTemplateComponent } from '../xc-template/xc-template.component';
+import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 import { XcStackDataSource } from './xc-stack-data-source';
 import { XcStackItemInterface, XcStackObserver } from './xc-stack-item/xc-stack-item';
-import { XcTemplateComponent } from '../xc-template/xc-template.component';
-import { XcButtonComponent } from '../xc-button/xc-button.component';
-import { XcTooltipDirective } from '../xc-tooltip/xc-tooltip.directive';
 
 
 export interface XcStackInterface {
@@ -45,7 +44,7 @@ export interface XcStackInterface {
     styleUrls: ['./xc-stack.component.scss'],
     imports: [XcTemplateComponent, XcButtonComponent, XcTooltipDirective]
 })
-export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDestroy {
+export class XcStackComponent implements XcStackInterface, OnDestroy {
     private readonly i18n = inject(I18nService);
 
 
@@ -61,11 +60,17 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
     private dataSourceSubscription: Subscription;
     private readonly breadcrumbSubscriptons: Subscription[] = [];
 
-    @ViewChildren('items') itemList: QueryList<ElementRef>;
+    readonly itemList = viewChildren<ElementRef>('items');
 
+    constructor() {
+        effect(() => {
+            const items = this.itemList();
 
-    ngAfterViewInit() {
-        this.itemList.changes.subscribe(() => {
+            // Query wird ausgewertet, sobald sich die Liste ändert
+            if (items.length === 0 || !this._dataSource) {
+                return;
+            }
+
             // scroll to last item if item list changes
             this.scrollToStackItem(this._dataSource.stackItems.length - 1);
 
@@ -109,7 +114,7 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
     }
 
 
-    @Input({alias: 'xc-stack-active', transform: coerceBoolean})
+    @Input({ alias: 'xc-stack-active', transform: coerceBoolean })
     set active(value: boolean) {
         this._activeSubject.next(value);
     }
@@ -170,7 +175,7 @@ export class XcStackComponent implements XcStackInterface, AfterViewInit, OnDest
 
 
     scrollToStackItem(idx: number) {
-        const elementToScrollInto = this.itemList.find((_, index) => index === idx);
+        const elementToScrollInto = this.itemList().find((_, index) => index === idx);
 
         // focus first focusable element inside the stack item
         const focusItem = () => {

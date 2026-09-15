@@ -55,6 +55,8 @@ export class XcRichListComponent extends XcThemeableComponent implements XcRichL
     }
 
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChildren(NgComponentOutlet)
     set componentOutlets(value: QueryList<NgComponentOutlet>) {
         const completeItems = new Array<XcRichListItem>();
