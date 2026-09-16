@@ -1,3 +1,5 @@
+import { Observable, Subject, Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,9 +17,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, inject, input, output } from '@angular/core';
-
-import { Observable, Subject, Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, Input, input, NgZone, OnDestroy, OnInit, output } from '@angular/core';
 
 import { coerceBoolean, isNumber, timeString } from '../../base';
 import { CanvasHelperRecording, MouseEventType, ScreenInfo, XcCanvasHelper, XcCanvasMouseEventsOption } from './xc-canvas-helper.class';
@@ -194,11 +194,11 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
 
 
     readonly mouseEventsOption = input<XcCanvasMouseEventsOption>({
-    eventsListenTo: Object.keys(MouseEventType).map<MouseEventType>(key => MouseEventType[key])
-}, { alias: "xc-canvas-mouseeventsoption" });
+        eventsListenTo: Object.keys(MouseEventType).map<MouseEventType>(key => MouseEventType[key])
+    }, { alias: "xc-canvas-mouseeventsoption" });
 
 
-    @Input({alias: 'xc-canvas-fitting', transform: coerceBoolean})
+    @Input({ alias: 'xc-canvas-fitting', transform: coerceBoolean })
     set fitting(value: boolean) {
         this._fittingToParent = value;
     }
@@ -301,11 +301,9 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
         this._frameCount++;
         currentTimestamp = currentTimestamp || Date.now();
 
-        let processInFrame = true;
-        let deltaTimestamp = 0;
         this._fps = 0;
         if (this._lastTimestamp) {
-            deltaTimestamp = currentTimestamp - this._lastTimestamp;
+            const deltaTimestamp = currentTimestamp - this._lastTimestamp;
             this._fps = 1000 / deltaTimestamp;
         }
 
@@ -316,32 +314,42 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
         }
 
         const controller = this.controller();
-        processInFrame = !isNumber(controller.keyboardInputEveryXFrame)
+
+        const processKeyboardInput = !isNumber(controller.keyboardInputEveryXFrame)
             || (controller.keyboardInputEveryXFrame && this._frameCount % controller.keyboardInputEveryXFrame === 0);
-        const controllerValue = this.controller();
-        if (controllerValue.keyboardInput && processInFrame) {
-            deltaTimestamp = this._lastKeyboardInputTimestamp ? currentTimestamp - this._lastKeyboardInputTimestamp : 0;
-            controllerValue.keyboardInput(deltaTimestamp, this._keyboardEvent, this._keyCodeSet);
+
+        if (controller.keyboardInput && processKeyboardInput) {
+            const deltaKeyboardInputTimestamp = this._lastKeyboardInputTimestamp
+                ? currentTimestamp - this._lastKeyboardInputTimestamp
+                : 0;
+
+            controller.keyboardInput(deltaKeyboardInputTimestamp, this._keyboardEvent, this._keyCodeSet);
             this._lastKeyboardInputTimestamp = currentTimestamp;
         }
 
+        const processStep = !isNumber(controller.stepEveryXFrame)
+            || (controller.stepEveryXFrame && this._frameCount % controller.stepEveryXFrame === 0);
 
-        processInFrame = !isNumber(controllerValue.stepEveryXFrame)
-            || (controllerValue.stepEveryXFrame && this._frameCount % controllerValue.stepEveryXFrame === 0);
-        if (controllerValue.step && processInFrame) {
-            deltaTimestamp = this._lastStepTimestamp ? currentTimestamp - this._lastStepTimestamp : 0;
-            controllerValue.step(deltaTimestamp);
+        if (controller.step && processStep) {
+            const deltaStepTimestamp = this._lastStepTimestamp
+                ? currentTimestamp - this._lastStepTimestamp
+                : 0;
+
+            controller.step(deltaStepTimestamp);
             this._lastStepTimestamp = currentTimestamp;
         }
 
-        processInFrame = !isNumber(controllerValue.drawEveryXFrame)
-            || (controllerValue.drawEveryXFrame && this._frameCount % controllerValue.drawEveryXFrame === 0);
-        if (controllerValue.draw && processInFrame) {
-            deltaTimestamp = this._lastDrawTimestamp ? currentTimestamp - this._lastDrawTimestamp : 0;
-            controllerValue.draw(this.context, deltaTimestamp);
+        const processDraw = !isNumber(controller.drawEveryXFrame)
+            || (controller.drawEveryXFrame && this._frameCount % controller.drawEveryXFrame === 0);
+
+        if (controller.draw && processDraw) {
+            const deltaDrawTimestamp = this._lastDrawTimestamp
+                ? currentTimestamp - this._lastDrawTimestamp
+                : 0;
+
+            controller.draw(this.context, deltaDrawTimestamp);
             this._lastDrawTimestamp = currentTimestamp;
         }
-
     }
 
     private checkParent() {
