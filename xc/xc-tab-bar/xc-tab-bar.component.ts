@@ -21,13 +21,12 @@ import { concatMap, distinctUntilChanged, filter, map, tap } from 'rxjs/operator
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, computed, effect, inject, Injector, Input, OnDestroy, output, QueryList, viewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, computed, effect, inject, Injector, Input, OnDestroy, output, QueryList, Signal, viewChild, ViewChildren } from '@angular/core';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService, XcI18nPipe } from '../../i18n';
 import { XcThemeableComponent } from '../../xc/shared/xc-themeable.component';
-import { XcDynamicString } from '../shared/xc-item';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
 import { XcIconComponent } from '../xc-icon/xc-icon.component';
 import { XcContextMenuTriggerDirective } from '../xc-menu/xc-context-menu-trigger.directive';
@@ -54,7 +53,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     protected readonly menuService = inject(XcMenuService);
     private readonly cdr = inject(ChangeDetectorRef);
 
-    protected readonly resolveDynamicString = (value: XcDynamicString) => value();
+    protected readonly resolveDynamicString = (value: Signal<string>) => value();
 
     private _componentOutlets: QueryList<NgComponentOutlet>;
     private readonly _componentInjectors = new Map<XcTabBarItem, Injector>();

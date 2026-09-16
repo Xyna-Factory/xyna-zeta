@@ -18,7 +18,7 @@
 import { Subscription } from 'rxjs';
 
 import { NgClass } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, OutputRefSubscription, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, OutputRefSubscription, Signal, signal, ViewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
@@ -27,7 +27,7 @@ import { XoObject } from '../../api';
 import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
 import { XcIdentityDataWrapper } from '../shared/xc-data-wrapper';
-import { XcDynamicString, XcOptionItemString } from '../shared/xc-item';
+import { XcOptionItemString } from '../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString, XcSortDirectionToLabel } from '../shared/xc-sort';
 import { XcVarDirective } from '../shared/xc-var.directive';
 import { XcIconButtonComponent } from '../xc-button/xc-icon-button.component';
@@ -415,7 +415,7 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
         return this.translateLabels ? this.i18n.translateSignal(name)() : name;
     }
 
-    protected resolveDynamicString(value?: XcDynamicString | string): string {
+    protected resolveDynamicString(value?: Signal<string> | string): string {
         return typeof value === 'function'
             ? value()
             : value ?? '';
