@@ -15,10 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { OutputEmitterRef } from '@angular/core';
+import { OutputEmitterRef, Signal } from '@angular/core';
 import { MatMenu, MenuPositionX, MenuPositionY } from '@angular/material/menu';
 
-import { XcDynamicString, XcItem } from '../shared/xc-item'; // Pfad ggf. anpassen
+import { XcItem } from '../shared/xc-item'; // Pfad ggf. anpassen
 
 
 export interface XcMenuItem extends XcItem {
@@ -26,7 +26,7 @@ export interface XcMenuItem extends XcItem {
     translate?: boolean;
     click?: (item: XcMenuItem) => void;   // <--- KORREKTUR: Statt "(item: this)"
     visible?: (item: XcMenuItem) => boolean; // <--- KORREKTUR: Statt "(item: this)"
-    aside?: XcDynamicString;
+    aside?: Signal<string>;
     separator?: 'above' | 'below';
 }
 

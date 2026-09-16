@@ -19,11 +19,12 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 
 import { CollectionViewer } from '@angular/cdk/collections';
+import { Signal } from '@angular/core';
 
 import { Xo, XoObject } from '../../api';
 import { Comparable } from '../../base';
 import { I18nService } from '../../i18n';
-import { XcDynamicString, XcOptionItem } from '../shared/xc-item';
+import { XcOptionItem } from '../shared/xc-item';
 import { XcSubSelectionModel } from '../shared/xc-selection';
 import { XcSelectionDataSource } from '../shared/xc-selection-data-source';
 import { XcSortDirection } from '../shared/xc-sort';
@@ -32,13 +33,13 @@ import { XcTemplate } from '../xc-template/xc-template';
 
 export interface XcTableColumn {
     readonly path: string;
-    readonly name: XcDynamicString;
+    readonly name: Signal<string>;
     readonly disableSort?: boolean;
     readonly disableFilter?: boolean;
     readonly shrink?: boolean;
     readonly break?: boolean;
     readonly pre?: boolean;
-    readonly filterTooltip?: XcDynamicString;
+    readonly filterTooltip?: Signal<string>;
     readonly filterMultiselect?: boolean;
     readonly pronunciationLang?: string;
     readonly align?: string;
@@ -56,10 +57,10 @@ export interface XcTableDataActionElement<T>  {
     onAction: (row: T) => void;
     iconName: string;
     iconStyle?: string;
-    tooltip?: XcDynamicString;
+    tooltip?: Signal<string>;
     disabled?: boolean;
     class?: string;
-    ariaLabel?: XcDynamicString;
+    ariaLabel?: Signal<string>;
 }
 
 
@@ -184,7 +185,7 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
 
 
     // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-    protected resolveXo(row: Xo, path: string): XcTemplate[] | XcDynamicString | Object {
+    protected resolveXo(row: Xo, path: string): XcTemplate[] | Signal<string> | Object {
         // resolve and translate, if needed
         if (this.i18n) {
             const resolved = row.resolveHead(path);

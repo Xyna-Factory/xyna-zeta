@@ -15,7 +15,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { XcDynamicString, XcItem } from '../../../xc/shared/xc-item';
+import { Signal } from '@angular/core';
+
+import { XcItem } from '../../../xc/shared/xc-item';
 
 
 export enum XcNavListOrientation {
@@ -30,6 +32,6 @@ export interface XcNavListItem extends XcItem {
     class?: string;
     children?: this[];
     collapsed?: boolean;
-    tooltip?: XcDynamicString;
+    tooltip?: Signal<string>;
     ariaLabel?: string;
 }

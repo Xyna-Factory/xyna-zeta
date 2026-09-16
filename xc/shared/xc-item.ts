@@ -21,10 +21,8 @@ import { Comparable } from '../../base';
 import { I18nService } from '../../i18n';
 
 
-export type XcDynamicString = Signal<string>;
-
 export interface XcItem {
-    name?: XcDynamicString;
+    name?: Signal<string>;
     icon?: string;
     iconStyle?: string;
     disabled?: boolean;

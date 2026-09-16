@@ -18,11 +18,11 @@
 import { Observable, Subject } from 'rxjs';
 
 import { ComponentType } from '@angular/cdk/portal';
-import { inject, InjectionToken, Injector, Optional } from '@angular/core';
+import { inject, InjectionToken, Signal } from '@angular/core';
 
 import { XcMenuItem } from '../';
 import { XcDynamicDismissableComponent } from '../shared/xc-dynamic-dismissable.component';
-import { XcDynamicString, XcItem } from '../shared/xc-item';
+import { XcItem } from '../shared/xc-item';
 
 
 /** Injection token that can be used to access the data that was passed in to a tab. */
@@ -67,7 +67,7 @@ export interface XcTabBarItem<D = any> extends XcItem {
     component: ComponentType<XcTabComponent<any, any>>;
     pinned?: boolean;
     closable?: boolean;
-    closeTooltip?: XcDynamicString;
+    closeTooltip?: Signal<string>;
     data?: D;
 
     afterActivate?: (index: number) => void;
