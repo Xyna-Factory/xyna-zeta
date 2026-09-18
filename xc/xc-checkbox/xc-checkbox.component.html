@@ -1,14 +1,13 @@
 <mat-checkbox
-  [disabled]="disabled || readonly"
-  [checked]="checked"
-  [indeterminate]="indeterminate"
-  [aria-labelledby]="labelRef"
-  (change)="change($event)"
-  >
-  @if (label) {
-    <mat-label
-      [id]="labelRef"
-      class="xc-checkbox-label"
-    >{{label}}</mat-label>
-  }
+    [disabled]="disabled() || readonly()"
+    [checked]="checked()"
+    [indeterminate]="indeterminate()"
+    [aria-labelledby]="labelRef"
+    (change)="change($event)"
+>
+    @if (label()) {
+        <mat-label [id]="labelRef" class="xc-checkbox-label">{{
+            label()
+        }}</mat-label>
+    }
 </mat-checkbox>

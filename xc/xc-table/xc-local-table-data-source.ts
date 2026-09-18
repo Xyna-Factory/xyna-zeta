@@ -17,6 +17,8 @@
  */
 import { Observable } from 'rxjs';
 
+import { Signal } from '@angular/core';
+
 import { Xo } from '../../api';
 import { Comparable } from '../../base';
 import { XcSortPredicate } from '../shared/xc-sort';
@@ -133,7 +135,7 @@ export class XcLocalTableDataSource<T extends Comparable = Comparable> extends X
 
 
     // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-    resolve(row: T, path: string): XcTemplate[] | Object {
+    resolve(row: T, path: string): XcTemplate[] | Signal<string> | Object {
         return row instanceof Xo
             ? this.resolveXo(row, path)
             : row[path];

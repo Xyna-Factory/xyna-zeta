@@ -17,6 +17,7 @@
  */
 import { Observable, Subject } from 'rxjs';
 
+import { signal } from '@angular/core';
 import { I18nService } from '@zeta/i18n';
 
 import { ApiService, FullQualifiedName, RuntimeContext, Xo, XoArray, XoDescriber, XoDescriberCache, XoObject, XoStructureArray, XoStructureField, XoStructureObject, XoStructurePrimitive, XoStructureType } from '../../api';
@@ -208,7 +209,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             });
 
             autocompleteDataWrapper.values = subtypes.map(type => ({
-                name: type.typeLabel + (ambiguousLabels.has(type.typeLabel) ? (' ' + type.typeFqn.path) : ''), // show path for ambiguous labels
+                name: signal(type.typeLabel + (ambiguousLabels.has(type.typeLabel) ? (' ' + type.typeFqn.path) : '')), // show path for ambiguous labels
                 value: new ComparableDescriber(type.typeRtc, type.typeFqn),
                 disabled: type.typeAbstract
             }));
@@ -358,7 +359,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             updateChildren(false);
         };
         // A11y
-        iconButtonTemplate.label = this.i18n?.translate('zeta.xc.tree.add-element') ?? 'Add Element';
+        iconButtonTemplate.label = this.i18n?.translateInstant('zeta.xc.tree.add-element') ?? 'Add Element';
         // disabled accessor
         defineAccessorProperty<XcIconButtonTemplate, boolean>(
             iconButtonTemplate,
@@ -376,7 +377,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
         // create template
         const template = new XcFormAutocompleteTemplate(new XcAutocompleteDataWrapper(
             getter, setter, [{
-                name: '[' + field.typeLabel + ']',
+                name: signal('[' + field.typeLabel + ']'),
                 value: new ComparableDescriber(field.typeRtc, field.typeFqn),
                 disabled: field.typeAbstract
             }]
@@ -395,7 +396,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
         const resolved = this.container.resolveHead(field.path);
         node.readonly = resolved.value instanceof XoObject && resolved.value.readonlyProperties.has(resolved.tail);
         // set tooltip
-        node.tooltip = field.docu;
+        node.tooltip = signal(field.docu);
         // get templates array
         let templates: XcTemplate[] = [];
         if (field instanceof XoStructurePrimitive) {
@@ -446,7 +447,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 }
             };
             // A11y
-            deleteButtonTemplate.label = this.i18n?.translate('zeta.xc.tree.remove-element') ?? 'Remove Element';
+            deleteButtonTemplate.label = this.i18n?.translateInstant('zeta.xc.tree.remove-element') ?? 'Remove Element';
             // disabled accessor
             defineAccessorProperty<XcIconButtonTemplate, boolean>(
                 deleteButtonTemplate,
@@ -489,7 +490,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 this.triggerMarkForChange();
             }
             // A11y
-            copyButtonTemplate.label = this.i18n?.translate('zeta.xc.tree.copy-element') ?? 'Copy Element';
+            copyButtonTemplate.label = this.i18n?.translateInstant('zeta.xc.tree.copy-element') ?? 'Copy Element';
             // disabled accessor
             defineAccessorProperty<XcIconButtonTemplate, boolean>(
                 copyButtonTemplate,

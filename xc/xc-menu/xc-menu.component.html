@@ -1,6 +1,6 @@
 <mat-menu #matMenu [overlapTrigger]="!options.yNexttoTrigger" [xPosition]="options.xPosition" [yPosition]="options.yPosition" [class]="panelClass">
 
-  @for (item of items; let i = $index; track i) {
+  @for (item of items(); let i = $index; track i) {
     @if (!item.visible || item.visible(item)) {
       <!-- if menu item has children then code in <ng-container> -->
       <!-- if no children then code in <ng-template #template> -->
@@ -9,32 +9,32 @@
         <button mat-menu-item role="menuitem" [attr.aria-haspopup]="'true'" (click)="clickItem(item)" [disabled]="item.disabled" [xc-menu-trigger]="childMenu"
           [class.separator-below]="item.separator==='below'" [class.separator-above]="item.separator==='above'"
           >
-          <ng-container [ngTemplateOutlet]="content"></ng-container>
+          <ng-container [ngTemplateOutlet]="content" />
         </button>
       } @else {
         <button mat-menu-item role="menuitem" (click)="clickItem(item)" [disabled]="item.disabled" class="item"
           [class.separator-below]="item.separator==='below'" [class.separator-above]="item.separator==='above'"
           >
-          <ng-container [ngTemplateOutlet]="content"></ng-container>
+          <ng-container [ngTemplateOutlet]="content" />
         </button>
       }
       <ng-template #template>
         <button mat-menu-item role="menuitem" (click)="clickItem(item)" [disabled]="item.disabled" class="item"
           [class.separator-below]="item.separator==='below'" [class.separator-above]="item.separator==='above'"
           >
-          <ng-container [ngTemplateOutlet]="content"></ng-container>
+          <ng-container [ngTemplateOutlet]="content" />
         </button>
       </ng-template>
       <!-- content of a mat-menu-item button -->
       <ng-template #content>
         @if (item.translate) {
-          <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" xc-icon-size="small">{{item.name | xcI18n}}</xc-icon>
+          <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" xc-icon-size="small">{{item.name() | xcI18n}}</xc-icon>
         }
         @if (!item.translate) {
-          <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" xc-icon-size="small">{{item.name}}</xc-icon>
+          <xc-icon [xc-icon-name]="item.icon" [xc-icon-style]="item.iconStyle" xc-icon-size="small">{{item.name()}}</xc-icon>
         }
-        @if (item.aside) {
-          <label>{{item.aside}}</label>
+        @if (item.aside && item.aside()) {
+          <label>{{item.aside()}}</label>
         }
       </ng-template>
     }

@@ -15,12 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, ViewChild } from '@angular/core';
-
-import { RuntimeContext } from '@zeta/api';
-
-import { Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, signal, viewChild } from '@angular/core';
+import { RuntimeContext } from '@zeta/api';
 
 import { ApiService, RuntimeContextSelectionSettings } from '../../../api/api.service';
 import { XoApplication, XoApplicationArray, XoWorkspace, XoWorkspaceArray } from '../../../api/xo/xo-runtime-context';
@@ -42,7 +40,7 @@ import { runtimeContextSelection_translations_en_US } from './locale/runtime-con
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcFormAutocompleteComponent, XcFormValidatorRequiredDirective, XcButtonComponent]
 })
-export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeContext, RuntimeContextSelectionSettings> implements OnDestroy {
+export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeContext, RuntimeContextSelectionSettings> {
     private readonly apiService = inject(ApiService);
     private readonly i18n = inject(I18nService);
     private readonly cdr = inject(ChangeDetectorRef);
@@ -50,17 +48,28 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
 
     private runtimeContext: RuntimeContext;
     private readonly settings: RuntimeContextSelectionSettings;
-    private subscription: Subscription;
 
 
     runtimeContextDataWrapper = new XcAutocompleteDataWrapper(
-        ()    => this.runtimeContext,
+        () => this.runtimeContext,
         value => this.runtimeContext = value
     );
 
 
     constructor() {
         super();
+
+        effect((onCleanup) => {
+            const autocomplete = this.rtcAutocomplete();
+
+            if (!autocomplete) {
+                return;
+            }
+
+            const subscription = autocomplete.focus.subscribe(() => this.refresh());
+
+            onCleanup(() => subscription.unsubscribe());
+        });
 
         this.i18n.setTranslations(LocaleService.DE_DE, runtimeContextSelection_translations_de_DE);
         this.i18n.setTranslations(LocaleService.EN_US, runtimeContextSelection_translations_en_US);
@@ -73,26 +82,18 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
         this.settings.preselectedRuntimeContext = this.settings.preselectedRuntimeContext || this.apiService.runtimeContext;
 
         // necessary to include these classes in a release build (see OP-2949)
-         
-        const a  = new XoApplication();
+
+        const a = new XoApplication();
         const aa = new XoApplicationArray();
-        const w  = new XoWorkspace();
+        const w = new XoWorkspace();
         const wa = new XoWorkspaceArray();
-         
+
 
         this.refresh(true, true);
     }
 
 
-    ngOnDestroy() {
-        this.subscription?.unsubscribe();
-    }
-
-
-    @ViewChild('rtcAutocomplete', {static: false, read: XcFormAutocompleteComponent})
-    set rtcAutocomplete(value: XcFormAutocompleteComponent) {
-        this.subscription = value?.focus.subscribe(() => this.refresh());
-    }
+    readonly rtcAutocomplete = viewChild<XcFormAutocompleteComponent>('rtcAutocomplete');
 
 
     refresh(restorePreselection = false, useCache = false) {
@@ -108,7 +109,7 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
                 }
             }),
             // convert remaining runtime contexts to option items
-            map(rtcs => rtcs.map(rtc => <XcOptionItem>{name: rtc.uniqueKey.replace(RuntimeContext.SEPARATOR, ' '), value: rtc}))
+            map(rtcs => rtcs.map(rtc => <XcOptionItem>{ name: signal(rtc.uniqueKey.replace(RuntimeContext.SEPARATOR, ' ')), value: rtc }))
         ).subscribe(options => {
             this.runtimeContextDataWrapper.values = options;
             this.cdr.markForCheck();

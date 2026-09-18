@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, Input, input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
@@ -27,6 +27,7 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-icon-button',
     templateUrl: './xc-icon-button.component.html',
     styleUrls: ['./xc-button-base.component.scss', './xc-icon-button.component.scss'],
@@ -39,19 +40,21 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
     private _iconMaterial = false;
     private _iconSvg = false;
 
-    @Input('xc-icon-name')
-    iconName: string;
+    readonly iconName = input<string>(undefined, { alias: "xc-icon-name" });
 
-    @Input('xc-icon-style')
-    iconStyle: string;
+    readonly iconStyle = input<string>(undefined, { alias: "xc-icon-style" });
+
+    readonly iconSize = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: "xc-icon-size" });
 
     @HostBinding('attr.size')
-    @Input('xc-icon-size')
-    iconSize: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
+    get hostIconSize(): string {
+        return this.iconSize();
+    }
 
 
     protected setAriaLabel(value: string) {
-        super.setAriaLabel(value || (this.iconName ? this.i18nService.translate(this.iconName) : ''));
+        const iconName = this.iconName();
+        super.setAriaLabel(value || (iconName ? this.i18nService.translateInstant(iconName) : ''));
     }
 
 

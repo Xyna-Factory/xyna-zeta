@@ -45,14 +45,16 @@ const rules = {
 
             return {
                 'ImportDeclaration'(node) {
-                    let idx;
-                    if ((idx = node.source.value.indexOf('zeta/')) !== -1 && node.source.value[idx - 1] !== '@') {
+                    const idx = node.source.value.indexOf('zeta/');
+
+                    if (idx !== -1 && node.source.value[idx - 1] !== '@') {
                         context.report({
                             node,
                             message: 'Import zeta dependencies via the \'@zeta\' alias.'
                         });
                     }
-                    if ((idx = node.source.value.indexOf('environment.prod')) !== -1) {
+
+                    if (node.source.value.indexOf('environment.prod') !== -1) {
                         context.report({
                             node,
                             message: 'Import from \'environment\' instead of from \'environment.prod\'.'
@@ -60,36 +62,42 @@ const rules = {
                     }
                 },
                 'ClassDeclaration'(node) {
-                    let decorator;
-                    if ((decorator = getDecorator(node, XO_OBJECT_DECORATOR_NAME))) {
+                    const objectDecorator = getDecorator(node, XO_OBJECT_DECORATOR_NAME);
+
+                    if (objectDecorator) {
                         decoratorClass = XO_OBJECT_DECORATOR_NAME;
-                        const baseClassArgument = decorator.expression.arguments
-                            ? decorator.expression.arguments[0]
+
+                        const baseClassArgument = objectDecorator.expression.arguments
+                            ? objectDecorator.expression.arguments[0]
                             : undefined;
+
                         if (baseClassArgument) {
                             const superClassName = node.superClass
                                 ? node.superClass.name
                                 : undefined;
+
                             if (baseClassArgument.value === null && superClassName !== 'XoObject') {
                                 context.report({
-                                    node: decorator,
+                                    node: objectDecorator,
                                     message: 'A class decorated by XoObjectClass with baseClass == null must directly extend XoObject.'
                                 });
                             }
+
                             if (baseClassArgument.name && baseClassArgument.name !== superClassName) {
                                 context.report({
-                                    node: decorator,
+                                    node: objectDecorator,
                                     message: 'A class decorated by XoObjectClass with baseClass == \'' + baseClassArgument.name + '\' must directly extend ' + baseClassArgument.name + '.'
                                 });
                             }
                         }
+
                         if (node.id && !node.id.name.startsWith('Xo')) {
                             context.report({
                                 node,
                                 message: 'The name of a class decorated by XoObjectClass must start with \'Xo\'.'
                             });
                         }
-                    } else if ((decorator = getDecorator(node, XO_ARRAY_DECORATOR_NAME))) {
+                    } else if (getDecorator(node, XO_ARRAY_DECORATOR_NAME)) {
                         decoratorClass = XO_ARRAY_DECORATOR_NAME;
                         const superTypeParameter = node.superTypeParameters
                             ? node.superTypeParameters.params[0]

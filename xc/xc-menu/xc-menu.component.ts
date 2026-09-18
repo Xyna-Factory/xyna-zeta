@@ -15,8 +15,8 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { Component, EventEmitter, forwardRef, inject, Input, numberAttribute, Output, ViewChild } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, forwardRef, inject, Input, numberAttribute, ViewChild, input, output } from '@angular/core';
 import { MatMenu, MatMenuItem } from '@angular/material/menu';
 
 import { coerceBoolean } from '../../base';
@@ -28,10 +28,11 @@ import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPositio
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-menu',
     templateUrl: './xc-menu.component.html',
     styleUrls: ['./xc-menu.component.scss'],
-    imports: [CommonModule, MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, XcI18nPipe, forwardRef(() => XcMenuComponent)],
+    imports: [MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, XcI18nPipe, forwardRef(() => XcMenuComponent)],
 })
 export class XcMenuComponent {
     protected readonly contextMenuService = inject(XcContextMenuService);
@@ -45,6 +46,8 @@ export class XcMenuComponent {
     private _menu: XcMenu;
     readonly options: XcMenuOptions = XcMenuOptionsDefault();
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChild('matMenu', { static: true, read: MatMenu })
     set menu(value: XcMenu) {
         this._menu = value;
@@ -141,11 +144,9 @@ export class XcMenuComponent {
         // no need to set value to menu, since it is via setPositionClasses
     }
 
-    @Input('xc-menu-items')
-    items = new Array<XcMenuItem>();
+    readonly items = input(new Array<XcMenuItem>(), { alias: "xc-menu-items" });
 
-    @Output('xc-menu-item-select')
-    readonly select = new EventEmitter<XcMenuItem>();
+    readonly select = output<XcMenuItem>({ alias: 'xc-menu-item-select' });
 
     selectItem(item: XcMenuItem) {
         this.select.emit(item);

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { I18nService } from '../i18n';
 import { AuthBackgroundComponent } from './background/auth-background.component';
@@ -25,6 +25,7 @@ import { NgComponentOutlet } from '@angular/common';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './auth.component.html',
     imports: [NgComponentOutlet]
 })

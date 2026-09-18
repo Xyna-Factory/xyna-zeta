@@ -18,7 +18,7 @@
 import { Observable, Subject } from 'rxjs';
 
 import { ComponentType } from '@angular/cdk/portal';
-import { InjectionToken, Injector, Optional } from '@angular/core';
+import { inject, InjectionToken, Signal } from '@angular/core';
 
 import { XcMenuItem } from '../';
 import { XcDynamicDismissableComponent } from '../shared/xc-dynamic-dismissable.component';
@@ -67,7 +67,7 @@ export interface XcTabBarItem<D = any> extends XcItem {
     component: ComponentType<XcTabComponent<any, any>>;
     pinned?: boolean;
     closable?: boolean;
-    closeTooltip?: string;
+    closeTooltip?: Signal<string>;
     data?: D;
 
     afterActivate?: (index: number) => void;
@@ -112,12 +112,12 @@ export class XcTabRef<R = void> {
 
 export abstract class XcTabComponent<R = void, D = void> extends XcDynamicDismissableComponent<R, D> {
 
-    private readonly tabRef: XcTabRef<R>;
+    private readonly tabRef = inject(XcTabRef<R>, {
+        optional: true
+    });
 
-
-    constructor(@Optional() readonly injector: Injector) {
+    constructor() {
         super();
-        this.tabRef = injector.get<XcTabRef<R>>(XcTabRef);
     }
 
 

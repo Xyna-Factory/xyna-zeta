@@ -15,9 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Directive, Injectable, Input, OnDestroy, TemplateRef, ViewContainerRef, inject } from '@angular/core';
+import { Subject } from 'rxjs';
 
-import { Subject, Subscription } from 'rxjs';
+import { Directive, inject, Injectable, Input, OnDestroy, OutputRefSubscription, TemplateRef, ViewContainerRef } from '@angular/core';
+import { coerceBoolean } from '@zeta/base';
 
 import { XcMenuComponentInterface, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault } from './xc-menu.types';
 
@@ -28,7 +29,7 @@ export class XcMenuService {
     private _component: XcMenuComponentInterface;
     private _items: XcMenuItem[];
     private _options: XcMenuOptions;
-    private readonly subscriptions = new Array<Subscription>();
+    private readonly subscriptions = new Array<OutputRefSubscription>();
     private readonly selectItem = new Subject<XcMenuItem>();
 
     constructor() {
@@ -83,7 +84,7 @@ export class XcMenuServiceDirective implements OnDestroy {
         this.viewContainerRef.clear();
     }
 
-    @Input('xc-menu-service')
+    @Input({ alias: 'xc-menu-service', transform: coerceBoolean })
     set value(visible: boolean) {
         if (visible) {
             this.viewContainerRef.createEmbeddedView(this.templateRef, {$implicit: this.menuService});

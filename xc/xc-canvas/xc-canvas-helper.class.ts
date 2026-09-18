@@ -937,13 +937,13 @@ export class XcCanvasHelper {
             const st23 = st3 * 2;
             const st32 = st2 * 3;
 
-            cache[cachePtr++] = st23 - st32 + 1;    // c1
-            cache[cachePtr++] = st32 - st23;        // c2
-            cache[cachePtr++] = st3 - 2 * st2 + st; // c3
-            cache[cachePtr++] = st3 - st2;          // c4
+            cache[cachePtr++] = st23 - st32 + 1;
+            cache[cachePtr++] = st32 - st23;
+            cache[cachePtr++] = st3 - 2 * st2 + st;
+            cache[cachePtr++] = st3 - st2;
         }
 
-        cache[++cachePtr] = 1;
+        cache[cachePtr + 1] = 1;
 
          
         const parse = (pts: number[], cache: Float32Array, l: number) => {

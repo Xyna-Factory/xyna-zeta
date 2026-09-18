@@ -15,12 +15,13 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, AfterContentInit, Component, ElementRef, inject } from '@angular/core';
 
 import { I18nService } from '../../../i18n';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-form-label',
     templateUrl: './xc-form-label.component.html',
     styleUrls: ['./xc-form-label.component.scss'] /** @todo reuse xc-form-field.component.scss somehow */
@@ -35,7 +36,7 @@ export class XcFormLabelComponent implements AfterContentInit {
 
         const el = this.elementRef.nativeElement;
         if (el && i18nContext !== undefined && i18nContext !== null) {
-            el.textContent = this.i18n.translate(i18nContext ? i18nContext + '.' + el.textContent : el.textContent);
+            el.textContent = this.i18n.translateInstant(i18nContext ? i18nContext + '.' + el.textContent : el.textContent);
         }
     }
 }

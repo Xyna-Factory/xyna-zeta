@@ -17,6 +17,8 @@
  */
 import { BehaviorSubject, Observable } from 'rxjs';
 
+import { Signal } from '@angular/core';
+
 import { I18nService } from '../../i18n';
 import { XcDataSource } from '../shared/xc-data-source';
 import { XcSelectionModel } from '../shared/xc-selection';
@@ -30,7 +32,7 @@ export interface XcTreeNode {
     value?: XcTemplate[] | any;
     readonly?: boolean;
     disabled?: boolean;
-    tooltip?: string;
+    tooltip?: Signal<string>;
     fixed?: boolean;
     limit?: number;
     action?: (...args: any[]) => void;
