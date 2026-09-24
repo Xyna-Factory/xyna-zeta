@@ -381,11 +381,11 @@ $xc-scrollbar-color: $color-gray-1;
 $xc-scrollbar-background-color: $color-gray-3;
 
 $color-map: (
-    normal: $color-normal,
-    invert: $color-invert,
-    primary: $color-primary,
-    accent: $color-accent,
-    warn: $color-warn,
-    black: $color-black,
-    white: $color-white
+    "normal": $color-normal,
+    "invert": $color-invert,
+    "primary": $color-primary,
+    "accent": $color-accent,
+    "warn": $color-warn,
+    "black": $color-black,
+    "white": $color-white
 );
