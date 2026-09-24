@@ -35,7 +35,7 @@
                     @if (item.closable && !item.pinned) {
                         <xc-icon-button
                             xc-tooltip="{{
-                                item.closeTooltip() ||
+                                item.closeTooltip?.() ||
                                     ('zeta.xc-tab-bar.close-tooltip'
                                         | xcI18n: item.name())
                             }}"
