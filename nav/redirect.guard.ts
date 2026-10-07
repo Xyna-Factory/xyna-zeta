@@ -18,7 +18,7 @@
 import { Component, inject, Injectable, InjectionToken } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, CanDeactivateFn, Router, RouterStateSnapshot } from '@angular/router';
 
-import { XynaRoute } from './';
+import { XynaRouteData } from './';
 
 
 export const RedirectGuardConfigToken = new InjectionToken<string>('RedirectGuardConfigToken');
@@ -43,7 +43,7 @@ export class RedirectGuardService {
 
 
     canActivate(activatedRoute: ActivatedRouteSnapshot, routerState: RouterStateSnapshot): boolean {
-        const data = (activatedRoute as XynaRoute).data;
+        const data = activatedRoute.data as XynaRouteData;
 
         if (!data.redirectDefault) {
             console.error('No redirectDefault is set in the RedirectComponent route');
@@ -80,7 +80,7 @@ export class RedirectGuardService {
 
 
     canDeactivate(component: Component, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): boolean {
-        const data = (currentRoute as XynaRoute).data;
+        const data = currentRoute.data as XynaRouteData;
 
         if (!data.redirectKey) {
             console.warn('No redirectKey is set in the XynaRouteData of this route.\nDefault key is used');
