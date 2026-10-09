@@ -20,7 +20,7 @@ import { inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
 
 import { AuthService } from '../auth';
-import { XynaRoute } from './xyna-routes';
+import { XynaRoute, XynaRouteData } from './xyna-routes';
 
 
 @Injectable({ providedIn: 'root' })
@@ -30,7 +30,7 @@ export class RightGuardService {
 
 
     canActivate(activatedRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        const data = (activatedRoute as XynaRoute).data;
+        const data = activatedRoute.data as XynaRouteData;
         const right = data.right;
 
         if (!right) {
