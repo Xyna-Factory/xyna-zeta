@@ -188,6 +188,11 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
+    get actionsColumnHeaderLabel(): string {
+        return this._i18n.translate('xcTable.actionsColumnHeader');
+    }
+
+
     @ViewChild(MatSort, {static: false})
     set matSort(value: MatSort) {
         this._matSort = value;
@@ -377,7 +382,8 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             path: this.actionColumnPath,
             name: 'xcTable.actionsColumnHeader',
             disableSort: true,
-            disableFilter: true
+            disableFilter: true,
+            shrink: true
         };
     }
 
