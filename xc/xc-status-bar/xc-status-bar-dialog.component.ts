@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { I18nService, LocaleService, XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n';
 import { XcSortDirection } from '../shared/xc-sort';
@@ -36,6 +36,7 @@ export interface XcStatusBarDialogData {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './xc-status-bar-dialog.component.html',
     styleUrls: ['./xc-status-bar-dialog.component.scss'],
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcI18nTranslateDirective, XcButtonComponent, XcIconComponent, XcTableComponent]
@@ -55,8 +56,8 @@ export class XcStatusBarDialogComponent extends XcDialogComponent<boolean, XcSta
         this.dataSource.localTableData = {
             rows: this.injectedData.entries,
             columns: [
-                { path: 'time', name: this.i18n.translate('Timestamp'), disableFilter: true, shrink: true, pre: true },
-                { path: 'message', name: this.i18n.translate('Message') }
+                { path: 'time', name: this.i18n.translateSignal('Timestamp'), disableFilter: true, shrink: true, pre: true },
+                { path: 'message', name: this.i18n.translateSignal('Message') }
             ]
         };
         this.dataSource.setSortPathAndDirection('time', XcSortDirection.dsc);

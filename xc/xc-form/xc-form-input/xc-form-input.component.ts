@@ -15,25 +15,26 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 
-import { XcI18nContextDirective, XcI18nPipe } from '../../../i18n';
+import { XcI18nContextDirective } from '../../../i18n';
 import { XcTooltipDirective } from '../../xc-tooltip/xc-tooltip.directive';
 import { XcFormBaseComponent } from '../xc-form-base/xc-form-base.component';
 import { XcFormBaseInputComponent } from '../xc-form-base/xc-form-baseinput.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-form-input',
     templateUrl: './xc-form-input.component.html',
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-input.component.scss'],
     providers: [{ provide: XcFormBaseComponent, useExisting: forwardRef(() => XcFormInputComponent) }],
-    imports: [MatFormField, XcI18nContextDirective, XcI18nPipe, MatLabel, MatInput, ReactiveFormsModule, MatError, MatIconButton, MatSuffix, XcTooltipDirective, MatIcon]
+    imports: [MatFormField, XcI18nContextDirective, MatLabel, MatInput, ReactiveFormsModule, MatError, MatIconButton, MatSuffix, XcTooltipDirective, MatIcon]
 })
 export class XcFormInputComponent extends XcFormBaseInputComponent {
 }

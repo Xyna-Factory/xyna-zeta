@@ -18,14 +18,16 @@
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, filter, finalize } from 'rxjs/operators';
 
-import { Component, effect, inject, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal, viewChild } from '@angular/core';
+import { ConfigService } from '@zeta/api/config.service';
 
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
+import { XcI18nPipe } from '../../i18n/i18n.pipe';
 import { I18nParam, I18nService } from '../../i18n/i18n.service';
 import { XcDialogService, XcTabBarItem } from '../../xc';
-import { XcAutocompleteDataWrapper } from '../../xc/xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { XcOptionItemString } from '../../xc/shared/xc-item';
 import { XcButtonComponent } from '../../xc/xc-button/xc-button.component';
+import { XcAutocompleteDataWrapper } from '../../xc/xc-form/xc-form-autocomplete/xc-form-autocomplete.component';
 import { XcIconComponent } from '../../xc/xc-icon/xc-icon.component';
 import { XcLanguageSelectorComponent } from '../../xc/xc-language-selector/xc-language-selector.component';
 import { XcPanelComponent } from '../../xc/xc-panel/xc-panel.component';
@@ -38,7 +40,6 @@ import { SmartCardLoginTabComponent } from '../forms/smart-card-login-tab.compon
 import { SmartCardLoginComponent } from '../forms/smart-card-login.component';
 import { WorkflowLoginTabComponent } from '../forms/workflow-login-tab.component';
 import { WorkflowLoginComponent } from '../forms/workflow-login.component';
-import { ConfigService } from '@zeta/api/config.service';
 
 
 export interface LoginComponentData {
@@ -57,19 +58,17 @@ export interface LoginComponentData {
 }
 
 
-interface LoginTabItem {
-    closable: boolean;
+interface LoginTabItem extends XcTabBarItem<LoginComponentData> {
     component: any;
-    name: string;
-    data: LoginComponentData;
 }
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'auth-login',
     templateUrl: './auth-login.component.html',
     styleUrls: ['./auth-login.component.scss'],
-    imports: [XcPanelComponent, XcI18nContextDirective, XcIconComponent, XcI18nTranslateDirective, XcLanguageSelectorComponent, XcTabBarComponent, SmartCardLoginComponent, CredentialsLoginComponent, WorkflowLoginComponent, XcButtonComponent]
+    imports: [XcPanelComponent, XcI18nContextDirective, XcIconComponent, XcI18nTranslateDirective, XcLanguageSelectorComponent, XcTabBarComponent, SmartCardLoginComponent, CredentialsLoginComponent, WorkflowLoginComponent, XcButtonComponent, XcI18nPipe]
 })
 export class AuthLoginComponent {
     protected readonly authService = inject(AuthService);
@@ -86,7 +85,7 @@ export class AuthLoginComponent {
     readonly smartCardTabItem: LoginTabItem = {
         closable: false,
         component: SmartCardLoginTabComponent,
-        name: 'SmartCard',
+        name: this.i18n.translateSignal('zeta.auth-login.tab-smartcard'),
         data: <LoginComponentData>{
             username: '',
             selectedRole: undefined,
@@ -102,7 +101,7 @@ export class AuthLoginComponent {
     readonly credentialsTabItem: LoginTabItem = {
         closable: false,
         component: CredentialsLoginTabComponent,
-        name: 'Credentials',
+        name: this.i18n.translateSignal('zeta.auth-login.tab-credentials'),
         data: <LoginComponentData>{
             username: '',
             password: '',
@@ -117,7 +116,7 @@ export class AuthLoginComponent {
     readonly workflowTabItem: LoginTabItem = {
         closable: false,
         component: WorkflowLoginTabComponent,
-        name: 'Workflow',
+        name: this.i18n.translateSignal('zeta.auth-login.tab-workflow'),
         data: <LoginComponentData>{
             username: '',
             password: '',
@@ -129,8 +128,7 @@ export class AuthLoginComponent {
         }
     };
 
-    @ViewChild(XcTabBarComponent, { static: false })
-    tabBar: XcTabBarComponent;
+    readonly tabBar = viewChild(XcTabBarComponent);
 
     tabBarSelection = this.smartCardTabItem;
     smartCardDomain = '';
@@ -257,7 +255,7 @@ export class AuthLoginComponent {
 
 
     defaultErrorHandler(): Observable<void> {
-        return this.dialogService.info(this.i18n.translate('zeta.auth-login.error'), this.i18n.translate('zeta.auth-login.authentication-failed')).afterDismiss();
+        return this.dialogService.info(this.i18n.translateInstant('zeta.auth-login.error'), this.i18n.translateInstant('zeta.auth-login.authentication-failed')).afterDismiss();
     }
 
 
@@ -276,8 +274,8 @@ export class AuthLoginComponent {
                     const errorCode = filterError.error.error ? filterError.error.error.errorCode : (filterError.error as any).errorCode;
                     if (errorCode === H5FilterErrorCodes.SESSION_EXISTS) {
                         this.dialogService.confirm(
-                            this.i18n.translate('zeta.auth-login.error-header'),
-                            this.i18n.translate('zeta.auth-login.error-message', <I18nParam>{ key: '$0', value: this.smartCardTabItem.data.username })
+                            this.i18n.translateInstant('zeta.auth-login.error-header'),
+                            this.i18n.translateInstant('zeta.auth-login.error-message', <I18nParam>{ key: '$0', value: this.smartCardTabItem.data.username })
                         ).afterDismissResult(true).subscribe(() =>
                             this.smartCardLogin(true)
                         );
@@ -302,8 +300,8 @@ export class AuthLoginComponent {
                     const errorCode = filterError.error.error ? filterError.error.error.errorCode : (filterError.error as any).errorCode;
                     if (errorCode === H5FilterErrorCodes.SESSION_EXISTS) {
                         this.dialogService.confirm(
-                            this.i18n.translate('zeta.auth-login.duplicate-session-header'),
-                            this.i18n.translate('zeta.auth-login.duplicate-session-message', <I18nParam>{ key: '$username', value: this.credentialsTabItem.data.username })
+                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-header'),
+                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-message', <I18nParam>{ key: '$username', value: this.credentialsTabItem.data.username })
                         ).afterDismissResult(true).subscribe(() =>
                             // login again with force
                             this.credentialsLogin(true)
@@ -328,8 +326,8 @@ export class AuthLoginComponent {
                     const errorCode = filterError.error.error ? filterError.error.error.errorCode : (filterError.error as any).errorCode;
                     if (errorCode === H5FilterErrorCodes.SESSION_EXISTS) {
                         this.dialogService.confirm(
-                            this.i18n.translate('zeta.auth-login.duplicate-session-header'),
-                            this.i18n.translate('zeta.auth-login.duplicate-session-message', <I18nParam>{ key: '$username', value: this.workflowTabItem.data.username })
+                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-header'),
+                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-message', <I18nParam>{ key: '$username', value: this.workflowTabItem.data.username })
                         ).afterDismissResult(true).subscribe(() =>
                             // login again with force
                             this.workflowLogin(true)

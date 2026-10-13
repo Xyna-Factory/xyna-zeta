@@ -18,7 +18,7 @@
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AuthComponent } from './auth.component';
+
 import { AuthGuardService } from './auth.guard';
 import { AuthInterceptor } from './auth.interceptor';
 import { CsrfInterceptor } from './csrf.interceptor';
@@ -28,7 +28,7 @@ const root = 'Authenticate';
 
 
 export const AuthRoutes: Routes = [
-    { path: root, component: AuthComponent, data: { reset: true, title: root  } }
+    { path: root, loadComponent: () => import('./auth.component').then(m => m.AuthComponent), data: { reset: true, title: root  } }
 ];
 
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, ElementRef, EventEmitter, HostListener, Input, OnDestroy, Output, Renderer2, inject } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, HostListener, Input, OnDestroy, Renderer2, inject, input, output } from '@angular/core';
 
 import { fromEvent, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -57,8 +57,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     protected readonly renderer = inject(Renderer2);
 
 
-    @Input('xc-resize')
-    enabled = true;
+    readonly enabled = input(true, { alias: "xc-resize", transform: coerceBoolean });
 
     private readonly _resizeOptions: XcResizeOptions = {};
 
@@ -88,9 +87,9 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
         return this._resizeOptions;
     }
 
-    @Output() readonly resizeBegin: EventEmitter<any> = new EventEmitter();
-    @Output() readonly resizing: EventEmitter<ResizableEvent> = new EventEmitter();
-    @Output() readonly resizeEnd: EventEmitter<ResizableEvent> = new EventEmitter();
+    readonly resizeBegin = output<any>();
+    readonly resizing = output<ResizableEvent>();
+    readonly resizeEnd = output<ResizableEvent>();
 
     element: HTMLElement;
     private subscription: Subscription;
@@ -122,7 +121,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        if (this.enabled) {
+        if (this.enabled()) {
             if (this.resizeOptions.south || this.resizeOptions.east || this.resizeOptions.southEast || this.resizeOptions.southWest || this.resizeOptions.west || this.resizeOptions.northWest || this.resizeOptions.north || this.resizeOptions.northEast) {
                 this.resizeOptions.all = false;
             }
@@ -191,7 +190,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     @HostListener('mousedown', ['$event'])
     @HostListener('touchstart', ['$event'])
     onMousedown(event: MouseEvent | TouchEvent) {
-        if (this.enabled) {
+        if (this.enabled()) {
             const classList = ((event.target) as HTMLElement).classList;
             const isSouth = classList.contains('resize-handle-s');
             const isEast = classList.contains('resize-handle-e');
@@ -363,7 +362,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
         this.newLeft = this.element.clientLeft;
         this.newTop = this.element.clientTop;
         event.stopPropagation();
-        this.resizeBegin.emit();
+        this.resizeBegin.emit(undefined);
     }
 
     endResize(event: MouseEvent | TouchEvent) {

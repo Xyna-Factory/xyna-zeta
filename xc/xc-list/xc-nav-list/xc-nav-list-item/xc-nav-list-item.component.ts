@@ -15,12 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NgClass } from '@angular/common';
-import { Component, EventEmitter, HostBinding, inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, Input, input, OnInit, output, Signal } from '@angular/core';
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-
 import { I18nService, LocaleService } from '@zeta/i18n';
 
 import { coerceBoolean, isBoolean } from '../../../../base';
@@ -33,20 +31,10 @@ import { XcNavListItem, XcNavListOrientation } from '../xc-nav-list.types';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-nav-list-item',
     templateUrl: './xc-nav-list-item.component.html',
     styleUrls: ['./xc-nav-list-item.component.scss'],
-    animations: [
-        trigger('toggleAnimation', [
-            state('collapsed', style({
-                'display': 'none'
-            })),
-            state('expanded', style({
-                'display': 'block'
-            })),
-            transition('* => *', animate('0ms ease-in'))
-        ])
-    ],
     imports: [MatListItem, NgClass, XcIconComponent, RouterLinkActive, RouterLink, XcTooltipDirective]
 })
 export class XcNavListItemComponent extends XcThemeableComponent implements OnInit {
@@ -54,15 +42,16 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     private static _num = 0;
     uniquePanelId = 'xc-nav-list-panel-' + XcNavListItemComponent._num++;
 
-    @Input()
-    item: XcNavListItem;
+    readonly item = input<XcNavListItem>(undefined);
 
-    @Input()
-    size: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
+    readonly size = input<'small' | 'medium' | 'large' | 'extra-large'>('medium');
+
+    readonly depth = input<number>(undefined);
 
     @HostBinding('attr.depth')
-    @Input()
-    depth: number;
+    get hostDepth(): number {
+        return this.depth();
+    }
 
     @Input({transform: coerceBoolean})
     set shrink(value: boolean) {
@@ -73,44 +62,46 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     }
     private _shrink = false;
 
-    @Input()
-    orientation: XcNavListOrientation;
+    readonly orientation = input<XcNavListOrientation>(undefined);
 
-    @Output()
-    readonly focusChange = new EventEmitter<XcNavListItem>();
+    readonly focusChange = output<XcNavListItem>();
+
+    protected readonly resolveDynamicString = (value?: Signal<string>) => value?.() ?? '';
 
 
     private readonly i18n = inject<I18nService>(I18nService);
 
     constructor() {
         super();
-        this.color = 'primary';
+        this.defaultColor.set('primary');
         this.i18n.setTranslations(LocaleService.EN_US, xcNavListTranslations_enUS);
         this.i18n.setTranslations(LocaleService.DE_DE, xcNavListTranslations_deDE);
     }
 
 
     get ariaLabel(): string {
-        return this.i18n.translate('menu_with_elements', { key: '$0', value: this.item.children.length.toString() });
+        return this.i18n.translateInstant('menu_with_elements', { key: '$0', value: this.item().children.length.toString() });
     }
 
 
     @HostBinding('attr.collapsed')
     get collapsed() {
-        return this.item
-            ? this.item.collapsed
+        const item = this.item();
+        return item
+            ? item.collapsed
             : true;
     }
 
 
     set collapsed(value: boolean) {
-        this.item.collapsed = value;
+        this.item().collapsed = value;
     }
 
 
     ngOnInit() {
-        this.collapsed = (this.item && isBoolean(this.item.collapsed))
-            ? this.item.collapsed
+        const item = this.item();
+        this.collapsed = (item && isBoolean(item.collapsed))
+            ? item.collapsed
             : false;
     }
 
@@ -134,13 +125,13 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     }
 
 
-    get tooltipPosition(): string {
-        switch (this.orientation) {
+    get tooltipPosition(): XcTooltipPosition {
+        switch (this.orientation()) {
             case XcNavListOrientation.TOP: return XcTooltipPosition.bottom;
             case XcNavListOrientation.RIGHT: return XcTooltipPosition.left;
             case XcNavListOrientation.BOTTOM: return XcTooltipPosition.top;
             case XcNavListOrientation.LEFT: return XcTooltipPosition.right;
-            default: return undefined;
+            default: return XcTooltipPosition.bottom;
         }
     }
 
@@ -152,13 +143,14 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
     getItemClassList(): string[] {
         const list: string[] = [];
-        if (this.item.class) {
-            list.push(this.item.class);
+        const item = this.item();
+        if (item.class) {
+            list.push(item.class);
         }
-        if (this.item.disabled) {
+        if (item.disabled) {
             list.push('disabled');
         }
-        if (this.item.children && this.item.children.length) {
+        if (item.children && item.children.length) {
             list.push('parent');
         }
         return list;

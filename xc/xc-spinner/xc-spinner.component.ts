@@ -15,13 +15,14 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-spinner',
     templateUrl: './xc-spinner.component.html',
     styleUrls: ['./xc-spinner.component.scss'],
@@ -30,6 +31,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 export class XcSpinnerComponent extends XcThemeableComponent {
     constructor() {
         super();
-        this.color = 'primary';
+        this.defaultColor.set('primary');
     }
 }

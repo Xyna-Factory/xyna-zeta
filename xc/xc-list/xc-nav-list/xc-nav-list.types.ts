@@ -15,6 +15,8 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { Signal } from '@angular/core';
+
 import { XcItem } from '../../../xc/shared/xc-item';
 
 
@@ -30,6 +32,6 @@ export interface XcNavListItem extends XcItem {
     class?: string;
     children?: this[];
     collapsed?: boolean;
-    tooltip?: string;
+    tooltip?: Signal<string>;
     ariaLabel?: string;
 }

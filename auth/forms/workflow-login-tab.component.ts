@@ -15,40 +15,22 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Injector, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
-import { I18nService } from '@zeta/i18n';
-
-import { XcTabComponent } from '../../xc';
-import { LoginComponentData } from '../login/auth-login.component';
-import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
 import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
+import { XcTabComponent } from '../../xc';
+import { XcFormInputComponent } from '../../xc/xc-form/xc-form-input/xc-form-input.component';
+import { LoginComponentData } from '../login/auth-login.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'workflow-login-tab',
     templateUrl: './workflow-login.component.html',
     styleUrls: ['./workflow-login.component.scss'],
     imports: [XcFormInputComponent, XcI18nTranslateDirective]
 })
 export class WorkflowLoginTabComponent extends XcTabComponent<void, LoginComponentData> {
-    readonly i18n = inject(I18nService);
 
-
-    data: LoginComponentData = {
-        username: '',
-        password: '',
-        onEnter: () => { },
-        usernameTabIndex: 1,
-        usernameSuffixTabIndex: 4,
-        passwordTabIndex: 2,
-        passwordSuffixTabIndex: 5,
-    };
-
-    constructor() {
-        const injector = inject(Injector);
-
-        super(injector);
-        this.data = this.injectedData;
-    }
+    readonly data = signal<LoginComponentData>(this.injectedData);
 }

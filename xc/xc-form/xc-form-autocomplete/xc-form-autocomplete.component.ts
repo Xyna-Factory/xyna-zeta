@@ -15,8 +15,11 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
+import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
+import { debounceTime, map, tap } from 'rxjs/operators';
+
 import { AsyncPipe } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, HostBinding, inject, Input, NgZone, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef, HostBinding, inject, Input, input, NgZone, OnDestroy, output, signal, viewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { MatIconButton } from '@angular/material/button';
@@ -24,17 +27,12 @@ import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/f
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-
 import { MULTISELECT_FILTER_SEPARATOR } from '@zeta/xc/xc-table/xc-table-data-source';
-
-import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
-import { debounceTime, map, tap } from 'rxjs/operators';
 
 import { A11yService } from '../../../a11y';
 import { Xo, XoObject, XoPropertyBinding } from '../../../api';
 import { coerceBoolean, Comparable, isObject, isString, isTextOverflowing, Native, NativeArray } from '../../../base';
-import { I18nService } from '../../../i18n';
-import { XcI18nPipe } from '../../../i18n';
+import { I18nService, XcI18nPipe } from '../../../i18n';
 import { XcBoxableDataWrapper } from '../../shared/xc-data-wrapper';
 import { XcOptionItem, XcOptionItemString, XcOptionItemValueType } from '../../shared/xc-item';
 import { XcSortDirection, XcSortDirectionFromString, XcSortPredicate } from '../../shared/xc-sort';
@@ -58,7 +56,7 @@ export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxa
 
 
     static getXoEnumeratedValuesMapper<W = XcOptionItemValueType>(): OperatorFunction<NativeArray, XcOptionItem<W>[]> {
-        return map((data: any[]) => data.map(value => <XcOptionItem>{ name: `${value}`, value: value }));
+        return map((data: any[]) => data.map(value => <XcOptionItem>{ name: signal(`${value}`), value: value }));
     }
 
     static getXoEnumeratedOptionItems<W = XcOptionItemValueType>(instance: Xo, propertyPath: string): Observable<XcOptionItem<W>[]> {
@@ -250,28 +248,21 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     multiSelectA11yAnnouncement = '';
 
 
-    @ViewChild(MatAutocompleteTrigger, { static: false })
-    trigger: MatAutocompleteTrigger;
+    readonly trigger = viewChild(MatAutocompleteTrigger);
 
     /** Reference to mat-select for multiselect mode */
-    @ViewChild('multiSelectDropdown', { static: false })
-    multiSelectDropdown: MatSelect;
+    readonly multiSelectDropdown = viewChild<MatSelect>('multiSelectDropdown');
 
     /** Reference to multiselect input for focus management */
-    @ViewChild('multiSelectInput', { static: false })
-    multiSelectInput: ElementRef<HTMLInputElement>;
+    readonly multiSelectInput = viewChild<ElementRef<HTMLInputElement>>('multiSelectInput');
 
-    @Input('xc-form-autocomplete-a11yfocusline')
-    readonly a11yFocusLine: string;
+    readonly a11yFocusLine = input<string>(undefined, { alias: "xc-form-autocomplete-a11yfocusline" });
 
-    @Output('xc-form-autocomplete-optionChange')
-    readonly optionChange = new EventEmitter<XcOptionItem>();
+    readonly optionChange = output<XcOptionItem>({ alias: 'xc-form-autocomplete-optionChange' });
 
-    @Output('xc-form-autocomplete-optionsOpened')
-    readonly optionsOpened = new EventEmitter();
+    readonly optionsOpened = output({ alias: 'xc-form-autocomplete-optionsOpened' });
 
-    @Output('xc-form-autocomplete-optionsClosed')
-    readonly optionsClosed = new EventEmitter();
+    readonly optionsClosed = output({ alias: 'xc-form-autocomplete-optionsClosed' });
 
     /**
      * Enable multiselect mode using mat-select with multiple attribute.
@@ -284,7 +275,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         if (this._multiSelect) {
             this.initMultiSelectOptions();
             // Set dropdown suffix icon so clicking the arrow opens the panel
-            this.suffix = 'dropdown';
+            this.suffix.set('dropdown');
         }
     }
     get multiSelect(): boolean {
@@ -294,8 +285,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     /**
      * Emits the MULTISELECT_FILTER_SEPARATOR-delimited string of selected values when multiselect is applied.
      */
-    @Output('xc-form-autocomplete-multiSelectChange')
-    readonly multiSelectChange = new EventEmitter<string>();
+    readonly multiSelectChange = output<string>({ alias: 'xc-form-autocomplete-multiSelectChange' });
 
 
     constructor() {
@@ -325,14 +315,15 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         });
 
         // In multiselect mode, trigger may be undefined since mat-autocomplete isn't rendered
-        if (this.trigger) {
+        const trigger = this.trigger();
+        if (trigger) {
             // set subscription
-            this._subscription = this.trigger.panelClosingActions.subscribe(() => {
+            this._subscription = trigger.panelClosingActions.subscribe(() => {
                 this.checkValue();
                 this.cdRef.detectChanges();
             });
             // prevent resetting of the active item by internal code
-            (this.trigger as any)._resetActiveItem = () => {
+            (trigger as any)._resetActiveItem = () => {
                 if (this.selectedIdxResettable && !this.asInput) {
                     this.setActiveItem(this.enabledIdx);
                 }
@@ -362,15 +353,16 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     private readonly onScrollIfAutocompleteIsOpen = (event: Event) => {
         // In multiselect mode, trigger may be undefined
-        if (!this.trigger) {
+        const trigger = this.trigger();
+        if (!trigger) {
             return;
         }
         // Chrome on Windows triggers a scroll event if the browser needs to render a too big of a text into an input element
         // in this event, the event's target is the input element itself
-        const targetIsInputElement = (event.target as HTMLElement).getAttribute ? ((event.target as HTMLElement).getAttribute('id') === this.input.id) : false;
-        const targetIsOptionBox = this.trigger.autocomplete.panel ? event.target === this.trigger.autocomplete.panel.nativeElement : false;
-        if (this.trigger.panelOpen && !targetIsInputElement && !targetIsOptionBox) {
-            this.trigger.closePanel();
+        const targetIsInputElement = (event.target as HTMLElement).getAttribute ? ((event.target as HTMLElement).getAttribute('id') === this.input().id) : false;
+        const targetIsOptionBox = trigger.autocomplete.panel ? event.target === trigger.autocomplete.panel.nativeElement : false;
+        if (trigger.panelOpen && !targetIsInputElement && !targetIsOptionBox) {
+            trigger.closePanel();
         }
     };
 
@@ -380,8 +372,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         super.suffixClickChangedValue(unfocusedInput);
         this.checkValue();
         this.updateFilteredOptions.next(this.selectedOption);
-        if (this.trigger) {
-            this.trigger.openPanel();
+        const trigger = this.trigger();
+        if (trigger) {
+            trigger.openPanel();
         }
     }
 
@@ -396,10 +389,10 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                 ? (this.options ?? []).concat(XcOptionItemString(this.value))
                 : (this.options ?? []);
             // try to find an option with the given value
-            option = options.find(o => !o.disabled && o.name === this.value);
+            option = options.find(o => !o.disabled && this.optionName(o) === this.value);
             // if no option was found, try to find one without case sensitivity
             if (option === undefined && !this.caseSensitive) {
-                option = options.find(o => !o.disabled && o.name.toLowerCase() === this.value.toLowerCase());
+                option = options.find(o => !o.disabled && this.optionName(o).toLowerCase() === this.value.toLowerCase());
             }
         } else {
             // use value, if it's an option
@@ -418,7 +411,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     protected sort(options: XcOptionItem[]) {
         return (this._sortDirection !== XcSortDirection.none)
-            ? options.sort(XcSortPredicate(this._sortDirection, this.caseSensitive ? option => option.name : option => option.name.toLowerCase()))
+            ? options.sort(XcSortPredicate(this._sortDirection, option => this.caseSensitive ? this.optionName(option) : this.optionName(option).toLowerCase()))
             : options;
     }
 
@@ -446,8 +439,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
 
     protected setActiveItem(idx: number) {
-        if (this.trigger) {
-            this.trigger.autocomplete._keyManager.setActiveItem(idx);
+        const trigger = this.trigger();
+        if (trigger) {
+            trigger.autocomplete._keyManager.setActiveItem(idx);
         }
     }
 
@@ -462,16 +456,17 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
 
     mousedown(event: MouseEvent) {
-        if (!this.readonly && !this.disabled && this.trigger) {
+        const trigger = this.trigger();
+        if (!this.readonly && !this.disabled && trigger) {
             if (this.asDropdown) {
                 event.preventDefault();
-                if (this.trigger.panelOpen) {
-                    this.trigger.closePanel();
+                if (trigger.panelOpen) {
+                    trigger.closePanel();
                 } else {
-                    this.trigger.openPanel();
+                    trigger.openPanel();
                 }
             } else {
-                this.trigger.openPanel();
+                trigger.openPanel();
             }
             this.cdRef.detectChanges();
         }
@@ -497,13 +492,14 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     onkeydown = (event: KeyboardEvent) => {
         // In multiselect mode, trigger may be undefined
-        if (!this.trigger) {
+        const trigger = this.trigger();
+        if (!trigger) {
             return;
         }
 
         // trigger's panel is closed beforehand if user presses Enter
         // - therefore this.trigger.panelOpen is an insufficent indicator for checking if the panel was open
-        const panelWasOpen = this.openPanelWasJustClosed || this.trigger.panelOpen;
+        const panelWasOpen = this.openPanelWasJustClosed || trigger.panelOpen;
 
         // prevent firefox from typing text into input field
         // is ctrl or alt true then this keydown event may be a short cut and default must not prevented
@@ -512,7 +508,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         }
 
         if (event.key === 'Escape' || event.key === 'Enter') {
-            this.trigger.closePanel();
+            trigger.closePanel();
             this.checkValue();
             if (panelWasOpen) {
                 event.stopPropagation();
@@ -539,7 +535,8 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         }
 
         // In multiselect mode, trigger may be undefined
-        if (!this.trigger) {
+        const trigger = this.trigger();
+        if (!trigger) {
             this.cdRef.detectChanges();
             return;
         }
@@ -548,9 +545,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         // (via CTRL+BACKSPACE / CTRL+DELETE or, with the input's text being selected, via CTRL+X / BACKSPACE / DELETE)
         // not opening if tabbed to, while pressing "Tab" or "Tab + Shift"
         const notAllowed = ['Enter', 'Escape', 'Tab', 'Shift'];
-        if (!this.trigger.panelOpen && !this.input.value && !notAllowed.includes(event.key)) {
+        if (!trigger.panelOpen && !this.input().value && !notAllowed.includes(event.key)) {
             this.value = undefined;
-            this.trigger.openPanel();
+            trigger.openPanel();
         }
         this.cdRef.detectChanges();
     };
@@ -566,20 +563,22 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         this.suppressNextFocusEmit = false;
 
         // In multiselect mode, trigger may be undefined since mat-autocomplete isn't rendered
-        if (this.trigger) {
+        const trigger = this.trigger();
+        if (trigger) {
             // the autocomplete is being disabled and therefore the trigger won't auto-opening the panel as it would usually do
-            this.trigger.autocompleteDisabled = true;
+            trigger.autocompleteDisabled = true;
             setTimeout(() => {
-                if (this.trigger) {
-                    this.trigger.autocompleteDisabled = false;
+                const triggerValue = this.trigger();
+                if (triggerValue) {
+                    triggerValue.autocompleteDisabled = false;
                 }
             }, 0);
         }
 
         // TODO FIXME - it must be possible to prevent the MatAutocompleteTrigger's auto opening of the panel on focus
         // if so, we could get rid of the following a11y service method
-        const txt = this.a11yFocusLine || (this.label + ' '
-            + this.i18nService.translate(this.asDropdown
+        const txt = this.a11yFocusLine() || (this.label + ' '
+            + this.i18nService.translateInstant(this.asDropdown
                 ? XcFormAutocompleteComponent.globalDropdownA11yFocusLine
                 : XcFormAutocompleteComponent.globalAutocompleteA11yFocusLine));
         this.a11yService.screenreaderSpeak(txt);
@@ -597,8 +596,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         } else {
             // fixes weird bug where autocomplete would not close when focusing an input or button afterwards
             // In multiselect mode, trigger may be undefined since mat-autocomplete isn't rendered
-            if (this.trigger && (event.relatedTarget instanceof HTMLInputElement || event.relatedTarget instanceof HTMLButtonElement)) {
-                this.trigger.closePanel();
+            const trigger = this.trigger();
+            if (trigger && (event.relatedTarget instanceof HTMLInputElement || event.relatedTarget instanceof HTMLButtonElement)) {
+                trigger.closePanel();
                 // check value for actions within focusing event
                 this.checkValue();
             }
@@ -624,7 +624,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     set asDropdown(value: boolean) {
         this._asDropdown = value;
         if (this.asDropdown) {
-            this.suffix = 'dropdown';
+            this.suffix.set('dropdown');
         }
     }
 
@@ -658,8 +658,8 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     @Input('xc-form-autocomplete-option')
     set option(value: XcOptionItem) {
-        this.selectedOption = value;
-        this.value = value;
+        this.selectedOption = this.normalizeOption(value);
+        this.value = this.selectedOption;
     }
 
 
@@ -670,7 +670,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     @Input('xc-form-autocomplete-options')
     set options(value: XcOptionItem[]) {
-        this._options = value as XcOptionInternalAutocompleteItem[];
+        this._options = (value || []).map(option => this.normalizeOption(option));
         this.updateFilteredOptions.next(this.selectedOption ?? this.value);
         // Update multiselect options when options change (without resetting selection)
         if (this._multiSelect) {
@@ -698,7 +698,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     get stringValue(): string {
         return (
-            isObject(this.value) ? this.value.name : this.value
+            isObject(this.value) ? this.optionName(this.value) : this.value
         ) ?? '';
     }
 
@@ -707,7 +707,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
      * Active option chosen by arrow keys (not to be confused with selected option)
      */
     get activeOption(): XcOptionItem {
-        return this.trigger?.activeOption?.value;
+        return this.trigger()?.activeOption?.value;
     }
 
 
@@ -736,12 +736,13 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         // ----------------------------
 
         // In multiselect mode, trigger may be undefined
-        if (!this.trigger) {
+        const trigger = this.trigger();
+        if (!trigger) {
             return;
         }
 
         // getting the listbox, in which all option elements are
-        const listbox = document.body.querySelector('#' + this.trigger.autocomplete.id);
+        const listbox = document.body.querySelector('#' + trigger.autocomplete.id);
 
         Array.from(listbox.children).forEach((matOptionElement: Element) => {
             // which option's box is too small for its content
@@ -759,10 +760,10 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                     const childNodes = Array.from((el as HTMLElement).childNodes);
                     childNodes.forEach(childNode => {
                         if (childNode.nodeType === childNode.TEXT_NODE) {
-                            const option = this.options.find(op => op.name === childNode.nodeValue.trim()) as XcOptionInternalAutocompleteItem;
+                            const option = this.options.find(op => this.optionName(op) === childNode.nodeValue.trim()) as XcOptionInternalAutocompleteItem;
                             if (option) {
 
-                                const isOverflowing = isTextOverflowing(childNode.parentElement, option.name);
+                                const isOverflowing = isTextOverflowing(childNode.parentElement, this.optionName(option));
 
                                 // is there change
                                 if (!!option.showTooltip !== isOverflowing) {
@@ -798,8 +799,20 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     }
 
 
-    optionName(option: XcOptionItem): string {
-        return option ? option.name : '';
+    optionName(option: XcOptionItem | string): string {
+        if (isString(option)) {
+            return option;
+        }
+        const name = option?.name;
+        return typeof name === 'function' ? name() : name ?? '';
+    }
+
+
+    private normalizeOption(option: XcOptionItem): XcOptionInternalAutocompleteItem {
+        const name = option?.name;
+        return typeof name === 'function'
+            ? option
+            : { ...option, name: signal(String(name ?? '')) };
     }
 
 
@@ -839,7 +852,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         return values
             .map(val => {
                 const opt = this.filteredMultiSelectOptions.find(o => o.value === val);
-                return opt ? opt.name : val;
+                return opt ? this.optionName(opt) : val;
             })
             .join(', ');
     }
@@ -854,10 +867,11 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         }
         event.preventDefault();
         event.stopPropagation();
-        if (this.multiSelectDropdown && !this.multiSelectDropdown.panelOpen) {
-            this.multiSelectDropdown.open();
+        const multiSelectDropdown = this.multiSelectDropdown();
+        if (multiSelectDropdown && !multiSelectDropdown.panelOpen) {
+            multiSelectDropdown.open();
             // Focus mat-select for native arrow/space handling
-            setTimeout(() => this.multiSelectDropdown?.focus(), 0);
+            setTimeout(() => this.multiSelectDropdown()?.focus(), 0);
         }
     }
 
@@ -915,12 +929,12 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                 const stateKey = isNowSelected
                     ? 'zeta.xc-form.autocomplete.selected'
                     : 'zeta.xc-form.autocomplete.not-selected';
-                const state = this.i18nService.translate(stateKey);
+                const state = this.i18nService.translateInstant(stateKey);
                 // Clear first, then set in microtask to ensure aria-live re-announces
                 this.multiSelectA11yAnnouncement = '';
                 this.cdRef.detectChanges();
                 queueMicrotask(() => {
-                    this.multiSelectA11yAnnouncement = `${opt.name}, ${state}`;
+                    this.multiSelectA11yAnnouncement = `${this.optionName(opt)}, ${state}`;
                     this.cdRef.detectChanges();
                 });
             }
@@ -938,8 +952,8 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         const stateKey = isSelected
             ? 'zeta.xc-form.autocomplete.selected'
             : 'zeta.xc-form.autocomplete.not-selected';
-        const state = this.i18nService.translate(stateKey);
-        return `${option.name}, ${state}`;
+        const state = this.i18nService.translateInstant(stateKey);
+        return `${this.optionName(option)}, ${state}`;
     }
 
     /**
@@ -957,8 +971,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
             this._previousMultiSelectValue = [...(this.multiSelectControl.value || [])];
 
             // Patch mat-select's _handleKeydown to intercept ENTER and ESC
-            if (this.multiSelectDropdown && !this._originalHandleKeydown) {
-                const matSelect = this.multiSelectDropdown as any;
+            const multiSelectDropdown = this.multiSelectDropdown();
+            if (multiSelectDropdown && !this._originalHandleKeydown) {
+                const matSelect = multiSelectDropdown as any;
                 this._originalHandleKeydown = matSelect._handleKeydown.bind(matSelect);
                 matSelect._handleKeydown = (event: KeyboardEvent) => {
                     if (event.key === 'Enter') {
@@ -978,8 +993,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
             this.optionsOpened.emit();
         } else {
             // Restore original _handleKeydown
-            if (this.multiSelectDropdown && this._originalHandleKeydown) {
-                (this.multiSelectDropdown as any)._handleKeydown = this._originalHandleKeydown;
+            const multiSelectDropdown = this.multiSelectDropdown();
+            if (multiSelectDropdown && this._originalHandleKeydown) {
+                (multiSelectDropdown as any)._handleKeydown = this._originalHandleKeydown;
                 this._originalHandleKeydown = null;
             }
 
@@ -991,7 +1007,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
             this.optionsClosed.emit();
             // Return focus to input
-            this.multiSelectInput?.nativeElement?.focus();
+            this.multiSelectInput()?.nativeElement?.focus();
         }
         this.cdRef.detectChanges();
     }
@@ -1017,8 +1033,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         this._closedByUserAction = true;
 
         // Close the panel
-        if (this.multiSelectDropdown) {
-            this.multiSelectDropdown.close();
+        const multiSelectDropdown = this.multiSelectDropdown();
+        if (multiSelectDropdown) {
+            multiSelectDropdown.close();
         }
     }
 
@@ -1033,8 +1050,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         this._closedByUserAction = true;
 
         // Close the panel
-        if (this.multiSelectDropdown) {
-            this.multiSelectDropdown.close();
+        const multiSelectDropdown = this.multiSelectDropdown();
+        if (multiSelectDropdown) {
+            multiSelectDropdown.close();
         }
     }
 

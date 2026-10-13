@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -27,6 +27,7 @@ import { XcPlotDataSource } from './xc-plot-data-source';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-plot',
     templateUrl: './xc-plot.component.html',
     styleUrls: ['./xc-plot.component.scss'],
@@ -41,6 +42,8 @@ export class XcPlotComponent implements OnDestroy, XcCanvasController, XcCanvasO
 
     stepEveryXFrame = 0;
 
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ViewChild(XcCanvasComponent, {static: true})
     set canvasComponent(value: XcCanvasComponent) {
         this._canvasComponent = value;

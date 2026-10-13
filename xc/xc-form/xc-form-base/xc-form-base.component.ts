@@ -15,14 +15,11 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, Output } from '@angular/core';
+import { AfterContentInit, ChangeDetectionStrategy, Component, effect, ElementRef, HostBinding, inject, Input, input, Injector, output, Output } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
-
-import { Subscription } from 'rxjs';
 
 import { coerceBoolean } from '../../../base';
 import { I18nService, LocaleService } from '../../../i18n';
-import { ATTRIBUTE_ARIALABEL, ATTRIBUTE_ICONTOOLTIP, ATTRIBUTE_LABEL, ATTRIBUTE_PLACEHOLDER, KeyTranslationPair } from '../../../xc/shared/xc-i18n-attributes';
 import { xcFormTranslations_deDE } from '../locale/xc-translations.de-DE';
 import { xcFormTranslations_enUS } from '../locale/xc-translations.en-US';
 
@@ -34,59 +31,55 @@ export enum FloatStyle {
 }
 
 
-@Component({ template: '' })
-export class XcFormComponent implements AfterContentInit, OnDestroy {
+@Component({
+    changeDetection: ChangeDetectionStrategy.Eager, template: '' })
+export class XcFormComponent implements AfterContentInit {
     protected readonly element = inject<ElementRef<HTMLElement>>(ElementRef);
     protected readonly i18n = inject(I18nService);
+    protected readonly injector = inject(Injector);
 
 
     protected _compact = false;
     protected _semiCompact = false;
-    protected _label: KeyTranslationPair = { key: '', translated: '' };
-    protected _iconTooltip: KeyTranslationPair = { key: '', translated: '' };
-    protected _ariaLabel: KeyTranslationPair = { key: '', translated: '' };
+    protected _label = '';
+    protected _iconTooltip = '';
+    protected _ariaLabel = '';
 
-    protected subs: Subscription[] = [];
-
-    @Input('xc-form-field-floatlabel')
-    floatLabel: FloatStyle = FloatStyle.always;
+    readonly floatLabel = input<FloatStyle>(FloatStyle.always, { alias: "xc-form-field-floatlabel" });
 
     i18nContext: string;
 
 
     @Input()
     set label(value: string) {
-        this._label.key = value;
-        this.translate(ATTRIBUTE_LABEL);
+        this._label = value;
     }
 
 
     get label(): string {
-        return this._label.translated;
+        return this.resolveTranslation(this._label);
     }
 
 
     @Input()
     set iconTooltip(value: string) {
-        this._iconTooltip.key = value;
-        this.translate(ATTRIBUTE_ICONTOOLTIP);
+        this._iconTooltip = value;
     }
 
 
     get iconTooltip(): string {
-        return this._iconTooltip.translated;
+        return this.resolveTranslation(this._iconTooltip);
     }
 
 
     @Input('xc-form-field-aria-label')
     set ariaLabel(value: string) {
-        this._ariaLabel.key = value;
-        this.translate(ATTRIBUTE_ARIALABEL);
+        this._ariaLabel = value;
     }
 
 
     get ariaLabel(): string {
-        return this._ariaLabel.translated || this.label;
+        return this.resolveTranslation(this._ariaLabel) || this.label;
     }
 
 
@@ -104,39 +97,24 @@ export class XcFormComponent implements AfterContentInit, OnDestroy {
 
     @HostBinding('class.nolabel')
     protected get _xc_nolabel(): boolean {
-        return !this.label || this.floatLabel === FloatStyle.never;
+        return !this.label || this.floatLabel() === FloatStyle.never;
     }
 
     protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
 
 
-    ngOnDestroy(): void {
-        this.subs.forEach(sub => sub.unsubscribe());
-    }
-
-
     ngAfterContentInit() {
         this.i18nContext = this.element.nativeElement.getAttribute('xc-i18n');
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._label.key) {
-                this.translate(ATTRIBUTE_LABEL);
-            }
-            if (this._ariaLabel.key) {
-                this.translate(ATTRIBUTE_ARIALABEL);
-            }
-            if (this._iconTooltip.key) {
-                this.translate(ATTRIBUTE_ICONTOOLTIP);
-            }
-        }));
     }
 
 
-    protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
-            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
-        } else {
-            this[attribute]["translated"] = this[attribute]["key"];
+    protected resolveTranslation(key: string): string {
+        if (!key) {
+            return '';
         }
+        return this.i18nContext
+            ? this.i18n.translateSignal(this.i18nContext + '.' + key)()
+            : key;
     }
 }
 
@@ -148,33 +126,28 @@ function normalizeErrorMessageCase(value: XcFormErrorMessageCase | string): XcFo
     return normalizedValue === 'uppercase' || normalizedValue === 'lowercase' || normalizedValue === 'capitalize' ? normalizedValue : 'default';
 }
 
-@Component({ template: '' })
+@Component({
+    changeDetection: ChangeDetectionStrategy.Eager, template: '' })
 export class XcFormBaseComponent extends XcFormComponent implements AfterContentInit {
 
     protected _indicateChanges = false;
     protected _readonly = false;
     protected _errorMessageCase: XcFormErrorMessageCase = 'default';
     protected _errorMessageCaseExplicitlySet = false;
-    protected _placeholder: KeyTranslationPair = { key: '', translated: '' };
+    protected _placeholder = '';
 
     readonly formControl = new FormControl();
 
     @Output()
     readonly valueChange = this.formControl.valueChanges;
 
-    @Output()
-    readonly valueKeydown = new EventEmitter<KeyboardEvent>();
+    readonly valueKeydown = output<KeyboardEvent>();
 
-    @Output()
+    readonly focus = output<FocusEvent>();
 
-    readonly focus = new EventEmitter<FocusEvent>();
+    readonly blur = output<FocusEvent>();
 
-    @Output()
-
-    readonly blur = new EventEmitter<FocusEvent>();
-
-    @Input('xc-form-field-errorfunc')
-    errorFunc: (key: string, data: any) => string;
+    readonly errorFunc = input<(key: string, data: any) => string>(undefined, { alias: "xc-form-field-errorfunc" });
 
 
     @Input({alias: 'xc-form-field-error-message-case', transform: normalizeErrorMessageCase})
@@ -252,14 +225,13 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     @Input()
     set placeholder(value: string) {
-        this._placeholder.key = value;
-        this.translate(ATTRIBUTE_PLACEHOLDER);
+        this._placeholder = value;
     }
 
 
     get placeholder(): string {
         // space needed for style "align-items: baseline;" in class ".items-row" for proper alignment when text is missing
-        return this._placeholder.translated || ' ';
+        return this.resolveTranslation(this._placeholder) || ' ';
     }
 
 
@@ -271,33 +243,33 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
     get errorContent(): string {
         const errorFunc = (key: string, data: any): string => {
             switch (key) {
-                case 'email': return this.i18n.translate('zeta.xc-form-base.email');
-                case 'max': return this.i18n.translate('zeta.xc-form-base.max') + data.max;
-                case 'min': return this.i18n.translate('zeta.xc-form-base.min') + data.min;
-                case 'maxlength': return this.i18n.translate('zeta.xc-form-base.maxlength') + data.requiredLength;
-                case 'minlength': return this.i18n.translate('zeta.xc-form-base.minlength') + data.requiredLength;
-                case 'number': return this.i18n.translate('zeta.xc-form-base.number', { key: '$0', value: (<string>data.format.toString()).toUpperCase() });
-                case 'required': return this.i18n.translate('zeta.xc-form-base.required');
-                case 'pattern': return this.i18n.translate('zeta.xc-form-base.pattern') + data.requiredPattern;
-                case 'ipv4': return this.i18n.translate('zeta.xc-form-base.ipv4');
-                case 'ipv6': return this.i18n.translate('zeta.xc-form-base.ipv6');
-                case 'ip': return this.i18n.translate('zeta.xc-form-base.ip');
-                case 'message': return data.message || this.i18n.translate('zeta.xc-form-base.message');
+                case 'email': return this.i18n.translateInstant('zeta.xc-form-base.email');
+                case 'max': return this.i18n.translateInstant('zeta.xc-form-base.max') + data.max;
+                case 'min': return this.i18n.translateInstant('zeta.xc-form-base.min') + data.min;
+                case 'maxlength': return this.i18n.translateInstant('zeta.xc-form-base.maxlength') + data.requiredLength;
+                case 'minlength': return this.i18n.translateInstant('zeta.xc-form-base.minlength') + data.requiredLength;
+                case 'number': return this.i18n.translateInstant('zeta.xc-form-base.number', { key: '$0', value: (<string>data.format.toString()).toUpperCase() });
+                case 'required': return this.i18n.translateInstant('zeta.xc-form-base.required');
+                case 'pattern': return this.i18n.translateInstant('zeta.xc-form-base.pattern') + data.requiredPattern;
+                case 'ipv4': return this.i18n.translateInstant('zeta.xc-form-base.ipv4');
+                case 'ipv6': return this.i18n.translateInstant('zeta.xc-form-base.ipv6');
+                case 'ip': return this.i18n.translateInstant('zeta.xc-form-base.ip');
+                case 'message': return data.message || this.i18n.translateInstant('zeta.xc-form-base.message');
                 default: return key;
             }
         };
         return Object.keys(this.formControl.errors).map(
             key => {
                 const data = this.formControl.errors[key];
-                const error = this.errorFunc ? this.errorFunc(key, data) : null;
+                const errorFuncValue = this.errorFunc();
+                const error = errorFuncValue ? errorFuncValue(key, data) : null;
                 const message = error || errorFunc(key, data);
                 return this.transformErrorMessageCase(message);
             }
         ).join(', ');
     }
 
-    @Input('xc-form-field-tab-index')
-    tabIndex?: number = 0;
+    readonly tabIndex = input<number>(0, { alias: "xc-form-field-tab-index" });
 
     constructor() {
         super();
@@ -311,11 +283,6 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         super.ngAfterContentInit();
         this.applyInheritedErrorMessageCase();
 
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._placeholder.key) {
-                this.translate(ATTRIBUTE_PLACEHOLDER);
-            }
-        }));
     }
 
 

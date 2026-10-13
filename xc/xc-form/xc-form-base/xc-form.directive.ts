@@ -1,3 +1,5 @@
+import { merge, Observable, Subscription } from 'rxjs';
+
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -15,10 +17,9 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectorRef, ContentChildren, Directive, EventEmitter, OnDestroy, Output, QueryList, inject } from '@angular/core';
+import { ChangeDetectorRef, ContentChildren, contentChildren, Directive, inject, OnDestroy, output, QueryList } from '@angular/core';
+import { outputToObservable } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
-
-import { merge, Observable, Subscription } from 'rxjs';
 
 import { XcFormBaseComponent } from './xc-form-base.component';
 import { XcFormValidatorBaseDirective } from './xc-form-validator-base.directive';
@@ -37,15 +38,13 @@ export class XcFormDirective implements OnDestroy {
     private readonly _formControlInvalidMap = new Map<FormControl, boolean>();
     private _formControlStateChangeSubscription;
 
-    @Output('xc-form-validity-change')
-    private readonly validityChangeEmitter = new EventEmitter<XcFormDirective>();
+    readonly validityChangeEmitter = output<XcFormDirective>({ alias: 'xc-form-validity-change' });
 
     /**
      * Query all XcFormBaseComponents; No matter if they have a validator attached or not.
      * Additional Remark: Only affects elements inside the component of this directive. Sub-component's templates are black boxes to its ancestors (see doc of ContentChildren)
      */
-    @ContentChildren(XcFormBaseComponent, { descendants: true })
-    components = new QueryList<XcFormBaseComponent>();
+    readonly components = contentChildren(XcFormBaseComponent, { descendants: true });
 
     /**
      * Query all first validators* but only their host's FormControl is needed
@@ -53,6 +52,8 @@ export class XcFormDirective implements OnDestroy {
      * 1) if a single component has more than one XcFormValidatorBaseDirective, the QueryList will only contain the first one
      * This may be a change of the Ivy Engine
      */
+    // TODO: Skipped for migration because:
+    //  Accessor queries cannot be migrated as they are too complex.
     @ContentChildren(XcFormValidatorBaseDirective, { descendants: true })
     set validators(value: QueryList<XcFormValidatorBaseDirective>) {
         this._validators = value;
@@ -108,7 +109,7 @@ export class XcFormDirective implements OnDestroy {
      */
     checkValidators() {
         void Promise.resolve().then(() => {
-            this.updateInvalidState(this.components.some(component => {
+            this.updateInvalidState(this.components().some(component => {
                 if (component.formControl.validator) {
                     return component.formControl.validator(component.formControl) !== null;
                 }
@@ -143,7 +144,7 @@ export class XcFormDirective implements OnDestroy {
 
 
     get validityChange(): Observable<XcFormDirective> {
-        return this.validityChangeEmitter.asObservable();
+        return outputToObservable(this.validityChangeEmitter);
     }
 
 
@@ -163,7 +164,7 @@ export class XcFormDirective implements OnDestroy {
 
 
     get dirty(): boolean {
-        return this.components.some(component => component.formControl.dirty);
+        return this.components().some(component => component.formControl.dirty);
     }
 
 
@@ -173,36 +174,36 @@ export class XcFormDirective implements OnDestroy {
 
 
     get touched(): boolean {
-        return this.components.some(component => component.formControl.touched);
+        return this.components().some(component => component.formControl.touched);
     }
 
 
     get valueChanges(): Observable<any> {
-        return merge(...this.components.map(component => component.formControl.valueChanges));
+        return merge(...this.components().map(component => component.formControl.valueChanges));
     }
 
 
     get statusChanges(): Observable<any> {
-        return merge(...this.components.map(component => component.formControl.statusChanges));
+        return merge(...this.components().map(component => component.formControl.statusChanges));
     }
 
 
     markAsPristine() {
-        this.components.forEach(component => component.formControl.markAsPristine());
+        this.components().forEach(component => component.formControl.markAsPristine());
     }
 
 
     markAsDirty() {
-        this.components.forEach(component => component.formControl.markAsDirty());
+        this.components().forEach(component => component.formControl.markAsDirty());
     }
 
 
     markAsUntouched() {
-        this.components.forEach(component => component.formControl.markAsUntouched());
+        this.components().forEach(component => component.formControl.markAsUntouched());
     }
 
 
     markAsTouched() {
-        this.components.forEach(component => component.formControl.markAsTouched());
+        this.components().forEach(component => component.formControl.markAsTouched());
     }
 }

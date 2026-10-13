@@ -18,7 +18,7 @@
 import { RouterModule } from '@angular/router';
 
 import { XynaRoutes } from './';
-import { BrokenComponent } from './broken.component';
+
 import { ConfirmGuardService } from './confirm.guard';
 
 
@@ -26,7 +26,7 @@ const root = '**';
 
 
 export const NavRoutes: XynaRoutes = [
-    { path: root, component: BrokenComponent }
+    { path: root, loadComponent: () => import('./broken.component').then(m => m.BrokenComponent) }
 ];
 
 

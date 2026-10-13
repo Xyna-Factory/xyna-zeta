@@ -15,155 +15,93 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterContentInit, Component, ElementRef, EventEmitter, HostBinding, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterContentInit, ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, model, OnInit, signal } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatLabel } from '@angular/material/form-field';
-
 import { XcI18nTranslateDirective } from '@zeta/i18n/i18n.directive';
 
-import { Subscription } from 'rxjs';
-
 import { coerceBoolean } from '../../base';
-import { I18nService, LocaleService } from '../../i18n';
-import { ATTRIBUTE_LABEL, KeyTranslationPair } from '../shared/xc-i18n-attributes';
+import { I18nService } from '../../i18n';
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-checkbox',
     templateUrl: './xc-checkbox.component.html',
     styleUrls: ['./xc-checkbox.component.scss'],
     providers: [XcI18nTranslateDirective],
-    imports: [MatCheckbox, MatLabel]
+    imports: [MatCheckbox, MatLabel],
+    host: {
+        '[class.disabled]': 'disabled()',
+        '[class.readonly]': 'readonly()'
+    }
 })
-export class XcCheckboxComponent extends XcThemeableComponent implements OnInit, AfterContentInit, OnDestroy {
+export class XcCheckboxComponent extends XcThemeableComponent implements OnInit, AfterContentInit {
     private readonly elementRef = inject(ElementRef<HTMLElement>);
     protected readonly i18n = inject(I18nService);
-
 
     private static uniqueId = 0;
     private readonly _labelRef: string;
 
-    protected _checked = false;
-    protected _indeterminate = false;
-    protected _disabled = false;
-    protected _readonly = false;
-    protected _label: KeyTranslationPair = {key: '', translated: ''};
+    readonly labelInput = input('', {
+        alias: 'label'
+    });
 
-    protected subs: Subscription[] = [];
+    readonly checked = model(false);
 
-    @Input()
-    set label(value: string) {
-        this._label.key = value;
-        this.translate(ATTRIBUTE_LABEL);
-    }
+    readonly disabled = input(false, {
+        transform: coerceBoolean
+    });
 
+    readonly readonly = input(false, {
+        transform: coerceBoolean
+    });
 
-    get label(): string {
-        return this._label.translated;
-    }
+    readonly indeterminate = input(false, {
+        transform: coerceBoolean
+    });
 
-    @Output()
-    readonly checkedChange = new EventEmitter<boolean>();
+    private readonly _i18nContext = signal('');
 
+    private readonly labelKey = computed(() => {
+        const label = this.labelInput();
+        const context = this._i18nContext();
 
-    i18nContext: string;
+        return context && label
+            ? `${context}.${label}`
+            : label;
+    });
 
-    protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
+    readonly label = this.i18n.translateSignal(this.labelKey);
 
     constructor() {
         super();
-        this._labelRef = 'xc-checkbox-unique-label-id-' + XcCheckboxComponent.uniqueId++;
+
+        this._labelRef =
+            'xc-checkbox-unique-label-id-' + XcCheckboxComponent.uniqueId++;
     }
-
-
-    ngOnDestroy(): void {
-        this.subs.forEach(sub => sub.unsubscribe());
-    }
-
 
     ngAfterContentInit(): void {
-        this.i18nContext = this.elementRef.nativeElement.getAttribute('xc-i18n');
-        this.subs.push(this.localeService.languageChange.subscribe(() => {
-            if (this._label.key) {
-                this.translate(ATTRIBUTE_LABEL);
-            }
-        }));
+        this._i18nContext.set(
+            this.elementRef.nativeElement.getAttribute('xc-i18n') ?? ''
+        );
     }
 
+    ngOnInit(): void {
+        const input =
+            this.elementRef.nativeElement.querySelector('input');
 
-    ngOnInit() {
-        const input = (this.elementRef.nativeElement as HTMLElement).querySelector('input');
         if (input) {
             input.tabIndex = -1;
         }
     }
 
-
-    protected translate(attribute: string) {
-        if (this.i18nContext !== undefined && this.i18nContext !== null && this[attribute]["key"]) {
-            this[attribute]["translated"] = this.i18n.translate(this.i18nContext ? this.i18nContext + '.' + this[attribute]["key"] : this[attribute]["key"]);
-        } else {
-            this[attribute]["translated"] = this[attribute]["key"];
-        }
-    }
-
-
     get labelRef(): string {
         return this._labelRef;
     }
 
-
-    @Input({transform: coerceBoolean})
-    set checked(value: boolean) {
-        if (this._checked !== value) {
-            this._checked = value;
-        }
-    }
-
-
-    get checked(): boolean {
-        return this._checked;
-    }
-
-
-    @Input({transform: coerceBoolean})
-    @HostBinding('class.disabled')
-    set disabled(value: boolean) {
-        this._disabled = value;
-    }
-
-
-    get disabled(): boolean {
-        return this._disabled;
-    }
-
-
-    @Input({transform: coerceBoolean})
-    @HostBinding('class.readonly')
-    set readonly(value: boolean) {
-        this._readonly = value;
-    }
-
-
-    get readonly(): boolean {
-        return this._readonly;
-    }
-
-
-    @Input({transform: coerceBoolean})
-    set indeterminate(value: boolean) {
-        this._indeterminate = value;
-    }
-
-
-    get indeterminate(): boolean {
-        return this._indeterminate;
-    }
-
-
-    change(event: MatCheckboxChange) {
-        this.checked = event.checked;
-        this.checkedChange.emit(this.checked);
+    change(event: MatCheckboxChange): void {
+        this.checked.set(event.checked);
     }
 }

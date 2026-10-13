@@ -15,12 +15,11 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
-
-import { ApiService, RuntimeContext } from '@zeta/api';
-
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ApiService, RuntimeContext } from '@zeta/api';
 
 import { I18nService, LocaleService } from '../../i18n';
 import { XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n/i18n.directive';
@@ -38,6 +37,7 @@ import { changePassword_translations_en_US } from './locale/change-password-tran
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './change-password-dialog.component.html',
     styleUrls: ['./change-password-dialog.component.scss'],
     imports: [XcDialogWrapperComponent, XcI18nContextDirective, XcFormDirective, XcI18nTranslateDirective, XcFormInputComponent, XcFormValidatorRequiredDirective, XcFormValidatorCustomDirective, XcButtonComponent, XcI18nPipe]
@@ -109,8 +109,8 @@ export class ChangePasswordDialogComponent extends XcDialogComponent {
             }
         });
 
-        this.newPasswordValidator.errorText = this.i18n.translate('dialog.changePassword.newPassword.error').toUpperCase();
-        this.confirmPasswordValidator.errorText = this.i18n.translate('dialog.changePassword.confirmPassword.error').toUpperCase();
+        this.newPasswordValidator.errorText = this.i18n.translateSignal('dialog.changePassword.newPassword.error')();
+        this.confirmPasswordValidator.errorText = this.i18n.translateSignal('dialog.changePassword.confirmPassword.error')();
     }
 
 

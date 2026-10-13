@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 
 import { getBaseHref, isArray } from '@zeta/base';
 
@@ -26,6 +26,7 @@ import { XcIconComponent } from '../xc-icon/xc-icon.component';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-title-bar',
     templateUrl: './xc-title-bar.component.html',
     styleUrls: ['./xc-title-bar.component.scss'],
@@ -35,28 +36,22 @@ export class XcTitleBarComponent {
     private readonly dialogService = inject(XcDialogService);
 
 
-    @Input('xc-title-bar-application-name')
-    applicationName: string;
+    readonly applicationName = input<string>(undefined, { alias: "xc-title-bar-application-name" });
 
-    @Input('xc-title-bar-application-versions')
-    applicationVersions: string[];
+    readonly applicationVersions = input<string[]>(undefined, { alias: "xc-title-bar-application-versions" });
 
-    @Input('xc-title-bar-icon-name')
-    iconName: string;
+    readonly iconName = input<string>(undefined, { alias: "xc-title-bar-icon-name" });
 
-    @Input('xc-title-bar-icon-style')
-    iconStyle: string;
+    readonly iconStyle = input<string>(undefined, { alias: "xc-title-bar-icon-style" });
 
-    @Input('xc-title-bar-company')
-    company: string;
+    readonly company = input<string>(undefined, { alias: "xc-title-bar-company" });
 
-    @Input('xc-title-bar-year')
-    year: string;
+    readonly year = input<string>(undefined, { alias: "xc-title-bar-year" });
 
 
     private get copyright(): string {
-        const company = this.company || '';
-        const year = this.year || '';
+        const company = this.company() || '';
+        const year = this.year() || '';
         if (company || year) {
             return 'Copyright: ' + company + (company && year ? ', ' + year : '');
         }
@@ -65,14 +60,15 @@ export class XcTitleBarComponent {
 
 
     private get versions(): string {
+        const applicationVersions = this.applicationVersions();
         return 'Xyna Zeta: ' + packageInfo.version +
-               (isArray(this.applicationVersions) ? '\n\n' + this.applicationVersions.join('\n') : '');
+               (isArray(applicationVersions) ? '\n\n' + applicationVersions.join('\n') : '');
     }
 
 
     showAbout() {
         this.dialogService.about(
-            this.applicationName || 'Info',
+            this.applicationName() || 'Info',
             this.copyright,
             this.versions,
             getBaseHref() + '3rdpartylicenses.txt'

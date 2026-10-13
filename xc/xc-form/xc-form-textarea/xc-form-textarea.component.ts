@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, forwardRef, Input, numberAttribute } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, Input, numberAttribute } from '@angular/core';
 
 import { coerceBoolean } from '@zeta/base';
 
@@ -28,6 +28,7 @@ import { BooleanKeyframeTrack } from 'three';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-form-textarea',
     templateUrl: './xc-form-textarea.component.html',
     styleUrls: ['../xc-form-base/xc-form-base.component.scss', './xc-form-textarea.component.scss'],

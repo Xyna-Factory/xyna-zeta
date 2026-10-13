@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ChangeDetectorRef, Component, forwardRef, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, inject, Input } from '@angular/core';
 
 import { XoArray } from '@zeta/api';
 
@@ -27,6 +27,7 @@ import { XoFormDefinition } from '../../xo/containers.model';
 import { XcDefinitionProxyComponent } from '../xc-definition-proxy/xc-definition-proxy.component';
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-form-definition',
     templateUrl: './xc-form-definition.component.html',
     styleUrls: ['./xc-form-definition.component.scss'],

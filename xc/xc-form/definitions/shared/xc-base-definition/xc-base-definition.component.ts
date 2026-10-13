@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, output } from '@angular/core';
 
 import { pack } from '../../../../../base';
 
@@ -28,6 +28,7 @@ import { Subscription } from 'rxjs';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: '',
     styleUrls: ['./xc-base-definition.component.scss']
 })
@@ -50,8 +51,7 @@ export class XcBaseDefinitionComponent {
     resolvedData: Xo[];
     hidden = false;
 
-    @Output('xc-definition-closed')
-    readonly closed = new EventEmitter<XoCloseDefinitionData>();
+    readonly closed = output<XoCloseDefinitionData>({ alias: 'xc-definition-closed' });
 
 
     constructor() {

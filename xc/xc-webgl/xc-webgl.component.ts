@@ -15,12 +15,12 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, inject, Input, NgZone, OnDestroy, Output } from '@angular/core';
-
-import { downloadFile, MimeTypes, NOP } from '@zeta/base';
-
 import { Observable } from 'rxjs';
 import { Color, WebGLRenderer } from 'three';
+
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, HostListener, inject, input, NgZone, OnDestroy, output } from '@angular/core';
+import { outputToObservable } from '@angular/core/rxjs-interop';
+import { downloadFile, MimeTypes, NOP } from '@zeta/base';
 
 
 export interface XcWebGLInteraction {
@@ -61,17 +61,13 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
     private _width: number;
     private _height: number;
 
-    @Input('xc-webgl-init')
-    init = () => {};
+    readonly init = input(() => { }, { alias: "xc-webgl-init" });
 
-    @Input('xc-webgl-destroy')
-    destroy = () => {};
+    readonly destroy = input(() => { }, { alias: "xc-webgl-destroy" });
 
-    @Output('xc-webgl-resize')
-    private readonly resizeEmitter = new EventEmitter<void>();
+    readonly resizeEmitter = output<void>({ alias: 'xc-webgl-resize' });
 
-    @Output('xc-webgl-interaction')
-    private readonly interactionEmitter = new EventEmitter<XcWebGLInteraction>();
+    readonly interactionEmitter = output<XcWebGLInteraction>({ alias: 'xc-webgl-interaction' });
 
 
     ngAfterViewInit() {
@@ -86,13 +82,13 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
         this.renderer.setClearColor(new Color(0), 1);
 
         this.elementRef.nativeElement.appendChild(this.renderer.domElement);
-        this.init();
+        this.init()();
         this.updateSize();
     }
 
 
     ngOnDestroy() {
-        this.destroy();
+        this.destroy()();
         this.elementRef.nativeElement.removeChild(this.renderer.domElement);
         this.renderer.forceContextLoss();
         this.renderer.dispose();
@@ -145,12 +141,12 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
 
 
     get resize(): Observable<void> {
-        return this.resizeEmitter.asObservable();
+        return outputToObservable(this.resizeEmitter);
     }
 
 
     get interaction(): Observable<XcWebGLInteraction> {
-        return this.interactionEmitter.asObservable();
+        return outputToObservable(this.interactionEmitter);
     }
 
 
@@ -160,7 +156,7 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
             this._width = this.elementRef.nativeElement.clientWidth;
             this._height = this.elementRef.nativeElement.clientHeight;
             this.renderer.setSize(this.width, this.height);
-            this.resizeEmitter.next();
+            this.resizeEmitter.emit();
         };
         requestAnimationFrame(resize);
     }

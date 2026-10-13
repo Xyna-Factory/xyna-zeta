@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { first } from 'rxjs/operators';
 
@@ -35,6 +35,7 @@ import { AsyncPipe } from '@angular/common';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-definition-proxy',
     templateUrl: './xc-definition-proxy.component.html',
     styleUrls: ['./xc-definition-proxy.component.scss'],

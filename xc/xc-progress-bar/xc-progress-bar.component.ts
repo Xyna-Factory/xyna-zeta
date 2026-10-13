@@ -15,13 +15,14 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 import { XcThemeableComponent } from '../shared/xc-themeable.component';
-import { MatProgressBar } from '@angular/material/progress-bar';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-progress-bar',
     templateUrl: './xc-progress-bar.component.html',
     styleUrls: ['./xc-progress-bar.component.scss'],
@@ -30,6 +31,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 export class XcProgressBarComponent extends XcThemeableComponent {
     constructor() {
         super();
-        this.color = 'primary';
+        this.defaultColor.set('primary');
     }
 }

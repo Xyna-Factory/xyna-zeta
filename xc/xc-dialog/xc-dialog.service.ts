@@ -137,7 +137,7 @@ export class XcDialogService {
             ariaDescribedBy: 'xc-info-dialog-message-container',
             role: 'alertdialog'
         };
-        return this.openMessageDialog(XcInfoDialogComponent, this.i18n.translate(XcDialogService.defaultErrorTitle), message, null, ariaLabel, stackTrace, draggable, resizable, maximizable, maximized, dialogOptions, overrideConfig);
+        return this.openMessageDialog(XcInfoDialogComponent, this.i18n.translateInstant(XcDialogService.defaultErrorTitle), message, null, ariaLabel, stackTrace, draggable, resizable, maximizable, maximized, dialogOptions, overrideConfig);
     }
 
 

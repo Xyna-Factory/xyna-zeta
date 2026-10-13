@@ -15,14 +15,13 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, HostBinding, HostListener, inject, Input, input, OnDestroy, OnInit } from '@angular/core';
 import { MatNavList } from '@angular/material/list';
 import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
-
 import { coerceBoolean } from '@zeta/base';
 import { I18nService, LocaleService } from '@zeta/i18n';
-
-import { Subscription } from 'rxjs';
 
 import { XcThemeableComponent } from '../../shared/xc-themeable.component';
 import { xcNavListTranslations_deDE } from './locale/xc-nav-list-translations.de-DE';
@@ -39,6 +38,7 @@ interface TwoWayNavListItem {
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     selector: 'xc-nav-list',
     templateUrl: './xc-nav-list.component.html',
     styleUrls: ['./xc-nav-list.component.scss'],
@@ -52,11 +52,9 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
     private _items: XcNavListItem[];
     private _navigationSubscription: Subscription;
 
-    @Input('xc-nav-list-orientation')
-    orientation = XcNavListOrientation.TOP;
+    readonly orientation = input(XcNavListOrientation.TOP, { alias: "xc-nav-list-orientation" });
 
-    @Input('xc-nav-list-size')
-    size: 'small' | 'medium' | 'large' | 'extra-large' = 'medium';
+    readonly size = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: "xc-nav-list-size" });
 
     /**
      * If set, only the selected item (and its parents) are expanded, the rest will be collapsed automatically
@@ -93,14 +91,14 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
 
     constructor() {
         super();
-        this.color = 'primary';
+        this.defaultColor.set('primary');
         this.i18n.setTranslations(LocaleService.EN_US, xcNavListTranslations_enUS);
         this.i18n.setTranslations(LocaleService.DE_DE, xcNavListTranslations_deDE);
     }
 
 
     get ariaLabel(): string {
-        return this.i18n.translate('menu_with_elements', { key: '$0', value: this.items.length.toString() });
+        return this.i18n.translateInstant('menu_with_elements', { key: '$0', value: this.items.length.toString() });
     }
 
 
@@ -136,7 +134,7 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
 
     @HostBinding('attr.orientation')
     get orientationName(): string {
-        return XcNavListOrientation[this.orientation];
+        return XcNavListOrientation[this.orientation()];
     }
 
 

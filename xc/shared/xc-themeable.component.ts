@@ -15,22 +15,31 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, HostBinding, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostBinding, input, signal } from '@angular/core';
 
 
 export type XcColor = 'normal' | 'invert' | 'primary' | 'accent' | 'warn' | 'black' | 'white';
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: ''
 })
 export abstract class XcThemeableComponent {
 
-    @HostBinding('attr.color')
-    @Input()
-    color: XcColor;
+    protected readonly defaultColor = signal<XcColor>('normal');
 
-    constructor() {
-        this.color = 'normal';
+    readonly colorInput = input<XcColor | undefined>(
+        undefined,
+        { alias: 'color' }
+    );
+
+    protected readonly color = computed(
+        () => this.colorInput() ?? this.defaultColor()
+    );
+
+    @HostBinding('attr.color')
+    get hostColor(): XcColor {
+        return this.color();
     }
 }
