@@ -33,7 +33,7 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
 export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, AfterContentInit {
 
     private _translate: boolean;
-    private _labelKey = '';
+    private _labelKey: string;
 
     private element: HTMLElement;
 
@@ -41,9 +41,6 @@ export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, 
         super.ngOnInit();
         this.element = this.elementRef.nativeElement.querySelector('.mdc-button__label');
         this._translate = Array.from(this.element.childNodes).some(childNode => childNode.nodeType === Node.TEXT_NODE);
-        if (this._translate) {
-            this._labelKey = this.element.textContent?.trim() ?? '';
-        }
     }
 
     ngAfterContentInit() {
@@ -51,8 +48,9 @@ export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, 
         effect(() => {
             this.localeService.languageSignal();
             queueMicrotask(() => {
-                if (this._translate && this.element && this.i18nContext !== undefined && this.i18nContext !== null) {
-                    this.element.textContent = this.i18n.translateSignal(this.i18nContext + '.' + this._labelKey)();
+                if (this._translate && this.element && this.i18nContext != null) {
+                    this._labelKey ??= this.element.textContent?.trim() ?? '';
+                    this.element.textContent = this.i18n.translateSignal(this.i18nContext ? this.i18nContext + '.' + this._labelKey : this._labelKey)();
                 }
             });
         }, { injector: this.injector });

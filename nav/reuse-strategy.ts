@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from '@angular/router';
+import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, UrlSegmentGroup } from '@angular/router';
 
 import { RouteComponent } from './route.component';
 
@@ -26,7 +26,6 @@ export class RouteComponentReuseStrategy implements RouteReuseStrategy {
 
 
     private getComponentRef(detachedRoute: DetachedRouteHandle): any {
-         
         return detachedRoute['componentRef'];
     }
 
@@ -34,6 +33,12 @@ export class RouteComponentReuseStrategy implements RouteReuseStrategy {
     private getReuseKey(activatedRoute: ActivatedRouteSnapshot): string {
         const routeConfig = activatedRoute.routeConfig;
         if (routeConfig && routeConfig.data && routeConfig.data.reuse) {
+            if (routeConfig.matcher) {
+                const match = routeConfig.matcher(activatedRoute.url, new UrlSegmentGroup(activatedRoute.url, {}), routeConfig);
+                if (match) {
+                    return routeConfig.data.reuse + '/' + match.consumed.join('/');
+                }
+            }
             return routeConfig.data.reuse;
         }
         return null;
@@ -96,13 +101,13 @@ export class RouteComponentReuseStrategy implements RouteReuseStrategy {
 
 
     shouldReuseRoute(currentActivatedRoute: ActivatedRouteSnapshot, futureActivatedRoute: ActivatedRouteSnapshot): boolean {
-        return currentActivatedRoute.routeConfig === futureActivatedRoute.routeConfig;
+        return currentActivatedRoute.routeConfig === futureActivatedRoute.routeConfig
+            && this.getReuseKey(currentActivatedRoute) === this.getReuseKey(futureActivatedRoute);
     }
 
     isCurrentRoute(activatedRoute: ActivatedRouteSnapshot): boolean {
-
         const splittedPathname = window.location.pathname.split('/');
-        
+
         if (splittedPathname.length < activatedRoute.url.length) {
             return false;
         }
