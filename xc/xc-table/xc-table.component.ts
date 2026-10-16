@@ -18,7 +18,7 @@
 import { Subscription } from 'rxjs';
 
 import { NgClass } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, inject, Input, OnDestroy, Signal, ViewChild } from '@angular/core';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef, MatHeaderCell, MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef, MatTable } from '@angular/material/table';
 
@@ -185,11 +185,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
 
     get translateLabels(): boolean {
         return this.dataSource && this.dataSource.translateLabels;
-    }
-
-
-    get actionsColumnHeaderLabel(): string {
-        return this._i18n.translate('xcTable.actionsColumnHeader');
     }
 
 
@@ -412,6 +407,20 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
             key: '$0',
             value: this.i18n.translate(name || 'this column')
         });
+    }
+
+    getColumnLabel(column: XcTableColumn): string {
+        if (this.leadingActions && column.path === this.actionColumnPath) {
+            return this._i18n.translate('xcTable.actionsColumnHeader');
+        }
+        const name = this.resolveDynamicString(column.name) || '';
+        return this.translateLabels ? this.i18n.translate(name) : name;
+    }
+
+    protected resolveDynamicString(value?: Signal<string> | string): string {
+        return typeof value === 'function'
+            ? value()
+            : value ?? '';
     }
 
 
