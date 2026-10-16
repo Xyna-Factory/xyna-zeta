@@ -24,7 +24,7 @@ import { MatCell, MatCellDef, MatColumnDef, MatFooterCell, MatFooterCellDef, Mat
 
 import { A11yService, ScreenreaderPriority } from '../../a11y';
 import { XoObject } from '../../api';
-import { coerceBoolean, Comparable } from '../../base';
+import { coerceBoolean } from '../../base';
 import { I18nService, LocaleService } from '../../i18n';
 import { XcIdentityDataWrapper } from '../shared/xc-data-wrapper';
 import { XcOptionItemString } from '../shared/xc-item';
@@ -48,7 +48,7 @@ import { XcTableColumn, XcTableDataSource } from './xc-table-data-source';
     templateUrl: './xc-table.component.html',
     styleUrls: ['./xc-table.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, XcProgressBarComponent, MatFooterCellDef, MatFooterCell, XcIconButtonComponent, MatSortHeader, XcTemplateComponent, MatCellDef, MatCell, NgClass, NgTemplateOutlet, XcVarDirective, XcTooltipDirective, MatHeaderRowDef, MatHeaderRow, MatFooterRowDef, MatFooterRow, MatRowDef, MatRow, XcTableDetailDirective]
+    imports: [MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, XcProgressBarComponent, MatFooterCellDef, MatFooterCell, XcIconButtonComponent, MatSortHeader, XcTemplateComponent, MatCellDef, MatCell, NgClass, NgTemplateOutlet, XcVarDirective, XcTooltipDirective, MatHeaderRowDef, MatHeaderRow, MatFooterRowDef, MatFooterRow, MatRowDef, MatRow]
 })
 export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDestroy {
     private readonly cdRef = inject(ChangeDetectorRef);
@@ -223,6 +223,7 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
     set dataSource(value: XcTableDataSource<any>) {
         this.unsubscribeDataSource();
         this.filterTemplates.clear();
+        this.internallyExpandedKeys.clear();
         this._dataSource = value;
         if (this.dataSource) {
             // subscribe to sort changes
@@ -373,15 +374,12 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
     }
 
 
-    readonly detailColumnIds = ['$detail'];
-
-
     isDetailExpanded(row: any): boolean {
         if (!this.hasDetailTemplate) {
             return false;
         }
         if (this.detailExpanded) {
-            return !!this.detailExpanded(row);
+            return this.detailExpanded(row);
         }
         return this.internallyExpandedKeys.has(this.getDetailExpandKey(row));
     }
@@ -421,9 +419,6 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
     private getDetailExpandKey(row: any): string {
         if (row && typeof row.uniqueKey === 'string' && row.uniqueKey) {
             return row.uniqueKey;
-        }
-        if (row instanceof Comparable) {
-            return String(row.uniqueKey ?? '');
         }
         return String(this.getRowIndex(row));
     }

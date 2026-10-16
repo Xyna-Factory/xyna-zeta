@@ -138,7 +138,7 @@
     [attr.aria-rowindex]="getRowIndex(row) + 4"
   ></tr>
   @if (hasDetailTemplate) {
-    <tr mat-row *matRowDef="let row; columns: detailColumnIds;"
+    <tr mat-row *matRowDef="let row; columns: ['$detail'];"
       class="xc-table-detail-row"
       [class.xc-table-detail-row-expanded]="isDetailExpanded(row)"
       [hidden]="!isDetailExpanded(row)"
