@@ -204,9 +204,7 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
     }
 
 
-    // TODO: Skipped for migration because:
-    //  Accessor queries cannot be migrated as they are too complex.
-    @ViewChild(MatSort, { static: false })
+    @ViewChild(MatSort, {static: false})
     set matSort(value: MatSort) {
         this._matSort = value;
         this.matSort.sortChange.subscribe(() => this.updateDataSourceSort());
@@ -466,7 +464,8 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
             path: this.actionColumnPath,
             name: signal('xcTable.actionsColumnHeader'),
             disableSort: true,
-            disableFilter: true
+            disableFilter: true,
+            shrink: true
         };
     }
 
@@ -498,6 +497,9 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
     }
 
     getColumnLabel(column: XcTableColumn): string {
+        if (this.leadingActions && column.path === this.actionColumnPath) {
+            return this._i18n.translateSignal('xcTable.actionsColumnHeader')();
+        }
         const name = this.resolveDynamicString(column.name) || '';
         return this.translateLabels ? this.i18n.translateSignal(name)() : name;
     }
