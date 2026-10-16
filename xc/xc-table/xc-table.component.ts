@@ -188,11 +188,6 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
 
-    get actionsColumnHeaderLabel(): string {
-        return this._i18n.translate('xcTable.actionsColumnHeader');
-    }
-
-
     @ViewChild(MatSort, {static: false})
     set matSort(value: MatSort) {
         this._matSort = value;
@@ -415,6 +410,9 @@ export class XcTableComponent implements AfterViewInit, OnDestroy {
     }
 
     getColumnLabel(column: XcTableColumn): string {
+        if (this.leadingActions && column.path === this.actionColumnPath) {
+            return this._i18n.translateSignal('xcTable.actionsColumnHeader')();
+        }
         const name = this.resolveDynamicString(column.name) || '';
         return this.translateLabels ? this.i18n.translateSignal(name)() : name;
     }
