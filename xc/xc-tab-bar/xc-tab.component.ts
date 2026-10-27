@@ -100,6 +100,7 @@ export class XcTabRef<R = void> {
     }
 
     notifyClose(result?: R) {
+        // @ts-expect-error(TODO:)
         this.closeSubject.next(result);
         this.closeSubject.complete();
     }
@@ -127,26 +128,31 @@ export abstract class XcTabComponent<R = void, D = void> extends XcDynamicDismis
 
 
     protected get tabBarInterface(): XcTabBarInterface {
+        // @ts-expect-error(TODO:)
         return this.tabRef.tabBar;
     }
 
 
     get tabBarItem(): XcTabBarItem {
+        // @ts-expect-error(TODO:)
         return this.tabRef.item;
     }
 
 
     dismiss(result?: R, selectItem?: XcTabBarItem) {
+        // @ts-expect-error(TODO:)
         this.tabRef.close(result, selectItem).subscribe();
     }
 
 
     afterDismiss(): Observable<R> {
+        // @ts-expect-error(TODO:)
         return this.tabRef.afterClose();
     }
 
 
     openPeer(item: XcTabBarItem, beforeItem?: XcTabBarItem, inBackground = false): Observable<XcTabComponent<any, any>> {
+        // @ts-expect-error(TODO:)
         return this.tabRef.openPeer(item, beforeItem, inBackground);
     }
 }

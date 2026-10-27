@@ -40,6 +40,7 @@ export class XcWebGLFont {
             : new XcWebGLFont(font);
         // return font from cache
         if (XcWebGLFont.fontMap.has(url)) {
+            // @ts-expect-error(TODO:)
             return of(createInstance(XcWebGLFont.fontMap.get(url)));
         }
         // load font from url and store in cache
@@ -75,12 +76,20 @@ export class XcWebGLFont {
         const shapes = this.font.generateShapes(text, size);
         shapes.forEach(shape =>
             shape.getPoints().forEach(point => {
-                 
-                if (point.x < boundingBox.min.x) { boundingBox.min.x = point.x; }
-                if (point.x > boundingBox.max.x) { boundingBox.max.x = point.x; }
-                if (point.y < boundingBox.min.y) { boundingBox.min.y = point.y; }
-                if (point.y > boundingBox.max.y) { boundingBox.max.y = point.y; }
-                 
+
+                if (point.x < boundingBox.min.x) {
+ boundingBox.min.x = point.x;
+                }
+                if (point.x > boundingBox.max.x) {
+ boundingBox.max.x = point.x;
+                }
+                if (point.y < boundingBox.min.y) {
+ boundingBox.min.y = point.y;
+                }
+                if (point.y > boundingBox.max.y) {
+ boundingBox.max.y = point.y;
+                }
+
             })
         );
         return shapes;

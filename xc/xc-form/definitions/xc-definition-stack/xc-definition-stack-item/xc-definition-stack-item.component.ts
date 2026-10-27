@@ -55,6 +55,7 @@ interface DefinitionStackItem {
     imports: [XcDefinitionProxyComponent]
 })
 export class XcDefinitionStackItemComponent extends XcStackItemComponent<DefinitionStackItemComponentData> implements XoDefinitionObserver, AfterViewInit, OnDestroy {
+    // @ts-expect-error(TODO:)
     readonly injector: Injector;
     private readonly api = inject(ApiService);
     private readonly dialogs = inject(XcDialogService);
@@ -63,6 +64,7 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
     private readonly configService = inject(ConfigService);
 
 
+    // @ts-expect-error(TODO:)
     private detailsItem: DefinitionStackItem;
     private readonly subscriptions: Subscription[] = [];
 
@@ -97,11 +99,12 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
 
         const openDetailsItem = (): Observable<XcStackItemInterface> => {
             this.detailsItem = { item: new XcStackItem(), definition: definition };
-            this.detailsItem.item.addItemObserver(<XcStackItemObserver>{
+            this.detailsItem.item.addItemObserver({
                 beforeClose: () => this.detailsItem.definition.hasDataChanges()
                     ? this.dialogs.confirm(this.i18n.translateInstant('Confirm Close'), this.i18n.translateInstant('There are unsaved changes. Close anyway and discard changes?')).afterDismiss()
                     : of(true),
                 afterClose: () => {
+                    // @ts-expect-error(TODO:)
                     this.detailsItem = null;
                 }
             });
@@ -115,6 +118,7 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
 
         // close current details item, if any
         if (this.detailsItem && this.detailsItem.definition && this.detailsItem.definition.observer) {
+            // @ts-expect-error(TODO:)
             return this.detailsItem.definition.observer.closeDefinition().pipe(
                 switchMap(closed => closed ? openDetailsItem() : of(null))
             );
@@ -160,6 +164,7 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
         return this.api.startOrder(
             definitionWorkflowRTC.toRuntimeContext(),
             definitionWorkflowFQN,
+            // @ts-expect-error(TODO:)
             data, null,
             new StartOrderOptionsBuilder().withErrorMessage(true).options
         ).pipe(
@@ -173,7 +178,9 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
                 return true;
             }),
             map(result => <XoDefinitionBundle>{
+                // @ts-expect-error(TODO:)
                 definition: result.output[0],
+                // @ts-expect-error(TODO:)
                 data: result.output.slice(1)
             })
         );
@@ -186,6 +193,7 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
 
 
     getDefaultRTC(): XoXPRCRuntimeContext {
+        // @ts-expect-error(TODO:)
         return XoXPRCRuntimeContextFromRuntimeContext(this.configService.config.zeta.xo.runtimeContext);
     }
 
@@ -204,14 +212,17 @@ export class XcDefinitionStackItemComponent extends XcStackItemComponent<Definit
         }
 
         const rtc = (definition.serviceRTC ? definition.serviceRTC : this.getDefaultRTC()).toRuntimeContext();
+        // @ts-expect-error(TODO:)
         return preStartorder.pipe(
             switchMap(() =>
+                // @ts-expect-error(TODO:)
                 this.api.startOrder(rtc, definition.serviceFQN, input, null,
                     new StartOrderOptionsBuilder().withErrorMessage(true).async(!definition.synchronously).options)
             ),
             filter(result => {
                 if (!result || result.errorMessage) {
                     if (definition.showResult) {
+                        // @ts-expect-error(TODO:)
                         this.dialogs.error(result.errorMessage);
                     }
                     return false;

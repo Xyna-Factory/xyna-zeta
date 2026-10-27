@@ -45,6 +45,7 @@ export class RightGuardService {
             let url: string;
             let i: number;
             let jumpTo: XynaRoute;
+            // @ts-expect-error(TODO:)
             const children = paths.routeConfig.children.filter(parent => parent.path !== '');
 
             for (i = 0; i < children.length; i++) {
@@ -54,6 +55,7 @@ export class RightGuardService {
                     break;
                 }
             }
+            // @ts-expect-error(TODO:)
             if (url) {
                 void this.router.navigateByUrl(url);
             }

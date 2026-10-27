@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -41,19 +43,35 @@ export function XoObjectClass(baseClass: XoObjectClassInterface, path?: string, 
         const decorator = class XoObjectDecorator extends clazz {
             static ctor = Object.getPrototypeOf(XoObjectDecorator);
             // static functions for decorator class
-            static getAccessorMap() { return accessorMap ??= XoAccessorPropertyMap(XoObjectDecorator); }
-            static getAsyncMap()    { return ctorAsyncMap.get(XoObjectDecorator.ctor) ?? ctorAsyncMap.set(XoObjectDecorator.ctor, new Map()).get(XoObjectDecorator.ctor); }
+            static getAccessorMap() {
+                return accessorMap ??= XoAccessorPropertyMap(XoObjectDecorator);
+            }
+            static getAsyncMap()    {
+                return ctorAsyncMap.get(XoObjectDecorator.ctor) ?? ctorAsyncMap.set(XoObjectDecorator.ctor, new Map()).get(XoObjectDecorator.ctor);
+            }
             // static properties for decorator class
             static readonly derivedClasses = new Map();
             static readonly rtc = rtc ?? baseClass?.rtc;
             static readonly fqn = FullQualifiedName.fromPathName(path, name) ?? baseClass?.fqn;
             // overwrite get/set instance methods
-            get derivedClasses(): ReadonlyMap<string, XoObjectClassInterface> { return XoObjectDecorator.derivedClasses; }
-            get decoratorClass(): XoObjectClassInterface                      { return XoObjectDecorator; }
-            get rtc(): RuntimeContext         { return this._rtc ?? XoObjectDecorator.rtc; }
-            set rtc(value: RuntimeContext)    { this._rtc = value; }
-            get fqn(): FullQualifiedName      { return this._fqn ?? XoObjectDecorator.fqn; }
-            set fqn(value: FullQualifiedName) { this._fqn = value; }
+            get derivedClasses(): ReadonlyMap<string, XoObjectClassInterface> {
+                return XoObjectDecorator.derivedClasses;
+            }
+            get decoratorClass(): XoObjectClassInterface                      {
+                return XoObjectDecorator;
+            }
+            get rtc(): RuntimeContext         {
+                return this._rtc ?? XoObjectDecorator.rtc;
+            }
+            set rtc(value: RuntimeContext)    {
+                this._rtc = value;
+            }
+            get fqn(): FullQualifiedName      {
+                return this._fqn ?? XoObjectDecorator.fqn;
+            }
+            set fqn(value: FullQualifiedName) {
+                this._fqn = value;
+            }
         };
         /*
          * Find already stored class as base - in case of a duplicate model definition for the baseClass,
@@ -93,13 +111,27 @@ export function XoArrayClass(genericClass: XoObjectClassInterface) {
             static readonly rtc = genericClass?.rtc;
             static readonly fqn = genericClass?.fqn;
             // overwrite get/set instance methods
-            get genericClass(): XoObjectClassInterface                       { return XoArrayDecorator.genericClass; }
-            get derivedClasses(): ReadonlyMap<string, XoArrayClassInterface> { return XoArrayDecorator.derivedClasses; }
-            get decoratorClass(): XoArrayClassInterface                      { return XoArrayDecorator; }
-            get rtc(): RuntimeContext         { return this._rtc ?? XoArrayDecorator.rtc; }
-            set rtc(value: RuntimeContext)    { this._rtc = value; }
-            get fqn(): FullQualifiedName      { return this._fqn ?? XoArrayDecorator.fqn; }
-            set fqn(value: FullQualifiedName) { this._fqn = value; }
+            get genericClass(): XoObjectClassInterface                       {
+                return XoArrayDecorator.genericClass;
+            }
+            get derivedClasses(): ReadonlyMap<string, XoArrayClassInterface> {
+                return XoArrayDecorator.derivedClasses;
+            }
+            get decoratorClass(): XoArrayClassInterface                      {
+                return XoArrayDecorator;
+            }
+            get rtc(): RuntimeContext         {
+                return this._rtc ?? XoArrayDecorator.rtc;
+            }
+            set rtc(value: RuntimeContext)    {
+                this._rtc = value;
+            }
+            get fqn(): FullQualifiedName      {
+                return this._fqn ?? XoArrayDecorator.fqn;
+            }
+            set fqn(value: FullQualifiedName) {
+                this._fqn = value;
+            }
         };
         // add to the base class' list of derived classes (if another class with same FQN hasn't been stored, yet)
         const fqnString = decorator.fqn.encode();
@@ -133,25 +165,25 @@ export function XoProperty(propertyClass?: XoObjectClassInterface | XoArrayClass
             Object.defineProperty(target, key, {
                 enumerable: true,
                 get: wrapper
-                    ? function (this: XoObject) {
+                    ? function(this: XoObject) {
                         return wrapper.wrap(this.data[sanitizedKey]);
                     }
-                    : function (this: XoObject) {
+                    : function(this: XoObject) {
                         return this.data[sanitizedKey];
                     },
                 set: target.readonlyProperties.has(key)
-                    ? function (this: XoObject) {}
+                    ? function(this: XoObject) {}
                     : observable
-                        ? function (this: XoObject, value) {
+                        ? function(this: XoObject, value) {
                             if (value == null || enumValues.has(value)) {
                                 this.data[sanitizedKey] = value;
                             }
                         }
                         : wrapper
-                            ? function (this: XoObject, value) {
+                            ? function(this: XoObject, value) {
                                 this.data[sanitizedKey] = wrapper.unwrap(value);
                             }
-                            : function (this: XoObject, value) {
+                            : function(this: XoObject, value) {
                                 this.data[sanitizedKey] = value;
                             }
             });

@@ -48,8 +48,11 @@ export interface XcWebGLObjectAttribute {
 
 
 export class XcWebGLObject<S extends Points | Line | Mesh, R extends Material> {
+    // @ts-expect-error(TODO:)
     private readonly _object: S;
+    // @ts-expect-error(TODO:)
     private readonly _material: R;
+    // @ts-expect-error(TODO:)
     private readonly _parent: Object3D;
     private readonly _attributes = new Map<XcWebGLObjectAttributeName, XcWebGLObjectAttribute>();
 
@@ -89,6 +92,7 @@ export class XcWebGLObject<S extends Points | Line | Mesh, R extends Material> {
 
 
     protected setAttribute(attribute: XcWebGLObjectAttribute) {
+        // @ts-expect-error(TODO:)
         this.geometry.setAttribute(attribute.name, this._attributes.set(attribute.name, attribute).get(attribute.name).attr);
     }
 

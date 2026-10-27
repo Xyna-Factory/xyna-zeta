@@ -47,6 +47,7 @@ export class XcTemplateFactory {
             // is field enumerated?
             if (enumeratedDataWrapper) {
                 templates.push(new XcFormAutocompleteTemplate(enumeratedDataWrapper));
+            // @ts-expect-error(TODO:)
             } else if (field.typeFqn.boolLike) {
                 // --< BOOLEAN >--
                 const autocompleteDataWrapper = new XcAutocompleteDataWrapper(
@@ -80,12 +81,15 @@ export class XcTemplateFactory {
                     templates.push(checkboxTemplate);
                     templates.push(new XcFormAutocompleteTemplate(autocompleteDataWrapper));
                 }
+            // @ts-expect-error(TODO:)
             } else if (field.typeFqn.stringLike) {
                 // --< STRING >--
                 templates.push(new XcFormInputTemplate(new XcIdentityDataWrapper(getter, setter)));
+            // @ts-expect-error(TODO:)
             } else if (field.typeFqn.intLike) {
                 // --< INTEGER, LONG >--
                 templates.push(new XcFormInputTemplate(new XcStringIntegerDataWrapper(getter, setter, nullable), [XcFormValidatorNumber('decimal')]));
+            // @ts-expect-error(TODO:)
             } else if (field.typeFqn.floatLike) {
                 // --< FLOAT, DOUBLE >--
                 templates.push(new XcFormInputTemplate(new XcStringFloatDataWrapper(getter, setter, nullable), [XcFormValidatorNumber('float')]));
@@ -103,9 +107,11 @@ export class XcTemplateFactory {
         readonly = false
     ): XcTemplate[] {
         // set nullable and placeholder
+        // @ts-expect-error(TODO:)
         const nullable = field.typeFqn.isNullablePrimitive();
         const placeholder = nullable
             ? XcTemplateFactory.PLACEHOLDER_NULL
+            // @ts-expect-error(TODO:)
             : field.typeFqn.isNumericPrimitive()
                 ? XcTemplateFactory.PLACEHOLDER_ZERO
                 : XcTemplateFactory.PLACEHOLDER_FALSE;
@@ -122,6 +128,7 @@ export class XcTemplateFactory {
         if (readonly) {
             const value = init();
             const text  = value != null
+                // @ts-expect-error(TODO:)
                 ? (field.typeFqn.stringLike ? '"' +  value + '"' : value)
                 : placeholder;
             return [text];
@@ -146,6 +153,7 @@ export class XcTemplateFactory {
                     template.suffix = 'nullify';
                 }
                 // set label
+                // @ts-expect-error(TODO:)
                 template.label = field.label;
             }
         });

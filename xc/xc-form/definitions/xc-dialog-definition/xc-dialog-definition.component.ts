@@ -42,6 +42,7 @@ import { ConfigService } from '@zeta/api/config.service';
     imports: [XcDialogWrapperComponent, XcFormDirective, XcI18nContextDirective, XcI18nTranslateDirective, XcDefinitionProxyComponent, XcButtonComponent]
 })
 export class XcDialogDefinitionComponent extends XcDialogComponent<Xo[], XoDefinitionBundle> implements XoDefinitionObserver {
+    // @ts-expect-error(TODO:)
     readonly injector: Injector;
     private readonly api = inject(ApiService);
     private readonly dialogs = inject(XcDialogService);
@@ -67,6 +68,7 @@ export class XcDialogDefinitionComponent extends XcDialogComponent<Xo[], XoDefin
         return this.api.startOrder(
             definitionWorkflowRTC.toRuntimeContext(),
             definitionWorkflowFQN,
+            // @ts-expect-error(TODO:)
             data, null,
             new StartOrderOptionsBuilder().withErrorMessage(true).options
         ).pipe(
@@ -79,7 +81,9 @@ export class XcDialogDefinitionComponent extends XcDialogComponent<Xo[], XoDefin
                 return true;
             }),
             map(result => <XoDefinitionBundle>{
+                // @ts-expect-error(TODO:)
                 definition: result.output[0],
+                // @ts-expect-error(TODO:)
                 data: result.output.slice(1)
             })
         );
@@ -92,6 +96,7 @@ export class XcDialogDefinitionComponent extends XcDialogComponent<Xo[], XoDefin
 
 
     getDefaultRTC(): XoXPRCRuntimeContext {
+        // @ts-expect-error(TODO:)
         return XoXPRCRuntimeContextFromRuntimeContext(this.configService.config.zeta.xo.runtimeContext);
     }
 
@@ -110,14 +115,17 @@ export class XcDialogDefinitionComponent extends XcDialogComponent<Xo[], XoDefin
         }
 
         const rtc = (definition.serviceRTC ? definition.serviceRTC : this.getDefaultRTC()).toRuntimeContext();
+        // @ts-expect-error(TODO:)
         return preStartorder.pipe(
             switchMap(() =>
+                // @ts-expect-error(TODO:)
                 this.api.startOrder(rtc, definition.serviceFQN, input, null,
                     new StartOrderOptionsBuilder().withErrorMessage(true).async(!definition.synchronously).options)
             ),
             filter(result => {
                 if (!result || result.errorMessage) {
                     if (definition.showResult) {
+                        // @ts-expect-error(TODO:)
                         this.dialogs.error(result.errorMessage);
                     }
                     return false;

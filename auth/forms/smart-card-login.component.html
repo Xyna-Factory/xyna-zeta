@@ -10,7 +10,7 @@
 
 @if (
     data().roleSelectionDataWrapper &&
-    (data().roleSelectionDataWrapper.values || []).length > 0
+    (data().roleSelectionDataWrapper?.values ?? []).length > 0
 ) {
     <xc-form-autocomplete
         xc-i18n

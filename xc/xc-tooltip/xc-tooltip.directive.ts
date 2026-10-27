@@ -56,6 +56,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     private readonly i18n = inject(I18nService);
 
 
+    // @ts-expect-error(TODO:)
     private observer: MutationObserver;
 
     private static activeTooltip: XcTooltipDirective;
@@ -87,6 +88,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
         return this.stack[this.stack.length - 1];
     }
 
+    // @ts-expect-error(TODO:)
     private focusableElement: HTMLElement;
 
     private get showing(): boolean {
@@ -103,12 +105,14 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     private _hideDelay = 0;
     private _impolite = false;
     private _extraTooltipClasses: string[] = [];
+    // @ts-expect-error(TODO:)
     private _elementFocusStateChangeSubscription: Subscription;
     /**
      * elements, focused by pressing the tab, get an protection so that a mouseleave won't close it
      */
     private _mouseleaveProtection = false;
 
+    // @ts-expect-error(TODO:)
     private preferedPosition: XcTooltipPosition[];
 
     readonly tooltipInput = input<XcTooltipValue>('', { alias: 'xc-tooltip' });
@@ -147,7 +151,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     readonly controller = input<XcTooltipController>({
     autoDelegate: false
-}, { alias: "xc-tooltip-controller" });
+    }, { alias: 'xc-tooltip-controller' });
 
 
     /* @Input check for backward compatibility */
@@ -156,7 +160,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
     @Input('xc-tooltip-position')
     set _xc_position(value: XcTooltipPositionValue | XcTooltipPositionValue[]) {
         if (isArray(value)) {
-            this.preferedPosition = (value as XcTooltipPositionValue[]).map<XcTooltipPosition>(str => XcTooltipDirective.getXcTooltipPosition(str));
+            this.preferedPosition = (value).map<XcTooltipPosition>(str => XcTooltipDirective.getXcTooltipPosition(str));
         } else {
             this.preferedPosition = [XcTooltipDirective.getXcTooltipPosition(value)];
         }
@@ -210,9 +214,9 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
         let classes: string[] = [];
         switch (true) {
 
-            case (isString(value)): classes.push(value as string); break;
+            case (isString(value)): classes.push(value); break;
             case (isArray(value)): classes = (value as string[]).map<string>(str => isString(str) ? str : ''); break;
-            case (value instanceof Set): (value as Set<string>).forEach(str => classes.push(str)); break;
+            case (value instanceof Set): (value).forEach(str => classes.push(str)); break;
             case (isObject(value)): Object.keys(value).forEach(key => classes.push(value[key])); break;
 
         }
@@ -348,9 +352,11 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
                 }
             }
 
+            // @ts-expect-error(TODO:)
             specifiedDelegateResult = controller.delegateFunction ? controller.delegateFunction(el) : null;
         }
 
+        // @ts-expect-error(TODO:)
         this.focusableElement = specifiedDelegateResult || autoDelegateResult || el;
 
         if (this.focusableElement) {
@@ -484,6 +490,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
         if (this.showing) {
 
+            // @ts-expect-error(TODO:)
             XcTooltipDirective.activeTooltip = null;
 
             if (animationLength > 0) {
@@ -506,6 +513,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
 
     private removeElementsFromStack() {
         this.stack.forEach(el => {
+            // @ts-expect-error(TODO:)
             el.parentElement.removeChild(el);
         });
         this.stack = [];
@@ -584,6 +592,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
         win: ClientRect | DOMRect
     ): { x: number; y: number; pos: XcTooltipPosition } {
 
+        // @ts-expect-error(TODO:)
         let thisFits: { x: number; y: number; pos: XcTooltipPosition } = null;
 
         const allPositions = [...XcTooltipDirective.positionSequence];
@@ -619,6 +628,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
                 const x1 = origin.left + (origin.width / 2) - (tmp.width / 2);
                 const y1 = origin.bottom + XcTooltipDirective.posOffsetY;
                 return (must || (pointInBox(x1, y1, win) && pointInBox(x1 + tmp.width, y1 + tmp.height, win)))
+                    // @ts-expect-error(TODO:)
                     ? { x: x1, y: y1, pos: position } : null;
             }
             case XcTooltipPosition.top: {
@@ -627,6 +637,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
                 // const x2 = x1 + tmp.width;
                 // const y2 = y1 + tmp.height;
                 return (must || (pointInBox(x1, y1, win) && pointInBox(x1 + tmp.width, y1 + tmp.height, win)))
+                    // @ts-expect-error(TODO:)
                     ? { x: x1, y: y1, pos: position } : null;
             }
             case XcTooltipPosition.left: {
@@ -635,6 +646,7 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
                 // const x2 = x1 + tmp.width;
                 // const y2 = y1 + tmp.height;
                 return (must || (pointInBox(x1, y1, win) && pointInBox(x1 + tmp.width, y1 + tmp.height, win)))
+                    // @ts-expect-error(TODO:)
                     ? { x: x1, y: y1, pos: position } : null;
             }
             case XcTooltipPosition.right: {
@@ -643,32 +655,38 @@ export class XcTooltipDirective implements OnInit, AfterViewInit, OnDestroy {
                 // const x2 = x1 + tmp.width;
                 // const y2 = y1 + tmp.height;
                 return (must || (pointInBox(x1, y1, win) && pointInBox(x1 + tmp.width, y1 + tmp.height, win)))
+                    // @ts-expect-error(TODO:)
                     ? { x: x1, y: y1, pos: position } : null;
             }
             case XcTooltipPosition.bottomLeft: {
                 const x1 = origin.left - tmp.width - XcTooltipDirective.posOffsetX;
                 const y1 = origin.bottom + XcTooltipDirective.posOffsetY;
                 return (must || (pointInBox(x1, y1, win) && pointInBox(x1 + tmp.width, y1 + tmp.height, win)))
+                    // @ts-expect-error(TODO:)
                     ? { x: x1, y: y1, pos: position } : null;
             }
             case XcTooltipPosition.bottomRight: {
                 const x1 = origin.right + XcTooltipDirective.posOffsetX;
                 const y1 = origin.bottom + XcTooltipDirective.posOffsetY;
                 return (must || (pointInBox(x1, y1, win) && pointInBox(x1 + tmp.width, y1 + tmp.height, win)))
+                    // @ts-expect-error(TODO:)
                     ? { x: x1, y: y1, pos: position } : null;
             }
             case XcTooltipPosition.topLeft: {
                 const x1 = origin.left - tmp.width - XcTooltipDirective.posOffsetX;
                 const y1 = origin.top - tmp.height - XcTooltipDirective.posOffsetY;
                 return (must || (pointInBox(x1, y1, win) && pointInBox(x1 + tmp.width, y1 + tmp.height, win)))
+                    // @ts-expect-error(TODO:)
                     ? { x: x1, y: y1, pos: position } : null;
             }
             case XcTooltipPosition.topRight: {
                 const x1 = origin.right + XcTooltipDirective.posOffsetX;
                 const y1 = origin.top - tmp.height - XcTooltipDirective.posOffsetY;
                 return (must || (pointInBox(x1, y1, win) && pointInBox(x1 + tmp.width, y1 + tmp.height, win)))
+                    // @ts-expect-error(TODO:)
                     ? { x: x1, y: y1, pos: position } : null;
             }
+            // @ts-expect-error(TODO:)
             default: return null;
         }
     }

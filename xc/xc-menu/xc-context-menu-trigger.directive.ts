@@ -33,7 +33,7 @@ export class XcContextMenuTriggerDirective {
     private readonly menuService = inject(XcMenuService);
     private readonly contextMenuService = inject(XcContextMenuService);
 
-    readonly contextMenuItems = input<XcMenuItem[] | (() => XcMenuItem[])>(undefined, { alias: "xc-context-menu-items" });
+    readonly contextMenuItems = input<XcMenuItem[] | (() => XcMenuItem[])>(undefined, { alias: 'xc-context-menu-items' });
 
     readonly disabled = input(false, { transform: coerceBoolean });
 

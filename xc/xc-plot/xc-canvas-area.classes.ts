@@ -32,6 +32,7 @@ export class XcCanvasArea {
 
     protected subscriptions = new Subscription();
 
+    // @ts-expect-error(TODO:)
     private _plottableArea: XcPlottableArea;
     get plottableArea(): XcPlottableArea {
         return this._plottableArea;
@@ -61,6 +62,7 @@ export class XcCanvasArea {
         this._minX = Infinity;
         this._minY = Infinity;
         this.dots.forEach((d, i) => {
+            // @ts-expect-error(TODO:)
             this.calculatedPoints[i] = d.calc(rect);
             this._maxX = Math.max(this._maxX, this.calculatedPoints[i].x);
             this._maxY = Math.max(this._maxY, this.calculatedPoints[i].y);
@@ -100,8 +102,11 @@ export class XcCanvasArea {
             ca.height = this._maxY;
             const co = ca.getContext('2d');
 
+            // @ts-expect-error(TODO:)
             this.createAreaPath(co);
+            // @ts-expect-error(TODO:)
             co.closePath();
+            // @ts-expect-error(TODO:)
             return co.isPointInPath(x, y);
         }
         return false;
@@ -118,6 +123,7 @@ export class XcCanvasArea {
 
 export class XcCanvasRectangleArea extends XcCanvasArea {
 
+    // @ts-expect-error(TODO:)
     protected _mouseOver: boolean;
 
     ownMousePosition = { x: 0, y: 0 };
@@ -191,6 +197,7 @@ export class XcCanvasRectangleArea extends XcCanvasArea {
 
 export class XcCanvasPlotArea extends XcCanvasRectangleArea {
 
+    // @ts-expect-error(TODO:)
     _dataSourceRef: XcPlotDataSource;
 
     constructor(public d1: XcDot, public d2: XcDot, protected dataSourceContainerRefChange: Observable<XcPlotDataSource[]>) {
@@ -236,7 +243,9 @@ export class XcCanvasCartasianCoordinateSystemArea extends XcCanvasPlotArea {
         }
     }
 
+    // @ts-expect-error(TODO:)
     dataChangeSubscription: Subscription;
+    // @ts-expect-error(TODO:)
     pointConnectionTypeChangeSubscription: Subscription;
 
     get scaleMarkValueMapX(): Map<number, number> {

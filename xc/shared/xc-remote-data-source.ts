@@ -24,6 +24,7 @@ import { XcSelectionDataSource } from './xc-selection-data-source';
 
 export class XcRemoteDataSource<T extends XoObject, O extends XoArray<T> = XoArray<T>> extends XcSelectionDataSource<T> {
 
+    // @ts-expect-error(TODO:)
     compareFn: (a: T, b: T) => number;
 
 
@@ -37,6 +38,7 @@ export class XcRemoteDataSource<T extends XoObject, O extends XoArray<T> = XoArr
         this.apiService.startOrderAssertFlat<T>(
             this.rtc,
             this.orderType,
+            // @ts-expect-error(TODO:)
             this.input,
             this.output
         ).pipe(

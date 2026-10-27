@@ -42,8 +42,11 @@ export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefini
     private readonly i18n = inject(I18nService);
 
 
+    // @ts-expect-error(TODO:)
     dataSource: XcLocalTableDataSource;
+    // @ts-expect-error(TODO:)
     tableCounts: TableCounts;
+    // @ts-expect-error(TODO:)
     private detailsDefinition: XoDefinition;
 
 
@@ -63,7 +66,9 @@ export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefini
 
         // close details on refresh
         if (this.detailsDefinition && this.detailsDefinition.observer && this.tableDefinition.observer.closeDefinition) {
+            // @ts-expect-error(TODO:)
             this.detailsDefinition.observer.closeDefinition().subscribe();
+            // @ts-expect-error(TODO:)
             this.detailsDefinition = null;
         }
     }
@@ -81,7 +86,7 @@ export class XcPredefinedTablePanelDefinitionComponent extends XcFormPanelDefini
         this.dataSource.limit = 50;
         this.dataSource.localTableData = {
             rows: this.resolvedData.length > 0 && this.resolvedData[0] instanceof XoArray ? (<XoArray> this.resolvedData[0]).data : [],
-            columns: this.tableDefinition.columns.data.map(column => <XcTableColumn>{ name: signal(column.name), path: column.path })
+            columns: this.tableDefinition.columns.data.map(column => ({ name: signal(column.name), path: column.path }))
         };
         this.dataSource.countChange.subscribe(counts => this.tableCounts = counts);
 

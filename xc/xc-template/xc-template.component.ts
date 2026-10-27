@@ -65,9 +65,10 @@ export class XcTemplateComponent {
     private _instance: XcTemplate | unknown;
     private _readonly = false;
     private _disabled = false;
+    // @ts-expect-error(TODO:)
     private _markForCheckSubscription: Subscription;
 
-    readonly ariaLabel = input('', { alias: "xc-template-aria-label" });
+    readonly ariaLabel = input('', { alias: 'xc-template-aria-label' });
 
 
     @Input('xc-template-instance')

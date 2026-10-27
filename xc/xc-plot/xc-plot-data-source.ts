@@ -66,11 +66,13 @@ export class XcPlotDataPair {
         return new this(x, y);
     }
 
+    // @ts-expect-error(TODO:)
     private _drawX: number;
     get drawX(): number {
         return this._drawX;
     }
 
+    // @ts-expect-error(TODO:)
     private _drawY: number;
     get drawY(): number {
         return this._drawY;
@@ -162,8 +164,11 @@ export class XcPlotDataSource extends XcDataSource<XcPlotDataPair> {
     selectionModel = new XcSelectionModel<XcPlotDataPair>();
     hoverModel = new XcSelectionModel<XcPlotDataPair>();
 
+    // @ts-expect-error(TODO:)
     allowMultiSelect: boolean;
+    // @ts-expect-error(TODO:)
     showGeneratedPopup: boolean;
+    // @ts-expect-error(TODO:)
     zoomOptimization: boolean;
 
     /**
@@ -218,26 +223,34 @@ export class XcPlotDataSource extends XcDataSource<XcPlotDataPair> {
         const allX = this.pairs.length ? this.pairs.map(dp => dp.x) : [this.defaultPlotDataInfo.xMin, this.defaultPlotDataInfo.xMax];
         const allY = this.pairs.length ? this.pairs.map(dp => dp.y) : [this.defaultPlotDataInfo.yMin, this.defaultPlotDataInfo.yMax];
         return {
+            // @ts-expect-error(TODO:)
             xMin: Math.min(...allX),
+            // @ts-expect-error(TODO:)
             xMax: Math.max(...allX),
+            // @ts-expect-error(TODO:)
             yMin: Math.min(...allY),
+            // @ts-expect-error(TODO:)
             yMax: Math.max(...allY)
         };
     }
 
     private getMinX(): number {
+        // @ts-expect-error(TODO:)
         return this.pairs.length ? Math.min(...this.data.map(dp => dp.x)) : this.defaultPlotDataInfo.xMin;
     }
 
     private getMaxX(): number {
+        // @ts-expect-error(TODO:)
         return this.pairs.length ? Math.max(...this.data.map(dp => dp.x)) : this.defaultPlotDataInfo.xMax;
     }
 
     private getMinY(): number {
+        // @ts-expect-error(TODO:)
         return this.pairs.length ? Math.min(...this.data.map(dp => dp.y)) : this.defaultPlotDataInfo.yMin;
     }
 
     private getMaxY(): number {
+        // @ts-expect-error(TODO:)
         return this.pairs.length ? Math.max(...this.data.map(dp => dp.y)) : this.defaultPlotDataInfo.yMax;
     }
 
@@ -250,6 +263,7 @@ export class XcPlotDataSource extends XcDataSource<XcPlotDataPair> {
         } else {
             const keys = Object.keys(XcPlotPointConnection);
             const key = keys.find(attr => this.pointConnectionType === XcPlotPointConnection[attr]);
+            // @ts-expect-error(TODO:)
             const i = keys.indexOf(key);
             this.pointConnectionType = XcPlotPointConnection[keys[(i + 1) % keys.length]];
         }

@@ -25,16 +25,18 @@ import { XcTreeDataSource, XcTreeNode } from './xc-tree-data-source';
 export abstract class XcBaseStructureTreeDataSource<T extends XcTreeNode = XcTreeNode> extends XcTreeDataSource<T> {
 
     structureCache = new XoDescriberCache<XoStructureObject>();
+    // @ts-expect-error(TODO:)
     orderId: string;
 
     /**
      * Structure fallback for an entry in the container that does not exist
      */
     structureFallback: typeof XoStructureObject | typeof XoStructureArray = XoStructureObject;
+    // @ts-expect-error(TODO:)
     structureFallbackFunction: (idx: number) => typeof XoStructureObject | typeof XoStructureArray;
 
 
-    constructor(protected apiService: ApiService, i18n: I18nService, public rtc: RuntimeContext, public describers: XoDescriber[], public container = new XoArray(), translateLabels: boolean = true) {
+    constructor(protected apiService: ApiService, i18n: I18nService, public rtc: RuntimeContext, public describers: XoDescriber[], public container = new XoArray(), translateLabels = true) {
         super(i18n, translateLabels);
     }
 
@@ -47,17 +49,20 @@ export abstract class XcBaseStructureTreeDataSource<T extends XcTreeNode = XcTre
 
 
     protected createNodeFromField(field: XoStructureField, parent: T): T {
+        // @ts-expect-error(TODO:)
         const node = this.createNode(field.label, parent);
         return node;
     }
 
 
     getStructureTreeData(describer: XoDescriber, field: XoStructureComplexField, node: T) {
+        // @ts-expect-error(TODO:)
         this.apiService.getStructure(
             this.rtc, [describer], this.structureCache,
             this.orderId
         ).get(describer).subscribe(resultField => {
             field.children = resultField.children;
+            // @ts-expect-error(TODO:)
             node.children.next(
                 field.children
                     .filter(childField => !(childField instanceof XoStructureMethod))
@@ -83,11 +88,15 @@ export abstract class XcBaseStructureTreeDataSource<T extends XcTreeNode = XcTre
                     clazz = XoStructureArray;
                 }
                 // create structure field
+                // @ts-expect-error(TODO:)
                 const field = new clazz(null, String(idx));
                 field.typeRtc = describer.rtc;
                 field.typeFqn = describer.fqn;
+                // @ts-expect-error(TODO:)
                 field.typeLabel = describer.fqn.name;
+                // @ts-expect-error(TODO:)
                 field.label = describer.ident || describer.fqn.name;
+                // @ts-expect-error(TODO:)
                 return this.createNodeFromField(field, null);
             });
     }

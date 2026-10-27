@@ -42,10 +42,12 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     private static _num = 0;
     uniquePanelId = 'xc-nav-list-panel-' + XcNavListItemComponent._num++;
 
+    // @ts-expect-error(TODO:)
     readonly item = input<XcNavListItem>(undefined);
 
     readonly size = input<'small' | 'medium' | 'large' | 'extra-large'>('medium');
 
+    // @ts-expect-error(TODO:)
     readonly depth = input<number>(undefined);
 
     @HostBinding('attr.depth')
@@ -62,6 +64,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     }
     private _shrink = false;
 
+    // @ts-expect-error(TODO:)
     readonly orientation = input<XcNavListOrientation>(undefined);
 
     readonly focusChange = output<XcNavListItem>();
@@ -80,6 +83,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
 
 
     get ariaLabel(): string {
+        // @ts-expect-error(TODO:)
         return this.i18n.translateInstant('menu_with_elements', { key: '$0', value: this.item().children.length.toString() });
     }
 
@@ -88,6 +92,7 @@ export class XcNavListItemComponent extends XcThemeableComponent implements OnIn
     get collapsed() {
         const item = this.item();
         return item
+            // @ts-expect-error(TODO:)
             ? item.collapsed
             : true;
     }

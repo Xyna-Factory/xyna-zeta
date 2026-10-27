@@ -35,19 +35,24 @@ import { Subscription } from 'rxjs';
 export class XcBaseDefinitionComponent {
 
     protected readonly eventService: XcDefinitionEventService = inject<XcDefinitionEventService>(XcDefinitionEventService);
+    // @ts-expect-error(TODO:)
     private clearDataChangedEventSubscription: Subscription;
 
+    // @ts-expect-error(TODO:)
     private _definition: XoBaseDefinition;
 
     /**
      * Complex objects (e. g. Data-Outputs of a Definition Workflow). Data to show must be resolved via definition.dataPath
      */
+    // @ts-expect-error(TODO:)
     private _definitionData: Xo[];
+    // @ts-expect-error(TODO:)
     private _definitionObserver: XoDefinitionObserver;
 
     /**
      * Resolved data for all data paths - must be a complex object
      */
+    // @ts-expect-error(TODO:)
     resolvedData: Xo[];
     hidden = false;
 
@@ -56,7 +61,7 @@ export class XcBaseDefinitionComponent {
 
     constructor() {
         // create dummy-instances such that files with definitions won't be pruned during release-build
-         
+
         const baseDefinition = new XoBaseDefinition();
         const buttonDefinition = new XoButtonDefinition();
         const checkboxDefinition = new XoCheckboxDefinition();
@@ -81,7 +86,7 @@ export class XcBaseDefinitionComponent {
         const definitionListDefinition = new XoDefinitionListDefinition();
 
         const definitionWorkflow = new XoDefinitionWorkflow();
-         
+
     }
 
 

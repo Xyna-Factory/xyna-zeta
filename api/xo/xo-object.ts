@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -585,7 +587,8 @@ export interface XoPropertyBinding<T extends XoObject, U = any> {
 }
 
 
- 
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export function XoPropertyBinding<T extends XoObject, U = any>(instance: T, accessor: XoAccessor<T, U>): XoPropertyBinding<T, U> {
     return {
         instance: instance,

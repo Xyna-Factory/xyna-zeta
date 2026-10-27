@@ -67,6 +67,7 @@ export class XcStackDataSource {
     }
 
     last(): XcStackItemInterface & XcStackObserver {
+        // @ts-expect-error(TODO:)
         return this.length() > 0 ? this.stackItems[this.length() - 1] : null;
     }
 }

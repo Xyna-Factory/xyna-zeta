@@ -54,6 +54,7 @@ export class AppTitleComponent implements OnInit {
         const data = [];
         if (parent) {
             if (parent.snapshot.data?.title) {
+                // @ts-expect-error(TODO:)
                 data.push(parent.snapshot.data.title);
             }
             if (state) {

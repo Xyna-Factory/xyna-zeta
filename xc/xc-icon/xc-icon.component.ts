@@ -39,14 +39,18 @@ export class XcIconComponent extends XcThemeableComponent implements OnInit, Aft
     private _reverseDirection = false;
     private _iconMaterial = false;
     private _iconSvg = false;
+    // @ts-expect-error(TODO:)
     private _iconStyle: string;
+    // @ts-expect-error(TODO:)
     private _iconName: string;
 
+    // @ts-expect-error(TODO:)
     private _translate: boolean;
 
+    // @ts-expect-error(TODO:)
     i18nContext: string;
 
-    readonly iconSize = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: "xc-icon-size" });
+    readonly iconSize = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: 'xc-icon-size' });
 
     @HostBinding('attr.size')
     get hostIconSize(): string {

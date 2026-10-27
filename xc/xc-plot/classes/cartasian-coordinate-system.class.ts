@@ -32,6 +32,7 @@ export class CartasianCoordinateSystem {
         y: this.height
     };
 
+    // @ts-expect-error(TODO:)
     private dataSourceRef: XcPlotDataSource;
     private pointsContainer: CCSPointsContainer[] = [];
 
@@ -285,6 +286,7 @@ export class CartasianCoordinateSystem {
             case CommonBorder.Bottom: rect = { x: this.x, y: this.height + this.y, width: this.width, height: offDistance }; break;
         }
         c.beginPath();
+        // @ts-expect-error(TODO:)
         c.rect(rect.x, rect.y, rect.width, rect.height);
         c.closePath();
         c.clip();

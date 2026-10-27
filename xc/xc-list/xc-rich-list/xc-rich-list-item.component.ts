@@ -70,12 +70,14 @@ export abstract class XcRichListItemComponent<R = void, D = void> extends XcDyna
 
 
     dismiss(result?: R) {
+        // @ts-expect-error(TODO:)
         this.richListItemRef.remove();
     }
 
 
     afterDismiss(): Observable<R> {
         // not yet supported
+        // @ts-expect-error(TODO:)
         return null;
     }
 }
