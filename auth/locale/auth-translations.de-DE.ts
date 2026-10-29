@@ -90,6 +90,10 @@ export const authTranslations_deDE: I18nTranslation[] = [
         key: 'zeta.auth-login.show-password-tooltip',
         value: 'Kennwort anzeigen'
     },
+    {
+        key: 'zeta.auth-login.tab-credentials',
+        value: 'Benutzeranmeldung'
+    },
 
     // SmartCardLoginComponent
     // html
@@ -100,6 +104,17 @@ export const authTranslations_deDE: I18nTranslation[] = [
     {
         key: 'zeta.auth-login.role-input',
         value: 'Rolle'
+    },
+    {
+        key: 'zeta.auth-login.tab-smartcard',
+        value: 'Chipkarte'
+    },
+
+    // WorkflowLoginComponent
+    // html
+    {
+        key: 'zeta.auth-login.tab-workflow',
+        value: 'Workflow'
     },
 
     // change-password-dialog
