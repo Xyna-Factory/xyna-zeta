@@ -51,7 +51,9 @@ interface FromXoEnumeratedPropertyCallbacks {
 export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxableDataWrapper<XcOptionItem<V>, V> {
 
     private readonly _valuesChange = new Subject<XcOptionItem<V>[]>();
+    // @ts-expect-error(TODO:)
     private _values: XcOptionItem<V>[];
+    // @ts-expect-error(TODO:)
     private _value: XcOptionItem<V>;
 
 
@@ -59,6 +61,7 @@ export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxa
         return map((data: any[]) => data.map(value => <XcOptionItem>{ name: signal(`${value}`), value: value }));
     }
 
+    // @ts-expect-error(TODO:)
     static getXoEnumeratedOptionItems<W = XcOptionItemValueType>(instance: Xo, propertyPath: string): Observable<XcOptionItem<W>[]> {
         const resolved = instance.resolveHead(propertyPath);
         const propertyHost = resolved.value;
@@ -74,6 +77,7 @@ export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxa
         }
     }
 
+    // @ts-expect-error(TODO:)
     static fromXoEnumeratedPropertyPath(instance: Xo, propertyPath: string, boxed = false, callbacks: FromXoEnumeratedPropertyCallbacks = {}): XcAutocompleteDataWrapper {
         const resolved = instance.resolveHead(propertyPath);
         const propertyHost = resolved.value;
@@ -86,6 +90,7 @@ export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxa
                     () => propertyHost[propertyName],
                     // setter
                     callbacks.setter
+                        // @ts-expect-error(TODO:)
                         ? value => propertyHost[propertyName] = callbacks.setter(value) || value
                         : value => propertyHost[propertyName] = value,
                     // xc option item mapped observable
@@ -99,6 +104,7 @@ export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxa
         }
     }
 
+    // @ts-expect-error(TODO:)
     static fromXoEnumeratedPropertyBinding<T extends XoObject, U extends Native>(binding: XoPropertyBinding<T, U>, boxed = false, callbacks: FromXoEnumeratedPropertyCallbacks = {}): XcAutocompleteDataWrapper {
         if (binding.instance && binding.accessor) {
             const propertyPaths = <any>binding.instance.decoratorClass.getAccessorMap();
@@ -142,6 +148,7 @@ export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxa
     set value(value: XcOptionItem<V>) {
         if (this._value !== value) {
             this._value = value;
+            // @ts-expect-error(TODO:)
             this.setter(this.value ? this.value.value : this.nullRepresentation);
         }
     }
@@ -163,6 +170,7 @@ export class XcAutocompleteDataWrapper<V = XcOptionItemValueType> extends XcBoxa
                     : option.value === getterValue
             );
             if (value || !getterValue) {
+                // @ts-expect-error(TODO:)
                 this._value = value;
             }
         }
@@ -216,6 +224,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     private openPanelWasJustClosed = false;
     private suppressNextFocusEmit = false;
 
+    // @ts-expect-error(TODO:)
     protected _subscription: Subscription;
     protected _asInput = false;
     protected _asDropdown = false;
@@ -225,6 +234,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     protected _options = new Array<XcOptionInternalAutocompleteItem>();
 
     filteredOptions: Observable<XcOptionInternalAutocompleteItem[]>;
+    // @ts-expect-error(TODO:)
     selectedOption: XcOptionInternalAutocompleteItem;
 
     protected _multiSelect = false;
@@ -256,7 +266,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
     /** Reference to multiselect input for focus management */
     readonly multiSelectInput = viewChild<ElementRef<HTMLInputElement>>('multiSelectInput');
 
-    readonly a11yFocusLine = input<string>(undefined, { alias: "xc-form-autocomplete-a11yfocusline" });
+    readonly a11yFocusLine = input<string>(undefined, { alias: 'xc-form-autocomplete-a11yfocusline' });
 
     readonly optionChange = output<XcOptionItem>({ alias: 'xc-form-autocomplete-optionChange' });
 
@@ -359,6 +369,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         }
         // Chrome on Windows triggers a scroll event if the browser needs to render a too big of a text into an input element
         // in this event, the event's target is the input element itself
+        // @ts-expect-error(TODO:)
         const targetIsInputElement = (event.target as HTMLElement).getAttribute ? ((event.target as HTMLElement).getAttribute('id') === this.input().id) : false;
         const targetIsOptionBox = trigger.autocomplete.panel ? event.target === trigger.autocomplete.panel.nativeElement : false;
         if (trigger.panelOpen && !targetIsInputElement && !targetIsOptionBox) {
@@ -448,7 +459,9 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
 
     protected select(value?: XcOptionItem) {
         if (this.selectedOption !== value) {
+            // @ts-expect-error(TODO:)
             this.option = value;
+            // @ts-expect-error(TODO:)
             this.optionChange.emit(value);
             this.cdRef.detectChanges();
         }
@@ -545,6 +558,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         // (via CTRL+BACKSPACE / CTRL+DELETE or, with the input's text being selected, via CTRL+X / BACKSPACE / DELETE)
         // not opening if tabbed to, while pressing "Tab" or "Tab + Shift"
         const notAllowed = ['Enter', 'Escape', 'Tab', 'Shift'];
+        // @ts-expect-error(TODO:)
         if (!trigger.panelOpen && !this.input().value && !notAllowed.includes(event.key)) {
             this.value = undefined;
             trigger.openPanel();
@@ -744,6 +758,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         // getting the listbox, in which all option elements are
         const listbox = document.body.querySelector('#' + trigger.autocomplete.id);
 
+        // @ts-expect-error(TODO:)
         Array.from(listbox.children).forEach((matOptionElement: Element) => {
             // which option's box is too small for its content
 
@@ -760,9 +775,11 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                     const childNodes = Array.from((el as HTMLElement).childNodes);
                     childNodes.forEach(childNode => {
                         if (childNode.nodeType === childNode.TEXT_NODE) {
+                            // @ts-expect-error(TODO:)
                             const option = this.options.find(op => this.optionName(op) === childNode.nodeValue.trim()) as XcOptionInternalAutocompleteItem;
                             if (option) {
 
+                                // @ts-expect-error(TODO:)
                                 const isOverflowing = isTextOverflowing(childNode.parentElement, this.optionName(option));
 
                                 // is there change
@@ -823,10 +840,10 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
      * Filters out any placeholder options with empty/null values.
      */
     private initMultiSelectOptions(): void {
-        this.filteredMultiSelectOptions = (this._options || []).filter(o => {
+        this.filteredMultiSelectOptions = (this._options || []).filter(o =>
             // Filter out empty placeholder options
-            return o.value !== null && o.value !== undefined && o.value !== '';
-        });
+             o.value !== null && o.value !== undefined && o.value !== ''
+        );
         this.lastAppliedMultiSelect = [];
         this.multiSelectControl.setValue([]);
     }
@@ -836,9 +853,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
      * Called when options change after multiselect is already active.
      */
     private updateMultiSelectOptions(): void {
-        this.filteredMultiSelectOptions = (this._options || []).filter(o => {
-            return o.value !== null && o.value !== undefined && o.value !== '';
-        });
+        this.filteredMultiSelectOptions = (this._options || []).filter(o => o.value !== null && o.value !== undefined && o.value !== '');
     }
 
     /**
@@ -926,6 +941,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
         if (changedValue) {
             const opt = this.filteredMultiSelectOptions.find(o => o.value === changedValue);
             if (opt) {
+                // @ts-expect-error(TODO:)
                 const stateKey = isNowSelected
                     ? 'zeta.xc-form.autocomplete.selected'
                     : 'zeta.xc-form.autocomplete.not-selected';
@@ -986,7 +1002,7 @@ export class XcFormAutocompleteComponent extends XcFormBaseInputComponent implem
                         this.cancelMultiSelect();
                         return;
                     }
-                    this._originalHandleKeydown!(event);
+                    this._originalHandleKeydown?.(event);
                 };
             }
 

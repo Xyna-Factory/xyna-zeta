@@ -97,10 +97,13 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
 
     static readonly DEFAULT_DEBOUNCE_TIME = 500;
 
+    // @ts-expect-error(TODO:)
     private _subscription: Subscription;
+    // @ts-expect-error(TODO:)
     private _tableData: XcTableData<T>;
     private _debounceTime = 0;
 
+    // @ts-expect-error(TODO:)
     protected _sortPath: string;
     protected _sortDirection = XcSortDirection.none;
 
@@ -115,32 +118,40 @@ export abstract class XcTableDataSource<T extends Comparable = Comparable> exten
     readonly moreData = new Subject<void>();
 
     /** skip the first number of entries */
+    // @ts-expect-error(TODO:)
     skip: number;
 
     /** limit the number of entries to retrieve */
+    // @ts-expect-error(TODO:)
     limit: number;
 
     /** if true, refreshes each time a filter changes (while typing text - with a debounce time) */
     refreshOnFilterChange = true;
 
     /** action elements occurring at the end of each row when active or hovering */
+    // @ts-expect-error(TODO:)
     actionElements: XcTableDataActionElement<T>[];
 
     filterCaseSensitive = false;
     moreDataAvailable = false;
+    // @ts-expect-error(TODO:)
     requestErrorMessage: string;
 
+    // @ts-expect-error(TODO:)
     footerLabelLeft: string;
+    // @ts-expect-error(TODO:)
     footerLabelRight: string;
     showFooterLabels = true;
 
+    // @ts-expect-error(TODO:)
     protected tableCounts: TableCounts = { displayedCount: undefined, totalCount: undefined };
     protected readonly countSubject = new Subject<TableCounts>();
 
+    // @ts-expect-error(TODO:)
     stylesFunction: (row: T, path: string) => string[];
 
 
-    constructor(readonly i18n?: I18nService, readonly translateLabels: boolean = true) {
+    constructor(readonly i18n?: I18nService, readonly translateLabels = true) {
         super(new XcSubSelectionModel<T, string>());
     }
 

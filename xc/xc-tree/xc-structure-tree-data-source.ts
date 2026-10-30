@@ -46,7 +46,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
 
     private static readonly ICON_NAME_ADD = 'add';
     private static readonly ICON_NAME_DELETE = 'delete';
-        private static readonly ICON_NAME_COPY = 'copy';
+    private static readonly ICON_NAME_COPY = 'copy';
 
     subtypesCache = new XoDescriberCache<XoStructureType>();
 
@@ -64,12 +64,13 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
      * When true, boolean primitives are rendered as a dropdown instead of
      * checkbox + autocomplete overlay. Default false preserves legacy behavior.
      */
+    // @ts-expect-error(TODO:)
     booleanAsDropdown: boolean;
 
     private readonly _contentChangeSubject = new Subject<void>();
 
 
-    constructor(apiService: ApiService, i18n: I18nService, rtc: RuntimeContext, describers: XoDescriber[], container?: XoArray, translateLabels: boolean = true) {
+    constructor(apiService: ApiService, i18n: I18nService, rtc: RuntimeContext, describers: XoDescriber[], container?: XoArray, translateLabels = true) {
         super(apiService, i18n, rtc, describers, container ? container : new XoArray(), translateLabels);
     }
 
@@ -88,7 +89,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             const dataChangeSetter = (value: any): void => {
                 // explicitly don't match with triple-equals to not consider string -> number (>>"123" -> 123<<) as change
 
-                const change = getter() != value;
+                const change = getter() !== value;
                 setter(value);
                 if (change) {
                     this._contentChangeSubject.next();
@@ -136,6 +137,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             const object = this.container.resolve(field.path);
             return object instanceof XoObject
                 ? object
+                // @ts-expect-error(TODO:)
                 : null;
         };
         // getter, setter, init
@@ -143,6 +145,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             const fieldDescriber = fieldResolve() || <XoDescriber>{};
             return fieldDescriber.fqn
                 ? new ComparableDescriber(fieldDescriber.rtc, fieldDescriber.fqn)
+                // @ts-expect-error(TODO:)
                 : null;
         };
         const setter = (value: ComparableDescriber) => {
@@ -173,6 +176,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 xo.assign(id, xo instanceof XoObject ? undefined : null);
                 // clear children
                 field.children = [];
+                // @ts-expect-error(TODO:)
                 node.children.next([]);
             }
         };
@@ -196,20 +200,26 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             rtc: (fieldResolve() || <XoDescriber>{}).rtc,
             fqn: field.typeFqn
         };
+        // @ts-expect-error(TODO:)
         this.apiService.getSubtypes(this.rtc, [describer], this.subtypesCache).get(describer).subscribe(subtypes => {
             // find types with ambiguous labels
             const subtypeLabels = new Set<string>();
             const ambiguousLabels = new Set<string>();
             subtypes.forEach(type => {
+                // @ts-expect-error(TODO:)
                 if (subtypeLabels.has(type.typeLabel)) {
+                    // @ts-expect-error(TODO:)
                     ambiguousLabels.add(type.typeLabel);
                 } else {
+                    // @ts-expect-error(TODO:)
                     subtypeLabels.add(type.typeLabel);
                 }
             });
 
             autocompleteDataWrapper.values = subtypes.map(type => ({
+                // @ts-expect-error(TODO:)
                 name: signal(type.typeLabel + (ambiguousLabels.has(type.typeLabel) ? (' ' + type.typeFqn.path) : '')), // show path for ambiguous labels
+                // @ts-expect-error(TODO:)
                 value: new ComparableDescriber(type.typeRtc, type.typeFqn),
                 disabled: type.typeAbstract
             }));
@@ -239,11 +249,13 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             }
             // add node
             const childNode = this.createNodeFromField(childField, node);
+            // @ts-expect-error(TODO:)
             const children = node.children.getValue();
             children.push(childNode);
         };
         // function to inform observers of changes in the children array
         const updateChildren = (trigger: boolean) => {
+            // @ts-expect-error(TODO:)
             node.children.next(node.children.getValue());
             if (trigger) {
                 this.triggerMarkForChange();
@@ -255,7 +267,9 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             return array instanceof XoArray
                 ? new ComparableDescriber(array.rtc, array.fqn)
                 : array instanceof Array
+                    // @ts-expect-error(TODO:)
                     ? new ComparableDescriber(field.typeRtc, field.typeFqn)
+                    // @ts-expect-error(TODO:)
                     : null;
         };
         const setter = (value: ComparableDescriber) => {
@@ -275,6 +289,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                     // set node limit
                     node.limit = array.length > this.arrayTypesLimit ? this.arrayTypesLimit : undefined;
                     // function to get the number of remaining child nodes to be added
+                    // @ts-expect-error(TODO:)
                     const remainingLength = () => array.length - node.limit;
                     // function to get the number of child nodes to be inserted
                     const insertionLength = () => Math.min(this.arrayTypesLimit, remainingLength());
@@ -288,13 +303,16 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                     addChildren(node.limit || array.length);
                     // if node is limited, add the child node that allows inserting more children
                     if (node.limit) {
+                        // @ts-expect-error(TODO:)
                         const children = node.children.getValue();
                         // create child node
                         const childNode = this.createNode('', node);
                         // function to update the child node's name and value
                         const updateChildNode = () => {
                             const from = node.limit;
+                            // @ts-expect-error(TODO:)
                             const to = node.limit + insertionLength() - 1;
+                            // @ts-expect-error(TODO:)
                             childNode.name = '[' + from + ']' + (to > from ? ' - [' + to + ']' : '');
                             childNode.value = ['{+ ' + remainingLength() + '}'];
                         };
@@ -313,6 +331,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                             // re-add the child node, if still needed
                             if (children.length < array.length) {
                                 // increase the node's limit
+                                // @ts-expect-error(TODO:)
                                 node.limit = Math.min(node.limit + this.arrayTypesLimit, array.length);
                                 children.push(childNode);
                                 updateChildNode();
@@ -336,11 +355,13 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 xo.assign(id, xo instanceof XoObject ? undefined : null);
                 // clear children
                 field.children = [];
+                // @ts-expect-error(TODO:)
                 node.children.next([]);
             }
         };
         const init = (): ComparableDescriber => {
             // if the complex type won't be editable, instantiate it initially
+            // @ts-expect-error(TODO:)
             const value = getter() || (this.complexTypesReadonly ? new ComparableDescriber(field.typeRtc, field.typeFqn) : null);
             return value && setter(value), value;
         };
@@ -350,8 +371,10 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
         iconButtonTemplate.action = () => {
             // restore all ordinary children before adding a new one
             while (node.limit !== undefined) {
+                // @ts-expect-error(TODO:)
                 const children = node.children.getValue();
                 const childNode = children[children.length - 1];
+                // @ts-expect-error(TODO:)
                 childNode.action();
             }
             // add new child
@@ -378,6 +401,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
         const template = new XcFormAutocompleteTemplate(new XcAutocompleteDataWrapper(
             getter, setter, [{
                 name: signal('[' + field.typeLabel + ']'),
+                // @ts-expect-error(TODO:)
                 value: new ComparableDescriber(field.typeRtc, field.typeFqn),
                 disabled: field.typeAbstract
             }]
@@ -396,6 +420,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
         const resolved = this.container.resolveHead(field.path);
         node.readonly = resolved.value instanceof XoObject && resolved.value.readonlyProperties.has(resolved.tail);
         // set tooltip
+        // @ts-expect-error(TODO:)
         node.tooltip = signal(field.docu);
         // get templates array
         let templates: XcTemplate[] = [];
@@ -421,10 +446,13 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 const idx = parentField.remove(field);
                 // remove node
                 const parentNode = node.parent;
+                // @ts-expect-error(TODO:)
                 const children = parentNode.children.getValue();
                 if (idx >= 0) {
                     // reduce limit, if any
+                    // @ts-expect-error(TODO:)
                     if (parentNode.limit > 0) {
+                        // @ts-expect-error(TODO:)
                         parentNode.limit--;
                     }
                     // update name of all following nodes
@@ -440,9 +468,12 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                     }
                     // remove node
                     children.splice(idx, 1);
+                    // @ts-expect-error(TODO:)
                     parentNode.children.next(children);
+                    // @ts-expect-error(TODO:)
                     node.parent = null;
                     // update name and value of limit node
+                    // @ts-expect-error(TODO:)
                     limitNode?.action(true);
                 }
             };
@@ -452,6 +483,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
             defineAccessorProperty<XcIconButtonTemplate, boolean>(
                 deleteButtonTemplate,
                 'disabled',
+                // @ts-expect-error(TODO:)
                 () => node.parent.readonly
             );
             templates.push(deleteButtonTemplate);
@@ -465,8 +497,10 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
 
                 // Resolve all limit nodes
                 while (parentNode.limit !== undefined) {
+                    // @ts-expect-error(TODO:)
                     const children = parentNode.children.getValue();
                     const childNode = children[children.length - 1];
+                    // @ts-expect-error(TODO:)
                     childNode.action();
                 }
 
@@ -476,25 +510,29 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 const index = parentField.children.indexOf(field);
                 const copiedField = parentField.add(index + 1);
 
-                for (let idx = parentField.children.length -1; idx > index + 1; idx--) {
+                for (let idx = parentField.children.length - 1; idx > index + 1; idx--) {
                     this.container.resolveAssign(parentField.children[idx].path, this.container.resolve(parentField.children[idx - 1].path));
                 }
                 this.container.resolveAssign(copiedField.path, copy);
 
                 // insert node
                 const childNode = this.createNodeFromField(copiedField, parentNode);
+                // @ts-expect-error(TODO:)
                 const children = parentNode.children.getValue();
                 children.splice(index + 1, 0, childNode);
+                // @ts-expect-error(TODO:)
                 children.forEach((child, idx) => child.name = parentField.children[idx].label);
+                // @ts-expect-error(TODO:)
                 parentNode.children.next(parentNode.children.getValue());
                 this.triggerMarkForChange();
-            }
+            };
             // A11y
             copyButtonTemplate.label = this.i18n?.translateInstant('zeta.xc.tree.copy-element') ?? 'Copy Element';
             // disabled accessor
             defineAccessorProperty<XcIconButtonTemplate, boolean>(
                 copyButtonTemplate,
                 'disabled',
+                // @ts-expect-error(TODO:)
                 () => node.parent.readonly
             );
             templates.push(copyButtonTemplate);
@@ -510,6 +548,7 @@ export class XcStructureTreeDataSource extends XcBaseStructureTreeDataSource {
                 defineAccessorProperty<typeof template, boolean>(
                     template,
                     'disabled',
+                    // @ts-expect-error(TODO:)
                     () => node.readonly
                 );
             }

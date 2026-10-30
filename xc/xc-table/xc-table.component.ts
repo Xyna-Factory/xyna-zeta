@@ -66,8 +66,10 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
     private _lazyUpdate = false;
     private _visibleActions = false;
     private _leadingActions = false;
+    // @ts-expect-error(TODO:)
     private _dataSource: XcTableDataSource<any>;
     private _dataSourceSubscriptions = new Array<Subscription>();
+    // @ts-expect-error(TODO:)
     private _matSort: MatSort;
 
     /** Internal expand state when parent does not bind xc-table-detailexpanded */
@@ -75,17 +77,20 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
 
     /** Opt-in under-row detail template. When absent, table behaviour is unchanged. */
     @ContentChild(XcTableDetailDirective)
-    detailDirective: XcTableDetailDirective;
+    detailDirective: XcTableDetailDirective | undefined;
 
     private readonly filterTemplates = new Map<string, {
         template: XcFormTemplate<any, any>;
-        component?: XcFormBaseComponent
+        component?: XcFormBaseComponent;
     }>();
     private readonly filterTemplateSubscriptions: OutputRefSubscription[] = [];
 
+    // @ts-expect-error(TODO:)
     private tbody: HTMLTableSectionElement;
+    // @ts-expect-error(TODO:)
     private thead: HTMLTableSectionElement;
 
+    // @ts-expect-error(TODO:)
     private focusViaTabDetectionSubscription: Subscription;
 
 
@@ -115,8 +120,11 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
         // make table body focusable and set key listener
         const xcTable: HTMLElement = this.elementRef.nativeElement;
         const table = xcTable.querySelector('table');
+        // @ts-expect-error(TODO:)
         table.setAttribute('role', 'table');
+        // @ts-expect-error(TODO:)
         this.thead = xcTable.querySelector('thead');
+        // @ts-expect-error(TODO:)
         this.tbody = xcTable.querySelector('tbody');
         this.tbody.setAttribute('tabindex', '0');
         this.tbody.onkeydown = this.keyDown.bind(this);
@@ -131,6 +139,7 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
                 if (!rowFound && this.tbody) {
                     // focus the first row
                     row = this.dataSource.rows[0];
+                    // @ts-expect-error(TODO:)
                     rowEl = this.tbody.querySelector('tr');
 
                     if (row && rowEl) {
@@ -357,14 +366,14 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
      * When omitted and a detail template is present, xc-table manages expand state internally.
      */
     @Input('xc-table-detailexpanded')
-    detailExpanded: (row: any) => boolean;
+    detailExpanded?: (row: any) => boolean;
 
 
     /**
      * Optional id for the detail <tr> (e.g. for scroll-into-view after expand).
      */
     @Input('xc-table-detailrowid')
-    detailRowId: (row: any) => string;
+    detailRowId?: (row: any) => string;
 
 
     get hasDetailTemplate(): boolean {
@@ -460,7 +469,7 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
 
 
     getLeadingActionColumn(): XcTableColumn {
-        return <XcTableColumn>{
+        return {
             path: this.actionColumnPath,
             name: signal('xcTable.actionsColumnHeader'),
             disableSort: true,
@@ -485,6 +494,7 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
             const sortDirection = this.dataSource.getSortDirection();
             return XcSortDirectionToLabel(sortDirection);
         }
+        // @ts-expect-error(TODO:)
         return null;
     }
 
@@ -524,32 +534,42 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
             let filter = this.filterTemplates.get(path);
             // create new template
             if (!filter) {
+                // @ts-expect-error(TODO:)
                 filter = { template: undefined };
                 const filterEnum = this.dataSource.filterEnums.get(path);
                 if (filterEnum) {
                     // autocomplete template
+                    // @ts-expect-error(TODO:)
                     filter.template = new XcFormAutocompleteTemplate(new XcAutocompleteDataWrapper(
                         () => this.dataSource.getFilter(path),
                         (value: any) => this.dataSource.setFilter(path, value),
                         filterEnum
                     ));
+                    // @ts-expect-error(TODO:)
                     if (filter.template instanceof XcFormAutocompleteTemplate) {
                         if (this.dataSource.filterEnumsAsInput.has(path)) {
+                            // @ts-expect-error(TODO:)
                             filter.template.asInput = true;
+                            // @ts-expect-error(TODO:)
                             filter.template.suffix = 'clear';
                         } else if (this.dataSource.filterEnumsAsMultiselect.has(path) || column.filterMultiselect) {
+                            // @ts-expect-error(TODO:)
                             filter.template.asDropdown = true;
+                            // @ts-expect-error(TODO:)
                             filter.template.asMultiselect = true;
+                            // @ts-expect-error(TODO:)
                             filter.template.multiSelectCallback = (value: string) => {
                                 this.dataSource.setFilter(path, value);
                                 this.dataSource.applyFilters();
                             };
                         } else {
+                            // @ts-expect-error(TODO:)
                             filter.template.asDropdown = true;
                         }
                     }
                 } else {
                     // forminput template
+                    // @ts-expect-error(TODO:)
                     filter.template = new XcFormInputTemplate(
                         new XcIdentityDataWrapper(
                             () => this.dataSource.getFilter(path),
@@ -557,10 +577,15 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
                         )
                     );
                 }
+                // @ts-expect-error(TODO:)
                 filter.template.disabled = column.disableFilter;
+                // @ts-expect-error(TODO:)
                 filter.template.compact = true;
+                // @ts-expect-error(TODO:)
                 filter.template.tooltip = this.resolveDynamicString(column.filterTooltip);
+                // @ts-expect-error(TODO:)
                 filter.template.callback = component => {
+                    // @ts-expect-error(TODO:)
                     filter.component = component;
                     // set value and option of component because the datawrapper resets unknown options when autocomplete is used as input
                     if (component instanceof XcFormAutocompleteComponent && this.dataSource.filterEnumsAsInput.has(path)) {
@@ -568,6 +593,7 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
                         component.option = XcOptionItemString(component.value);
                     }
                     this.filterTemplateSubscriptions.push(
+                        // @ts-expect-error(TODO:)
                         filter.component.valueKeydown.subscribe((event: KeyboardEvent) => {
                             if (event.key === 'Enter') {
                                 this.dataSource.applyFilters();
@@ -575,9 +601,11 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
                         })
                     );
                 };
+                // @ts-expect-error(TODO:)
                 this.filterTemplates.set(path, filter);
             }
             // return template
+            // @ts-expect-error(TODO:)
             return filter.template;
         }
     }
@@ -603,6 +631,7 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
     getCellStyles(row: any, path: string): string[] {
         return this.dataSource && this.dataSource.stylesFunction
             ? this.dataSource.stylesFunction(row, path)
+            // @ts-expect-error(TODO:)
             : undefined;
     }
 
@@ -668,6 +697,7 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
 
 
     getPrevRowElement(row: HTMLTableRowElement): HTMLTableRowElement {
+        // @ts-expect-error(TODO:)
         return row ? (row.previousElementSibling || row.parentElement.children[row.parentElement.children.length - 1]) as HTMLTableRowElement : null;
     }
 
@@ -684,10 +714,12 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
 
 
     getNextRowElement(row: HTMLTableRowElement): HTMLTableRowElement {
+        // @ts-expect-error(TODO:)
         return row ? (row.nextElementSibling || row.parentElement.children[0]) as HTMLTableRowElement : null;
     }
 
 
+    // @ts-expect-error(TODO:)
     getSelectedRows(): any[] {
         if (this.dataSource) {
             return this.dataSource.selectionModel.selection;
@@ -705,8 +737,10 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
     getFocusedRowElement(): HTMLTableRowElement {
         let focusedRows: HTMLTableRowElement;
         if (this.tbody) {
+            // @ts-expect-error(TODO:)
             focusedRows = this.tbody.querySelector('tr.focused');
         }
+        // @ts-expect-error(TODO:)
         return focusedRows;
     }
 

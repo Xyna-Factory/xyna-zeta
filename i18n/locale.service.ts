@@ -49,6 +49,7 @@ export class LocaleService {
 
         const html = document.querySelector('html');
         if (html) {
+            // @ts-expect-error(TODO:)
             const langSubtag = /([^-]*)/g.exec(value)[0];
             html.setAttribute('lang', langSubtag);
         }

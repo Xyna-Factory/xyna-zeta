@@ -36,10 +36,11 @@ function isEmptyInputValue(value: any): boolean {
 })
 export class XcFormValidatorsDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
+        // @ts-expect-error(TODO:)
         return this.validators();
     }
 
-    readonly validators = input<ValidatorFn[]>(undefined, { alias: "xc-form-validators" });
+    readonly validators = input<ValidatorFn[]>(undefined, { alias: 'xc-form-validators' });
 }
 
 
@@ -66,10 +67,11 @@ export const XcFormValidatorMaxValue = (maxValue: number): ValidatorFn => Valida
 })
 export class XcFormValidatorMaxValueDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
+        // @ts-expect-error(TODO:)
         return [XcFormValidatorMaxValue(this.maxValue())];
     }
 
-    readonly maxValue = input<number>(undefined, { alias: "xc-form-validator-maxvalue" });
+    readonly maxValue = input<number>(undefined, { alias: 'xc-form-validator-maxvalue' });
 }
 
 
@@ -82,10 +84,11 @@ export const XcFormValidatorMinValue = (minValue: number): ValidatorFn => Valida
 })
 export class XcFormValidatorMinValueDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
+        // @ts-expect-error(TODO:)
         return [XcFormValidatorMinValue(this.minValue())];
     }
 
-    readonly minValue = input<number>(undefined, { alias: "xc-form-validator-minvalue" });
+    readonly minValue = input<number>(undefined, { alias: 'xc-form-validator-minvalue' });
 }
 
 
@@ -98,10 +101,11 @@ export const XcFormValidatorMaxLength = (maxLength: number): ValidatorFn => Vali
 })
 export class XcFormValidatorMaxLengthDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
+        // @ts-expect-error(TODO:)
         return [XcFormValidatorMaxLength(this.maxLength())];
     }
 
-    readonly maxLength = input<number>(undefined, { alias: "xc-form-validator-maxlength" });
+    readonly maxLength = input<number>(undefined, { alias: 'xc-form-validator-maxlength' });
 }
 
 
@@ -114,10 +118,11 @@ export const XcFormValidatorMinLength = (minLength: number): ValidatorFn => Vali
 })
 export class XcFormValidatorMinLengthDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
+        // @ts-expect-error(TODO:)
         return [XcFormValidatorMinLength(this.minLength())];
     }
 
-    readonly minLength = input<number>(undefined, { alias: "xc-form-validator-minlength" });
+    readonly minLength = input<number>(undefined, { alias: 'xc-form-validator-minlength' });
 }
 
 
@@ -148,7 +153,7 @@ export class XcFormValidatorNumberDirective extends XcFormValidatorBaseDirective
         return [XcFormValidatorNumber(this.number() || undefined)];
     }
 
-    readonly number = input<'hexadecimal' | 'decimal' | 'binary' | 'float' | ''>(undefined, { alias: "xc-form-validator-number" });
+    readonly number = input<'hexadecimal' | 'decimal' | 'binary' | 'float' | ''>(undefined, { alias: 'xc-form-validator-number' });
 }
 
 
@@ -160,6 +165,7 @@ export const XcFormValidatorRequired = (): ValidatorFn => Validators.required;
     providers: [{ provide: XcFormValidatorBaseDirective, useExisting: forwardRef(() => XcFormValidatorRequiredDirective) }]
 })
 export class XcFormValidatorRequiredDirective extends XcFormValidatorBaseDirective {
+    // @ts-expect-error(TODO:)
     private _required: boolean;
 
     getValidatorFns(): ValidatorFn[] {
@@ -187,10 +193,11 @@ export const XcFormValidatorPattern = (pattern: string | RegExp): ValidatorFn =>
 })
 export class XcFormValidatorPatternDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
+        // @ts-expect-error(TODO:)
         return [XcFormValidatorPattern(this.pattern())];
     }
 
-    readonly pattern = input<string | RegExp>(undefined, { alias: "xc-form-validator-pattern" });
+    readonly pattern = input<string | RegExp>(undefined, { alias: 'xc-form-validator-pattern' });
 }
 
 
@@ -207,7 +214,7 @@ export const XcFormValidatorIPv4 = (): ValidatorFn => {
 export class XcFormValidatorIpv4Directive extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
         return [(control: AbstractControl): ValidationErrors | null => XcFormValidatorIPv4()(control)
-            ? <ValidationErrors>{'ipv4': {value: control.value}}
+            ? {'ipv4': {value: control.value}}
             : null];
     }
 }
@@ -227,7 +234,7 @@ export const XcFormValidatorIPv6 = (): ValidatorFn => {
 export class XcFormValidatorIpv6Directive extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
         return [(control: AbstractControl): ValidationErrors | null => XcFormValidatorIPv6()(control)
-            ? <ValidationErrors>{'ipv4': {value: control.value}}
+            ? {'ipv4': {value: control.value}}
             : null];
     }
 }
@@ -240,7 +247,7 @@ export class XcFormValidatorIpv6Directive extends XcFormValidatorBaseDirective {
 export class XcFormValidatorIpDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
         return [(control: AbstractControl): ValidationErrors | null => !!XcFormValidatorIPv4()(control) && !!XcFormValidatorIPv6()(control)
-            ? <ValidationErrors>{'ip': {value: control.value}}
+            ? {'ip': {value: control.value}}
             : null];
     }
 }
@@ -255,8 +262,11 @@ export interface XcCustomValidatorFunction {
 export const XcFormValidatorCustom = (valFunction: XcCustomValidatorFunction, args?: any[]): ValidatorFn => (control: AbstractControl): ValidationErrors | null => {
     const str = valFunction.errorText;
     let result = null;
+    // @ts-expect-error(TODO:)
     if (!(valFunction.onValidate(control.value, args))) {
+        // @ts-expect-error(TODO:)
         result = {};
+        // @ts-expect-error(TODO:)
         result[str] = {'actualValue': control.value};
     }
     return result;
@@ -269,10 +279,11 @@ export const XcFormValidatorCustom = (valFunction: XcCustomValidatorFunction, ar
 })
 export class XcFormValidatorCustomDirective extends XcFormValidatorBaseDirective {
     getValidatorFns(): ValidatorFn[] {
+        // @ts-expect-error(TODO:)
         return [XcFormValidatorCustom(this.validatorFunction(), this.args())];
     }
 
-    readonly validatorFunction = input<XcCustomValidatorFunction>(undefined, { alias: "xc-form-validator-custom" });
+    readonly validatorFunction = input<XcCustomValidatorFunction>(undefined, { alias: 'xc-form-validator-custom' });
 
-    readonly args = input<any[]>(undefined, { alias: "xc-form-validator-custom-arguments" });
+    readonly args = input<any[]>(undefined, { alias: 'xc-form-validator-custom-arguments' });
 }

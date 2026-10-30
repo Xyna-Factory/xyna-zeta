@@ -25,14 +25,18 @@ export class XcSelectionModel<T> {
     private readonly _selectionSubject = new Subject<XcSelectionModel<T>>();
     private _selectionSet = new Set<T>();
     private _suppressChange = false;
+    // @ts-expect-error(TODO:)
     private _lastSelected: T;
+    // @ts-expect-error(TODO:)
     private _focusCandidate: T;
+    // @ts-expect-error(TODO:)
     private _activatedCandidate: T;
 
     /** Determines whether the selection change will be triggered, even if the selected items remain the same */
     selectionChangeForUnchangedSelection = false;
 
     /** Guard against selection changes by setting the callback to return a obvservable yielding false */
+    // @ts-expect-error(TODO:)
     selectionChangeGuard: () => Observable<boolean>;
 
 
@@ -144,6 +148,7 @@ export class XcSelectionModel<T> {
      * Deselects a value
      */
     deselect(value: T) {
+        // @ts-expect-error(TODO:)
         this._lastSelected = undefined;
         this.combineOperations(() =>
             this._selectionSet.delete(value)
@@ -155,6 +160,7 @@ export class XcSelectionModel<T> {
      * Clears all of the selected values
      */
     clear() {
+        // @ts-expect-error(TODO:)
         this._lastSelected = undefined;
         this.combineOperations(() =>
             this._selectionSet.clear()
@@ -282,10 +288,12 @@ export class XcSubSelectionModel<T, S> extends XcSelectionModel<T> {
     // This map have to be synchonous whith the set _selectionSet.
     // If some methodcalls from XcSubSelectionModel and XcSelectionModel are mixed, then things can go wrong.
     protected _subSelectionMap = new Map<T, Set<S>>();
+    // @ts-expect-error(TODO:)
     private _lastCellSelected: S;
 
 
     deselect(value: T) {
+        // @ts-expect-error(TODO:)
         this._lastCellSelected = undefined;
         // remove sub selections (must be done before super call to include changes when event is fired)
         this._subSelectionMap.delete(value);
@@ -294,6 +302,7 @@ export class XcSubSelectionModel<T, S> extends XcSelectionModel<T> {
 
 
     clear() {
+        // @ts-expect-error(TODO:)
         this._lastCellSelected = undefined;
         // clear all sub selections (must be done before super call to include changes when event is fired)
         this._subSelectionMap.clear();
@@ -331,6 +340,7 @@ export class XcSubSelectionModel<T, S> extends XcSelectionModel<T> {
 
 
     subDeselect(value: T, sub: S) {
+        // @ts-expect-error(TODO:)
         this._lastCellSelected = undefined;
         const set = this._subSelectionMap.get(value);
         if (set && set.delete(sub) && set.size === 0) {
@@ -350,6 +360,7 @@ export class XcSubSelectionModel<T, S> extends XcSelectionModel<T> {
 
     isSubSelected(value: T, sub: S): boolean {
         const set = this._subSelectionMap.get(value);
+        // @ts-expect-error(TODO:)
         return set && set.has(sub);
     }
 

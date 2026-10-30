@@ -27,11 +27,12 @@ export type XcDynamicComponentType<D> = new (...args: any[]) => XcDynamicCompone
 })
 export abstract class XcDynamicComponent<D> {
 
+    //@ts-expect-error(TODO:)
     readonly injectedData: D;
 
 
     constructor() {
-        const injector = inject(Injector, { optional: true });
+        const injector = inject(Injector);
 
         try {
             this.injectedData = injector.get(this.getToken());

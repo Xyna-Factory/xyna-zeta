@@ -32,6 +32,7 @@ import { XcFormGenericPanelComponent } from '../../shared/xc-form-generic-panel/
 })
 export class XcFormPanelDefinitionComponent extends XcFormDefinitionComponent {
 
+    // @ts-expect-error(TODO:)
     private closeEventSubscription: Subscription;
 
     @Input('xc-panel-definition')

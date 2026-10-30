@@ -25,7 +25,9 @@ import { XcSelectionModel } from './xc-selection';
 export abstract class XcSelectionDataSource<T extends Comparable = Comparable, S extends XcSelectionModel<T> = XcSelectionModel<T>> extends XcDataSource<T> {
 
     /** Unique keys of all entries to select after refreshing the data source */
+    // @ts-expect-error(TODO:)
     private pendingSelectionKeys: string[];
+    // @ts-expect-error(TODO:)
     private beforeData: T[];
 
     private readonly restoreSelectionKeysFailedSubject = new Subject<string[]>();
@@ -76,6 +78,7 @@ export abstract class XcSelectionDataSource<T extends Comparable = Comparable, S
                     if (selection) {
                         this.selectionModel.select(selection);
                     } else {
+                        // @ts-expect-error(TODO:)
                         invalidSelectionKeys.push(selectionKey);
                     }
                 });
@@ -85,6 +88,7 @@ export abstract class XcSelectionDataSource<T extends Comparable = Comparable, S
                 this.restoreSelectionKeysFailedSubject.next(invalidSelectionKeys);
             }
             // clear pending selection keys
+            // @ts-expect-error(TODO:)
             this.pendingSelectionKeys = undefined;
         } else {
             // store selection keys for next data source update

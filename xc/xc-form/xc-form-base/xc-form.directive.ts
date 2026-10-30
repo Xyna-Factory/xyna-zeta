@@ -34,6 +34,7 @@ export class XcFormDirective implements OnDestroy {
 
 
     private _invalid = false;
+    // @ts-expect-error(TODO:)
     private _validators: QueryList<XcFormValidatorBaseDirective>;
     private readonly _formControlInvalidMap = new Map<FormControl, boolean>();
     private _formControlStateChangeSubscription;
@@ -64,6 +65,7 @@ export class XcFormDirective implements OnDestroy {
 
         // save their host's FormControl in a Map with their invalid state.
         this._validators.forEach(validator => {
+            // @ts-expect-error(TODO:)
             this._formControlInvalidMap.set(validator.host.formControl, validator.host.formControl.invalid);
         });
 

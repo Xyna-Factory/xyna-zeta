@@ -35,11 +35,12 @@ import { XC_RICH_LIST_ITEM_DATA, XcRichListInterface, XcRichListItem, XcRichList
 export class XcRichListComponent extends XcThemeableComponent implements XcRichListInterface {
     private readonly injector = inject(Injector);
 
+    // @ts-expect-error(TODO:)
     private _componentOutlets: QueryList<NgComponentOutlet>;
     private readonly _componentInjectors = new Map<XcRichListItem, Injector>();
     private readonly _componentSubjects = new Map<XcRichListItem, Subject<XcRichListItemComponent>>();
 
-    readonly items = input(new Array<XcRichListItem>(), { alias: "xc-rich-list-items" });
+    readonly items = input(new Array<XcRichListItem>(), { alias: 'xc-rich-list-items' });
 
 
     private _getComponentInstance(item: XcRichListItem): XcRichListItemComponent | null {
@@ -47,8 +48,9 @@ export class XcRichListComponent extends XcThemeableComponent implements XcRichL
         if (idx >= 0 && idx < this.componentOutlets.length) {
             const componentOutlet = this.componentOutlets.toArray()[idx];
             // necessary private access
-             
-            const componentRef = componentOutlet['_componentRef'] as ComponentRef<XcRichListItemComponent>;
+
+            // @ts-expect-error(TODO:)
+            const componentRef = componentOutlet._componentRef as ComponentRef<XcRichListItemComponent>;
             return componentRef.instance;
         }
         return null;
@@ -63,6 +65,7 @@ export class XcRichListComponent extends XcThemeableComponent implements XcRichL
         let instance: XcRichListItemComponent;
         this._componentOutlets = value;
         this._componentSubjects.forEach((subject, item) => {
+            // @ts-expect-error(TODO:)
             if ((instance = this._getComponentInstance(item))) {
                 // notify getComponentInstance() observers
                 subject.next(instance);
@@ -87,6 +90,7 @@ export class XcRichListComponent extends XcThemeableComponent implements XcRichL
 
 
     getComponentInjector(item: XcRichListItem): Injector {
+        // @ts-expect-error(TODO:)
         return this._componentInjectors.get(item) || this._componentInjectors.set(
             item, Injector.create({
                 providers: [

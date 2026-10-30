@@ -59,6 +59,7 @@ export class QueryParameterService {
 
     getValue(key: string): string {
         this.syncServiceWithUrl();
+        // @ts-expect-error(TODO:)
         return this.queries.get(key);
     }
 
@@ -80,6 +81,7 @@ export class QueryParameterService {
 
     removeParamsStartWith(prefix: string) {
         const arr = this.getParamsStartWith(prefix);
+        // @ts-expect-error(TODO:)
         this.remove(...(arr.map<string>(p => p.key)));
     }
 
@@ -101,6 +103,7 @@ export class QueryParameterService {
         if (this.queries && this.queries.size) {
             this.queries.forEach((v, k) => arr.push(k + '=' + v));
         }
+        // @ts-expect-error(TODO:)
         window.history.pushState({}, null, this.getCleanUrl() + (arr.length ? '?' + arr.join('&') : ''));
     }
 
@@ -108,6 +111,7 @@ export class QueryParameterService {
         let q: UrlQueryParam;
         this.queries.clear();
         for (q of this.getUrlQueryParams()) {
+            // @ts-expect-error(TODO:)
             this.queries.set(q.key, q.value);
         }
     }

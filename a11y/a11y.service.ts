@@ -50,8 +50,10 @@ export class A11yService {
     private readonly visibilitySubject = new Subject<boolean>();
     readonly visibilityChange: Observable<boolean> = this.visibilitySubject.asObservable();
 
-    private lastPossibleFocusChangingEventSubject = new BehaviorSubject<Event>(null);
-    private lastActiveElementSubject = new BehaviorSubject<Element>(null);
+    // @ts-expect-error(TODO:)
+    private readonly lastPossibleFocusChangingEventSubject = new BehaviorSubject<Event>(null);
+    // @ts-expect-error(TODO:)
+    private readonly lastActiveElementSubject = new BehaviorSubject<Element>(null);
 
     constructor() {
         this.ngZone.runOutsideAngular(() => {
@@ -63,6 +65,7 @@ export class A11yService {
             // Tastatureingabe merken
             document.addEventListener('keydown', (e: KeyboardEvent) => {
                 if (e.key === 'Tab') {
+                    // @ts-expect-error(TODO:)
                     this.lastActiveElementSubject.next(document.activeElement);
                     this.lastPossibleFocusChangingEventSubject.next(e);
                 }
@@ -70,6 +73,7 @@ export class A11yService {
 
             // Mauseingabe merken
             document.addEventListener('mousedown', (e: MouseEvent) => {
+                // @ts-expect-error(TODO:)
                 this.lastActiveElementSubject.next(document.activeElement);
                 this.lastPossibleFocusChangingEventSubject.next(e);
             });
@@ -85,6 +89,7 @@ export class A11yService {
     }
 
     private emitFocusEvent(ev: FocusEvent, type: 'focus' | 'blur') {
+        // @ts-expect-error(TODO:)
         this.lastActiveElementSubject.next(document.activeElement);
         const achieved = this.lastPossibleFocusChangingEventSubject.value?.type === 'mousedown'
             ? 'mouse'

@@ -118,6 +118,7 @@ export function defineAccessorProperty<T, R>(
             get: get || undefined,
             set: set || undefined
         });
+        // @ts-expect-error(TODO:)
         return get?.();
     }
     return propertyDescriptor.get?.() ?? propertyDescriptor.value;
@@ -208,7 +209,7 @@ export function endsWith(string: string, substring: string): boolean {
  * @returns Number of digits
  */
 export function digits(value: number): number {
-
+    // eslint-disable-next-line no-bitwise
     return (Math.log10((value ^ (value >> 31)) - (value >> 31)) | 0) + 1;
 }
 
@@ -289,11 +290,17 @@ export function factorMultiplicity(value: number, factor: number): number {
  */
 export function prevPow2(value: number): number {
 
+    // eslint-disable-next-line no-bitwise
     value |= (value >> 1);
+    // eslint-disable-next-line no-bitwise
     value |= (value >> 2);
+    // eslint-disable-next-line no-bitwise
     value |= (value >> 4);
+    // eslint-disable-next-line no-bitwise
     value |= (value >> 8);
+    // eslint-disable-next-line no-bitwise
     value |= (value >> 16);
+    // eslint-disable-next-line no-bitwise
     return value - (value >> 1);
 
 }
@@ -307,10 +314,15 @@ export function prevPow2(value: number): number {
 export function nextPow2(value: number): number {
 
     value--;
+    // eslint-disable-next-line no-bitwise
     value |= value >> 1;
+    // eslint-disable-next-line no-bitwise
     value |= value >> 2;
+    // eslint-disable-next-line no-bitwise
     value |= value >> 4;
+    // eslint-disable-next-line no-bitwise
     value |= value >> 8;
+    // eslint-disable-next-line no-bitwise
     value |= value >> 16;
     return value + 1;
 
@@ -326,6 +338,7 @@ export function nextPow2(value: number): number {
 export function log2(value: number): number {
     let result = 0;
 
+    // eslint-disable-next-line no-bitwise
     while ((value >>= 1)) {
         result++;
     }
@@ -534,6 +547,7 @@ export function isSymbol(arg: any): arg is symbol {
 
 
 export function convertNan(value: number, to: null | undefined): number {
+    // @ts-expect-error(TODO:)
     return isNaN(value) ? to : value;
 }
 
@@ -579,6 +593,7 @@ export function range(length: number, start = 0): number[] {
 
 export function numberToString(value: number, nullRepresentation: null | undefined): string {
     // x == null   equals   x === null || x === undefined
+    // @ts-expect-error(TODO:)
     return isNaN(value) || value == null ? nullRepresentation : '' + value;
 }
 
@@ -624,6 +639,7 @@ export function stringToBoxedFloat(value: string): number {
 
 
 export function booleanToString(value: boolean, nullRepresentation: null | undefined): string {
+    // @ts-expect-error(TODO:)
     return value == null ? nullRepresentation : value.toString();
 }
 
@@ -639,6 +655,7 @@ export function boxedBooleanToString(value: boolean): string {
 
 
 export function stringToBoolean(value: string, nullRepresentation: null | undefined): boolean {
+    // @ts-expect-error(TODO:)
     return value === 'false' ? false : (value === 'true' || nullRepresentation);
 }
 
@@ -685,6 +702,7 @@ export enum UploadResultStatus {
 
 
 export class UploadResult {
+    // @ts-expect-error(TODO:)
     constructor(public status: UploadResultStatus, public stream = '', public file: File = null, public percent = 0) {
     }
 }
@@ -706,6 +724,7 @@ export function getEnumKey(enumerable: object, value: string) {
  */
 export function getSubdirectory(url: string): string {
     const regExp = /https?:\/\/[^/]*\/(.*)/gm;
+    // @ts-expect-error(TODO:)
     const subDirectory = regExp.exec(url)[1] ?? '';
     return subDirectory.endsWith('/') ? subDirectory : subDirectory + '/';
 }
@@ -717,6 +736,7 @@ export function browseFile(mimeType = MimeTypes.txt): Observable<UploadResult> {
     input.setAttribute('type', 'file');
     input.setAttribute('accept', '.' + getEnumKey(MimeTypes, mimeType));
     input.onchange = () => {
+        // @ts-expect-error(TODO:)
         const result = new UploadResult(UploadResultStatus.FileChosen, '', input.files[0], 0);
         subject.next(result);
         subject.complete();
@@ -808,6 +828,7 @@ export function scrollToElement(element: Element, scrollBehavior: ScrollBehavior
     const checkIsScrolling = () => {
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
+            // @ts-expect-error(TODO:)
             element.parentElement.removeEventListener('scroll', checkIsScrolling);
             scrollingEnded.next();
             scrollingEnded.complete();
@@ -842,11 +863,14 @@ export function pasteFromClipboard(): Observable<string> {
  * @param text    Text to check against overflowing
  * @returns TRUE, if text is overflowing, FALSE otherwise
  */
+// @ts-expect-error(TODO:)
 export function isTextOverflowing(element: HTMLElement, text: string): boolean {
     const getTextWidth = (fontFamily: string, fontSize: string): number => {
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
+        // @ts-expect-error(TODO:)
         context.font = fontSize + ' ' + fontFamily;
+        // @ts-expect-error(TODO:)
         const metrics = context.measureText(text);
         return metrics ? metrics.width : -1;
     };

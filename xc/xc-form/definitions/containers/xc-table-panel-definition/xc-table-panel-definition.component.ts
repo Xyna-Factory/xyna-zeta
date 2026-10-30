@@ -23,7 +23,7 @@ import { Subscription } from 'rxjs';
 import { filter, first } from 'rxjs/operators';
 
 import { ApiService, XynaMonitoringLevel, XynaPriority } from '../../../../../api';
-import { I18nService } from '../../../../../i18n';
+import { I18nService, XcI18nPipe  } from '../../../../../i18n';
 import { XcRemoteTableDataSource } from '../../../../xc-table/xc-remote-table-data-source';
 import { XoBaseDefinition, XoDefinition } from '../../xo/base-definition.model';
 import { XoTablePanelDefinition } from '../../xo/containers.model';
@@ -33,7 +33,6 @@ import { XcButtonComponent } from '../../../../xc-button/xc-button.component';
 import { XcIconButtonComponent } from '../../../../xc-button/xc-icon-button.component';
 import { XcTooltipDirective } from '../../../../xc-tooltip/xc-tooltip.directive';
 import { XcTableComponent } from '../../../../xc-table/xc-table.component';
-import { XcI18nPipe } from '../../../../../i18n';
 
 
 @Component({
@@ -48,10 +47,13 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
     private readonly i18n = inject(I18nService);
 
 
+    // @ts-expect-error(TODO:)
     dataSource: XcRemoteTableDataSource;
+    // @ts-expect-error(TODO:)
     private detailsDefinition: XoDefinition;
 
     private readonly subscriptions: Subscription[] = [];
+    // @ts-expect-error(TODO:)
     private refreshEventSubscription: Subscription;
 
     tableInputFQN = '';
@@ -82,7 +84,9 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
 
         // close details on refresh
         if (this.detailsDefinition && this.detailsDefinition.observer && this.tableDefinition.observer.closeDefinition) {
+            // @ts-expect-error(TODO:)
             this.detailsDefinition.observer.closeDefinition().subscribe();
+            // @ts-expect-error(TODO:)
             this.detailsDefinition = null;
         }
     }
@@ -98,6 +102,7 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
         // request table
         const rtc = this.tableDefinition.tableWorkflowRTC
             ? this.tableDefinition.tableWorkflowRTC
+            // @ts-expect-error(TODO:)
             : this.definition.observer ? this.definition.observer.getDefaultRTC() : null;
         if (!rtc) {
             console.error('Table Panel Definition: No RTC for Table-Workflow defined!');
@@ -167,6 +172,7 @@ export class XcTablePanelDefinitionComponent extends XcFormPanelDefinitionCompon
                                         const observerSubscription = this.detailsDefinition.observerChange
                                             .pipe(filter(observer => !!observer))
                                             .subscribe(observer => {
+                                                // @ts-expect-error(TODO:)
                                                 observer.definitionClosed().pipe(first()).subscribe(data => {
                                                     // refresh table on close of details, if requested
                                                     if (data && data.refreshParentDefinition) {

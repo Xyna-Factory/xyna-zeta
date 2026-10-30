@@ -38,6 +38,7 @@ export abstract class XcI18nBase {
                 currentEl = parentEl;
             }
         }
+        // @ts-expect-error(TODO:)
         return undefined;
     }
 }
@@ -76,6 +77,7 @@ export class XcI18nTranslateDirective extends XcI18nBase implements OnInit {
     private readonly injector = inject(Injector);
 
 
+    // @ts-expect-error(TODO:)
     private _context: string;
     private contentKey = '';
     private translatedContent = '';

@@ -32,9 +32,12 @@ import { XcButtonBaseComponent } from './xc-button-base.component';
 })
 export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, AfterContentInit {
 
+    // @ts-expect-error(TODO:)
     private _translate: boolean;
+    // @ts-expect-error(TODO:)
     private _labelKey: string;
 
+    // @ts-expect-error(TODO:)
     private element: HTMLElement;
 
     ngOnInit() {

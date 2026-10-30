@@ -40,7 +40,9 @@ export class XcTreePanelDefinitionComponent extends XcFormPanelDefinitionCompone
     private readonly i18n = inject(I18nService);
 
 
+    // @ts-expect-error(TODO:)
     dataSource: XcStructureTreeDataSource;
+    // @ts-expect-error(TODO:)
     private readonly contentChangeSubscription: Subscription;
 
 

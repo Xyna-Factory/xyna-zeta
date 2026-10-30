@@ -49,12 +49,14 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
     private readonly route = inject(ActivatedRoute);
 
 
+    // @ts-expect-error(TODO:)
     private _items: XcNavListItem[];
+    // @ts-expect-error(TODO:)
     private _navigationSubscription: Subscription;
 
-    readonly orientation = input(XcNavListOrientation.TOP, { alias: "xc-nav-list-orientation" });
+    readonly orientation = input(XcNavListOrientation.TOP, { alias: 'xc-nav-list-orientation' });
 
-    readonly size = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: "xc-nav-list-size" });
+    readonly size = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: 'xc-nav-list-size' });
 
     /**
      * If set, only the selected item (and its parents) are expanded, the rest will be collapsed automatically
@@ -185,20 +187,24 @@ export class XcNavListComponent extends XcThemeableComponent implements OnInit, 
                     }
                 }
             }
+            // @ts-expect-error(TODO:)
             return null;
         };
 
         if (!link) {
+            // @ts-expect-error(TODO:)
             return null;
         }
 
         for (const rootItem of this.items) {
+            // @ts-expect-error(TODO:)
             const foundItem = recFunc({ item: rootItem, parent: null }, link);
             if (foundItem) {
                 return foundItem;
             }
         }
 
+        // @ts-expect-error(TODO:)
         return null;
     }
 

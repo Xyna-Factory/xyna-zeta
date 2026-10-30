@@ -53,8 +53,9 @@ export class XcAboutDialogComponent extends XcDialogComponent<void, XcAboutDialo
     constructor() {
         super();
 
+        // @ts-expect-error(TODO:)
         this.http.get(this.injectedData.detailsLink, { responseType: 'text' }).subscribe(
-            result => this.license = result
+            result => this.license = result as unknown as string
         );
     }
 

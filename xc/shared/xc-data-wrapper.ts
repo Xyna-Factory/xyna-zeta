@@ -51,10 +51,12 @@ export abstract class XcBoxableDataWrapper<L, R> extends XcDataWrapper<L, R> {
 export class XcNullDataWrapper<T extends null = null> extends XcDataWrapper<T, T> {
 
     constructor() {
+        // @ts-expect-error(TODO:)
         super(null, null);
     }
 
     get value(): T {
+        // @ts-expect-error(TODO:)
         return null;
     }
 

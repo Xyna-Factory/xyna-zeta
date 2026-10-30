@@ -63,9 +63,9 @@ export class XcCoord {
         rect.y = typeof rect.y === 'number' ? rect.y : 0;
         const axisLength = this.relAxis === RelationAxis.X ? (rect.width - rect.x) : (rect.height - rect.y);
         const absoluteDifferenceFromStart
-                            = this.unit === Unit.Relative
-                                ? (this.difference * axisLength /  100)
-                                : this.difference;
+            = this.unit === Unit.Relative
+                ? (this.difference * axisLength /  100)
+                : this.difference;
 
         let normalValue: number;
         if (this.orientationSide === OrientationSide.End) {

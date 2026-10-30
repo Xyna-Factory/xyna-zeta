@@ -250,6 +250,7 @@ export class XcGraphUtils {
     }
 
 
+    // @ts-expect-error(TODO:)
     static getSliceValuesPtr(slice: XcGraphSlice, interval: XcTimeInterval, resolution: number): { globalOff: number; localOff: number; len: number } {
         const intervalTimeAt = floorBase(interval.timeAt, resolution);
         const intervalTimeTo = floorBase(interval.timeTo, resolution) + resolution;
@@ -324,6 +325,7 @@ export abstract class XcGraphDataSource extends XcDataSource<XcGraphData> {
         }
 
         // insert new time slices computed from option intervals
+        // @ts-expect-error(TODO:)
         options.intervals.forEach(interval =>
             XcGraphUtils.insertSlice(
                 this._graphTimeSlices,
@@ -336,6 +338,7 @@ export abstract class XcGraphDataSource extends XcDataSource<XcGraphData> {
         // go through all received graph data items
         receivedGraphDataList.forEach(receivedGraphData => {
             // find graph data with the same id as received graph data, ...
+            // @ts-expect-error(TODO:)
             let graphData: XcGraphData = this._graphDataList.find(value => value.id === receivedGraphData.id);
             // ... or create a new one
             if (!graphData) {
@@ -352,6 +355,7 @@ export abstract class XcGraphDataSource extends XcDataSource<XcGraphData> {
                 XcGraphUtils.insertSlice(graphData.slices, slice, this.resolution)
             );
             // insert void slices
+            // @ts-expect-error(TODO:)
             options.intervals.forEach(interval => {
                 let time = interval.timeAt;
                 receivedGraphData.slices.forEach(slice => {
@@ -372,19 +376,19 @@ export abstract class XcGraphDataSource extends XcDataSource<XcGraphData> {
         // update with computed derivative or raw data
         this.data = this.derivative
             ? this._graphDataList.map(graphData =>
-                <XcGraphData>{
+                ({
                     id: graphData.id,
                     type: graphData.type,
                     slices: graphData.slices.map(slice =>
-                        <XcGraphSlice>{
+                        ({
                             time: slice.time,
                             values: slice.values.map((value, idx, array) =>
                                 idx === 0 ? 0 : (value - array[idx - 1]) * 1000 / this.resolution
                             )
-                        }
+                        })
                     ),
                     voids: graphData.voids
-                }
+                })
             ) : this._graphDataList;
     }
 

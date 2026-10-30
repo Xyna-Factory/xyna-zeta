@@ -40,9 +40,9 @@ export class XcMasterDetailFocusCandidateDirective implements OnInit {
     // the preexisting value of the referee should not cause the directive to focus on the element
     private _beforeInit = false;
 
-    readonly moment = input<'close' | 'open' | 'none'>('none', { alias: "xc-master-detail-focus-candidate" });
+    readonly moment = input<'close' | 'open' | 'none'>('none', { alias: 'xc-master-detail-focus-candidate' });
 
-    readonly observer = input<XcMasterDetailFocusCandidateObserver>(undefined, { alias: "xc-master-detail-focus-candidate-observer" });
+    readonly observer = input<XcMasterDetailFocusCandidateObserver>(undefined, { alias: 'xc-master-detail-focus-candidate-observer' });
 
     @Input('xc-master-detail-focus-candidate-valuereferee')
     set valueReferee(value: any) {
