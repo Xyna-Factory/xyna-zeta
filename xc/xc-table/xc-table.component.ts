@@ -77,7 +77,7 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
 
     /** Opt-in under-row detail template. When absent, table behaviour is unchanged. */
     @ContentChild(XcTableDetailDirective)
-    detailDirective: XcTableDetailDirective;
+    detailDirective: XcTableDetailDirective | undefined;
 
     private readonly filterTemplates = new Map<string, {
         template: XcFormTemplate<any, any>;
@@ -366,14 +366,14 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
      * When omitted and a detail template is present, xc-table manages expand state internally.
      */
     @Input('xc-table-detailexpanded')
-    detailExpanded: (row: any) => boolean;
+    detailExpanded?: (row: any) => boolean;
 
 
     /**
      * Optional id for the detail <tr> (e.g. for scroll-into-view after expand).
      */
     @Input('xc-table-detailrowid')
-    detailRowId: (row: any) => string;
+    detailRowId?: (row: any) => string;
 
 
     get hasDetailTemplate(): boolean {

@@ -34,6 +34,7 @@ export class XcButtonComponent extends XcButtonBaseComponent implements OnInit, 
 
     // @ts-expect-error(TODO:)
     private _translate: boolean;
+    // @ts-expect-error(TODO:)
     private _labelKey: string;
 
     // @ts-expect-error(TODO:)
