@@ -26,7 +26,9 @@ import { XcPlotDataPair, XcPlotDataSource } from './xc-plot-data-source';
 
 export class XcPlotController {
 
+    // @ts-expect-error(TODO:)
     protected dataSourceRef: XcPlotDataSource;
+    // @ts-expect-error(TODO:)
     protected dataSourceContainerRef: XcPlotDataSource[];
     protected currentDataSourceIndex = 0;
 
@@ -64,7 +66,9 @@ export class XcCartasianCoordinateSystemController extends XcPlotController {
 
     ccsArea: XcCanvasCartasianCoordinateSystemArea;
 
+    // @ts-expect-error(TODO:)
     private selectedPointImage: HTMLImageElement;
+    // @ts-expect-error(TODO:)
     private hoverPointImage: HTMLImageElement;
 
     constructor(canvas: HTMLCanvasElement, dataSourceContainerChange: Observable<XcPlotDataSource[]>) {
@@ -125,6 +129,7 @@ export class XcCartasianCoordinateSystemController extends XcPlotController {
                             if (isHit && !already) {
                                 ds.hoverModel.select(p);
                                 // this.hoverPointImage = this.createPopupImageOfPoint(p, 'white');
+                                // @ts-expect-error(TODO:)
                                 this.createPopupImageOfPoint(p, ds, 'white').then(img => this.hoverPointImage = img, () => this.hoverPointImage = null);
                             }
                             if (!isHit && already) {
@@ -137,6 +142,7 @@ export class XcCartasianCoordinateSystemController extends XcPlotController {
                     });
 
                     if (numberOfPointsCursorHoveredOver <= 0) {
+                        // @ts-expect-error(TODO:)
                         this.hoverPointImage = null;
                     }
 
@@ -213,6 +219,7 @@ export class XcCartasianCoordinateSystemController extends XcPlotController {
                         if (isHit) {
                             ds.selectionModel.select(p);
                             // this.selectedPointImage = this.createPopupImageOfPoint(p);
+                            // @ts-expect-error(TODO:)
                             this.createPopupImageOfPoint(p, ds).then(img => this.selectedPointImage = img, () => this.selectedPointImage = null);
                         }
                     });
@@ -223,6 +230,7 @@ export class XcCartasianCoordinateSystemController extends XcPlotController {
             });
 
             if (numberOfPointsThatAreSelected <= 0) {
+                // @ts-expect-error(TODO:)
                 this.selectedPointImage = null;
             }
 
@@ -256,10 +264,13 @@ export class XcCartasianCoordinateSystemController extends XcPlotController {
         const canvas = document.createElement('canvas');
         const c = canvas.getContext('2d');
         // save context state
+        // @ts-expect-error(TODO:)
         c.save();
+        // @ts-expect-error(TODO:)
         c.font = `${font.height}px ${font.family}`;
 
         // now that font and the text of the lines are defined => recalculationg width and height
+        // @ts-expect-error(TODO:)
         const lineLengths = lines.map<number>(l => c.measureText(l).width);
         const width = (2 * font.padding) + Math.max(...lineLengths);
         const height = Math.max(60, ((lines.length - 1) * font.vertLineSpace + (2 * font.padding) + (2 * font.height)));
@@ -267,32 +278,43 @@ export class XcCartasianCoordinateSystemController extends XcPlotController {
         canvas.width = width;
         canvas.height = height;
 
+        // @ts-expect-error(TODO:)
         c.font = `${font.height}px ${font.family}`;
 
+        // @ts-expect-error(TODO:)
         c.clearRect(0, 0, width, height);
 
         // draw background
+        // @ts-expect-error(TODO:)
         c.fillStyle = backgroundColor;
+        // @ts-expect-error(TODO:)
         c.fillRect(0, 0, width, height);
 
         // draw border
+        // @ts-expect-error(TODO:)
         c.strokeStyle = border.color;
+        // @ts-expect-error(TODO:)
         c.lineWidth = border.width;
         const borderDiff = border.width / 2;
+        // @ts-expect-error(TODO:)
         c.strokeRect(0 + borderDiff, 0 + borderDiff, width - (2 * borderDiff), height - (2 * borderDiff));
 
+        // @ts-expect-error(TODO:)
         c.fillStyle = font.color;
 
         // const x = (width / 2);
         // c.textAlign = 'center';
         const x = borderDiff + font.padding;
+        // @ts-expect-error(TODO:)
         c.textAlign = 'left';
+        // @ts-expect-error(TODO:)
         c.textBaseline = 'middle';
 
         // calculating text lengths
         lines.forEach((line, i) => {
 
             const y = (height / (lines.length + 1)) * (i + 1);
+            // @ts-expect-error(TODO:)
             c.fillText(line, x, y, (width - borderDiff));
 
         });
@@ -322,6 +344,7 @@ export class XcCartasianCoordinateSystemController extends XcPlotController {
     draw(c: CanvasRenderingContext2D, dt: number) {
         c.save();
         c.fillStyle = this.dataSourceRef.styleHelper.PLOT.backgroundColor;
+        // @ts-expect-error(TODO:)
         c.fillRect(this.plottableArea.x, this.plottableArea.y, this.plottableArea.width, this.plottableArea.height);
         c.restore();
 

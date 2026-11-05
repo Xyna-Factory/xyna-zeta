@@ -37,7 +37,7 @@ export const ApiRoutingProviders = [
     { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: RightsInterceptor, multi: true },
      provideAppInitializer(() => {
-      const configService: ConfigService = inject(ConfigService);
-      return configService.initialize();
-    })
+         const configService: ConfigService = inject(ConfigService);
+         return configService.initialize();
+     })
 ];

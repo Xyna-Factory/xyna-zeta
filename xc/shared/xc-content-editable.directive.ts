@@ -41,6 +41,7 @@ export class XcContentEditableDirective {
         return this.contentEditableValue;
     }
 
+    // @ts-expect-error(TODO:)
     private _mode: XcContentEditableMode;
     private _multiline = false;
 
@@ -99,7 +100,9 @@ export class XcContentEditableDirective {
             const range = window.document.createRange();
             range.selectNodeContents(this.elementRef.nativeElement);
             const selection = window.getSelection();
+            // @ts-expect-error(TODO:)
             selection.removeAllRanges();
+            // @ts-expect-error(TODO:)
             selection.addRange(range);
         }
     }

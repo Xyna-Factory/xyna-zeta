@@ -67,13 +67,16 @@ export class CanvasHelperRecording {
     stream: MediaStream;
     recorder: MediaRecorder;
     chunks: any[];
+    // @ts-expect-error(TODO:)
     file: Blob;
+    // @ts-expect-error(TODO:)
     filename: string;
 
     get recording(): boolean {
         return this.recorder ? this.recorder.state === 'recording' : false;
     }
 
+    // @ts-expect-error(TODO:)
     private readonly behaviorSubject = new BehaviorSubject<CanvasHelperRecording>(null);
 
     get readyChanged(): Observable<CanvasHelperRecording> {
@@ -81,7 +84,7 @@ export class CanvasHelperRecording {
     }
 
     constructor(canvas: HTMLCanvasElement) {
-        this.stream = (canvas as HTMLCanvasElementCapStream).captureStream(25);
+        this.stream = (canvas).captureStream(25);
         this.recorder = new MediaRecorder(this.stream);
         this.chunks = [];
 
@@ -127,7 +130,7 @@ export enum MouseButton {
 }
 
 export function getMouseButton(e: MouseEvent): MouseButton {
-    return e.button as MouseButton;
+    return e.button;
 }
 
 export enum CanvasFillRule {
@@ -317,32 +320,44 @@ export class XcCanvasHelper {
         const rightAngle = rad + (Math.PI / 2);
 
         const p = [];
+        // @ts-expect-error(TODO:)
         p[0] = { x: x1, y: y1 };
 
         // path from the start point to the arrow peak, going there from the left side
+        // @ts-expect-error(TODO:)
         p[1] = { x: Math.cos(leftAngle) * bth + p[0].x, y: Math.sin(leftAngle) * bth + p[0].y };
+        // @ts-expect-error(TODO:)
         p[2] = { x: p[1].x + Math.cos(rad) * blen, y: p[1].y + Math.sin(rad) * blen };
+        // @ts-expect-error(TODO:)
         p[3] = { x: p[2].x + Math.cos(leftAngle) * hth, y: p[2].y + Math.sin(leftAngle) * hth };
 
+        // @ts-expect-error(TODO:)
         p[4] = { x: x2, y: y2 }; // arrow peak
 
         // path from the start point to the arrow peak, going there from the right side
+        // @ts-expect-error(TODO:)
         p[7] = { x: Math.cos(rightAngle) * bth + p[0].x, y: Math.sin(rightAngle) * bth + p[0].y };
+        // @ts-expect-error(TODO:)
         p[6] = { x: p[7].x + Math.cos(rad) * blen, y: p[7].y + Math.sin(rad) * blen };
+        // @ts-expect-error(TODO:)
         p[5] = { x: p[6].x + Math.cos(rightAngle) * hth, y: p[6].y + Math.sin(rightAngle) * hth };
 
+        // @ts-expect-error(TODO:)
         c.moveTo(p[0].x, p[0].y);
 
         if (clockwise) {
             for (let i = 1; i < p.length; i++) {
+                // @ts-expect-error(TODO:)
                 c.lineTo(p[i].x, p[i].y);
             }
         } else {
             for (let i = p.length - 1; i > 0; i--) {
+                // @ts-expect-error(TODO:)
                 c.lineTo(p[i].x, p[i].y);
             }
         }
 
+        // @ts-expect-error(TODO:)
         c.lineTo(p[0].x, p[0].y);
     }
 
@@ -358,6 +373,7 @@ export class XcCanvasHelper {
      */
     static fillArrow2(c: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, th?: number, hlr?: number, btr?: number) {
         c.beginPath();
+        // @ts-expect-error(TODO:)
         XcCanvasHelper.arrow2(c, x1, y1, x2, y2, th, hlr, btr);
         c.fill();
     }
@@ -391,31 +407,43 @@ export class XcCanvasHelper {
         const rightAngle = rad + (Math.PI / 2);
 
         const p = [];
+        // @ts-expect-error(TODO:)
         p[0] = { x: x1, y: y1 };
 
         // path from the start point to the arrow peak, going there from the left side
+        // @ts-expect-error(TODO:)
         p[1] = { x: Math.cos(leftAngle) * bth + p[0].x, y: Math.sin(leftAngle) * bth + p[0].y };
+        // @ts-expect-error(TODO:)
         p[2] = { x: p[1].x + Math.cos(rad) * blen, y: p[1].y + Math.sin(rad) * blen };
+        // @ts-expect-error(TODO:)
         p[3] = { x: p[2].x + Math.cos(leftAngle) * hth, y: p[2].y + Math.sin(leftAngle) * hth };
 
+        // @ts-expect-error(TODO:)
         p[4] = { x: x2, y: y2 }; // arrow peak
 
         // path from the start point to the arrow peak, going there from the right side
+        // @ts-expect-error(TODO:)
         p[7] = { x: Math.cos(rightAngle) * bth + p[0].x, y: Math.sin(rightAngle) * bth + p[0].y };
+        // @ts-expect-error(TODO:)
         p[6] = { x: p[7].x + Math.cos(rad) * blen, y: p[7].y + Math.sin(rad) * blen };
+        // @ts-expect-error(TODO:)
         p[5] = { x: p[6].x + Math.cos(rightAngle) * hth, y: p[6].y + Math.sin(rightAngle) * hth };
 
+        // @ts-expect-error(TODO:)
         c.moveTo(p[0].x, p[0].y);
 
         if (clockwise) {
             for (let i = 1; i < p.length; i++) {
+                // @ts-expect-error(TODO:)
                 c.lineTo(p[i].x, p[i].y);
             }
         } else {
             for (let i = p.length - 1; i > 0; i--) {
+                // @ts-expect-error(TODO:)
                 c.lineTo(p[i].x, p[i].y);
             }
         }
+        // @ts-expect-error(TODO:)
         c.lineTo(p[0].x, p[0].y);
     }
 
@@ -795,8 +823,11 @@ export class XcCanvasHelper {
         can.width = 1;
         can.height = 1;
         const c = can.getContext('2d');
+        // @ts-expect-error(TODO:)
         c.fillStyle = color;
+        // @ts-expect-error(TODO:)
         c.fillRect(0, 0, 1, 1);
+        // @ts-expect-error(TODO:)
         const imageData = c.getImageData(0, 0, 1, 1).data;
         return [imageData[0], imageData[1], imageData[2], imageData[3]];
     }
@@ -852,6 +883,7 @@ export class XcCanvasHelper {
     static getFontSize(c: CanvasRenderingContext2D): number {
         const regEx = new RegExp('([0-9]+[.]?[0-9]?)px');
         const result = regEx.exec(c.font);
+        // @ts-expect-error(TODO:)
         return parseFloat(result[1]);
     }
 
@@ -945,7 +977,8 @@ export class XcCanvasHelper {
 
         cache[cachePtr + 1] = 1;
 
-         
+
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         const parse = (pts: number[], cache: Float32Array, l: number) => {
 
             for (let j = 2; j < l; j += 2) {
@@ -1011,6 +1044,7 @@ export class XcCanvasHelper {
         const iframe = thisDoc.createElement('iframe');
         iframe.onload = (e: Event) => {
             const doc = iframe.contentDocument;
+            // @ts-expect-error(TODO:)
             doc.write(`<body><img src="${screenshot.data}" onload="window.print()"</body>`);
             window.setTimeout(() => {
                 thisDoc.body.removeChild(iframe);

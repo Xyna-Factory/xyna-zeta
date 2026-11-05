@@ -45,8 +45,9 @@ export class XcFormComponent implements AfterContentInit {
     protected _iconTooltip = '';
     protected _ariaLabel = '';
 
-    readonly floatLabel = input<FloatStyle>(FloatStyle.always, { alias: "xc-form-field-floatlabel" });
+    readonly floatLabel = input<FloatStyle>(FloatStyle.always, { alias: 'xc-form-field-floatlabel' });
 
+    // @ts-expect-error(TODO:)
     i18nContext: string;
 
 
@@ -104,6 +105,7 @@ export class XcFormComponent implements AfterContentInit {
 
 
     ngAfterContentInit() {
+        // @ts-expect-error(TODO:)
         this.i18nContext = this.element.nativeElement.getAttribute('xc-i18n');
     }
 
@@ -143,11 +145,13 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     readonly valueKeydown = output<KeyboardEvent>();
 
+    // eslint-disable-next-line @angular-eslint/no-output-native
     readonly focus = output<FocusEvent>();
 
+    // eslint-disable-next-line @angular-eslint/no-output-native
     readonly blur = output<FocusEvent>();
 
-    readonly errorFunc = input<(key: string, data: any) => string>(undefined, { alias: "xc-form-field-errorfunc" });
+    readonly errorFunc = input<(key: string, data: any) => string>(undefined, { alias: 'xc-form-field-errorfunc' });
 
 
     @Input({alias: 'xc-form-field-error-message-case', transform: normalizeErrorMessageCase})
@@ -258,8 +262,10 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
                 default: return key;
             }
         };
+        // @ts-expect-error(TODO:)
         return Object.keys(this.formControl.errors).map(
             key => {
+                // @ts-expect-error(TODO:)
                 const data = this.formControl.errors[key];
                 const errorFuncValue = this.errorFunc();
                 const error = errorFuncValue ? errorFuncValue(key, data) : null;
@@ -269,7 +275,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         ).join(', ');
     }
 
-    readonly tabIndex = input<number>(0, { alias: "xc-form-field-tab-index" });
+    readonly tabIndex = input<number>(0, { alias: 'xc-form-field-tab-index' });
 
     constructor() {
         super();
@@ -327,6 +333,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
         }
         const inheritedErrorMessageCase = this.element.nativeElement.closest('[xc-form-field-error-message-case]')
             ?.getAttribute('xc-form-field-error-message-case');
+        // @ts-expect-error(TODO:)
         this._errorMessageCase = normalizeErrorMessageCase(inheritedErrorMessageCase);
     }
 }

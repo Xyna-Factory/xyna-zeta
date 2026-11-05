@@ -36,17 +36,17 @@ export class XcTitleBarComponent {
     private readonly dialogService = inject(XcDialogService);
 
 
-    readonly applicationName = input<string>(undefined, { alias: "xc-title-bar-application-name" });
+    readonly applicationName = input<string>(undefined, { alias: 'xc-title-bar-application-name' });
 
-    readonly applicationVersions = input<string[]>(undefined, { alias: "xc-title-bar-application-versions" });
+    readonly applicationVersions = input<string[]>(undefined, { alias: 'xc-title-bar-application-versions' });
 
-    readonly iconName = input<string>(undefined, { alias: "xc-title-bar-icon-name" });
+    readonly iconName = input<string>(undefined, { alias: 'xc-title-bar-icon-name' });
 
-    readonly iconStyle = input<string>(undefined, { alias: "xc-title-bar-icon-style" });
+    readonly iconStyle = input<string>(undefined, { alias: 'xc-title-bar-icon-style' });
 
-    readonly company = input<string>(undefined, { alias: "xc-title-bar-company" });
+    readonly company = input<string>(undefined, { alias: 'xc-title-bar-company' });
 
-    readonly year = input<string>(undefined, { alias: "xc-title-bar-year" });
+    readonly year = input<string>(undefined, { alias: 'xc-title-bar-year' });
 
 
     private get copyright(): string {

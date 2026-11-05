@@ -56,6 +56,7 @@ export abstract class XcDataTemplate<D, S, W extends XcDataWrapper<D, S> = XcDat
 
 
 export abstract class XcFormTemplate<D, S, W extends XcDataWrapper<D, S> = XcDataWrapper<D, S>> extends XcDataTemplate<D, S, W> {
+    // @ts-expect-error(TODO:)
     callback: (formBaseComponent: XcFormBaseComponent) => void = null;
     indicateChanges = false;
     compact = false;
@@ -142,6 +143,7 @@ export class XcIconButtonTemplate extends XcButtonBaseTemplate {
 export const XC_COMPONENT_DATA = new InjectionToken<any>('XcComponentData');
 
 export class XcComponentTemplate<D> extends XcTemplate {
+    // @ts-expect-error(TODO:)
     private _componentInjector: Injector;
 
     constructor(public component: XcDynamicComponentType<D>, public data: D) {

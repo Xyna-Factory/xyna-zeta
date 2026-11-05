@@ -68,13 +68,13 @@ export class XcPlotStyleHelper {
                 color: XcCanvasHelper.getRGBA(StyleColor.Normal, 0.3),
                 circleDiameter: 8
             },
-            color: StyleColor.Blue as string,
+            color: StyleColor.Blue,
             hitboxSize: 8,
             size: 2
         } as CartasianCoordinateSystemPointsStyling,
 
         connection : {
-            color: StyleColor.Grey_3 as string,
+            color: StyleColor.Grey_3,
             thickness: 1
         } as CartasianCoordinateSystemConnectionStyling,
 

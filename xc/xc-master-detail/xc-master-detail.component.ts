@@ -46,14 +46,14 @@ export class XcMasterDetailComponent {
 
     readonly focusCandidates = contentChildren(XcMasterDetailFocusCandidateDirective, { descendants: true });
 
-    readonly mode = input<XcMasterDetailMode>('side', { alias: "xc-master-detail-mode" });
+    readonly mode = input<XcMasterDetailMode>('side', { alias: 'xc-master-detail-mode' });
 
     @HostBinding('attr.detail-mode')
     get hostMode(): XcMasterDetailMode {
         return this.mode();
     }
 
-    readonly position = input<XcMasterDetailPosition>('end', { alias: "xc-master-detail-position" });
+    readonly position = input<XcMasterDetailPosition>('end', { alias: 'xc-master-detail-position' });
 
 
     @Input({alias: 'xc-master-detail-opened', transform: coerceBoolean})
@@ -128,6 +128,7 @@ export class XcMasterDetailComponent {
         if (_drawerContainer) {
             _drawerContainer.autosize = true;
             // Promise.resolve().then(() => this._drawerContainer.autosize = false);
+            // @ts-expect-error(TODO:)
             window.setTimeout(() => this._drawerContainer().autosize = false, 0);
         }
     }

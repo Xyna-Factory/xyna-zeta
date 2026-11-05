@@ -31,7 +31,7 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
     private suffixToggled = false;
     private suffixUnfocusedInput = false;
 
-    readonly suffixInput = input<'clear' | 'nullify' | 'password' | 'dropdown'>(undefined, { alias: "xc-form-field-suffix" });
+    readonly suffixInput = input<'clear' | 'nullify' | 'password' | 'dropdown'>(undefined, { alias: 'xc-form-field-suffix' });
 
     @HostBinding('attr.suffix')
     readonly suffix = linkedSignal(() => this.suffixInput());
@@ -44,7 +44,7 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
     required = false;
 
-    readonly tabIndexSuffix = input<number>(-1, { alias: "xc-form-field-tab-index-suffix" });
+    readonly tabIndexSuffix = input<number>(-1, { alias: 'xc-form-field-tab-index-suffix' });
 
     constructor() {
         super();
@@ -88,6 +88,7 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
         if (suffix === 'dropdown') {
             return 'expand_more';
         }
+        // @ts-expect-error(TODO:)
         return undefined;
     }
 
@@ -97,11 +98,13 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
 
     protected suffixClickChangedValue(unfocusedInput: boolean) {
+        // @ts-expect-error(TODO:)
         this.input().focus();
     }
 
 
     suffixMouseDown(event: MouseEvent) {
+        // @ts-expect-error(TODO:)
         this.suffixUnfocusedInput = this.input().focused;
     }
 

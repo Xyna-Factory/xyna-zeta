@@ -55,6 +55,7 @@ export class XoDescriberCache<T = any> {
      *
      * The counter starts when the subject's value is set and not on writing the subject inside the cache
      */
+    // @ts-expect-error(TODO:)
     private _lifetime: number;
 
 
@@ -68,6 +69,7 @@ export class XoDescriberCache<T = any> {
 
         describers.forEach(describer => {
             let key: string, value: CachedObject<T>;
+            // @ts-expect-error(TODO:)
             if ((key = XoDescriberString(describer, rtc)) && (value = this.cache.get(key))) {
                 if (now - value.timestamp < this.lifetime) {
                     result.set(describer, value.data);
@@ -224,6 +226,7 @@ export enum FileUploadStatus {
 export class FileResult {
     constructor(
         public status: FileUploadStatus,
+        // @ts-expect-error(TODO:)
         public fileId: XoManagedFileID = null,
         public fileName = ''
     ) { }
@@ -243,6 +246,7 @@ export class ApiService {
     private readonly http = inject(HttpClient);
     private readonly configService = inject(ConfigService);
 
+    // @ts-expect-error(TODO:)
     private readonly runtimeContextSubject = new BehaviorSubject<RuntimeContext>(null);
     readonly runtimeContextSelectionSubject = new Subject<(settings: RuntimeContextSelectionSettings) => void>();
 
@@ -320,6 +324,7 @@ export class ApiService {
             const payload = {
                 orderId: orderId,
                 objects: uncachedDescribers.map(describer => ({
+                    // @ts-expect-error(TODO:)
                     fqn: describer.fqn.encode(),
                     rtc: describer.rtc ? describer.rtc.encode() : undefined
                 }))
@@ -332,6 +337,7 @@ export class ApiService {
             ).subscribe({
                 // inform subscribers of new data (and replace subject in cache with raw data)
                 next: data => uncachedDescribers.forEach(describer => {
+                    // @ts-expect-error(TODO:)
                     const fqnString = describer.fqn.encode();
                     if (cache) {
                         cache.set(rtc, describer, data[fqnString]);
@@ -356,7 +362,9 @@ export class ApiService {
      * @param orderId optional ID of run order, the requested structures were used in (only for Audit)
      */
     getStructure(rtc: RuntimeContext, describers: XoDescriber[], cache?: XoDescriberCache<XoStructureObject>, orderId?: string): ReadonlyMap<XoDescriber, Observable<XoStructureObject>> {
+        // @ts-expect-error(TODO:)
         return this.getXoDescriberCachedData(rtc, describers, cache, orderId, 'structure', (describer: XoDescriber, data: any) =>
+            // @ts-expect-error(TODO:)
             new XoStructureObject(null, describer.fqn.name).decode(data)
         );
     }
@@ -369,6 +377,7 @@ export class ApiService {
      * @param cache optional cache for performance
      */
     getSubtypes(rtc: RuntimeContext, describers: XoDescriber[], cache?: XoDescriberCache<XoStructureType>): ReadonlyMap<XoDescriber, Observable<XoStructureType[]>> {
+        // @ts-expect-error(TODO:)
         return this.getXoDescriberCachedData(rtc, describers, cache, undefined, 'subtypes', (_, data: any) =>
             data.map(typeData => {
                 const structureType = new XoStructureType().decode(typeData);
@@ -416,6 +425,7 @@ export class ApiService {
             this.runtimeContexts$ = this.startOrderAssertFlat<XoRuntimeContext>(
                 rtc,
                 orderType,
+                // @ts-expect-error(TODO:)
                 undefined,
                 XoRuntimeContextArray
             ).pipe(
@@ -455,8 +465,10 @@ export class ApiService {
             'priority': options.priority
         };
 
+        // @ts-expect-error(TODO:)
         return this.http.post<StartOrderResult<XoJson> & XoJson>(url, payload).pipe(
             // discard results with error message unless explicitely requested
+            // @ts-expect-error(TODO:)
             filter((result: StartOrderResult<XoJson> & XoJson) =>
                 !result.errorMessage || options.withErrorMessage
             ),
@@ -488,6 +500,7 @@ export class ApiService {
                     const resultClass = new resultClassInterface().decode(result);
                     // parse outputs of successful start order responses
                     if (resultClass instanceof XoStartOrderSuccessResponse) {
+                        // @ts-expect-error(TODO:)
                         resultClass.output = outputs.map((json, idx) => {
                             const outputClassInterface = pack(output)[idx] ?? XoDerivedClassInterfaceFrom(json);
                             return outputClassInterface && json
@@ -597,6 +610,7 @@ export class ApiService {
         const payload = { 'testCaseName': testCaseName };
 
         return this.http.post(url, payload).pipe(
+            // @ts-expect-error(TODO:)
             filter((data: any) =>
                 !data.error || options.withErrorMessage
             ),
@@ -642,6 +656,7 @@ export class ApiService {
      */
     private uploadFileToXyna(file?: File, host?: string): Observable<FileResult> {
 
+        // @ts-expect-error(TODO:)
         const uploadUrl: string = (host ? host + '/' : this.configService.config.zeta.url) + 'upload';
 
         const subject: Subject<FileResult> = new Subject();
@@ -718,7 +733,7 @@ export class ApiService {
         const subject: Subject<File> = new Subject();
         const fileInput = document.createElement('INPUT');
 
-        const changeHandler = function (event) {
+        const changeHandler = function(event) {
             document.body.removeChild(fileInput);
 
             // selects the first file even if more than one file was selected
@@ -747,6 +762,7 @@ export class ApiService {
 
 
     download(managedFileId: XoManagedFileID, host?: string) {
+        // @ts-expect-error(TODO:)
         const subdirectory = getSubdirectory(this.configService.config.zeta.url);
         window.location.href = (host || '') + '/' + subdirectory + 'download?p0=' + managedFileId.iD;
     }

@@ -85,24 +85,27 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
     [(() => '_setPosition')()](menu: MatMenu, positionStrategy: FlexibleConnectedPositionStrategy) {
         // super call
 
-        super['_setPosition'].call(this, menu, positionStrategy);
+        // @ts-expect-error(TODO:)
+        super._setPosition.call(this, menu, positionStrategy);
 
         if (this.triggersSubmenu()) {
             // affects nested menus only
             // adjust menu's offset-y for a 1px border added to its panel and an adjusted 0px padding of its content
             positionStrategy._preferredPositions.forEach(preferredPosition => {
                 const aboveFactor = preferredPosition.originY === 'bottom' ? 1 : -1;
+                // @ts-expect-error(TODO:)
                 preferredPosition.offsetY += aboveFactor * (1 - 8);
             });
         } else {
             // affects root menus only
 
-            const rect = (this['_element'] as ElementRef).nativeElement.getBoundingClientRect();
+            const rect = (this._element as ElementRef).nativeElement.getBoundingClientRect();
             positionStrategy._preferredPositions.forEach(preferredPosition => preferredPosition.offsetX = 0);
             // adjust menu's offset-x for the width of the trigger's element
             if (this.xcMenu.xNexttoTrigger) {
                 positionStrategy._preferredPositions.forEach(preferredPosition => {
                     const afterFactor = preferredPosition.originX === 'start' ? 1 : -1;
+                    // @ts-expect-error(TODO:)
                     preferredPosition.offsetX += afterFactor * rect.width;
                 });
             }
@@ -113,19 +116,23 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
                 if (!this.xcMenu.xNexttoTrigger) {
                     positionStrategy._preferredPositions.forEach(preferredPosition => {
                         const beforeFactor = preferredPosition.originX === 'end' ? 1 : -1;
+                        // @ts-expect-error(TODO:)
                         preferredPosition.offsetX += beforeFactor * ((1 + itemHeight - rect.width) / 2);
                     });
                 }
                 if (!this.xcMenu.yNexttoTrigger) {
                     positionStrategy._preferredPositions.forEach(preferredPosition => {
                         const aboveFactor = preferredPosition.originY === 'bottom' ? 1 : -1;
+                        // @ts-expect-error(TODO:)
                         preferredPosition.offsetY += aboveFactor * ((1 + itemHeight - rect.height) / 2);
                     });
                 }
             }
             // add custom offsets
             positionStrategy._preferredPositions.forEach(preferredPosition => {
+                // @ts-expect-error(TODO:)
                 preferredPosition.offsetX += this.xcMenu.xOffset;
+                // @ts-expect-error(TODO:)
                 preferredPosition.offsetY += this.xcMenu.yOffset;
             });
         }
@@ -137,7 +144,7 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
         this.restoreFocus = false;
         this.previousFocusedElement = document.activeElement as HTMLElement;
 
-        const element = (this['_element'] as ElementRef).nativeElement as HTMLElement;
+        const element = (this._element as ElementRef).nativeElement as HTMLElement;
 
         // Move the hidden trigger element to the requested screen position.
         // The Material overlay is positioned relative to this element.
@@ -146,7 +153,9 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
         element.style.top = `${y}px`;
 
         // Context menus should not block subsequent right-clicks with a backdrop.
+        // @ts-expect-error(TODO:)
         const previous = this.menu.hasBackdrop;
+        // @ts-expect-error(TODO:)
         this.menu.hasBackdrop = false;
 
         // Clean up any listener from a previous context menu invocation.
@@ -159,6 +168,7 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
             const overlayContainer = document.querySelector('.cdk-overlay-container');
 
             if (overlayContainer && !overlayContainer.contains(event.target as Node)) {
+                // @ts-expect-error(TODO:)
                 document.removeEventListener('mousedown', this.outsideClickListener, true);
 
                 this.outsideClickListener = undefined;
@@ -172,6 +182,7 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
         this.menuClosed.pipe(take(1)).subscribe(() => {
 
             // Restore original menu configuration and remove temporary listeners.
+            // @ts-expect-error(TODO:)
             this.menu.hasBackdrop = previous;
 
             if (this.outsideClickListener) {
@@ -187,11 +198,12 @@ export class XcMenuTriggerDirective extends MatMenuTrigger {
 
         // Force overlay repositioning after moving the hidden trigger element.
         requestAnimationFrame(() => {
-            this['_overlayRef']?.updatePosition();
+            this._overlayRef?.updatePosition();
         });
 
         // Register outside-click handling after the current event has finished.
         setTimeout(() => {
+            // @ts-expect-error(TODO:)
             document.addEventListener('mousedown', this.outsideClickListener, true);
         });
     }

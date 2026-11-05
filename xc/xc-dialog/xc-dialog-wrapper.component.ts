@@ -93,21 +93,34 @@ export class XcDialogWrapperComponent implements AfterViewInit, OnDestroy {
     set dialogOptions(value: XcDialogOptions) {
         if (value) {
             this._dialogOptions.dragOptions = {
+                // @ts-expect-error(TODO:)
                 dragX: coerceBoolean(value.dragOptions?.dragX),
+                // @ts-expect-error(TODO:)
                 dragY: coerceBoolean(value.dragOptions?.dragY),
+                // @ts-expect-error(TODO:)
                 dragInViewport: coerceBoolean(value.dragOptions?.dragInViewport)
             };
             this._dialogOptions.resizeOptions = {
+                // @ts-expect-error(TODO:)
                 all: coerceBoolean(value.resizeOptions?.all),
+                // @ts-expect-error(TODO:)
                 south: coerceBoolean(value.resizeOptions?.south),
+                // @ts-expect-error(TODO:)
                 east: coerceBoolean(value.resizeOptions?.east),
+                // @ts-expect-error(TODO:)
                 southEast: coerceBoolean(value.resizeOptions?.southEast),
+                // @ts-expect-error(TODO:)
                 southWest: coerceBoolean(value.resizeOptions?.southWest),
+                // @ts-expect-error(TODO:)
                 west: coerceBoolean(value.resizeOptions?.west),
+                // @ts-expect-error(TODO:)
                 northWest: coerceBoolean(value.resizeOptions?.northWest),
+                // @ts-expect-error(TODO:)
                 north: coerceBoolean(value.resizeOptions?.north),
+                // @ts-expect-error(TODO:)
                 northEast: coerceBoolean(value.resizeOptions?.northEast),
 
+                // @ts-expect-error(TODO:)
                 resizeInViewport: coerceBoolean(value.resizeOptions?.resizeInViewport),
 
                 minHeight: value.resizeOptions?.minHeight,
@@ -130,7 +143,9 @@ export class XcDialogWrapperComponent implements AfterViewInit, OnDestroy {
 
     readonly dialogRoot = viewChild<ElementRef>('dialogRoot');
 
+    // @ts-expect-error(TODO:)
     dragEventTarget: MouseEvent | TouchEvent;
+    // @ts-expect-error(TODO:)
     private resizeObserver: ResizeObserver;
     private positionLocked = false;
 
@@ -160,7 +175,7 @@ export class XcDialogWrapperComponent implements AfterViewInit, OnDestroy {
         this.resizeObserver?.disconnect();
     }
 
-    private _preMaximize = {
+    private readonly _preMaximize = {
         top: 0,
         left: 0,
         width: 0,
@@ -181,7 +196,9 @@ export class XcDialogWrapperComponent implements AfterViewInit, OnDestroy {
     }
 
     setPosition() {
+        // @ts-expect-error(TODO:)
         const elementWidth = this.dialogRoot().nativeElement.offsetWidth;
+        // @ts-expect-error(TODO:)
         const elementHeight = this.dialogRoot().nativeElement.offsetHeight;
         let left: number;
         let top: number;
@@ -212,7 +229,9 @@ export class XcDialogWrapperComponent implements AfterViewInit, OnDestroy {
         }
 
         const dialogRoot = this.dialogRoot();
+        // @ts-expect-error(TODO:)
         this.renderer.setStyle(dialogRoot.nativeElement, 'left', left + 'px');
+        // @ts-expect-error(TODO:)
         this.renderer.setStyle(dialogRoot.nativeElement, 'top', top + 'px');
     }
 
@@ -228,7 +247,9 @@ export class XcDialogWrapperComponent implements AfterViewInit, OnDestroy {
 
     private applyMaximizedState() {
         const dialogRoot = this.dialogRoot();
-        if (!dialogRoot) return;
+        if (!dialogRoot) {
+            return;
+        }
 
         const el = dialogRoot.nativeElement;
 

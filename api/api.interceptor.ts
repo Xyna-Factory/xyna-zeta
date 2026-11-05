@@ -29,6 +29,7 @@ export class ApiInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if (req.responseType !== 'text' && !req.context.get(SKIP_API_INTERCEPTOR)) {
+            // @ts-expect-error(TODO:)
             req = req.clone({ url: this.configService.config.zeta.url + req.url });
         }
         return next.handle(req);

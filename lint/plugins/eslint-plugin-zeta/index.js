@@ -99,8 +99,9 @@ const rules = {
                         }
                     } else if (getDecorator(node, XO_ARRAY_DECORATOR_NAME)) {
                         decoratorClass = XO_ARRAY_DECORATOR_NAME;
-                        const superTypeParameter = node.superTypeParameters
-                            ? node.superTypeParameters.params[0]
+                        const superTypeArguments = node.superTypeArguments || node.superTypeParameters;
+                        const superTypeParameter = superTypeArguments
+                            ? superTypeArguments.params[0]
                             : undefined;
                         if (!superTypeParameter) {
                             context.report({

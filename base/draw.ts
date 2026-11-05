@@ -474,10 +474,13 @@ export function createSVGLinearGradientSharp(parent: Element | undefined, id: st
     for (let i = 0; i < len - 1; i++) {
         const cur = stops[i];
         const next = stops[i + 1];
+        // @ts-expect-error(TODO:)
         sharpStops.push(cur);
+        // @ts-expect-error(TODO:)
         sharpStops.push({offset: cur.offset, color: next.color});
     }
     if (len === 1) {
+        // @ts-expect-error(TODO:)
         sharpStops.push(stops[0]);
     }
     return createSVGLinearGradient(parent, id, sharpStops);

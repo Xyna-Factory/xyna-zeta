@@ -43,6 +43,7 @@ import { AsyncPipe } from '@angular/common';
 })
 export class XcDefinitionProxyComponent extends XcBaseDefinitionComponent {
 
+    // @ts-expect-error(TODO:)
     template: XcTemplate;
 
     readonly PredefinedTablePanelDefinition: typeof XoPredefinedTablePanelDefinition = XoPredefinedTablePanelDefinition;   // FIXME deprecated (see ZETA-177)

@@ -43,7 +43,9 @@ export interface XcStackItemObserver {
 
 export class XcStackItem implements XcStackItemInterface, XcStackObserver {
 
+    // @ts-expect-error(TODO:)
     private _template: XcTemplate;
+    // @ts-expect-error(TODO:)
     private _stack: XcStackInterface;
     private readonly _breadcrumbLabel = new BehaviorSubject<string>('');
 

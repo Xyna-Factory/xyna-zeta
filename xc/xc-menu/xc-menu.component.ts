@@ -32,7 +32,7 @@ import { XcMenu, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault, XcMenuXPositio
     selector: 'xc-menu',
     templateUrl: './xc-menu.component.html',
     styleUrls: ['./xc-menu.component.scss'],
-    imports: [MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, XcI18nPipe, forwardRef(() => XcMenuComponent)],
+    imports: [MatMenu, MatMenuItem, XcMenuTriggerDirective, NgTemplateOutlet, XcIconComponent, XcI18nPipe, forwardRef(() => XcMenuComponent)]
 })
 export class XcMenuComponent {
     protected readonly contextMenuService = inject(XcContextMenuService);
@@ -43,6 +43,7 @@ export class XcMenuComponent {
      * See https://github.com/angular/material2/pull/8401 for reference.
      */
 
+    // @ts-expect-error(TODO:)
     private _menu: XcMenu;
     readonly options: XcMenuOptions = XcMenuOptionsDefault();
 
@@ -144,8 +145,9 @@ export class XcMenuComponent {
         // no need to set value to menu, since it is via setPositionClasses
     }
 
-    readonly items = input(new Array<XcMenuItem>(), { alias: "xc-menu-items" });
+    readonly items = input(new Array<XcMenuItem>(), { alias: 'xc-menu-items' });
 
+    // eslint-disable-next-line @angular-eslint/no-output-native
     readonly select = output<XcMenuItem>({ alias: 'xc-menu-item-select' });
 
     selectItem(item: XcMenuItem) {

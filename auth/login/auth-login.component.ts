@@ -78,7 +78,9 @@ export class AuthLoginComponent {
 
 
     private readonly smartCardRoleDataWrapper = new XcAutocompleteDataWrapper<string>(
+        // @ts-expect-error(TODO:)
         () => this.smartCardTabItem.data.selectedRole,
+        // @ts-expect-error(TODO:)
         (role: string) => this.smartCardTabItem.data.selectedRole = role
     );
 
@@ -86,7 +88,7 @@ export class AuthLoginComponent {
         closable: false,
         component: SmartCardLoginTabComponent,
         name: this.i18n.translateSignal('zeta.auth-login.tab-smartcard'),
-        data: <LoginComponentData>{
+        data: {
             username: '',
             selectedRole: undefined,
             roleSelectionDataWrapper: this.smartCardRoleDataWrapper,
@@ -94,7 +96,7 @@ export class AuthLoginComponent {
             usernameTabIndex: 1,
             usernameSuffixTabIndex: 4,
             roleTabIndex: 2,
-            roleSuffixTabIndex: 5,
+            roleSuffixTabIndex: 5
         }
     };
 
@@ -102,14 +104,14 @@ export class AuthLoginComponent {
         closable: false,
         component: CredentialsLoginTabComponent,
         name: this.i18n.translateSignal('zeta.auth-login.tab-credentials'),
-        data: <LoginComponentData>{
+        data: {
             username: '',
             password: '',
             onEnter: this.login.bind(this),
             usernameTabIndex: 1,
             usernameSuffixTabIndex: 4,
             passwordTabIndex: 2,
-            passwordSuffixTabIndex: 5,
+            passwordSuffixTabIndex: 5
         }
     };
 
@@ -117,14 +119,14 @@ export class AuthLoginComponent {
         closable: false,
         component: WorkflowLoginTabComponent,
         name: this.i18n.translateSignal('zeta.auth-login.tab-workflow'),
-        data: <LoginComponentData>{
+        data: {
             username: '',
             password: '',
             onEnter: this.login.bind(this),
             usernameTabIndex: 1,
             usernameSuffixTabIndex: 4,
             passwordTabIndex: 2,
-            passwordSuffixTabIndex: 5,
+            passwordSuffixTabIndex: 5
         }
     };
 
@@ -135,7 +137,8 @@ export class AuthLoginComponent {
 
     workflowDomain = '';
 
-    private _pending = signal(false);
+    private readonly _pending = signal(false);
+    // @ts-expect-error(TODO:)
     privacyLinkDefined = !!this.configService.config.zeta.getPrivacyLink;
 
     tabBarItems: Array<XcTabBarItem> = [];
@@ -164,8 +167,11 @@ export class AuthLoginComponent {
         // Signal-Effekt: Synchronisiere disabled state
         effect(() => {
             const pending = this._pending();
+            // @ts-expect-error(TODO:)
             this.smartCardTabItem.data.disabled = pending;
+            // @ts-expect-error(TODO:)
             this.credentialsTabItem.data.disabled = pending;
+            // @ts-expect-error(TODO:)
             this.workflowTabItem.data.disabled = pending;
         });
     }
@@ -184,14 +190,17 @@ export class AuthLoginComponent {
     }
 
     get useSmartCardLogin(): boolean {
+        // @ts-expect-error(TODO:)
         return this.configService.config.zeta.auth ? this.configService.config.zeta.auth.smartCardLogin : false;
     }
 
     get useCredentialsLogin(): boolean {
+        // @ts-expect-error(TODO:)
         return this.configService.config.zeta.auth ? this.configService.config.zeta.auth.credentialsLogin : true;
     }
 
     get useWorkflowLogin(): boolean {
+        // @ts-expect-error(TODO:)
         return (this.configService.config.zeta.auth && this.configService.config.zeta.auth.credentialsWorkflowOptions) ? this.configService.config.zeta.auth.credentialsWorkflowOptions.credentialsWorkflowLogin : false;
     }
 
@@ -216,6 +225,7 @@ export class AuthLoginComponent {
 
     openPrivacyLink() {
         if (this.privacyLinkDefined) {
+            // @ts-expect-error(TODO:)
             window.open(this.configService.config.zeta.getPrivacyLink(this.i18n.language), '_blank').focus();
         } else {
             console.log('PrivacyLink is not Defined');
@@ -227,6 +237,7 @@ export class AuthLoginComponent {
         this.authService.fetchSmartCardInfo().pipe(
             filter(info => !!info)
         ).subscribe(info => {
+            // @ts-expect-error(TODO:)
             this.smartCardTabItem.data.username = info.username || '';
             const externalDomains = (info.externaldomains || []).filter(domain => !!domain);
             const domainNames = externalDomains.length > 0
@@ -241,8 +252,11 @@ export class AuthLoginComponent {
             const roles = (domainFromResponse?.roles || []).filter(role => !!role);
 
             if (roles.length === 0) {
+                // @ts-expect-error(TODO:)
                 this.smartCardTabItem.data.selectedRole = undefined;
+            // @ts-expect-error(TODO:)
             } else if (!this.smartCardTabItem.data.selectedRole || !roles.includes(this.smartCardTabItem.data.selectedRole)) {
+                // @ts-expect-error(TODO:)
                 this.smartCardTabItem.data.selectedRole = roles[0];
             }
             this.smartCardRoleDataWrapper.values = roles.map(role => XcOptionItemString(role));
@@ -250,6 +264,7 @@ export class AuthLoginComponent {
     }
 
     workflowInfo() {
+        // @ts-expect-error(TODO:)
         this.workflowDomain = this.configService.config.zeta.auth?.credentialsWorkflowOptions?.credentialsWorkflowDomain;
     }
 
@@ -261,7 +276,9 @@ export class AuthLoginComponent {
 
     smartCardLogin(force = false) {
         this.pending = true;
+        // @ts-expect-error(TODO:)
         const forcedLogin = force || !!(this.configService.config.zeta.auth && this.configService.config.zeta.auth.useTheForcedLogin);
+        // @ts-expect-error(TODO:)
         this.authService.smartCardLogin(this.smartCardDomain, forcedLogin, this.smartCardTabItem.data.selectedRole).pipe(
             catchError(error => {
                 /**
@@ -275,7 +292,8 @@ export class AuthLoginComponent {
                     if (errorCode === H5FilterErrorCodes.SESSION_EXISTS) {
                         this.dialogService.confirm(
                             this.i18n.translateInstant('zeta.auth-login.error-header'),
-                            this.i18n.translateInstant('zeta.auth-login.error-message', <I18nParam>{ key: '$0', value: this.smartCardTabItem.data.username })
+                            // @ts-expect-error(TODO:)
+                            this.i18n.translateInstant('zeta.auth-login.error-message', { key: '$0', value: this.smartCardTabItem.data.username })
                         ).afterDismissResult(true).subscribe(() =>
                             this.smartCardLogin(true)
                         );
@@ -291,7 +309,9 @@ export class AuthLoginComponent {
 
     credentialsLogin(force = false) {
         this.pending = true;
+        // @ts-expect-error(TODO:)
         const forcedLogin = force || !!(this.configService.config.zeta.auth && this.configService.config.zeta.auth.useTheForcedLogin);
+        // @ts-expect-error(TODO:)
         this.authService.login(this.credentialsTabItem.data.username, this.credentialsTabItem.data.password, forcedLogin).pipe(
             catchError(loginError => {
                 // FIXME: Use Error-Datatype (ZETA-6)
@@ -301,7 +321,8 @@ export class AuthLoginComponent {
                     if (errorCode === H5FilterErrorCodes.SESSION_EXISTS) {
                         this.dialogService.confirm(
                             this.i18n.translateInstant('zeta.auth-login.duplicate-session-header'),
-                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-message', <I18nParam>{ key: '$username', value: this.credentialsTabItem.data.username })
+                            // @ts-expect-error(TODO:)
+                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-message', { key: '$username', value: this.credentialsTabItem.data.username })
                         ).afterDismissResult(true).subscribe(() =>
                             // login again with force
                             this.credentialsLogin(true)
@@ -317,7 +338,9 @@ export class AuthLoginComponent {
 
     workflowLogin(force = false) {
         this.pending = true;
+        // @ts-expect-error(TODO:)
         const forcedLogin = force || !!(this.configService.config.zeta.auth && this.configService.config.zeta.auth.useTheForcedLogin);
+        // @ts-expect-error(TODO:)
         this.authService.workflowLogin(this.workflowTabItem.data.username, this.workflowTabItem.data.password, this.workflowDomain, forcedLogin).pipe(
             catchError(loginError => {
                 // FIXME: Use Error-Datatype (ZETA-6)
@@ -327,7 +350,8 @@ export class AuthLoginComponent {
                     if (errorCode === H5FilterErrorCodes.SESSION_EXISTS) {
                         this.dialogService.confirm(
                             this.i18n.translateInstant('zeta.auth-login.duplicate-session-header'),
-                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-message', <I18nParam>{ key: '$username', value: this.workflowTabItem.data.username })
+                            // @ts-expect-error(TODO:)
+                            this.i18n.translateInstant('zeta.auth-login.duplicate-session-message', { key: '$username', value: this.workflowTabItem.data.username })
                         ).afterDismissResult(true).subscribe(() =>
                             // login again with force
                             this.workflowLogin(true)

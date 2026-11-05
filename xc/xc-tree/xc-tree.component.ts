@@ -90,6 +90,7 @@ export class XcTreeComponent implements OnDestroy {
     private _allowSelect = false;
     private _multiSelect = false;
     private _controlPressed = false;
+    // @ts-expect-error(TODO:)
     private _dataSource: XcTreeDataSource<XcTreeNode>;
     private _dataSourceSubscriptions = new Array<Subscription>();
     private readonly _treeControl = new NestedTreeControl<XcTreeNode>(node => this.getNodeChildren(node));
@@ -108,9 +109,9 @@ export class XcTreeComponent implements OnDestroy {
         }
     };
 
-    readonly observer = input<XcTreeObserver>(undefined, { alias: "xc-tree-observer" });
+    readonly observer = input<XcTreeObserver>(undefined, { alias: 'xc-tree-observer' });
 
-    readonly autoExpand = input<'first' | 'all'>(undefined, { alias: "xc-tree-autoexpand" });
+    readonly autoExpand = input<'first' | 'all'>(undefined, { alias: 'xc-tree-autoexpand' });
 
 
     constructor() {
@@ -157,6 +158,7 @@ export class XcTreeComponent implements OnDestroy {
     }
 
     get translateLabels(): boolean {
+        // @ts-expect-error(TODO:)
         return this.dataSource && this.dataSource.translateLabels;
     }
 
@@ -198,6 +200,7 @@ export class XcTreeComponent implements OnDestroy {
             // subscribe to data changes
             this._dataSourceSubscriptions.push(
                 this.dataSource.dataChange.pipe<XcTreeNode[]>(
+                    // @ts-expect-error(TODO:)
                     filter(nodes => this.autoExpand() && nodes.length > 0)
                 ).subscribe(nodes =>
                     nodes.forEach(node => {
@@ -207,6 +210,7 @@ export class XcTreeComponent implements OnDestroy {
                         } else if (autoExpand === 'all') {
                             const expandChildren = (parentNode: XcTreeNode) => {
                                 this.treeControl.expand(parentNode);
+                                // @ts-expect-error(TODO:)
                                 this._dataSourceSubscriptions.push(parentNode.children.pipe(filter(children => children.length > 0)).subscribe(children =>
                                     children.forEach(child => expandChildren(child))
                                 ));
@@ -249,12 +253,14 @@ export class XcTreeComponent implements OnDestroy {
     isNodeReadonly(node: XcTreeNode): boolean {
         const readonly = node.readonly && !this.readonlyMode;
         const observer = this.observer();
+        // @ts-expect-error(TODO:)
         return readonly || observer && observer.readonlyNode && observer.readonlyNode(node, readonly);
     }
 
     isNodeDisabled(node: XcTreeNode): boolean {
         const disabled = node.disabled && !this.readonlyMode;
         const observer = this.observer();
+        // @ts-expect-error(TODO:)
         return disabled || observer && observer.disableNode && observer.disableNode(node, disabled);
     }
 
@@ -287,6 +293,7 @@ export class XcTreeComponent implements OnDestroy {
 
 
     isNodeLimit(node: XcTreeNode): boolean {
+        // @ts-expect-error(TODO:)
         return node.parent && node.parent.limit >= 0 && node.limit < 0;
     }
 
@@ -329,6 +336,7 @@ export class XcTreeComponent implements OnDestroy {
 
 
     unlimitNode(node: XcTreeNode) {
+        // @ts-expect-error(TODO:)
         node.action();
     }
 
@@ -352,6 +360,7 @@ export class XcTreeComponent implements OnDestroy {
     getAriaSetsize(node: XcTreeNode): number {
         let size = 1;
         if (node.parent) {
+            // @ts-expect-error(TODO:)
             node.parent.children.subscribe(children => size = children.length);
         }
         return size;
@@ -362,11 +371,13 @@ export class XcTreeComponent implements OnDestroy {
         let pos = 1;
         if (node.parent) {
 
+            // @ts-expect-error(TODO:)
             node.parent.children.subscribe(children => children.some((child, i) => {
                 if (child.name === node.name) {
                     pos = i + 1;
                     return true;
                 }
+                return false;
             }));
         }
         return pos;

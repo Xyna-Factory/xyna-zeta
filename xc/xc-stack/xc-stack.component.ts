@@ -48,6 +48,7 @@ export class XcStackComponent implements XcStackInterface, OnDestroy {
     private readonly i18n = inject(I18nService);
 
 
+    // @ts-expect-error(TODO:)
     private _dataSource: XcStackDataSource;
     readonly breadcrumbLabels: Map<XcStackItemInterface, string> = new Map();
 
@@ -56,7 +57,9 @@ export class XcStackComponent implements XcStackInterface, OnDestroy {
      * Can be used to tell all stack items to halt expensive processes while inactive
      */
     private readonly _activeSubject = new BehaviorSubject<boolean>(true);
+    // @ts-expect-error(TODO:)
     private _openedStackItemSubject: Subject<XcStackItemInterface>;
+    // @ts-expect-error(TODO:)
     private dataSourceSubscription: Subscription;
     private readonly breadcrumbSubscriptons: Subscription[] = [];
 
@@ -78,6 +81,7 @@ export class XcStackComponent implements XcStackInterface, OnDestroy {
             if (this._openedStackItemSubject) {
                 this._openedStackItemSubject.next(this._dataSource.last());
                 this._openedStackItemSubject.complete();
+                // @ts-expect-error(TODO:)
                 this._openedStackItemSubject = null;
             }
         });
@@ -179,6 +183,7 @@ export class XcStackComponent implements XcStackInterface, OnDestroy {
 
         // focus first focusable element inside the stack item
         const focusItem = () => {
+            // @ts-expect-error(TODO:)
             const focusable = retrieveFocusableElements(elementToScrollInto.nativeElement);
             if (focusable.length > 0 && focusable[0]) {
                 focusable[0].focus();
@@ -193,6 +198,7 @@ export class XcStackComponent implements XcStackInterface, OnDestroy {
 
 
     ariaBreadcrumbLabel(stackItem: XcStackItemInterface): string {
+        // @ts-expect-error(TODO:)
         return this.i18n.translateInstant('Select breadcrumb for $0', { key: '$0', value: this.breadcrumbLabels.get(stackItem) });
     }
 }

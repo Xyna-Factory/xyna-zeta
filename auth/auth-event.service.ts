@@ -25,6 +25,7 @@ import { SessionInfo } from './auth-session';
 @Injectable({ providedIn: 'root' })
 export class AuthEventService {
 
+    // @ts-expect-error(TODO:)
     readonly sessionInfoSubject = new BehaviorSubject<SessionInfo>(undefined);
     readonly loginSubject = new Subject<SessionInfo>();
     readonly logoutSubject = new Subject<SessionInfo>();

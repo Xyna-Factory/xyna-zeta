@@ -57,7 +57,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     protected readonly renderer = inject(Renderer2);
 
 
-    readonly enabled = input(true, { alias: "xc-resize", transform: coerceBoolean });
+    readonly enabled = input(true, { alias: 'xc-resize', transform: coerceBoolean });
 
     private readonly _resizeOptions: XcResizeOptions = {};
 
@@ -92,26 +92,45 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     readonly resizeEnd = output<ResizableEvent>();
 
     element: HTMLElement;
+    // @ts-expect-error(TODO:)
     private subscription: Subscription;
+    // @ts-expect-error(TODO:)
     private newWidth: number;
+    // @ts-expect-error(TODO:)
     private newHeight: number;
+    // @ts-expect-error(TODO:)
     private newLeft: number;
+    // @ts-expect-error(TODO:)
     private newTop: number;
+    // @ts-expect-error(TODO:)
     private resizingS: boolean;
+    // @ts-expect-error(TODO:)
     private resizingE: boolean;
+    // @ts-expect-error(TODO:)
     private resizingSE: boolean;
+    // @ts-expect-error(TODO:)
     private resizingSW: boolean;
+    // @ts-expect-error(TODO:)
     private resizingW: boolean;
+    // @ts-expect-error(TODO:)
     private resizingNW: boolean;
+    // @ts-expect-error(TODO:)
     private resizingN: boolean;
+    // @ts-expect-error(TODO:)
     private resizingNE: boolean;
 
+    // @ts-expect-error(TODO:)
     private minWidth: number;
+    // @ts-expect-error(TODO:)
     private maxWidth: number;
+    // @ts-expect-error(TODO:)
     private minHeight: number;
+    // @ts-expect-error(TODO:)
     private maxHeight: number;
 
+    // @ts-expect-error(TODO:)
     private top: number;
+    // @ts-expect-error(TODO:)
     private left: number;
 
     constructor() {
@@ -251,6 +270,7 @@ export class XcResizeDirective implements AfterViewInit, OnDestroy {
     private destroySubscription() {
         if (this.subscription) {
             this.subscription.unsubscribe();
+            // @ts-expect-error(TODO:)
             this.subscription = undefined;
         }
     }

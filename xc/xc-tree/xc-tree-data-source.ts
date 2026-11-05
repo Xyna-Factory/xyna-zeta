@@ -54,6 +54,7 @@ export abstract class XcTreeDataSource<T extends XcTreeNode> extends XcDataSourc
 
 
     getNodeChildren(node: T): Observable<T[]> {
+        // @ts-expect-error(TODO:)
         return node.children.asObservable();
     }
 

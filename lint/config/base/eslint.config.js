@@ -52,15 +52,14 @@ export default [
             '@typescript-eslint/dot-notation': 'error',
             '@typescript-eslint/no-array-constructor': 'error',                                             // recommended
             '@typescript-eslint/no-dupe-class-members': 'error',
-            'stylistic/no-extra-semi': 'error',                                                    // recommended
+            'stylistic/no-extra-semi': 'error',                                                             // recommended
             '@typescript-eslint/no-implied-eval': 'error',                                                  // recommended
             '@typescript-eslint/no-redeclare': ['warn', {}],
             '@typescript-eslint/no-shadow': 'error',
-            // todo '@typescript-eslint/no-throw-literal': 'error',
-            '@typescript-eslint/no-throw-literal': 'error',
             '@typescript-eslint/no-unused-expressions': 'error',
-            '@typescript-eslint/no-unused-vars': ['warn', { 'args': 'none' }],                                // recommended
+            '@typescript-eslint/no-unused-vars': ['warn', { 'args': 'none' }],                              // recommended
             '@typescript-eslint/no-use-before-define': 'error',
+            '@typescript-eslint/only-throw-error': 'error',                                                 // recommended
             'stylistic/quotes': ['warn', 'single'],
             '@typescript-eslint/require-await': 'error',                                                    // recommended
             'stylistic/semi': 'error',
@@ -171,7 +170,7 @@ export default [
             'no-useless-escape': 'error',                                                                   // recommended
             'no-useless-return': 'error',
             'no-with': 'error',                                                                             // recommended
-            //'yoda': ['warn', 'never', {'exceptRange': true}], 
+            //'yoda': ['warn', 'never', {'exceptRange': true}],
 
             // --------------------------------------------------------------------------------------------------------------------------------
             // variables | https://eslint.org/docs/rules/#variables
@@ -183,7 +182,7 @@ export default [
             'no-undef': 'error',                                                                            // recommended
             'no-undef-init': 'error',
             //'no-unused-vars': ['warn', {'args': 'none'}],                                                 //              extended
-            //'no-use-before-define': 'error',        
+            //'no-use-before-define': 'error',
 
             // --------------------------------------------------------------------------------------------------------------------------------
             // stylistic issues | https://eslint.org/docs/rules/#stylistic-issues
@@ -214,7 +213,7 @@ export default [
             //'space-in-parens': 'warn',                                                                    //              strict
             //'space-infix-ops': 'warn',                                                                    //              extended
             //'space-unary-ops': 'warn',                                                                    //              strict
-            //'switch-colon-spacing': 'warn',    
+            //'switch-colon-spacing': 'warn',
 
             // --------------------------------------------------------------------------------------------------------------------------------
             // es6 | https://eslint.org/docs/rules/#ecmascript-6
@@ -234,7 +233,7 @@ export default [
             'prefer-const': 'warn',
             'require-yield': 'error'                                                                        // recommended
             //'rest-spread-spacing': 'warn',                                                                //              strict
-            //'template-curly-spacing': 'warn',   
-        },
+            //'template-curly-spacing': 'warn',
+        }
     }
 ];

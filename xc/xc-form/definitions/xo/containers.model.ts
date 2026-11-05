@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -61,7 +63,7 @@ export class XoContainerDefinition extends XoBaseDefinition {
         if (this.children?.data) {
             this.children.data.forEach(child => {
                 if (child) {
-                    child.setObserver(this.observer)
+                    child.setObserver(this.observer);
                     child.setParent(this);
                 }
             });
@@ -74,7 +76,7 @@ export class XoContainerDefinition extends XoBaseDefinition {
         if (this.children?.data) {
             this.children.data.forEach(child => {
                 if (child) {
-                    child.setObserver(value)
+                    child.setObserver(value);
                 }
             });
         }

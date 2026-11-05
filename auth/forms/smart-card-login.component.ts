@@ -32,6 +32,7 @@ import { XcI18nTranslateDirective } from '../../i18n/i18n.directive';
 })
 export class SmartCardLoginComponent {
 
+    // @ts-expect-error(TODO:)
     readonly data = input<LoginComponentData>(undefined);
 
 }

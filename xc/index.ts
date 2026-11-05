@@ -71,7 +71,7 @@ export * from './xc-list/xc-nav-list/xc-nav-list.component';
 export * from './xc-list/xc-rich-list/xc-rich-list-item.component';
 export * from './xc-list/xc-rich-list/xc-rich-list.component';
 export * from './xc-master-detail/xc-master-detail.component';
-export * from './xc-menu/xc-menu.types'; 
+export * from './xc-menu/xc-menu.types';
 export * from './xc-menu/xc-menu-trigger.directive';
 export * from './xc-menu/xc-menu.component';
 export * from './xc-menu/xc-menu.service';

@@ -29,6 +29,7 @@ export class XcContainerTemplate extends XcContainerBaseTemplate<XoTemplateDefin
     /**
      * Backed templates
      */
+    // @ts-expect-error(TODO:)
     private childTemplates: XcTemplate[];
 
     /**
@@ -36,6 +37,7 @@ export class XcContainerTemplate extends XcContainerBaseTemplate<XoTemplateDefin
      */
     private childStructures: XoStructureField[] = [];
     private readonly structureCache = new XoDescriberCache<XoStructureObject>();
+    // @ts-expect-error(TODO:)
     private retrievingStructure: Observable<XoStructureObject> = null;  // is set if request is pending
 
     /**
@@ -74,9 +76,11 @@ export class XcContainerTemplate extends XcContainerBaseTemplate<XoTemplateDefin
         if (this.apiService && this.rtc) {
             // if retrieving is not pending, retrieve structure
             if (!this.retrievingStructure) {
+                // @ts-expect-error(TODO:)
                 this.retrievingStructure = this.apiService.getStructure(this.rtc, [this.data], this.structureCache).get(this.data).pipe(
                     map(structureObject => {
                         structureObject.name = '';
+                        // @ts-expect-error(TODO:)
                         this.retrievingStructure = null;
                         return structure;
                     })
@@ -85,6 +89,7 @@ export class XcContainerTemplate extends XcContainerBaseTemplate<XoTemplateDefin
             return this.retrievingStructure.pipe(map(s => s?.children));
         }
         console.warn('XoTemplateDefinedObject: No ApiService or Runtime Context defined to retrieve structure of Xo!');
+        // @ts-expect-error(TODO:)
         return of(null);
     }
 
@@ -112,6 +117,7 @@ export class XcContainerTemplate extends XcContainerBaseTemplate<XoTemplateDefin
                     if (fieldTemplates.length === 0) {
                         console.log(`no rule to build a template for field "${field.path}"`);
                     }
+                    // @ts-expect-error(TODO:)
                     templates.push(...fieldTemplates);
                 });
             return templates;
@@ -200,8 +206,11 @@ export class XcContainerTemplate extends XcContainerBaseTemplate<XoTemplateDefin
 
 @XoObjectClass(XoTemplateDefinedBase, 'xmcp.templates.datatypes', 'TemplateDefinedObject')
 export class XoTemplateDefinedObject extends XoTemplateDefinedBase {
+    // @ts-expect-error(TODO:)
     private _template: XcContainerTemplate;
+    // @ts-expect-error(TODO:)
     private _apiService: ApiService;
+    // @ts-expect-error(TODO:)
     private _$rtc: RuntimeContext;
 
     private readonly childDefinitions: XoTemplateDefinedObject[] = [];
@@ -216,6 +225,7 @@ export class XoTemplateDefinedObject extends XoTemplateDefinedBase {
 
 
     resetTemplate() {
+        // @ts-expect-error(TODO:)
         this._template = null;
     }
 

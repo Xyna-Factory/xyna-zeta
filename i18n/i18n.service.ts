@@ -165,6 +165,7 @@ export class I18nService {
 
         if (this.cacheBehavior !== I18nCacheBehavior.NoCaching) {
             // gets the cache for the wanted language
+            // @ts-expect-error(TODO:)
             cache = this._cache.get(this.language);
 
             if (cache) {
@@ -186,7 +187,7 @@ export class I18nService {
         const translationMap = this._translations.get(this.language);
 
 
-        if (translationMap && key != undefined) {
+        if (translationMap && key !== undefined) {
 
             if (this.contextDismantlingSearch) {
                 let curKey: string;
@@ -198,8 +199,10 @@ export class I18nService {
                 parts[parts.length - 1] = parts[parts.length - 1].trim(); // trim key before translating
                 let withType = !!type;
                 let looping = true;
+                // @ts-expect-error(TODO:)
                 while (!translation && looping) {
                     curKey = (withType ? type + ':' : '') + parts.slice(i).join('.');
+                    // @ts-expect-error(TODO:)
                     translation = translationMap.get(curKey);
                     i++;
 
@@ -213,21 +216,26 @@ export class I18nService {
                     }
                 }
             } else {
+                // @ts-expect-error(TODO:)
                 translation = translationMap.get(key.trim());
             }
 
+            // @ts-expect-error(TODO:)
             if (translation?.value) {
                 translation.value = translation.value.trim();
             }
 
             // only cache it if a valid value for given key was found
+            // @ts-expect-error(TODO:)
             if (this.cacheBehavior !== I18nCacheBehavior.NoCaching && isString(translation?.value)) {
+                // @ts-expect-error(TODO:)
                 cache.set(key, { lastAccess: Date.now(), translation });
             }
         }
 
 
-        return (translation != undefined) ? translation : this.fulfillNoTranslationFoundBehavior(key, cache);
+        // @ts-expect-error(TODO:)
+        return (translation !== undefined) ? translation : this.fulfillNoTranslationFoundBehavior(key, cache);
     }
 
 
@@ -245,6 +253,7 @@ export class I18nService {
         if (this.noTranslationFoundDefaultBehavior === NoI18nTranslationFoundBehavior.ReturnLastPartOfKey) {
             const typeparts = key.split(':');
             const path = typeparts.length >= 2 ? typeparts.slice(1).join(':') : typeparts[0];
+            // @ts-expect-error(TODO:)
             translation.value = path.split('.').pop();
         }
 
@@ -259,6 +268,7 @@ export class I18nService {
 
     hasTranslation(key: string): boolean {
         const translationMap = this._translations.get(this.language);
+        // @ts-expect-error(TODO:)
         return translationMap && translationMap.has(key);
     }
 
@@ -274,7 +284,7 @@ export class I18nService {
 
         return {
             ...resolvedParam,
-            value: resolvedValue != undefined ? String(resolvedValue) : ''
+            value: resolvedValue !== undefined ? String(resolvedValue) : ''
         };
     }
 
@@ -320,6 +330,7 @@ export class I18nService {
         const translationMap = this._translations.get(language) || this._translations.set(language, new Map()).get(language);
         values.forEach(item => {
             item.key = (item.type ? item.type + ':' : '') + (item.context ? item.context + '.' : '') + item.key;
+            // @ts-expect-error(TODO:)
             translationMap.set(item.key, item);
         });
         this._cache.delete(language);
@@ -338,14 +349,14 @@ export class I18nService {
                 tap(translation => this.setTranslations(language, translation.translations)),
                 map(translation => translation.translations)
             );
-        } else {
-            const httpBackend = this.injector.get(HttpBackend);
-            const nonInterceptedJSONHTTPClient = new HttpClient(httpBackend);
-            return nonInterceptedJSONHTTPClient.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
+        }
+        const httpBackend = this.injector.get(HttpBackend);
+        const nonInterceptedJSONHTTPClient = new HttpClient(httpBackend);
+        return nonInterceptedJSONHTTPClient.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
                 tap(translation => this.setTranslations(language, translation.translations)),
                 map(translation => translation.translations)
-            );
-        }
+        );
+
     }
 
 
@@ -357,8 +368,10 @@ export class I18nService {
     removeOldCacheEntries(maxAge = 600000 /* 1min */) {
         const now = Date.now();
         const cache = this._cache.get(this.language);
+        // @ts-expect-error(TODO:)
         cache.forEach((entry, key) => {
             if (entry.lastAccess < now - maxAge) {
+                // @ts-expect-error(TODO:)
                 cache.delete(key);
             }
         });

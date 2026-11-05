@@ -26,7 +26,8 @@ export class RouteComponentReuseStrategy implements RouteReuseStrategy {
 
 
     private getComponentRef(detachedRoute: DetachedRouteHandle): any {
-        return detachedRoute['componentRef'];
+        // @ts-expect-error(TODO:)
+        return detachedRoute.componentRef;
     }
 
 
@@ -41,6 +42,7 @@ export class RouteComponentReuseStrategy implements RouteReuseStrategy {
             }
             return routeConfig.data.reuse;
         }
+        // @ts-expect-error(TODO:)
         return null;
     }
 

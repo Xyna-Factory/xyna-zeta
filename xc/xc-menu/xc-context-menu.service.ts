@@ -26,7 +26,9 @@ import { XcMenuComponentInterface } from './xc-menu.types';
 })
 export class XcContextMenuService {
 
+    // @ts-expect-error(TODO:)
     trigger: XcMenuTriggerDirective;
 
+    // @ts-expect-error(TODO:)
     menu: XcMenuComponentInterface;
 }

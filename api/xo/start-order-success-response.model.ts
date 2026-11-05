@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 /*
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Copyright 2023 Xyna GmbH, Germany
@@ -35,5 +37,6 @@ export class XoStartOrderSuccessResponseArray extends XoArray<XoStartOrderSucces
 }
 
 
- 
+
+// eslint-disable-next-line no-new
 new XoStartOrderSuccessResponse();

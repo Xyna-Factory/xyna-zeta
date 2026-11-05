@@ -28,7 +28,9 @@ import { MULTISELECT_FILTER_SEPARATOR, XcTableData, XcTableDataFilter, XcTableDa
 
 export class XcLocalTableDataSource<T extends Comparable = Comparable> extends XcTableDataSource<T> {
 
+    // @ts-expect-error(TODO:)
     protected _localTableData: XcTableData<T>;
+    // @ts-expect-error(TODO:)
     protected _localTableDataAsync: Observable<any>;
 
 
@@ -50,11 +52,15 @@ export class XcLocalTableDataSource<T extends Comparable = Comparable> extends X
             this.tableCounts.totalCount = rows.length;
 
             // skip leading rows
+            // @ts-expect-error(TODO:)
             if (options.skip > 0) {
+                // @ts-expect-error(TODO:)
                 rows = this.skipRows(rows, options.skip);
             }
             // limit remaining rows
+            // @ts-expect-error(TODO:)
             if (options.limit >= 0) {
+                // @ts-expect-error(TODO:)
                 rows = this.limitRows(rows, options.limit);
             }
             // set data

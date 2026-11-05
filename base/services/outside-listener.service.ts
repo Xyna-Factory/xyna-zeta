@@ -49,10 +49,13 @@ export class OutsideListenerService {
             element.addEventListener(eventType, handler);
         });
         // add triple to triples map
+        // @ts-expect-error(TODO:)
         this.handlerTriples.set(handlerId, {handler, element, eventType});
         // add handler id array inside arrays map
+        // @ts-expect-error(TODO:)
         (this.handlerIdArrays.get(element) ?? this.handlerIdArrays.set(element, []).get(element)).push(handlerId);
         // handler id is needed to remove listener again
+        // @ts-expect-error(TODO:)
         return handlerId;
     }
 

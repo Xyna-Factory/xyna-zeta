@@ -36,6 +36,7 @@ import { XcDefinitionProxyComponent } from '../xc-definition-proxy/xc-definition
 export class XcFormDefinitionComponent extends XcBaseDefinitionComponent {
 
     protected readonly cdr: ChangeDetectorRef = inject<ChangeDetectorRef>(ChangeDetectorRef);
+    // @ts-expect-error(TODO:)
     private changeChildrenEventSubscription: Subscription;
 
     @Input('xc-form-definition')
