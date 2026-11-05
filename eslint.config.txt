@@ -2,7 +2,6 @@
 
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-// eslint-disable-next-line zeta/xo
 import strictConfig from './lint/config/strict/eslint.config.js';
 import typescriptParser from '@typescript-eslint/parser';
 import stylistic from '@stylistic/eslint-plugin';

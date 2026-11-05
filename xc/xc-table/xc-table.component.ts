@@ -169,7 +169,7 @@ export class XcTableComponent implements AfterContentInit, AfterViewInit, OnDest
         }
 
         const target = event.target as HTMLElement;
-        const rowEl = target.closest('tr') as HTMLTableRowElement | null;
+        const rowEl = target.closest('tr');
         if (rowEl && this.tbody?.contains(rowEl)) {
             requestAnimationFrame(() => this.focusRowElement(rowEl));
         }
