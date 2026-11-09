@@ -78,16 +78,16 @@ export class XcWebGLFont {
             shape.getPoints().forEach(point => {
 
                 if (point.x < boundingBox.min.x) {
- boundingBox.min.x = point.x;
+                    boundingBox.min.x = point.x;
                 }
                 if (point.x > boundingBox.max.x) {
- boundingBox.max.x = point.x;
+                    boundingBox.max.x = point.x;
                 }
                 if (point.y < boundingBox.min.y) {
- boundingBox.min.y = point.y;
+                    boundingBox.min.y = point.y;
                 }
                 if (point.y > boundingBox.max.y) {
- boundingBox.max.y = point.y;
+                    boundingBox.max.y = point.y;
                 }
 
             })
