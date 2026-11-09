@@ -41,7 +41,9 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent implements OnDe
     private readonly cdRef = inject(ChangeDetectorRef);
 
 
+    // @ts-expect-error(TODO:)
     private _dataSource: XcReadonlyStructureTreeDataSource;
+    // @ts-expect-error(TODO:)
     private _subscription: Subscription;
     private _keepBreaks = false;
 
@@ -77,6 +79,7 @@ export class XcReadonlyTreeComponent extends XcTreeNodeComponent implements OnDe
         // debounce events before propagating new width to all the tree nodes
         clearTimeout(this.changeWidthTimer);
         if (event.width !== this.firstColumnWidth) {
+            // @ts-expect-error(TODO:)
             this.changeWidthTimer = setTimeout(propagateWidth, 5, maxChildWidth);
         }
     }

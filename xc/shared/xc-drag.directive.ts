@@ -35,9 +35,9 @@ export class XcDragDirective implements OnChanges, OnDestroy {
     protected readonly renderer = inject(Renderer2);
 
 
-    readonly enabled = input(true, { alias: "xc-drag", transform: coerceBoolean });
+    readonly enabled = input(true, { alias: 'xc-drag', transform: coerceBoolean });
 
-    readonly dragEventTarget = input<MouseEvent | TouchEvent>(undefined, { alias: "xc-drag-event-target" });
+    readonly dragEventTarget = input<MouseEvent | TouchEvent>(undefined, { alias: 'xc-drag-event-target' });
 
     private readonly _dragOptions: XcDragOptions = {};
 
@@ -56,20 +56,28 @@ export class XcDragDirective implements OnChanges, OnDestroy {
     readonly dragMove = output<any>();
     readonly dragEnd = output<any>();
 
+    // @ts-expect-error(TODO:)
     isDragging: boolean;
+    // @ts-expect-error(TODO:)
     lastPageX: number;
+    // @ts-expect-error(TODO:)
     lastPageY: number;
     private readonly globalListeners = new Map<string, {
         handler: (event: Event) => void;
         options?: AddEventListenerOptions | boolean;
     }>();
+    // @ts-expect-error(TODO:)
     private elementWidth: number;
+    // @ts-expect-error(TODO:)
     private elementHeight: number;
+    // @ts-expect-error(TODO:)
     private vw: number;
+    // @ts-expect-error(TODO:)
     private vh: number;
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.dragEventTarget && changes.dragEventTarget.currentValue && this.enabled()) {
+            // @ts-expect-error(TODO:)
             this.onMousedown(this.dragEventTarget());
         }
     }

@@ -108,7 +108,9 @@ export class AuthService {
 
 
     static readonly urlFragment = 'Authenticate';
+    // @ts-expect-error(TODO:)
     private startOrderRightFallback: boolean;
+    // @ts-expect-error(TODO:)
     private startOrderRights: StartOrderRight[];
     private readonly dynamicRights = new Set<string>();
 
@@ -134,6 +136,7 @@ export class AuthService {
         ).subscribe(sessionInfo => {
 
             // run consistency check
+            // @ts-expect-error(TODO:)
             XoConsistencyCheck.run(apiService, this.configService.config.zeta.xo);
 
             // update server time offset
@@ -214,7 +217,9 @@ export class AuthService {
     requireAuthentication(redirectUrl?: string) {
         // notify observers of session loss
         if (this.authenticated) {
+            // @ts-expect-error(TODO:)
             this.authEventService.sessionInfoSubject.next(undefined);
+            // @ts-expect-error(TODO:)
             this.authEventService.logoutSubject.next(undefined);
         }
         // route to url fragment, if we aren't there already
@@ -256,6 +261,7 @@ export class AuthService {
 
 
     private get pathToken(): string {
+        // @ts-expect-error(TODO:)
         return this.configService.config.zeta.auth ? this.configService.config.zeta.auth.pathToken : '/';
     }
 
@@ -324,7 +330,9 @@ export class AuthService {
     logout(): Observable<void> {
         return this.http.post<void>('auth/logout', XoLogoutRequest.logout(this.pathToken).encode()).pipe(
             tap(() => {
+                // @ts-expect-error(TODO:)
                 this.authEventService.sessionInfoSubject.next(undefined);
+                // @ts-expect-error(TODO:)
                 this.authEventService.logoutSubject.next(undefined);
             })
         );
@@ -391,6 +399,7 @@ export class AuthService {
 
 
     hasRight(right: string): boolean {
+        // @ts-expect-error(TODO:)
         return !!this.rights.find(r => this.rightMatcher.exec(r)[0] === right) || this.hasDynamicRight(right);
     }
 

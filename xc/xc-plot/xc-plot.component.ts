@@ -35,9 +35,12 @@ import { XcPlotDataSource } from './xc-plot-data-source';
 })
 export class XcPlotComponent implements OnDestroy, XcCanvasController, XcCanvasObserver {
 
+    // @ts-expect-error(TODO:)
     private _canvasComponent: XcCanvasComponent;
+    // @ts-expect-error(TODO:)
     private readonly dataSourceContainerChangeSubject = new BehaviorSubject<XcPlotDataSource[]>(null);
     private readonly initializedChangeSubject = new Subject<XcPlotController>();
+    // @ts-expect-error(TODO:)
     private initializedSubscription: Subscription;
 
     stepEveryXFrame = 0;
@@ -112,8 +115,10 @@ export class XcPlotComponent implements OnDestroy, XcCanvasController, XcCanvasO
         return this.initializedChangeSubject.asObservable();
     }
 
+    // @ts-expect-error(TODO:)
     controller: XcCartasianCoordinateSystemController;
 
+    // @ts-expect-error(TODO:)
     initialized: boolean;
 
     mouseEventsOption: XcCanvasMouseEventsOption = {

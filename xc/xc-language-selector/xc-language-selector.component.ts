@@ -38,10 +38,13 @@ class ComparableLanguage extends Comparable implements SelectableLanguage {
         super();
         this.label = lang.label;
         this.languageKey = lang.languageKey;
+        // @ts-expect-error(TODO:)
         this.baseUrl = lang.baseUrl;
     }
 
+    // @ts-expect-error(TODO:)
     equals(other?: this) {
+        // @ts-expect-error(TODO:)
         return this.languageKey === other.languageKey;
     }
 }
@@ -61,8 +64,10 @@ export class XcLanguageSelectorComponent {
 
     readonly tabIndex = input<number>(0);
 
+    // @ts-expect-error(TODO:)
     selectLanguageDataWrapper: XcAutocompleteDataWrapper;
     hasLanguages: boolean;
+    // @ts-expect-error(TODO:)
     selectedLanguage: ComparableLanguage;
 
     constructor() {
@@ -71,9 +76,12 @@ export class XcLanguageSelectorComponent {
         this.i18n.setTranslations(LocaleService.DE_DE, xcLanguageSelectorTranslations_deDE);
         this.i18n.setTranslations(LocaleService.EN_US, xcLanguageSelectorTranslations_enUS);
 
+        // @ts-expect-error(TODO:)
         const languages = this.configService.config.zeta.auth ? this.configService.config.zeta.auth.languages : null;
 
+        // @ts-expect-error(TODO:)
         if ((this.hasLanguages = languages?.length > 0)) {
+            // @ts-expect-error(TODO:)
             const found = languages.find(lang => lang.languageKey === locale.language) || languages[0];
             this.selectedLanguage = new ComparableLanguage(found);
             this.selectLanguageDataWrapper = new XcAutocompleteDataWrapper(
@@ -89,6 +97,7 @@ export class XcLanguageSelectorComponent {
                     }
                 }
             );
+            // @ts-expect-error(TODO:)
             const mapped = languages.map(value => ({
                 name: this.i18n.translateSignal(value.label),
                 value: new ComparableLanguage(value)

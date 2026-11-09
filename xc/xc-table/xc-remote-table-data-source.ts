@@ -28,13 +28,16 @@ import { XcTemplate } from '../xc-template/xc-template';
 import { XcTableColumn, XcTableDataRequestOptions, XcTableDataSource } from './xc-table-data-source';
 
 
+// @ts-expect-error(TODO:)
 @XoObjectClass(null, 'xmcp.tables.datatypes', 'TableColumn')
 export class XoTableColumn extends XoObject {
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     path: string;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     name: string;
 
     @XoProperty()
@@ -66,7 +69,7 @@ export class XoTableColumn extends XoObject {
 
     @XoProperty()
     align?: string;
-  
+
     @XoProperty()
     pronunciationLang?: string;
 
@@ -93,28 +96,36 @@ export class XoTableColumnArray extends XoArray<XoTableColumn> {
 }
 
 
+// @ts-expect-error(TODO:)
 @XoObjectClass(null, 'xmcp.tables.datatypes', 'TableInfo')
 export class XoTableInfo extends XoObject {
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     rootType: string;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     version: string;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     bootstrap: boolean;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     skip: number;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     limit: number;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     length: number;
 
     @XoProperty(XoTableColumnArray)
+    // @ts-expect-error(TODO:)
     columns: XoTableColumnArray;
 }
 
@@ -124,10 +135,12 @@ export class XoTableInfoArray extends XoArray<XoTableInfo> {
 }
 
 
+// @ts-expect-error(TODO:)
 @XoObjectClass(null, 'base', 'Count')
 export class XoCount extends XoObject {
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     count: number;
 }
 
@@ -211,11 +224,16 @@ export function XoSplicingTableInfoClass<T extends XoObject>(baseClass: XoObject
             : -1;
         const column = accessor.items ? new XoTableColumn() : undefined;
         if (column) {
+            // @ts-expect-error(TODO:)
             column.name = accessor.items.name;
             column.path = path;
+            // @ts-expect-error(TODO:)
             column.disableFilter = accessor.items.disableFilter;
+            // @ts-expect-error(TODO:)
             column.disableSort = accessor.items.disableSort;
+            // @ts-expect-error(TODO:)
             column.shrink = accessor.items.shrink;
+            // @ts-expect-error(TODO:)
             column.filterMultiselect = accessor.items.filterMultiselect;
         }
         return { path: path, idx: idx, column: column, remove: !accessor.items };
@@ -238,10 +256,12 @@ export function XoSplicingTableInfoClass<T extends XoObject>(baseClass: XoObject
         }
 
         protected spliceRevert() {
+            // @ts-expect-error(TODO:)
             propertyMappings.forEach((mapping, idx) => this.spliceColumn(mapping, !mapping.remove, idx));
         }
 
         protected spliceAction() {
+            // @ts-expect-error(TODO:)
             propertyMappings.forEach((mapping, idx) => this.spliceColumn(mapping, mapping.remove, idx));
         }
 
@@ -272,6 +292,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
     protected readonly errorSubject = new Subject<StartOrderResult>();
 
     /** Subject with last responded table info */
+    // @ts-expect-error(TODO:)
     protected readonly tableInfoSubject = new BehaviorSubject<XoTableInfo>(null);
 
     /** Additional inputs besides the table info */
@@ -296,6 +317,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
      * So this process can be split such that the user already gets (a limited amount of) the hits before he knows how many hits
      * there are in total.
      */
+    // @ts-expect-error(TODO:)
     totalCountOrderType: string;
 
 
@@ -310,6 +332,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
 
 
     protected request(options: XcTableDataRequestOptions) {
+        // @ts-expect-error(TODO:)
         this.requestErrorMessage = null;
         let rows: T[];
         // execute startorder call to fetch table info and rows
@@ -326,6 +349,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
             // add filters
             if (options.filter) {
                 options.filter.map.forEach((value, key) => {
+                    // @ts-expect-error(TODO:)
                     if ((columnInfo = tableInfoInstance.columns.data.find(column => column.path === key))) {
                         columnInfo.filter = value;
                     } else {
@@ -334,6 +358,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
                 });
             }
             // add sort
+            // @ts-expect-error(TODO:)
             if (options.sort && (columnInfo = tableInfoInstance.columns.data.find(column => column.path === options.sort.path))) {
                 columnInfo.sort = XcSortDirection[options.sort.direction];
             }
@@ -344,9 +369,12 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
             tableInfoInstance.bootstrap = true;
         }
         // set skip and limit
+        // @ts-expect-error(TODO:)
         tableInfoInstance.skip = options.skip;
+        // @ts-expect-error(TODO:)
         tableInfoInstance.limit = options.limit;
         // reset length, since it is solely determined by the server
+        // @ts-expect-error(TODO:)
         tableInfoInstance.length = undefined;
         // compile input and output start order
         const input = [tableInfoInstance, ...pack(this.input)];
@@ -358,11 +386,14 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
         this.apiService.startOrder(
             this.rtc,
             this.orderType,
+            // @ts-expect-error(TODO:)
             input,
             output,
             new StartOrderOptionsBuilder()
                 .withErrorMessage(true)
+                // @ts-expect-error(TODO:)
                 .monitoringLevel(this.monitoringLevel)
+                // @ts-expect-error(TODO:)
                 .priority(this.priority)
                 .options
         ).pipe(
@@ -394,26 +425,32 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
             })
         ).subscribe({
             next: result => {
+                // @ts-expect-error(TODO:)
                 if (result.output?.length > 1) {
                     // set table info
+                    // @ts-expect-error(TODO:)
                     const tableInfo = result.output[0] as XoTableInfo;
                     tableInfo.columns = tableInfo.columns || new XoTableColumnArray();
                     // set filters
                     this.filters.clear();
                     tableInfo.columns.data.forEach(column =>
+                        // @ts-expect-error(TODO:)
                         this.filters.set(column.path, column.filter)
                     );
                     // set sort
                     const sortColumn = tableInfo.columns.data.find(column => !!column.sort);
                     if (sortColumn) {
                         this._sortPath = sortColumn.path;
+                        // @ts-expect-error(TODO:)
                         this._sortDirection = XcSortDirectionFromString(sortColumn.sort.toLowerCase());
                         this._sortChange.next(true);
                     }
                     // set rows
+                    // @ts-expect-error(TODO:)
                     rows = (result.output[1] as XoArray<T>).data;
                     if (this.skip) {
                         rows.unshift(...this.rows);
+                        // @ts-expect-error(TODO:)
                         this.skip = undefined;
                     }
                     // set footer label
@@ -427,6 +464,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
                     this.tableInfoSubject.next(tableInfo);
                     this.updateTableCount();
                 } else {
+                    // @ts-expect-error(TODO:)
                     this.requestErrorMessage = result.errorMessage;
                     this.errorSubject.next(result);
                 }
@@ -441,6 +479,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
             this.apiService.startOrderAssert<XoCount>(
                 this.rtc,
                 this.totalCountOrderType,
+                // @ts-expect-error(TODO:)
                 input,
                 XoCount
             ).subscribe(count => {
@@ -452,6 +491,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
 
 
     protected updateTableCount() {
+        // @ts-expect-error(TODO:)
         this.footerLabelRight = this.tableCounts.displayedCount !== undefined && this.tableCounts.totalCount !== undefined
             ? this.tableCounts.displayedCount + '/' + this.tableCounts.totalCount
             : undefined;
@@ -481,6 +521,7 @@ export class XcRemoteTableDataSource<T extends XoObject = XoObject, O extends Xo
 
 
     resetTableInfo() {
+        // @ts-expect-error(TODO:)
         this.tableInfoSubject.next(null);
     }
 }

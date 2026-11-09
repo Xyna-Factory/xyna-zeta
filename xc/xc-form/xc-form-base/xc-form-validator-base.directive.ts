@@ -28,6 +28,7 @@ export abstract class XcFormValidatorBaseDirective implements AfterViewInit {
 
     ngAfterViewInit() {
         if (this.host) {
+            // @ts-expect-error(TODO:)
             this.getValidatorFns().forEach(value => this.host.addValidator(value));
         }
     }

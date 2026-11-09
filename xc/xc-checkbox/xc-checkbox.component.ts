@@ -89,6 +89,7 @@ export class XcCheckboxComponent extends XcThemeableComponent implements OnInit,
     }
 
     ngOnInit(): void {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         const input =
             this.elementRef.nativeElement.querySelector('input');
 

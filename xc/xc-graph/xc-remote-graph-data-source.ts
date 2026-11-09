@@ -23,13 +23,16 @@ import { pack, seconds } from '../../base';
 import { XcGraphData, XcGraphDataRequestOptions, XcGraphDataSource, XcGraphSlice, XcGraphType, XcTimeInterval } from './xc-graph-data-source';
 
 
+// @ts-expect-error(TODO:)
 @XoObjectClass(null, 'xmcp.graphs.datatypes', 'TimeInterval')
 export class XoTimeInterval extends XoObject {
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     timeAt: number;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     timeTo: number;
 
     get asXcTimeInterval(): XcTimeInterval {
@@ -46,51 +49,66 @@ export class XoTimeIntervalArray extends XoArray<XoTimeInterval> {
 }
 
 
+// @ts-expect-error(TODO:)
 @XoObjectClass(null, 'xmcp.graphs.datatypes', 'GraphInfo')
 export class XoGraphInfo extends XoObject {
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     bootstrap: boolean;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     version: string;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     label: string;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     xAxisName: string;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     yAxisName: string;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     xAxisUnit: string;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     yAxisUnit: string;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     minValue: number;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     maxValue: number;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     resolution: number;
 
     @XoProperty(XoTimeIntervalArray)
+    // @ts-expect-error(TODO:)
     intervals: XoTimeIntervalArray;
 }
 
 
+// @ts-expect-error(TODO:)
 @XoObjectClass(null, 'xmcp.graphs.datatypes', 'GraphSlice')
 export class XoGraphSlice extends XoObject {
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     time: number;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     values: number[];
 
     get asXcGraphSlice(): XcGraphSlice {
@@ -107,16 +125,20 @@ export class XoGraphSliceArray extends XoArray<XoGraphSlice> {
 }
 
 
+// @ts-expect-error(TODO:)
 @XoObjectClass(null, 'xmcp.graphs.datatypes', 'GraphData')
 export class XoGraphData extends XoObject {
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     id: number;
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     type: XcGraphType;
 
     @XoProperty(XoGraphSliceArray)
+    // @ts-expect-error(TODO:)
     slices: XoGraphSliceArray;
 
     get asXcGraphData(): XcGraphData {
@@ -147,9 +169,11 @@ export class XcRemoteGraphDataSource extends XcGraphDataSource {
     static readonly version = '1.0';
 
     /** Start time of currently running request */
+    // @ts-expect-error(TODO:)
     protected requestTime: number;
 
     /** Start time of last erroneous request */
+    // @ts-expect-error(TODO:)
     protected errorTime: number;
 
     /** Last responded graph info */
@@ -188,25 +212,32 @@ export class XcRemoteGraphDataSource extends XcGraphDataSource {
             graphInfoInstance.bootstrap = true;
             graphInfoInstance.intervals = new XoTimeIntervalArray();
         }
+        // @ts-expect-error(TODO:)
         graphInfoInstance.intervals.data.splice(0, 0, ...options.intervals.map(value => new XoTimeInterval().decode(value as any)));
+        // @ts-expect-error(TODO:)
         graphInfoInstance.resolution = options.resolution;
         // create input and output of startorder
         const input  = [graphInfoInstance, ...pack(this.input)];
         const output = [this.graphInfoClass, XoGraphDataArray];
         // set pending flag and execute startorder
         this.requestTime = +new Date();
+        // @ts-expect-error(TODO:)
         this.apiService.startOrder(this.rtc, this.orderType, input, output, new StartOrderOptionsBuilder().withErrorMessage(true).options).pipe(
             catchError(error => {
                 this.errorTime = this.requestTime;
                 return throwError(error);
             }),
+            // @ts-expect-error(TODO:)
             finalize(() => this.requestTime = undefined)
         ).subscribe(result => {
             if (result.errorMessage) {
                 this.errorTime = this.requestTime;
             } else {
+                // @ts-expect-error(TODO:)
                 this.errorTime = undefined;
+                // @ts-expect-error(TODO:)
                 this.graphInfo = result.output[0] as XoGraphInfo;
+                // @ts-expect-error(TODO:)
                 const graphDataArray = result.output[1] as XoGraphDataArray;
                 this.mergeGraphData(graphDataArray.data.map(value => value.asXcGraphData), options);
             }

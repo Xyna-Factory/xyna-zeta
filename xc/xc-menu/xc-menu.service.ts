@@ -26,8 +26,11 @@ import { XcMenuComponentInterface, XcMenuItem, XcMenuOptions, XcMenuOptionsDefau
 @Injectable({ providedIn: 'root' })
 export class XcMenuService {
 
+    // @ts-expect-error(TODO:)
     private _component: XcMenuComponentInterface;
+    // @ts-expect-error(TODO:)
     private _items: XcMenuItem[];
+    // @ts-expect-error(TODO:)
     private _options: XcMenuOptions;
     private readonly subscriptions = new Array<OutputRefSubscription>();
     private readonly selectItem = new Subject<XcMenuItem>();

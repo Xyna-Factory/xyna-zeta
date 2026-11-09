@@ -132,30 +132,46 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
     private _frameCount = 0;
     private readonly _oldParentSize = { width: -1, height: -1 };
 
+    // @ts-expect-error(TODO:)
     private _lastTimestamp: number;
+    // @ts-expect-error(TODO:)
     private _lastStepTimestamp: number;
+    // @ts-expect-error(TODO:)
     private _lastDrawTimestamp: number;
+    // @ts-expect-error(TODO:)
     private _lastKeyboardInputTimestamp: number;
 
+    // @ts-expect-error(TODO:)
     private _parent: HTMLElement;
+    // @ts-expect-error(TODO:)
     private _canvasRecording: CanvasHelperRecording;
 
+    // @ts-expect-error(TODO:)
     private resizeObserver: ResizeObserver;
 
     private readonly _initializedChangeSubject = new Subject<boolean>();
     private _initialized = false;
+    // @ts-expect-error(TODO:)
     private _initializedChangeSubscription: Subscription;
     private _running = false;
+    // @ts-expect-error(TODO:)
     private _animationFrameRequestId: number;
+    // @ts-expect-error(TODO:)
     private _fps: number;
+    // @ts-expect-error(TODO:)
     private _canvas: HTMLCanvasElement;
+    // @ts-expect-error(TODO:)
     private _context: CanvasRenderingContext2D;
     private _fittingToParent = false;
     private _resizeObserverFallback = false;
 
+    // @ts-expect-error(TODO:)
     private _keyboardEvent: KeyboardEvent;
+    // @ts-expect-error(TODO:)
     private keyboardEventSetter: (e: KeyboardEvent) => void;
+    // @ts-expect-error(TODO:)
     private mouseEventHandler: (e: MouseEvent) => void;
+    // @ts-expect-error(TODO:)
     private eventKiller: (event: Event) => void;
 
     get initialized(): boolean {
@@ -187,15 +203,15 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
         return this._context;
     }
 
-    readonly controller = input<XcCanvasController>({}, { alias: "xc-canvas-controller" });
+    readonly controller = input<XcCanvasController>({}, { alias: 'xc-canvas-controller' });
 
 
-    readonly observer = input<XcCanvasObserver>({}, { alias: "xc-canvas-observer" });
+    readonly observer = input<XcCanvasObserver>({}, { alias: 'xc-canvas-observer' });
 
 
     readonly mouseEventsOption = input<XcCanvasMouseEventsOption>({
         eventsListenTo: Object.keys(MouseEventType).map<MouseEventType>(key => MouseEventType[key])
-    }, { alias: "xc-canvas-mouseeventsoption" });
+    }, { alias: 'xc-canvas-mouseeventsoption' });
 
 
     @Input({ alias: 'xc-canvas-fitting', transform: coerceBoolean })
@@ -233,6 +249,7 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
         this._oldDimensions.height = this._canvas.height;
         // it seems that the parent must not be an Angular component because if it is the fitting does not work correctly
         // hence a more dynamic approach is needed - @todo TODO
+        // @ts-expect-error(TODO:)
         this._parent = (this.elementRef.nativeElement as HTMLElement).parentElement;
 
         // Check if Browser supports ResizeObserver. It looks really good that it does
@@ -247,6 +264,7 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
             });
         }
 
+        // @ts-expect-error(TODO:)
         this._context = this._canvas.getContext('2d');
 
         this.registerAllListener();
@@ -359,7 +377,7 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
                 this.resizeToParent();
                 this._oldParentSize.width = rect.width;
                 this._oldParentSize.height = rect.height;
-                this.parentSizeChange.emit(<ScreenInfo>{
+                this.parentSizeChange.emit({
                     width: rect.width,
                     height: rect.height,
                     aspect: rect.width / rect.height
@@ -565,6 +583,7 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
                 }
 
                 if (e.type === MouseEventType.wheel && observer.mouse) {
+                    // @ts-expect-error(TODO:)
                     observer.wheel(e as WheelEvent);
                 }
 
@@ -573,6 +592,7 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
             this.eventKiller = (event: Event) => {
 
                 const killAllEvents = (e: Event) => {
+                    // @ts-expect-error(TODO:)
                     this._keyboardEvent = null;
                     this._keyCodeSet.clear();
                     document.exitPointerLock();
@@ -588,6 +608,7 @@ export class XcCanvasComponent implements OnInit, OnDestroy {
                 }
 
                 if (event instanceof KeyboardEvent) {
+                    // @ts-expect-error(TODO:)
                     this._keyboardEvent = null;
                     this._keyCodeSet.delete(event.key);
                     this._keyCodeSet.delete(event.code);

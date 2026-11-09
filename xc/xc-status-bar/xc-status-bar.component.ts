@@ -39,8 +39,10 @@ export class XcStatusBarComponent {
     private timeout: any;
 
     @HostBinding('attr.flashing')
+    // @ts-expect-error(TODO:)
     type: XcStatusBarEntryType;
 
+    // @ts-expect-error(TODO:)
     message: string;
     collapsed = true;
 
@@ -68,6 +70,7 @@ export class XcStatusBarComponent {
             this.collapsed = true;
             this.timeout = setTimeout(() => {
                 this.timeout = undefined;
+                // @ts-expect-error(TODO:)
                 this.message = undefined;
             }, 600);
         }, 5000);

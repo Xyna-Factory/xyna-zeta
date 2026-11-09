@@ -32,7 +32,7 @@ export interface XcStructureTreeNode extends XcTreeNode {
 
 export class XcReadonlyStructureTreeDataSource extends XcBaseStructureTreeDataSource<XcStructureTreeNode> {
 
-    constructor(apiService: ApiService, i18n: I18nService, rtc: RuntimeContext, content: Xo[], translateLabels: boolean = true) {
+    constructor(apiService: ApiService, i18n: I18nService, rtc: RuntimeContext, content: Xo[], translateLabels = true) {
         super(apiService, i18n, rtc, content, new XoArray().append(...content), translateLabels);
     }
 
@@ -72,6 +72,7 @@ export class XcReadonlyStructureTreeDataSource extends XcBaseStructureTreeDataSo
             )
         );
         field.children = children;
+        // @ts-expect-error(TODO:)
         node.children.next(
             field.children
                 .filter(childField => !(childField instanceof XoStructureMethod))

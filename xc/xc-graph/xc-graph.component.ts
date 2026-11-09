@@ -77,11 +77,14 @@ class XcShaderMaterial extends RawShaderMaterial {
     setUniformColor(color: number) {
         this.uniformsNeedUpdate = true;
         this.uniforms.color.value.set(
-             
+
+            // eslint-disable-next-line no-bitwise
             ((color & 0xff0000) >> 16) / 256,
+            // eslint-disable-next-line no-bitwise
             ((color & 0x00ff00) >> 8) / 256,
+            // eslint-disable-next-line no-bitwise
             ((color & 0x0000ff) >> 0) / 256
-             
+
         );
     }
 
@@ -155,6 +158,7 @@ class XcGraph extends XcShaderObject {
                     const x0 = (off - ptr.localOff) * resolutionWidth;
                     const x1 = x0 + resolutionWidth;
                     const y = slice.values[valueIdx];
+                    // @ts-expect-error(TODO:)
                     positionData.push(...this.updatePositionData(x0, x1, y, z, first, ptr.len === 0));
                     first = false;
                     off++;
@@ -173,6 +177,7 @@ class XcGraph extends XcShaderObject {
 
 abstract class XcNormalGraph extends XcGraph {
 
+    // @ts-expect-error(TODO:)
     private v0: Vector2;
 
 
@@ -282,8 +287,11 @@ class XcBarGraph extends XcGraph {
 
 abstract class XcGraphStampFont extends XcWebGLFont {
 
+    // @ts-expect-error(TODO:)
     offset: Vector2;
+    // @ts-expect-error(TODO:)
     lineWidth: number;
+    // @ts-expect-error(TODO:)
     lineHeight: number;
 
 
@@ -412,39 +420,63 @@ export class XcGraphScene {
     /** Padding of datestamp, timestamp and valuestamp texts */
     private static readonly STAMP_PADDING = 4;
 
+    // @ts-expect-error(TODO:)
     private subscription: Subscription;
+    // @ts-expect-error(TODO:)
     private resources: XcGraphResources;
 
+    // @ts-expect-error(TODO:)
     private rootViewportPosition: Vector2;
+    // @ts-expect-error(TODO:)
     private rootViewportSize: Vector2;
+    // @ts-expect-error(TODO:)
     private rootCamera: OrthographicCamera;
+    // @ts-expect-error(TODO:)
     private rootScene: Scene;
 
+    // @ts-expect-error(TODO:)
     private graphViewportPosition: Vector2;
+    // @ts-expect-error(TODO:)
     private graphViewportSize: Vector2;
+    // @ts-expect-error(TODO:)
     private graphCamera: OrthographicCamera;
+    // @ts-expect-error(TODO:)
     private graphScene: Scene;
+    // @ts-expect-error(TODO:)
     private graphAnchor: Object3D;
 
+    // @ts-expect-error(TODO:)
     private textFont: XcWebGLFont;
+    // @ts-expect-error(TODO:)
     private name: string;
+    // @ts-expect-error(TODO:)
     private nameMesh: XcShaderMesh;
+    // @ts-expect-error(TODO:)
     private unit: string;
+    // @ts-expect-error(TODO:)
     private unitMesh: XcShaderMesh;
 
+    // @ts-expect-error(TODO:)
     private datestampFont: XcGraphTimestampFont;
     private readonly datestampMeshes = new Map<number, XcShaderMesh>();
 
+    // @ts-expect-error(TODO:)
     private timestampFont: XcGraphTimestampFont;
     private readonly timestampMeshes = new Map<number, XcShaderMesh>();
 
+    // @ts-expect-error(TODO:)
     private valuestampFont: XcGraphValuestampFont;
     private readonly valuestampMeshes = new Map<number, XcShaderMesh>();
 
+    // @ts-expect-error(TODO:)
     private liveOffsetObject: XcShaderObject;
+    // @ts-expect-error(TODO:)
     private headObject: XcShaderObject;
+    // @ts-expect-error(TODO:)
     private axesObject: XcShaderObject;
+    // @ts-expect-error(TODO:)
     private backObject: XcShaderObject;
+    // @ts-expect-error(TODO:)
     private overObject: XcShaderObject;
 
     /** Width of a sample in pixels (including gap, if any) */
@@ -484,6 +516,7 @@ export class XcGraphScene {
     private height = 0;
 
     /** Translation start date */
+    // @ts-expect-error(TODO:)
     private translationDate: number;
 
     /** Translation offset in milliseconds */
@@ -493,6 +526,7 @@ export class XcGraphScene {
     private translationHalf = 0;
 
     /** User translation interaction to compute mouse offsets from */
+    // @ts-expect-error(TODO:)
     private translatingInteraction: XcWebGLInteraction;
 
     /** Determines wether the user is allowed to translate the graph */
@@ -505,6 +539,7 @@ export class XcGraphScene {
     private allowHovering = false;
 
     /** Time of the graph sample the user is currently hovering over */
+    // @ts-expect-error(TODO:)
     readonly hoveringAt = new BehaviorSubject<number>(undefined);
 
     /** Id of the graph containing the sample used for hovering */
@@ -554,6 +589,7 @@ export class XcGraphScene {
                 )
             );
         }
+        // @ts-expect-error(TODO:)
         return this.graphs.get(id);
     }
 
@@ -614,6 +650,7 @@ export class XcGraphScene {
                     this.translationTime += translationHalf - this.translationHalf;
                     if (this.translationTime >= 0) {
                         this.translationTime = 0;
+                        // @ts-expect-error(TODO:)
                         this.translationDate = undefined;
                     }
                 }
@@ -631,6 +668,7 @@ export class XcGraphScene {
 
     private removeMesh(mesh: Mesh): Mesh {
         if (mesh) {
+            // @ts-expect-error(TODO:)
             mesh.parent.remove(mesh);
             mesh.geometry.dispose();
         }
@@ -872,6 +910,7 @@ export class XcGraphScene {
         while (value <= max) {
             updateMesh(
                 value,
+                // @ts-expect-error(TODO:)
                 meshes.get(value) || meshes.set(
                     value,
                     this.addMesh(
@@ -1039,6 +1078,7 @@ export class XcGraphScene {
             // remove name mesh, if name has changed
             if (this.name && this.name !== this.dataSource.name) {
                 this.removeMesh(this.nameMesh);
+                // @ts-expect-error(TODO:)
                 this.name = undefined;
             }
             // create name mesh, if necessary
@@ -1060,6 +1100,7 @@ export class XcGraphScene {
             // remove unit mesh, if unit has changed
             if (this.unit && this.unit !== this.dataSource.unit) {
                 this.removeMesh(this.unitMesh);
+                // @ts-expect-error(TODO:)
                 this.unit = undefined;
             }
             // create unit mesh, if necessary
@@ -1176,6 +1217,7 @@ export class XcGraphScene {
 
     destroy() {
         if (this.resources) {
+            // @ts-expect-error(TODO:)
             this.resources = undefined;
             this.removeSubscription();
 
@@ -1250,12 +1292,14 @@ export class XcGraphScene {
                 // update translation offset
                 const liveDate = +new Date() + this.serverTimeOffset;
                 const liveTime = this.translationDate !== undefined ? liveDate - this.translationDate : 0;
+                // @ts-expect-error(TODO:)
                 this.translationTime += this.pixelsToTime(this.translatingInteraction.mouse.x - interaction.mouse.x);
                 this.translationTime = Math.min(this.translationTime, liveTime);
                 // start and stop live update
                 if (this.translationTime < liveTime) {
                     this.translationDate ??= liveDate;
                 } else {
+                    // @ts-expect-error(TODO:)
                     this.translationDate = undefined;
                     this.translationTime = 0;
                 }
@@ -1264,17 +1308,23 @@ export class XcGraphScene {
                 this.translating = true;
                 this.overObject.show();
             }
+            // @ts-expect-error(TODO:)
             if (interaction.mouse.down) {
                 this.translatingInteraction = interaction;
             }
+            // @ts-expect-error(TODO:)
             if (interaction.mouse.up || interaction.mouse.leave) {
+                // @ts-expect-error(TODO:)
                 this.translatingInteraction = undefined;
             }
+            // @ts-expect-error(TODO:)
             if (interaction.mouse.leave || !this.translatingInteraction) {
                 this.translating = false;
                 this.overObject.hide();
             }
+            // @ts-expect-error(TODO:)
             if (interaction.mouse.dblclick) {
+                // @ts-expect-error(TODO:)
                 this.translationDate = undefined;
                 this.translationTime = 0;
             }
@@ -1283,13 +1333,17 @@ export class XcGraphScene {
         if (this.allowHovering) {
             // compute offset in pixels to first whole sample (the addition of resolution is handles negative translation time values)
             const offset = fpint((this.translationTime % this.resolution + this.resolution) * this.sampleWidth) % this.sampleWidth;
+            // @ts-expect-error(TODO:)
             const timeAt = this.timeInterval.timeAt + floorBase(this.pixelsToTime(interaction.mouse.x + offset), this.resolution);
+            // @ts-expect-error(TODO:)
             if (timeAt !== this.hoveringAt.value || interaction.mouse.enter || interaction.mouse.leave) {
+                // @ts-expect-error(TODO:)
                 this.hoveringAt.next(interaction.mouse.leave ? undefined : timeAt);
                 this.getGraphInstance(
                     this.hoveringId,
                     XcGraphType.AREA
                 ).update(
+                    // @ts-expect-error(TODO:)
                     interaction.mouse.leave ? [] : [{ time: timeAt, values: [Number.MAX_SAFE_INTEGER] }],
                     this.timeInterval,
                     this.resolution,
@@ -1350,6 +1404,7 @@ export class XcGraphScene {
     setAllowTranslating(value: boolean) {
         this.allowTranslating = value;
         if (!this.allowTranslating) {
+            // @ts-expect-error(TODO:)
             this.translatingInteraction = undefined;
             this.translating = false;
             this.overObject.hide();
@@ -1370,6 +1425,7 @@ export class XcGraphScene {
     setAllowHovering(value: boolean) {
         this.allowHovering = value;
         if (!this.allowHovering) {
+            // @ts-expect-error(TODO:)
             this.hoveringAt.next(undefined);
             const hoveringGraph = this.graphs.get(this.hoveringId);
             if (hoveringGraph) {
@@ -1396,7 +1452,9 @@ export class XcGraphComponent {
     static readonly ROW_GAP = 12;
     static readonly COL_GAP = 12;
 
+    // @ts-expect-error(TODO:)
     private graphResources: XcGraphResources;
+    // @ts-expect-error(TODO:)
     private graphSceneOver: XcGraphScene;
     private graphScenes: XcGraphScene[] = [];
 
@@ -1415,7 +1473,9 @@ export class XcGraphComponent {
 
     private render() {
         if (this.resized) {
+            // @ts-expect-error(TODO:)
             this.webGL().renderer.clear();
+            // @ts-expect-error(TODO:)
             this.graphScenes.forEach(graphScene => graphScene.render(this.webGL().renderer));
         }
     }
@@ -1431,6 +1491,7 @@ export class XcGraphComponent {
 
     private init() {
         this._initialized = true;
+        // @ts-expect-error(TODO:)
         this.webGL().renderer.setClearColor(new Color(0), 0);
         this.graphResources = new XcGraphResources(0x88888d, 0x2a2a2d, 0x2a2a2d, 0x1a1a1d, 0x002c33, 0xeaeaed, 0x88888d, 0x88888d, 0x88888d, 'assets/zeta/opensans-regular.json');
         this.graphScenes.forEach(graphScene => graphScene.init(this.graphResources, this.authService.serverTimeOffset));
@@ -1447,17 +1508,20 @@ export class XcGraphComponent {
 
     resize() {
         const webGL = this.webGL();
+        // @ts-expect-error(TODO:)
         if (webGL.width && webGL.height) {
             this._resized = true;
             const count = this.graphScenes.length;
             const colGap = XcGraphComponent.COL_GAP;
             const cols = this._columns;
             const cols1 = cols - 1;
+            // @ts-expect-error(TODO:)
             const colWidth = (webGL.width - cols1 * colGap) / cols;
             const colWidthGap = colWidth + colGap;
             const rowGap = XcGraphComponent.ROW_GAP;
             const rows = Math.ceil(count / cols);
             const rows1 = rows - 1;
+            // @ts-expect-error(TODO:)
             const rowHeight = (webGL.height - rows1 * rowGap) / rows;
             const rowHeightGap = rowHeight + rowGap;
 
@@ -1490,6 +1554,7 @@ export class XcGraphComponent {
                     break;
                 }
             }
+            // @ts-expect-error(TODO:)
             if (this.graphSceneOver && this.graphSceneOver !== graphSceneOver) {
                 const viewport = this.graphSceneOver.getRootViewport();
                 interaction.mouse.x = Math.min(Math.max(interaction.mouse.x - viewport.position.x, 1), viewport.size.width);
@@ -1497,6 +1562,7 @@ export class XcGraphComponent {
                 interaction.mouse.leave = true;
                 this.graphSceneOver.interaction(interaction);
             }
+            // @ts-expect-error(TODO:)
             if (graphSceneOver && interaction.mouse.ctrlKey && (graphSceneOver.isTranslating() || interaction.mouse.dblclick)) {
                 for (const graphScene of this.graphScenes) {
                     if (graphScene.getAllowTranslating()) {
@@ -1505,23 +1571,28 @@ export class XcGraphComponent {
                     }
                 }
             }
+            // @ts-expect-error(TODO:)
             this.graphSceneOver = graphSceneOver;
         }
     }
 
 
     updateSize() {
+        // @ts-expect-error(TODO:)
         this.webGL().updateSize();
     }
 
 
     start() {
+        // @ts-expect-error(TODO:)
         this.webGL().startRenderLoop(this.advance.bind(this));
+        // @ts-expect-error(TODO:)
         this.webGL().updateSize();
     }
 
 
     stop() {
+        // @ts-expect-error(TODO:)
         this.webGL().stopRenderLoop();
     }
 
@@ -1548,6 +1619,7 @@ export class XcGraphComponent {
 
 
     downloadImage() {
+        // @ts-expect-error(TODO:)
         this.webGL().downloadFrame(this.getName());
     }
 

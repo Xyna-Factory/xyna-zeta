@@ -55,13 +55,14 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
     protected readonly resolveDynamicString = (value: Signal<string>) => value();
 
+    // @ts-expect-error(TODO:)
     private _componentOutlets: QueryList<NgComponentOutlet>;
     private readonly _componentInjectors = new Map<XcTabBarItem, Injector>();
     private readonly _componentSubjects = new Map<XcTabBarItem, Subject<XcTabComponent>>();
     private readonly _componentInitialized = new Set<XcTabBarItem>();
     private _focusedIndex = -1;
     private _showTooltips = false;
-    private _busySubject = new BehaviorSubject<boolean>(false);
+    private readonly _busySubject = new BehaviorSubject<boolean>(false);
     private _items: XcTabBarItem[] = [];
     private _tabIdCounter = 1;
     private _reorderable = false;
@@ -112,7 +113,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         this.i18n.setTranslations(LocaleService.EN_US, xcTabBarTranslations_enUS);
         this.defaultColor.set('primary');
 
-        effect((onCleanup) => {
+        effect(onCleanup => {
             const tabGroup = this.tabGroup();
 
             const subscription = combineLatest([
@@ -144,9 +145,11 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     private _getComponentInstance(item: XcTabBarItem): XcTabComponent | null {
+        // @ts-expect-error(TODO:)
         return this.componentOutlets.map(outlet =>
 
-            (outlet['_componentRef'] as ComponentRef<XcTabComponent>).instance
+            // @ts-expect-error(TODO:)
+            (outlet._componentRef as ComponentRef<XcTabComponent>).instance
         ).find(instance =>
             instance.tabBarItem === item
         );
@@ -206,6 +209,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     get selection(): XcTabBarItem {
+        // @ts-expect-error(TODO:)
         return this.items[this.tabGroup().selectedIndex];
     }
 
@@ -261,6 +265,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         let instance: XcTabComponent;
         this._componentOutlets = value;
         this._componentSubjects.forEach((subject, item) => {
+            // @ts-expect-error(TODO:)
             if ((instance = this._getComponentInstance(item))) {
                 // notify getComponentInstance() observers
                 subject.next(instance);
@@ -285,6 +290,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     getComponentInjector(item: XcTabBarItem): Injector {
+        // @ts-expect-error(TODO:)
         return this._componentInjectors.get(item) || this._componentInjectors.set(
             item, Injector.create({
                 providers: [
@@ -301,6 +307,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         const instance = this._getComponentInstance(item);
         return instance
             ? of(instance)
+            // @ts-expect-error(TODO:)
             : (this._componentSubjects.get(item) || this._componentSubjects.set(item, new Subject<XcTabComponent>()).get(item)).asObservable();
     }
 
@@ -313,13 +320,16 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     getTooltip(item: XcTabBarItem): string {
 
         if (item.pinned) {
+            // @ts-expect-error(TODO:)
             return this.resolveDynamicString(item.name);
         }
 
         if (this.showTooltips) {
+            // @ts-expect-error(TODO:)
             return this.resolveDynamicString(item.name);
         }
 
+        // @ts-expect-error(TODO:)
         return undefined;
     }
 
@@ -330,6 +340,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
             return 'file';
         }
 
+        // @ts-expect-error(TODO:)
         return item.icon;
     }
 
@@ -340,6 +351,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         }
 
         // insert new item before another item or at the end
+        // @ts-expect-error(TODO:)
         const idx = this.items.indexOf(beforeItem);
         this.items.splice(idx < 0 ? this.items.length : idx, 0, item);
         // switch to new item, if not opened in background
@@ -396,11 +408,15 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
                 this.items = this.items.filter(tab => tab !== item);
 
                 // Neue Selektion berechnen
+                // @ts-expect-error(TODO:)
                 let selectIdx = this.items.indexOf(selectItem);
 
                 if (selectIdx < 0) {
+                    // @ts-expect-error(TODO:)
                     selectIdx = closedIdx < selectedIdx
+                        // @ts-expect-error(TODO:)
                         ? selectedIdx - 1
+                        // @ts-expect-error(TODO:)
                         : Math.min(selectedIdx, this.items.length - 1);
                 }
 
@@ -451,7 +467,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
         const tabs = this.items
             .slice(0, idx)
-            .filter(tab => this.isClosable(tab))
+            .filter(tab => this.isClosable(tab));
 
         this.closeTabsSequentially(tabs).subscribe();
     }
@@ -902,6 +918,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     private filterDisabledEntries(items: XcTabMenuItem[], disabled: XcTabMenuEntry[]): XcTabMenuItem[] {
 
         return items
+            // @ts-expect-error(TODO:)
             .filter(item => !disabled.includes(item.id))
             .map(item => ({
                 ...item,

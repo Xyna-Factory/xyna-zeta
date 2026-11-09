@@ -31,10 +31,14 @@ import { CartasianCoordinateSystem } from './cartasian-coordinate-system.class';
  */
 export class CCSPointsContainer {
 
+    // @ts-expect-error(TODO:)
     private curveControlPointsCache: CurveControlPoints; // cache
+    // @ts-expect-error(TODO:)
     private cardinalCurvePointsCache: number[];
 
+    // @ts-expect-error(TODO:)
     dataSourceRef: XcPlotDataSource;
+    // @ts-expect-error(TODO:)
     dataSourceContainerRef: XcPlotDataSource[];
     subscription: Subscription = new Subscription();
 
@@ -62,6 +66,7 @@ export class CCSPointsContainer {
         if (allPoints) {
             hitPoints.push(...(ds.pairs.filter(p => p.isPointHit(x, y, size))));
         } else {
+            // @ts-expect-error(TODO:)
             hitPoints.push(ds.pairs.find(p => p.isPointHit(x, y, size)));
         }
         return hitPoints;
@@ -110,7 +115,9 @@ export class CCSPointsContainer {
 
         // drawing the connection of the points
         if (this.pointConnectionType && this.pointConnectionType !== XcPlotPointConnection.None) {
+            // @ts-expect-error(TODO:)
             c.strokeStyle = dynVals.connections.color;
+            // @ts-expect-error(TODO:)
             c.lineWidth = dynVals.connections.thickness;
 
             switch (this.pointConnectionType) {
@@ -125,16 +132,22 @@ export class CCSPointsContainer {
         ds.pairs.forEach(p => {
 
             if (ds.selectionModel.isSelected(p)) {
+                // @ts-expect-error(TODO:)
                 c.fillStyle = dynVals.points.glow.selected.color;
+                // @ts-expect-error(TODO:)
                 XcCanvasHelper.fillCircle(c, p.drawX, p.drawY, dynVals.points.glow.selected.diameter, true);
             }
 
             if (ds.hoverModel.isSelected(p)) {
+                // @ts-expect-error(TODO:)
                 c.fillStyle = dynVals.points.glow.hover.color;
+                // @ts-expect-error(TODO:)
                 XcCanvasHelper.fillCircle(c, p.drawX, p.drawY, dynVals.points.glow.hover.diameter, true);
             }
 
+            // @ts-expect-error(TODO:)
             c.fillStyle = dynVals.points.color;
+            // @ts-expect-error(TODO:)
             XcCanvasHelper.fillCircle(c, p.drawX, p.drawY, dynVals.points.size, true);
         });
 

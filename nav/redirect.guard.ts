@@ -59,6 +59,7 @@ export class RedirectGuardService {
         const relativeRedirect = !this.relativeRedirectUrlMap.has(key);
 
         const relativeRedirectUrl = relativeRedirect
+            // @ts-expect-error(TODO:)
             ? this.relativeRedirectUrlMap.set(key, data.redirectDefault).get(key)
             : this.relativeRedirectUrlMap.get(key);
 
@@ -70,6 +71,7 @@ export class RedirectGuardService {
 
         // navigating in steps seems to restore the highlighting of the navigation items even
         // if there are params
+        // @ts-expect-error(TODO:)
         void this.router.navigateByUrl(url).then(result => {
             if (result && param) {
                 void this.router.navigateByUrl(url + param);

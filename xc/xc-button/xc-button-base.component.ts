@@ -47,6 +47,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
     readonly ripple = viewChild(MatRipple);
 
 
+    // @ts-expect-error(TODO:)
     i18nContext: string;
 
     protected readonly localeService: LocaleService = inject<LocaleService>(LocaleService);
@@ -57,6 +58,7 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
 
         (elementRef.nativeElement as HTMLElement).onclick = (event: MouseEvent) => {
             // prevent clicks outside of button dom element
+            // @ts-expect-error(TODO:)
             if (!this.buttonElementRef().nativeElement.contains(event.target)) {
                 event.stopPropagation();
             }
@@ -146,12 +148,13 @@ export class XcButtonBaseComponent extends XcThemeableComponent implements OnIni
             : this._ariaLabel;
     }
 
-    readonly tabIndex = input<number>(0, { alias: "xc-button-tab-index" });
+    readonly tabIndex = input<number>(0, { alias: 'xc-button-tab-index' });
 
 
     @HostListener('keydown.enter')
     @HostListener('keydown.space')
     launchRipple() {
+        // @ts-expect-error(TODO:)
         this.ripple().launch(0, 0, { centered: true });
     }
 

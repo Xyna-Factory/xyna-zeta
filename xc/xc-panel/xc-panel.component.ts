@@ -45,9 +45,13 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
     private static readonly headerMouseDownEventName = 'mousedown';
     private static readonly headerMouseUpEventName = 'mouseup';
 
+    // @ts-expect-error(TODO:)
     private _headerElement: Element;
+    // @ts-expect-error(TODO:)
     private _headerLabelElement: Element;
+    // @ts-expect-error(TODO:)
     private _toggleButtonElement: Element;
+    // @ts-expect-error(TODO:)
     private _ariaLabel: string;
     private _collapsed = false;
     private _collapsable = false;
@@ -61,12 +65,14 @@ export class XcPanelComponent implements AfterViewInit, AfterContentInit, OnDest
 
 
     private readonly _headerMouseDownListener = (event: MouseEvent) => {
+        // @ts-expect-error(TODO:)
         if (!this._targetIsSelectable(event.target)) {
             this._mouseDown = true;
         }
     };
 
     private readonly _headerMouseUpListener = (event: MouseEvent) => {
+        // @ts-expect-error(TODO:)
         if (!this._targetIsSelectable(event.target) && this._mouseDown) {
             this._mouseDown = false;
             this.togglePanel();

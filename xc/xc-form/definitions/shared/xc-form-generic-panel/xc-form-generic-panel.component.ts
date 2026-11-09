@@ -35,13 +35,15 @@ import { XoFormPanelDefinition } from '../../xo/containers.model';
 })
 export class XcFormGenericPanelComponent {
 
+    // @ts-expect-error(TODO:)
     private _definition: XoFormPanelDefinition;
 
     toolTip = 'maximize';
     areaValue = false;
+    // @ts-expect-error(TODO:)
     classList: string;
 
-    readonly definitionData = input<Xo[]>(undefined, { alias: "xc-definition-data" });
+    readonly definitionData = input<Xo[]>(undefined, { alias: 'xc-definition-data' });
 
     readonly closed = output<void>();
 

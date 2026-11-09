@@ -28,9 +28,11 @@ export abstract class XcContainerBaseTemplate<T extends XoTemplateDefinedBase> e
 
 
 
+// @ts-expect-error(TODO:)
 @XoObjectClass(null, 'xmcp.templates.datatypes', 'TemplateDefinedBase')
 export class XoTemplateDefinedBase extends XoObject {
     getTemplate(): XcContainerBaseTemplate<XoTemplateDefinedBase> {
+        // @ts-expect-error(TODO:)
         return null;
     }
 
@@ -47,6 +49,7 @@ export class XoTemplateDefinedBase extends XoObject {
      * Override to locally define the object's structure
      */
     getLocalStructure(): XoStructureObject {
+        // @ts-expect-error(TODO:)
         return null;
     }
 }

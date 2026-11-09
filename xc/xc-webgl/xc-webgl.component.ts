@@ -52,18 +52,22 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
     private readonly zone = inject(NgZone);
 
 
+    // @ts-expect-error(TODO:)
     private _animationId: number;
     private _frames = 0;
     private _fps = 0;
     private _dt = 0;
 
+    // @ts-expect-error(TODO:)
     private _renderer: WebGLRenderer;
+    // @ts-expect-error(TODO:)
     private _width: number;
+    // @ts-expect-error(TODO:)
     private _height: number;
 
-    readonly init = input(() => { }, { alias: "xc-webgl-init" });
+    readonly init = input(() => { }, { alias: 'xc-webgl-init' });
 
-    readonly destroy = input(() => { }, { alias: "xc-webgl-destroy" });
+    readonly destroy = input(() => { }, { alias: 'xc-webgl-destroy' });
 
     readonly resizeEmitter = output<void>({ alias: 'xc-webgl-resize' });
 
@@ -170,36 +174,42 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
 
     @HostListener('mousedown', ['$event'])
     mouseDown(event: MouseEvent) {
+        // @ts-expect-error(TODO:)
         this.interactionEmitter.emit(this.getMouseInteraction(event, i => i.mouse.down = true));
     }
 
 
     @HostListener('mouseup', ['$event'])
     mouseUp(event: MouseEvent) {
+        // @ts-expect-error(TODO:)
         this.interactionEmitter.emit(this.getMouseInteraction(event, i => i.mouse.up = true));
     }
 
 
     @HostListener('mouseenter', ['$event'])
     mouseEnter(event: MouseEvent) {
+        // @ts-expect-error(TODO:)
         this.interactionEmitter.emit(this.getMouseInteraction(event, i => i.mouse.enter = true));
     }
 
 
     @HostListener('mouseleave', ['$event'])
     mouseLeave(event: MouseEvent) {
+        // @ts-expect-error(TODO:)
         this.interactionEmitter.emit(this.getMouseInteraction(event, i => i.mouse.leave = true));
     }
 
 
     @HostListener('click', ['$event'])
     click(event: MouseEvent) {
+        // @ts-expect-error(TODO:)
         this.interactionEmitter.emit(this.getMouseInteraction(event, i => i.mouse.click = true));
     }
 
 
     @HostListener('dblclick', ['$event'])
     dblclick(event: MouseEvent) {
+        // @ts-expect-error(TODO:)
         this.interactionEmitter.emit(this.getMouseInteraction(event, i => i.mouse.dblclick = true));
     }
 
@@ -239,6 +249,7 @@ export class XcWebGLComponent implements AfterViewInit, OnDestroy {
 
     downloadFrame(filename: string) {
         this.renderer.domElement.toBlob(
+            // @ts-expect-error(TODO:)
             blob => downloadFile(blob, filename, MimeTypes.png),
             MimeTypes.png,
             1.0

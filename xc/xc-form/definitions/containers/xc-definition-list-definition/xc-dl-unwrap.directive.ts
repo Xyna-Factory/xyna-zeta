@@ -26,6 +26,7 @@ import { XcUnwrapDirective } from '../../../../shared/xc-unwrap.directive';
  */
 @Directive({ selector: '[xc-dl-unwrap]' })
 export class XcDefinitionListUnwrapDirective extends XcUnwrapDirective {
+    // @ts-expect-error(TODO:)
     readonly element: ElementRef;
 
 
@@ -47,11 +48,14 @@ export class XcDefinitionListUnwrapDirective extends XcUnwrapDirective {
             .forEach(child => {
                 // wrap
                 const dt = document.createElement('dt');
+                // @ts-expect-error(TODO:)
                 child.parentNode.insertBefore(dt, child);
 
                 const dd = document.createElement('dd');
+                // @ts-expect-error(TODO:)
                 child.parentNode.insertBefore(dd, child);
 
+                // @ts-expect-error(TODO:)
                 child.parentNode.removeChild(child);
                 dd.appendChild(child);
             });

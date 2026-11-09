@@ -115,15 +115,19 @@ export class BezierSplineHelper {
         let b = 2;
         let i: number;
 
+        // @ts-expect-error(TODO:)
         x[0] = rhs[0] / b;
 
         for (i = 1; i < n; i++) {
             // Decomposition and forward substitution.
+            // @ts-expect-error(TODO:)
             tmp[i] = 1 / b;
             b = (i < n - 1 ? 4.0 : 3.5) - tmp[i];
+            // @ts-expect-error(TODO:)
             x[i] = (rhs[i] - x[i - 1]) / b;
         }
         for (i = 1; i < n; i++) {
+            // @ts-expect-error(TODO:)
             x[n - i - 1] -= tmp[n - i] * x[n - i]; // Backsubstitution.
         }
 

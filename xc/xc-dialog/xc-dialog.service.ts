@@ -103,6 +103,7 @@ export class XcDialogService {
         const dialogRef = this.openDialog(componentType, data, ariaLabel, '', overrideConfig);
         dialogRef.componentInstance.title = title;
         dialogRef.componentInstance.message = message;
+        // @ts-expect-error(TODO:)
         dialogRef.componentInstance.details = details;
         dialogRef.componentInstance.draggable = draggable;
         dialogRef.componentInstance.resizable = resizable;
@@ -119,6 +120,7 @@ export class XcDialogService {
             ariaDescribedBy: 'xc-confirm-dialog-message-container',
             role: 'dialog'
         };
+        // @ts-expect-error(TODO:)
         return this.openMessageDialog(XcConfirmDialogComponent, title, message, null, ariaLabel, null, draggable, resizable, maximizable, maximized, dialogOptions, overrideConfig);
     }
 
@@ -170,6 +172,7 @@ export class XcDialogService {
     }
 
 
+    // @ts-expect-error(TODO:)
     custom<R = any, D = any, T extends XcDialogComponent<R, D> = XcDialogComponent<R, D>>(componentType: ComponentType<T>, data: D = null, ariaLabel?: string, panelClass?: string): T {
         return this.openDialog(componentType, data, ariaLabel, panelClass).componentInstance;
     }

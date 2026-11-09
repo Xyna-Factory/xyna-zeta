@@ -28,9 +28,9 @@ jobs:
       - name: Install Node.js dependencies
         run: npm install
 
-      - name: Create temporary tsconfig.json
-        run: npm run create-tsconfig
-        
+      # - name: Create temporary tsconfig.json
+      #   run: npm run create-tsconfig
+
       - name: Rename eslint.config.js
         run: mv eslint.config.txt eslint.config.js
 

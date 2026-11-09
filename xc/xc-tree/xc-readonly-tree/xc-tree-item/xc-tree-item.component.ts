@@ -42,7 +42,9 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
 
 
     static readonly INDENTATION = 20;
+    // @ts-expect-error(TODO:)
     private subscription: Subscription;
+    // @ts-expect-error(TODO:)
     private _node: XcStructureTreeNode;
     private _keepBreaks = false;
 
@@ -55,12 +57,15 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
     expanded = false;
     indentation = 0;
 
+    // @ts-expect-error(TODO:)
     readonly firstColumnWidth = input<number>(undefined);
+    // @ts-expect-error(TODO:)
     initialWidth: number;
 
 
     ngAfterViewInit() {
         // FIXME: This call is very expensive for many items
+        // @ts-expect-error(TODO:)
         this.initialWidth = this.column0().nativeElement.offsetWidth;
         this.widthChange.emit({ node: this.node, width: this.initialWidth });
     }
@@ -104,6 +109,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
             () => this.node.children?.pipe(first()).subscribe(
                 children => children.forEach(
                     child => child.children?.pipe(first()).subscribe(
+                        // @ts-expect-error(TODO:)
                         () => setTimeout(() => child.action(), 0)
                     )
                 )
@@ -122,6 +128,7 @@ export class XcTreeItemComponent extends XcTreeNodeComponent implements AfterVie
     set node(value: XcStructureTreeNode) {
         this.subscription?.unsubscribe();
         this._node = value;
+        // @ts-expect-error(TODO:)
         this.subscription = this.node?.children.subscribe(
             () => this.cdr.markForCheck()
         );

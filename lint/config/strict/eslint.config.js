@@ -3,7 +3,7 @@ import baseConfig from '../base/eslint.config.js';
 export default [
     {
         rules: {
-            ...baseConfig.rules,
+            ...baseConfig[0].rules,
 
             // --------------------------------------------------------------------------------------------------------------------------------
             // typescript supported rules |

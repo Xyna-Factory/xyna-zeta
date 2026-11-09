@@ -46,6 +46,7 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
     private readonly cdr = inject(ChangeDetectorRef);
 
 
+    // @ts-expect-error(TODO:)
     private runtimeContext: RuntimeContext;
     private readonly settings: RuntimeContextSelectionSettings;
 
@@ -59,7 +60,7 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
     constructor() {
         super();
 
-        effect((onCleanup) => {
+        effect(onCleanup => {
             const autocomplete = this.rtcAutocomplete();
 
             if (!autocomplete) {
@@ -105,6 +106,7 @@ export class RuntimeContextSelectionComponent extends XcDialogComponent<RuntimeC
             // preselect injected runtime context
             tap(rtcs => {
                 if (restorePreselection) {
+                    // @ts-expect-error(TODO:)
                     this.runtimeContext = rtcs.find(rtc => rtc.equals(this.settings.preselectedRuntimeContext));
                 }
             }),

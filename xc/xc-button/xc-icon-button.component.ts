@@ -40,11 +40,11 @@ export class XcIconButtonComponent extends XcButtonBaseComponent {
     private _iconMaterial = false;
     private _iconSvg = false;
 
-    readonly iconName = input<string>(undefined, { alias: "xc-icon-name" });
+    readonly iconName = input<string>(undefined, { alias: 'xc-icon-name' });
 
-    readonly iconStyle = input<string>(undefined, { alias: "xc-icon-style" });
+    readonly iconStyle = input<string>(undefined, { alias: 'xc-icon-style' });
 
-    readonly iconSize = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: "xc-icon-size" });
+    readonly iconSize = input<'small' | 'medium' | 'large' | 'extra-large'>('medium', { alias: 'xc-icon-size' });
 
     @HostBinding('attr.size')
     get hostIconSize(): string {

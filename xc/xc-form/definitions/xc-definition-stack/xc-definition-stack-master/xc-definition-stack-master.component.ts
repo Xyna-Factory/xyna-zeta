@@ -60,20 +60,25 @@ export class XcDefinitionStackMasterComponent extends RouteComponent implements 
             filter(data => data.fqn)
         ).subscribe(data => {
             this.api.startOrder(
+                // @ts-expect-error(TODO:)
                 this.configService.config.zeta.xo.runtimeContext,
                 data.fqn,
                 data.input,
+                // @ts-expect-error(TODO:)
                 null,
                 StartOrderOptionsBuilder.defaultOptionsWithErrorMessage
             ).subscribe(response => {
+                // @ts-expect-error(TODO:)
                 const formDefinition = response.output[0] as XoFormDefinition;
+                // @ts-expect-error(TODO:)
                 const detailData = response.output.slice(1);
 
                 // create stack item
                 const item = new XcStackItem();
                 item.setTemplate(new XcComponentTemplate(
                     XcDefinitionStackItemComponent,
-                    <DefinitionStackItemComponentData>{ stackItem: item, definition: formDefinition, data: detailData }
+                    // @ts-expect-error(TODO:)
+                    { stackItem: item, definition: formDefinition, data: detailData }
                 ));
                 this.stackDataSource.add(item);
             });

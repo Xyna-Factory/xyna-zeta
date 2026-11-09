@@ -28,11 +28,13 @@ interface DefinitionEvent {
     payload: Xo[];
 }
 
+// @ts-expect-error(TODO:)
 @XoObjectClass(null, 'xmcp.forms.datatypes', 'DefinitionEvent')
 export class XoDefinitionEvent extends XoObject {
 
 
     @XoProperty()
+    // @ts-expect-error(TODO:)
     eventId: string;
 
 
@@ -57,6 +59,7 @@ export class XcDefinitionEventService {
     triggerEventById(eventId: string | string[], payload?: Xo | Xo[]) {
         const eventIds: string[] = pack(eventId);
         eventIds.forEach(id =>
+            // @ts-expect-error(TODO:)
             this.eventSubject.next({eventId: id, payload: pack(payload)})
         );
     }
