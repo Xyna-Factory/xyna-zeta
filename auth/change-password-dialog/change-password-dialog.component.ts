@@ -50,8 +50,11 @@ export class ChangePasswordDialogComponent extends XcDialogComponent {
     policy = '';
     private readonly regExps: RegExp[] = [];
 
+    //@ts-expect-error(TODO:)
     oldPassword: string;
+    //@ts-expect-error(TODO:)
     newPassword: string;
+    //@ts-expect-error(TODO:)
     confirmPassword: string;
 
     error = null;
@@ -93,7 +96,7 @@ export class ChangePasswordDialogComponent extends XcDialogComponent {
                 }
 
                 // split policy by unescaped ';'
-                const rules = [];
+                const rules: string[] = [];
                 let lastIndex = 0;
                 for (let i = 1; i < this.policy.length; i++) {
                     if (this.policy[i] === ';' && this.policy[i - 1] !== '\\') {
