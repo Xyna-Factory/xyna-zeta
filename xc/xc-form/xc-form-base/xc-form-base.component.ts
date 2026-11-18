@@ -192,7 +192,7 @@ export class XcFormBaseComponent extends XcFormComponent implements AfterContent
 
     @Input()
     set value(value: any) {
-        this.formControl.setValue(value);
+        this.formControl.setValue(value, { emitEvent: false });
     }
 
 
