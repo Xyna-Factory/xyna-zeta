@@ -33,8 +33,11 @@ export class XcFormBaseInputComponent extends XcFormBaseComponent {
 
     readonly suffixInput = input<'clear' | 'nullify' | 'password' | 'dropdown'>(undefined, { alias: 'xc-form-field-suffix' });
 
-    @HostBinding('attr.suffix')
     readonly suffix = linkedSignal(() => this.suffixInput());
+    @HostBinding('attr.suffix')
+    protected get _xc_suffix(): string | null {
+        return this.suffix() ?? null;
+    }
 
     readonly input = viewChild(MatInput);
 
