@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { Xo, XoArray, XoArrayClass, XoObject, XoObjectClass, XoProperty } from '@zeta/api';
 import { pack } from '@zeta/base';
@@ -45,7 +45,7 @@ export class XoDefinitionEventArray extends XoArray<XoDefinitionEvent> {
 }
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class XcDefinitionEventService {
 
     private readonly eventSubject: Subject<DefinitionEvent> = new Subject<DefinitionEvent>();

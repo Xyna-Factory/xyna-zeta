@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 
@@ -39,7 +39,7 @@ export interface keyBoardObject {
 }
 
 
-@Injectable({providedIn: 'root'})
+@Service()
 export abstract class KeyDistributionService {
     private readonly outsideListenerService = inject(OutsideListenerService);
 

@@ -16,14 +16,14 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpContextToken, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ConfigService } from '@zeta/api/config.service';
 import { Observable } from 'rxjs';
 
 
 export const SKIP_API_INTERCEPTOR = new HttpContextToken<boolean>(() => false);
 
-@Injectable()
+@Service({ autoProvided: false })
 export class ApiInterceptor implements HttpInterceptor {
     private readonly configService = inject(ConfigService);
 

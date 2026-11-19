@@ -18,7 +18,7 @@ import { filter, map } from 'rxjs/operators';
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { ComponentType } from '@angular/cdk/portal';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Xo } from '@zeta/api';
 
@@ -36,7 +36,7 @@ import { XcInfoDialogComponent } from './xc-info-dialog.component';
 import { XcMessageDialogComponent } from './xc-message-dialog.component';
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class XcDialogService {
     private readonly dialog = inject(MatDialog);
     protected readonly i18n = inject(I18nService);

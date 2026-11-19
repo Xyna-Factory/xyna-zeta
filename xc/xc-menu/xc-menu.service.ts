@@ -17,13 +17,13 @@
  */
 import { Subject } from 'rxjs';
 
-import { Directive, inject, Injectable, Input, OnDestroy, OutputRefSubscription, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, inject, Input, OnDestroy, OutputRefSubscription, TemplateRef, ViewContainerRef, Service } from '@angular/core';
 import { coerceBoolean } from '@zeta/base';
 
 import { XcMenuComponentInterface, XcMenuItem, XcMenuOptions, XcMenuOptionsDefault } from './xc-menu.types';
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class XcMenuService {
 
     // @ts-expect-error(TODO:)

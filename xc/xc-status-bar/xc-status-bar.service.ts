@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 
@@ -50,7 +50,7 @@ export class XcStatusBarEntry extends Comparable {
 }
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class XcStatusBarService {
 
     private readonly statusBarEntrySubject = new Subject<XcStatusBarEntry>();

@@ -15,15 +15,13 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { XcMenuTriggerDirective } from './xc-menu-trigger.directive';
 import { XcMenuComponentInterface } from './xc-menu.types';
 
 
-@Injectable({
-    providedIn: 'root'
-})
+@Service()
 export class XcContextMenuService {
 
     // @ts-expect-error(TODO:)
