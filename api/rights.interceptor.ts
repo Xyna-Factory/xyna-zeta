@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export interface ErrorObject {
     exceptionMessage: string;
 }
 
-@Injectable()
+@Service({ autoProvided: false })
 export class RightsInterceptor implements HttpInterceptor {
 
     private static readonly _errorSubject = new Subject<ErrorObject>();

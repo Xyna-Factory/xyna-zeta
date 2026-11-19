@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { inject, Injectable, NgZone } from '@angular/core';
+import { inject, NgZone, Service } from '@angular/core';
 
 
 type EventHandler = (event: Event) => void;
@@ -29,7 +29,7 @@ interface OutsideListenerTriple {
 }
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class OutsideListenerService {
     private readonly ngZone = inject(NgZone);
 

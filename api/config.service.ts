@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { SKIP_API_INTERCEPTOR } from './api.interceptor';
@@ -80,7 +80,7 @@ class ZetaEnvironment {
 }
 
 
-@Injectable({providedIn: 'root'})
+@Service()
 export class ConfigService {
 
     // @ts-expect-error(TODO:)

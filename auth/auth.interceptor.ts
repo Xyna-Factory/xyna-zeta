@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable, Injector, inject } from '@angular/core';
+import { Injector, inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Observable, throwError } from 'rxjs';
@@ -25,7 +25,7 @@ import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 
-@Injectable()
+@Service({ autoProvided: false })
 export class AuthInterceptor implements HttpInterceptor {
     private readonly injector = inject(Injector);
     private readonly router = inject(Router);

@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { AriaLivePoliteness, LiveAnnouncer } from '@angular/cdk/a11y';
-import { inject, Injectable, NgZone } from '@angular/core';
+import { inject, NgZone, Service } from '@angular/core';
 
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -38,7 +38,7 @@ export enum ScreenreaderPriority {
 }
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class A11yService {
     private readonly liveAnnouncer = inject(LiveAnnouncer);
     private readonly ngZone = inject(NgZone);
