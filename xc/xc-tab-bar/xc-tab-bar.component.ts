@@ -21,7 +21,7 @@ import { concatMap, distinctUntilChanged, filter, map, tap } from 'rxjs/operator
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ComponentType } from '@angular/cdk/portal';
 import { NgComponentOutlet } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, computed, effect, inject, Injector, Input, OnDestroy, output, QueryList, Signal, viewChild, ViewChildren } from '@angular/core';
+import { afterNextRender, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentRef, computed, effect, inject, Injector, Input, OnDestroy, output, QueryList, signal, Signal, viewChild, ViewChildren } from '@angular/core';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 
 import { coerceBoolean } from '../../base';
@@ -59,7 +59,8 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     private _componentOutlets: QueryList<NgComponentOutlet>;
     private readonly _componentInjectors = new Map<XcTabBarItem, Injector>();
     private readonly _componentSubjects = new Map<XcTabBarItem, Subject<XcTabComponent>>();
-    private readonly _componentInitialized = new Set<XcTabBarItem>();
+    private readonly _componentInitialized = signal(new Set<XcTabBarItem>());
+    private readonly _componentInitializationScheduled = new Set<XcTabBarItem>();
     private _focusedIndex = -1;
     private _showTooltips = false;
     private readonly _busySubject = new BehaviorSubject<boolean>(false);
@@ -78,6 +79,10 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         });
 
         this._items = value ?? [];
+        const fixedItems = this._items.filter(item => item.fixedAtStart);
+        if (!this._items.slice(0, fixedItems.length).every(item => item.fixedAtStart)) {
+            this._items = [...fixedItems, ...this._items.filter(item => !item.fixedAtStart)];
+        }
     }
 
     get items(): XcTabBarItem[] {
@@ -159,9 +164,20 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     private activate(item: XcTabBarItem, idx: number) {
         if (item) {
             item.afterActivate?.(idx);
-            setTimeout(() => {
-                this._componentInitialized.add(item);
-            }, 0);
+            if (!this._componentInitialized().has(item) && !this._componentInitializationScheduled.has(item)) {
+                this._componentInitializationScheduled.add(item);
+                afterNextRender(() => {
+                    this._componentInitializationScheduled.delete(item);
+                    if (this.items.includes(item)) {
+                        this._componentInitialized.update(initialized => {
+                            if (initialized.has(item)) {
+                                return initialized;
+                            }
+                            return new Set(initialized).add(item);
+                        });
+                    }
+                }, { injector: this.injector });
+            }
         }
     }
 
@@ -198,7 +214,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         const idx = this.items.indexOf(value);
         // select tab idx
         if (idx >= 0) {
-            const uninitialized = !this._componentInitialized.has(value);
+            const uninitialized = !this._componentInitialized().has(value);
             this.tabGroup().selectedIndex = idx;
 
             if (uninitialized) {
@@ -313,7 +329,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     isComponentInitialized(item: XcTabBarItem): boolean {
-        return this._componentInitialized.has(item);
+        return this._componentInitialized().has(item);
     }
 
 
@@ -351,9 +367,12 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
         }
 
         // insert new item before another item or at the end
-        // @ts-expect-error(TODO:)
-        const idx = this.items.indexOf(beforeItem);
-        this.items.splice(idx < 0 ? this.items.length : idx, 0, item);
+        const requestedIndex = beforeItem ? this.items.indexOf(beforeItem) : -1;
+        const fixedCount = this.getFixedAtStartCount();
+        const idx = item.fixedAtStart
+            ? fixedCount
+            : Math.max(requestedIndex < 0 ? this.items.length : requestedIndex, fixedCount);
+        this.items.splice(idx, 0, item);
         // switch to new item, if not opened in background
         if (!inBackground) {
             // necessary to counter-act angular material bugfix:
@@ -398,7 +417,14 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
                     this._componentSubjects.delete(item);
                 }
 
-                this._componentInitialized.delete(item);
+                this._componentInitialized.update(initialized => {
+                    if (!initialized.has(item)) {
+                        return initialized;
+                    }
+                    const updated = new Set(initialized);
+                    updated.delete(item);
+                    return updated;
+                });
 
                 // Aktuelle Werte merken
                 const closedIdx = this.items.indexOf(item);
@@ -604,6 +630,10 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
     togglePinned(item: XcTabBarItem) {
 
+        if (item.fixedAtStart) {
+            return;
+        }
+
         item.pinned = !item.pinned;
 
         this.sortPinnedTabs();
@@ -617,10 +647,11 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
         const selected = this.selection;
 
-        const pinned = this.items.filter(item => item.pinned);
-        const unpinned = this.items.filter(item => !item.pinned);
+        const fixed = this.items.filter(item => item.fixedAtStart);
+        const pinned = this.items.filter(item => !item.fixedAtStart && item.pinned);
+        const unpinned = this.items.filter(item => !item.fixedAtStart && !item.pinned);
 
-        this.items.splice(0, this.items.length, ...pinned, ...unpinned);
+        this.items.splice(0, this.items.length, ...fixed, ...pinned, ...unpinned);
 
         if (selected) {
             this.selection = selected;
@@ -629,12 +660,18 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     private getFirstMovableIndex(item: XcTabBarItem): number {
-        return item.pinned ? 0 : this.getPinnedCount();
+        return item.fixedAtStart
+            ? this.getIndex(item)
+            : this.getFixedAtStartCount() + (item.pinned ? 0 : this.getPinnedCount());
     }
 
 
     private getLastMovableIndex(item: XcTabBarItem): number {
-        return item.pinned ? Math.max(this.getPinnedCount() - 1, 0) : this.items.length - 1;
+        return item.fixedAtStart
+            ? this.getIndex(item)
+            : item.pinned
+                ? this.getFixedAtStartCount() + this.getPinnedCount() - 1
+                : this.items.length - 1;
     }
 
 
@@ -705,6 +742,7 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
                 id: XcTabMenuEntry.Pin,
                 separator: 'above',
                 name: computed(() => item.pinned ? this.i18n.translateSignal('zeta.xc-tab-bar.menu.unpin')() : this.i18n.translateSignal('zeta.xc-tab-bar.menu.pin')()),
+                disabled: !!item.fixedAtStart,
                 click: () => this.togglePinned(item)
             },
 
@@ -778,12 +816,12 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
 
     private canMoveToStart(item: XcTabBarItem): boolean {
-        return this.getIndex(item) > this.getFirstMovableIndex(item);
+        return !item.fixedAtStart && this.getIndex(item) > this.getFirstMovableIndex(item);
     }
 
 
     private canMoveToEnd(item: XcTabBarItem): boolean {
-        return this.getIndex(item) < this.getLastMovableIndex(item);
+        return !item.fixedAtStart && this.getIndex(item) < this.getLastMovableIndex(item);
     }
 
 
@@ -791,13 +829,13 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
         const idx = this.getIndex(item);
 
-        if (idx <= 0) {
+        if (item.fixedAtStart || idx <= 0) {
             return false;
         }
 
         const target = this.items[idx - 1];
 
-        return target?.pinned === item.pinned;
+        return !target?.fixedAtStart && target?.pinned === item.pinned;
     }
 
 
@@ -805,13 +843,13 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
         const idx = this.getIndex(item);
 
-        if (idx >= this.items.length - 1) {
+        if (item.fixedAtStart || idx >= this.items.length - 1) {
             return false;
         }
 
         const target = this.items[idx + 1];
 
-        return target?.pinned === item.pinned;
+        return !target?.fixedAtStart && target?.pinned === item.pinned;
     }
 
 
@@ -891,6 +929,9 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
     drop(event: CdkDragDrop<XcTabBarItem[]>) {
 
         const dragged = this.items[event.previousIndex];
+        if (dragged?.fixedAtStart) {
+            return;
+        }
 
         const targetIndex = this.normalizeDropIndex(dragged, event.currentIndex);
 
@@ -904,14 +945,22 @@ export class XcTabBarComponent extends XcThemeableComponent implements XcTabBarI
 
     private normalizeDropIndex(dragged: XcTabBarItem, index: number): number {
 
+        const fixedCount = this.getFixedAtStartCount();
         const pinnedCount = this.getPinnedCount();
 
-        return dragged.pinned ? Math.min(index, pinnedCount - 1) : Math.max(index, pinnedCount);
+        return dragged.pinned
+            ? Math.max(fixedCount, Math.min(index, fixedCount + pinnedCount - 1))
+            : Math.max(index, fixedCount + pinnedCount);
+    }
+
+
+    private getFixedAtStartCount(): number {
+        return this.items.filter(item => item.fixedAtStart).length;
     }
 
 
     private getPinnedCount(): number {
-        return this.items.filter(item => item.pinned).length;
+        return this.items.filter(item => item.pinned && !item.fixedAtStart).length;
     }
 
 
