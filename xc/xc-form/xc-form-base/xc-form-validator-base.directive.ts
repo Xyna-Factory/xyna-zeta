@@ -15,18 +15,18 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { AfterViewInit, Directive, inject } from '@angular/core';
+import { Directive, inject, OnInit } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
 
 import { XcFormBaseComponent } from './xc-form-base.component';
 
 
 @Directive()
-export abstract class XcFormValidatorBaseDirective implements AfterViewInit {
+export abstract class XcFormValidatorBaseDirective implements OnInit {
     host = inject(XcFormBaseComponent, { optional: true, host: true });
 
 
-    ngAfterViewInit() {
+    ngOnInit() {
         if (this.host) {
             // @ts-expect-error(TODO:)
             this.getValidatorFns().forEach(value => this.host.addValidator(value));
