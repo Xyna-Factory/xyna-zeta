@@ -58,6 +58,10 @@ export interface XcTabContextMenuItem extends XcMenuItem {
 export interface XcTabBarItem<D = any> extends XcItem {
     tabId?: number;
 
+    fixedAtStart?: boolean;
+
+    contextMenuDisabled?: boolean;
+
     disabledMenuEntries?: XcTabMenuEntry[];
 
     customContextMenuItems?: XcTabContextMenuItem[];

@@ -14,12 +14,12 @@
                 <div
                     class="xc-tab-label"
                     xc-context-menu-trigger
-                    [disabled]="!contextMenu"
+                    [disabled]="!contextMenu || !!item.contextMenuDisabled"
                     (beforeOpen)="onBeforeOpen(item)"
                 >
                     <xc-icon
                         cdkDrag
-                        [cdkDragDisabled]="!reorderable"
+                        [cdkDragDisabled]="!reorderable || !!item.fixedAtStart"
                         cdkDragRootElement=".mat-mdc-tab"
                         [xc-icon-name]="getIcon(item)"
                         [xc-icon-style]="item.iconStyle"
