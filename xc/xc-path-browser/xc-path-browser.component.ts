@@ -17,7 +17,7 @@
  */
 import { ChangeDetectionStrategy, Component, inject, InjectionToken, Input } from '@angular/core';
 
-import { I18nService, XcI18nContextDirective, XcI18nTranslateDirective  } from '../../i18n';
+import { I18nService, XcI18nContextDirective, XcI18nTranslateDirective } from '../../i18n';
 import { XcDynamicComponent } from '../shared/xc-dynamic.component';
 import { XcOptionItem } from '../shared/xc-item';
 import { XcButtonComponent } from '../xc-button/xc-button.component';
@@ -62,18 +62,18 @@ export class XcPathBrowserComponent extends XcDynamicComponent<XcPathBrowserTemp
     protected readonly i18n = inject(I18nService);
 
 
-    private _currentItem: XcPathOptionItem;
+    private _currentItem: XcPathOptionItem | null = null;
     private _pathSeparator = '/';
     private _path: string[] = [];
-    private _pathString: string;
+    private _pathString = '';
     private _initialPath = '';
-    private _observer: XcPathBrowserObserver;
+    private _observer?: XcPathBrowserObserver;
 
     @Input()
     pathUpwardsToken = '..';
 
     @Input()
-    rootPathToken = null;
+    rootPathToken: string | null = null;
 
 
     constructor() {
@@ -83,7 +83,9 @@ export class XcPathBrowserComponent extends XcDynamicComponent<XcPathBrowserTemp
         this.i18n.setTranslations('en-US', xcPathBrowserTranslations_enUS);
 
         if (this.injectedData) {
-            this.observer = this.injectedData.observer;
+            if (this.injectedData.observer) {
+                this.observer = this.injectedData.observer;
+            }
             if (this.injectedData.initialPath) {
                 this.initialPath = this.injectedData.initialPath;
             }
@@ -125,18 +127,18 @@ export class XcPathBrowserComponent extends XcDynamicComponent<XcPathBrowserTemp
 
 
     @Input()
-    set observer(value: XcPathBrowserObserver) {
+    set observer(value: XcPathBrowserObserver | undefined) {
         this._observer = value;
         this.parseInitialPath();
     }
 
 
-    get observer(): XcPathBrowserObserver {
+    get observer(): XcPathBrowserObserver | undefined {
         return this._observer;
     }
 
 
-    get currentItem(): XcPathOptionItem {
+    get currentItem(): XcPathOptionItem | null {
         if (!this._currentItem && this.observer) {
             this._currentItem = this.observer.getInitialOptionItem();
         }
@@ -155,10 +157,11 @@ export class XcPathBrowserComponent extends XcDynamicComponent<XcPathBrowserTemp
     }
 
 
-    select(item: XcPathOptionItem) {
+    select(item: XcPathOptionItem | null) {
         // inform observer
-        if (this.observer) {
-            this.observer.beforeVisitOptionItem(item || this.observer.getRootOptionItem()); // root if null
+        const observer = this.observer;
+        if (observer) {
+            observer.beforeVisitOptionItem(item || observer.getRootOptionItem()); // root if null
         }
 
         if (!item) {
@@ -168,8 +171,8 @@ export class XcPathBrowserComponent extends XcDynamicComponent<XcPathBrowserTemp
             if (this.rootPathToken) {
                 this.pushPathPart(this.rootPathToken);
             }
-            item = this.observer ? this.observer.getRootOptionItem() : null;
-        } else if (this._currentItem.parents?.indexOf(item) >= 0) {
+            item = observer ? observer.getRootOptionItem() : null;
+        } else if (this._currentItem?.parents?.includes(item)) {
             // SELECT PARENT
             // -------------
             if (this.emptyPath() || this.lastPathPart === this.pathUpwardsToken) {
@@ -210,9 +213,9 @@ export class XcPathBrowserComponent extends XcDynamicComponent<XcPathBrowserTemp
             // parse path parts along item-nodes
             for (const part of parts) {
                 if (part === this.pathUpwardsToken) {
-                    this.select(this.currentItem?.parents?.length > 0 ? this.currentItem.parents[0] : null);
+                    this.select(this.currentItem?.parents?.[0] ?? null);
                 } else {
-                    const nextNode = (this.currentItem?.children || []).find(child => child.path === part);
+                    const nextNode = this.currentItem?.children?.find(child => child.path === part) ?? null;
                     this.select(nextNode);
                 }
             }
