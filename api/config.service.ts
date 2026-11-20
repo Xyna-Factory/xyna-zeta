@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
-import { SKIP_API_INTERCEPTOR } from './api.interceptor';
+import { SKIP_API_INTERCEPTOR } from './api-context';
 import { AuthenticationOptions, XynaOptions as EnviromentXynaOptions, ZetaProjectOptions as EnviromentZetaProjectOptions, ZetaEnvironment as EnviromentZetaEnvironment} from './zeta-environment.interfaces';
 import { RuntimeContext } from './xo/xo-describer';
 import { environment } from '@environments/environment';
