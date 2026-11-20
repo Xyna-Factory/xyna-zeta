@@ -16,14 +16,14 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import escapeStringRegexp from 'escape-string-regexp';
+import { isPlatformBrowser } from '@angular/common';
+import { HttpBackend, HttpClient, HttpContext } from '@angular/common/http';
+import { computed, inject, isSignal, PLATFORM_ID, Service, Signal, signal, WritableSignal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { isPlatformBrowser } from '@angular/common';
-import { HttpBackend, HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, Injector, isSignal, PLATFORM_ID, Signal } from '@angular/core';
-
 import { isString } from '../base';
+import { SKIP_API_INTERCEPTOR } from '../api/api-context';
 import { LocaleService } from './locale.service';
 
 
@@ -92,16 +92,17 @@ export enum I18N_TYPES {
 }
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class I18nService {
-    private readonly injector = inject(Injector);
-    private readonly platformId = inject(PLATFORM_ID);
     private readonly http = inject(HttpClient);
+    private readonly httpBackend = inject(HttpBackend);
     private readonly localeService = inject(LocaleService);
+    private readonly platformId = inject(PLATFORM_ID);
 
     /** translation map: language -> (key -> value) */
     private readonly _translations = new Map<string, Map<string, I18nTranslation>>();
     private readonly _cache = new Map<string, Map<string, I18nCachedTranslation>>();
+    private readonly _translationsRevision = new Map<string, WritableSignal<number>>();
 
     private readonly _errorCodeRegEx = /(EC-[\da-z.]+)[\wQ#.,:;\-_ +*"´`'~!?=E]*/;
 
@@ -300,11 +301,25 @@ export class I18nService {
 
     translateSignal(key: I18nSignalInput<string>, ...params: I18nSignalInput<I18nParam>[]): Signal<string> {
         return computed(() => {
-            this.localeService.languageSignal();
+            const language = this.localeService.languageSignal();
+            this.translationsRevisionSignal(language)();
             const resolvedKey = this.resolveInput(key);
             const resolvedParams = params?.map(param => this.resolveParam(param)) ?? [];
             return this.translateInstant(resolvedKey, ...resolvedParams);
         });
+    }
+
+    translationsRevisionSignal(language: string): Signal<number> {
+        return this.getOrCreateTranslationsRevisionSignal(language);
+    }
+
+    private getOrCreateTranslationsRevisionSignal(language: string): WritableSignal<number> {
+        let revision = this._translationsRevision.get(language);
+        if (!revision) {
+            revision = signal(0);
+            this._translationsRevision.set(language, revision);
+        }
+        return revision;
     }
 
 
@@ -325,15 +340,31 @@ export class I18nService {
         return translation;
     }
 
-
     setTranslations(language: string, values: I18nTranslation[] = []) {
-        const translationMap = this._translations.get(language) || this._translations.set(language, new Map()).get(language);
+        let translationMap = this._translations.get(language);
+        if (!translationMap) {
+            translationMap = new Map<string, I18nTranslation>();
+            this._translations.set(language, translationMap);
+        }
+        let changed = false;
         values.forEach(item => {
-            item.key = (item.type ? item.type + ':' : '') + (item.context ? item.context + '.' : '') + item.key;
-            // @ts-expect-error(TODO:)
-            translationMap.set(item.key, item);
+            const key = (item.type ? item.type + ':' : '') + (item.context ? item.context + '.' : '') + item.key;
+            const translation = { ...item, key };
+            const current = translationMap.get(key);
+            if (current &&
+                current.value === translation.value &&
+                current.type === translation.type &&
+                current.context === translation.context &&
+                current.pronunciationLanguage === translation.pronunciationLanguage) {
+                return;
+            }
+            translationMap.set(key, translation);
+            changed = true;
         });
-        this._cache.delete(language);
+        if (changed) {
+            this._cache.delete(language);
+            this.getOrCreateTranslationsRevisionSignal(language).update(revision => revision + 1);
+        }
     }
 
 
@@ -344,19 +375,12 @@ export class I18nService {
      * Check and modify the "angular.json" accordingly
      */
     readTranslations(language: string, file: string): Observable<I18nTranslation[]> {
-        if (isPlatformBrowser(this.platformId)) {
-            return this.http.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
-                tap(translation => this.setTranslations(language, translation.translations)),
-                map(translation => translation.translations)
-            );
-        }
-        const httpBackend = this.injector.get(HttpBackend);
-        const nonInterceptedJSONHTTPClient = new HttpClient(httpBackend);
-        return nonInterceptedJSONHTTPClient.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`).pipe(
-                tap(translation => this.setTranslations(language, translation.translations)),
-                map(translation => translation.translations)
+        const client = isPlatformBrowser(this.platformId) ? this.http : new HttpClient(this.httpBackend);
+        const context = new HttpContext().set(SKIP_API_INTERCEPTOR, true);
+        return client.get<I18nJsonSchemaTranslation>(`./assets/locale/${file}`, { context }).pipe(
+            tap(translation => this.setTranslations(language, translation.translations)),
+            map(translation => translation.translations)
         );
-
     }
 
 

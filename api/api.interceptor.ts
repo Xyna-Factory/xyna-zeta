@@ -15,13 +15,14 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { HttpContextToken, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ConfigService } from '@zeta/api/config.service';
 import { Observable } from 'rxjs';
+import { SKIP_API_INTERCEPTOR } from './api-context';
 
+export { SKIP_API_INTERCEPTOR } from './api-context';
 
-export const SKIP_API_INTERCEPTOR = new HttpContextToken<boolean>(() => false);
 
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {

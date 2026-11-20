@@ -103,7 +103,8 @@ export class XcI18nTranslateDirective extends XcI18nBase implements OnInit {
 
         if (cont && !isXc) {
             effect(() => {
-                this.localService.languageSignal();
+                const language = this.localService.languageSignal();
+                this.i18n.translationsRevisionSignal(language)();
                 if (this.translatedContent !== cont) {
                     this.contentKey = cont;
                 }
