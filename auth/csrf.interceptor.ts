@@ -16,13 +16,13 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { AuthEventService } from './auth-event.service';
 
 
-@Injectable()
+@Service({ autoProvided: false })
 export class CsrfInterceptor implements HttpInterceptor {
     readonly auth = inject(AuthEventService);
 

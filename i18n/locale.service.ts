@@ -15,12 +15,10 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable, LOCALE_ID, Provider, Signal, signal } from '@angular/core';
+import { LOCALE_ID, Provider, Signal, signal, Service } from '@angular/core';
 
 
-@Injectable({
-    providedIn: 'root'
-})
+@Service()
 export class LocaleService {
 
     static readonly DE_DE = 'de-DE';

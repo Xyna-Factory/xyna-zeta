@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot, CanDeactivateFn, RouterStateSnapshot } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -23,7 +23,7 @@ import { Observable } from 'rxjs';
 import { RouteComponent } from './route.component';
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ConfirmGuardService  {
 
     canDeactivate(component: RouteComponent, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot, nextState?: RouterStateSnapshot): Observable<boolean> {

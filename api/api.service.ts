@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { XoEncryptionData } from '@zeta/api/xo/encryption-data.model';
 
@@ -241,7 +241,7 @@ export interface RuntimeContextSelectionSettings {
 }
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ApiService {
     private readonly http = inject(HttpClient);
     private readonly configService = inject(ConfigService);

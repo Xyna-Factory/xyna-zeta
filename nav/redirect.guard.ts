@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Component, inject, Injectable, InjectionToken } from '@angular/core';
+import { Component, inject, InjectionToken, Service } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, CanDeactivateFn, Router, RouterStateSnapshot } from '@angular/router';
 
 import { XynaRouteData } from './';
@@ -24,7 +24,7 @@ import { XynaRouteData } from './';
 export const RedirectGuardConfigToken = new InjectionToken<string>('RedirectGuardConfigToken');
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RedirectGuardService {
     private readonly router = inject(Router);
 

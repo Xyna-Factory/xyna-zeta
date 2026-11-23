@@ -16,14 +16,14 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
 
 import { AuthService } from '../auth';
 import { XynaRoute, XynaRouteData } from './xyna-routes';
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RightGuardService {
     private readonly authService = inject(AuthService);
     private readonly router = inject(Router);

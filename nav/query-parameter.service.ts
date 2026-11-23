@@ -15,7 +15,7 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { encodeURIComponentRFC1738 } from '../base';
 
@@ -34,7 +34,7 @@ export enum UrlQueryParamConflictResolutionMethod {
     Replace = 1, None
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class QueryParameterService {
 
     private readonly queries = new Map<string, string>();

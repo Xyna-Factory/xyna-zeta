@@ -15,14 +15,14 @@
  * limitations under the License.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { SessionInfo } from './auth-session';
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthEventService {
 
     // @ts-expect-error(TODO:)

@@ -16,7 +16,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  */
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Observable, of } from 'rxjs';
@@ -99,7 +99,7 @@ class StartOrderRight {
 }
 
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthService {
     private readonly authEventService = inject(AuthEventService);
     private readonly http = inject(HttpClient);
